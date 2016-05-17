@@ -5,13 +5,12 @@ test_approx_eq(a::Measurement, b::Measurement) =
     (@test_approx_eq(a.val, b.val) ; @test_approx_eq(a.err, b.err))
 
 let
-    local x, y
-    x = Measurement(3, 0.1)
+    local x, y, z
+    x = z = Measurement(3, 0.1)
     y = Measurement(4, 0.2)
     ##### Comparisons
-    @test Measurement(3, 0.2) != x != y != Measurement(4, 0.1)
-    @test x == Measurement(3, 0.1)
-    @test y == Measurement(4, 0.2)
+    @test Measurement(3, 0.1) != z == x != y != Measurement(4, 0.2)
+    @test x == x
     @test x < y
     ##### Mathematical Operations
     # Addition

@@ -32,7 +32,17 @@ function show(io::IO, measure::Measurement)
 end
 
 ##### Comparison Operators
-==(a::Measurement, b::Measurement) = (a.val == b.val && a.err == b.err)
+# Rationale: if "a" and "b" are two different measures they are different, even
+# if they have the same value and uncertainty.  With this position we have:
+#   x = Measurement(5, 1)
+#   y = Measurement(5, 1)
+#   x == x
+#   x != y
+# Instead, if you assign the value of "x" to another variable "z", they're the
+# same measure, so they are really equal:
+#   z = x
+#   z == x
+==(a::Measurement, b::Measurement) = ===(a, b)
 
 isless(a::Measurement, b::Measurement) = isless(a.val, b.val)
 
