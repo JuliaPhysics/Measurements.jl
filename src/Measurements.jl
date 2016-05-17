@@ -5,6 +5,8 @@ module Measurements
 
 # Function(s) to handle new type
 import Base: show
+# Comparison operators
+import Base: ==, isless
 # Mathematical operations to be redefined
 import Base: +, -, *, /, inv, ^, cos, sin, deg2rad, rad2deg, cosd, sind, exp,
              log, hypot, zero
@@ -22,8 +24,13 @@ Measurement(value) = Constant(value)
 
 # Type representation
 function show(io::IO, measure::Measurement)
-    print(measure.value, " ± ", measure.err)
+    print(io, measure.value, " ± ", measure.err)
 end
+
+##### Comparison Operators
+==(a::Measurement, b::Measurement) = (a.value == b.value && a.err == b.err)
+
+isless(a::Measurement, b::Measurement) = isless(a.value, b.value)
 
 ##### Mathematical Operations
 # Addition: +
@@ -63,16 +70,22 @@ function inv(a::Measurement)
     return Measurement(promote(inverse, inverse*inverse*a.err)...)
 end
 
-# Power: ^.  TODO: handle special cases (exponent = -1, etc...)
+# Power: ^
 function ^(a::Measurement, b::Measurement)
-    pow = a.value^b.value
-    return Measurement(promote(pow, hypot(pow*inv(a.value)*b.value*a.err,
-                                          pow*log(a.value)*b.err))...)
+    if b.value == -1
+        return inv(a)
+    else
+        pow = a.value^b.value
+        return Measurement(promote(pow, hypot(pow*inv(a.value)*b.value*a.err,
+                                              pow*log(a.value)*b.err))...)
+    end
 end
 ^{T<:Integer}(a::Measurement, b::T) = ^(a, Constant(b))
 ^{T<:Number}(a::Measurement,  b::T) = ^(a, Constant(b))
 ^{T<:Integer}(a::T, b::Measurement) = ^(Constant(a), b)
 ^{T<:Number}(a::T,  b::Measurement) = ^(Constant(a), b)
+^(a::Irrational, b::Measurement) = Constant(float(a))^b
+^(::Irrational{:e}, b::Measurement) = exp(b)
 
 # deg2rad and rad2deg
 rad2deg(z::Measurement) = z*(180.0/pi)
