@@ -28,7 +28,7 @@ end
 # Constructors
 Constant(value) = Measurement(value, zero(value))
 Measurement(value) = Constant(value)
-± = Measurement
+const ± = Measurement
 
 # Type representation
 function show(io::IO, measure::Measurement)

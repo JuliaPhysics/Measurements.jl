@@ -6,8 +6,9 @@ Introduction
 ------------
 
 This package defines a new data type, `Measurement`, that allows you to enter a
-quantity with its uncertainty and propagate errors when performing mathematical
-operations involving `Measurement` objects.
+quantity with its uncertainty and
+[propagate errors](https://en.wikipedia.org/wiki/Propagation_of_uncertainty)
+when performing mathematical operations involving `Measurement` objects.
 
 Examples
 --------
@@ -34,13 +35,33 @@ sind(Measurement(94, 1.2))
 # => 0.9975640502598242 ± 0.0014609761696991563
 ```
 
+`±` is defined as an alias for the `Measurement` constructor, so you can simply
+define a new quantity with uncertainty with this syntax:
+
+``` julia
+using Measurements
+x = 5.48 ± 0.67
+# => 5.48 ± 0.67
+y = 9.36 ± 1.02
+# => 9.36 ± 1.02
+log(2x^2 - 3.4y)
+# =>  3.3406260917568824 ± 0.5344198747546611
+atan2(y, x)
+# => 1.0411291003154137 ± 0.07141014208254456
+```
+
 TODO
 ----
 
-* Add pretty printing: print only the relevant significant digits
+* Add pretty printing: optionally print only the relevant significant digits
 * Add support for correlation, so that `x-x == zero(x)`, `x*x == x^2`, `tan(x)
   == sin(x)/cos(x)`, etc...
-* Suggestions welcome
+* Extend to generic functions, also those not taking `Measurement` type
+  arguments.  This should be possible with a macro like `@macroname
+  any_function(4.3 ± 0.4)`.  This calculates the value of `any_function(4.3)`
+  and the approximated uncertainty using numerical derivatives or so, and
+  finally construct the `Measurement` object `any_function(4.3) ± uncertainty`
+* Other suggestions welcome `:-)`
 
 License
 -------
