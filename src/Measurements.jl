@@ -9,9 +9,12 @@ import Base: show
 import Base: ==, isless
 # Mathematical operations to be redefined
 import Base: +, -, *, /, inv, ^, cos, sin, deg2rad, rad2deg, cosd, sind, exp,
-             log, hypot, zero
+             log, log10, log1p, hypot, sqrt, zero
 
 export Measurement, Constant
+
+# Useful constants
+const logten = log(10)
 
 # Define the new type
 type Measurement
@@ -118,12 +121,17 @@ function log(a::Measurement, b::Measurement)
     return Measurement(promote(val, hypot(a.err*val*inv(a.value*loga),
                                           b.err*inv(loga*b.value)))...)
 end
-log(a::Measurement) = # Special simple case
+log(a::Measurement) = # Special case
     Measurement(promote(log(a.value), a.err*inv(a.value))...)
+log10(a::Measurement) = # Special case
+    Measurement(promote(log10(a.value), a.err*inv(logten*a.value))...)
+log1p(a::Measurement) = # Special case
+    Measurement(promote(log1p(a.value), a.err*inv(a.value + one(a.value)))...)
 log(::Irrational{:e}, a::Measurement) = log(a)
 log(a, b::Measurement) = log(Constant(a), b)
 log(a::Irrational, b::Measurement) = log(float(a), b)
 log(a::Measurement, b) = log(a, Constant(b))
+
 
 # Hypotenuse: hypot
 function hypot(a::Measurement, b::Measurement)
@@ -133,6 +141,12 @@ function hypot(a::Measurement, b::Measurement)
 end
 hypot(a, b::Measurement) = hypot(Constant(a), b)
 hypot(a::Measurement, b) = hypot(a, Constant(b))
+
+# Square root: sqrt
+function sqrt(a::Measurement)
+    val = sqrt(a.value)
+    return Measurement(promote(val, 0.5*a.err*inv(val))...)
+end
 
 # Zero: zero
 zero(a::Measurement) = Measurement(promote(zero(a.value), zero(a.err))...)

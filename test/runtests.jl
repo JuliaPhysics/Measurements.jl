@@ -59,12 +59,17 @@ let
     test_approx_eq(log(x, y), Measurement(1.261859507142915, 0.059474298734200806))
     test_approx_eq(log(y), Measurement(1.3862943611198906, 0.05))
     test_approx_eq(log(e, y), log(y))
+    test_approx_eq(log(10, x), log10(x))
+    test_approx_eq(log1p(x), log(1 + x))
     test_approx_eq(log(pi, x), Measurement(0.9597131185693899, 0.029118950894341064))
     # Hypotenus
     test_approx_eq(hypot(x, y), Measurement(5, 0.17088007490635065))
     test_approx_eq(hypot(x, y), hypot(y, x))
     test_approx_eq(hypot(x, 4), Measurement(5, 0.06))
     test_approx_eq(hypot(3, y), Measurement(5, 0.16))
+    # Square root
+    test_approx_eq(sqrt(y), Measurement(2, 0.05))
+    test_approx_eq(sqrt(x), x^0.5)
     # Zero
     test_approx_eq(zero(x), Measurement(0, 0))
     # Dummy call to show
