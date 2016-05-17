@@ -111,8 +111,19 @@ function exp(a::Measurement)
 end
 
 # Logarithm: log
-log(a::Measurement) =
+function log(a::Measurement, b::Measurement)
+    val = log(a.value, b.value)
+    loga = log(a.value)
+    logb = val*loga # This should avoid some calculations
+    return Measurement(promote(val, hypot(a.err*val*inv(a.value*loga),
+                                          b.err*inv(loga*b.value)))...)
+end
+log(a::Measurement) = # Special simple case
     Measurement(promote(log(a.value), a.err*inv(a.value))...)
+log(::Irrational{:e}, a::Measurement) = log(a)
+log(a, b::Measurement) = log(Constant(a), b)
+log(a::Irrational, b::Measurement) = log(float(a), b)
+log(a::Measurement, b) = log(a, Constant(b))
 
 # Hypotenuse: hypot
 function hypot(a::Measurement, b::Measurement)

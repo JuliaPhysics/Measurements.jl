@@ -45,6 +45,8 @@ let
     test_approx_eq(2^y, 2.0^y)
     test_approx_eq(pi^x, Measurement(31.006276680299816, 3.5493811564854525))
     test_approx_eq(e^y, exp(y))
+    # rad2deg
+    test_approx_eq(rad2deg(x), Measurement(171.88733853924697, 5.729577951308232))
     # Cosine
     test_approx_eq(cos(x), Measurement(-0.9899924966004454, 0.014112000805986721))
     test_approx_eq(cosd(x), Measurement(0.9986295347545738, 9.134347536190512e-5))
@@ -54,7 +56,10 @@ let
     # Exponential
     test_approx_eq(exp(x), Measurement(20.085536923187668, 2.008553692318767))
     # Logarithm
+    test_approx_eq(log(x, y), Measurement(1.261859507142915, 0.059474298734200806))
     test_approx_eq(log(y), Measurement(1.3862943611198906, 0.05))
+    test_approx_eq(log(e, y), log(y))
+    test_approx_eq(log(pi, x), Measurement(0.9597131185693899, 0.029118950894341064))
     # Hypotenus
     test_approx_eq(hypot(x, y), Measurement(5, 0.17088007490635065))
     test_approx_eq(hypot(x, y), hypot(y, x))
