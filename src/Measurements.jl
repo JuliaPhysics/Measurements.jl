@@ -19,7 +19,7 @@ const logtwo = log(2)
 
 # Define the new type
 type Measurement
-    value
+    val
     err
 end
 # Constructors
@@ -28,60 +28,60 @@ Measurement(value) = Constant(value)
 
 # Type representation
 function show(io::IO, measure::Measurement)
-    print(io, measure.value, " ± ", measure.err)
+    print(io, measure.val, " ± ", measure.err)
 end
 
 ##### Comparison Operators
-==(a::Measurement, b::Measurement) = (a.value == b.value && a.err == b.err)
+==(a::Measurement, b::Measurement) = (a.val == b.val && a.err == b.err)
 
-isless(a::Measurement, b::Measurement) = isless(a.value, b.value)
+isless(a::Measurement, b::Measurement) = isless(a.val, b.val)
 
 ##### Mathematical Operations
 # Addition: +
 +(a::Measurement) = a
 +(a::Measurement, b::Measurement) =
-    Measurement(promote(a.value + b.value, hypot(a.err, b.err))...)
+    Measurement(promote(a.val + b.val, hypot(a.err, b.err))...)
 +(a, b::Measurement) = +(Constant(a), b)
 +(a::Measurement, b) = +(a, Constant(b))
 
 # Subtraction: -
--(a::Measurement) = Measurement(-a.value, a.err)
+-(a::Measurement) = Measurement(-a.val, a.err)
 -(a::Measurement, b::Measurement) = a + (-b)
 -(a, b::Measurement) = -(Constant(a), b)
 -(a::Measurement, b) = -(a, Constant(b))
 
 # Multiplication: *
 function *(a::Measurement, b::Measurement)
-    prod = a.value*b.value
-    return Measurement(promote(prod, abs(prod)*hypot(a.err*inv(a.value),
-                                                     b.err*inv(b.value)))...)
+    prod = a.val*b.val
+    return Measurement(promote(prod, abs(prod)*hypot(a.err*inv(a.val),
+                                                     b.err*inv(b.val)))...)
 end
 *(a, b::Measurement) = *(Constant(a), b)
 *(a::Measurement, b) = *(a, Constant(b))
 
 # Division: /
 function /(a::Measurement, b::Measurement)
-    div = a.value*inv(b.value)
-    return Measurement(promote(div, abs(div)*(hypot(a.err*inv(a.value),
-                                                    b.err*inv(b.value))))...)
+    div = a.val*inv(b.val)
+    return Measurement(promote(div, abs(div)*(hypot(a.err*inv(a.val),
+                                                    b.err*inv(b.val))))...)
 end
 /(a, b::Measurement) = /(Constant(a), b)
 /(a::Measurement, b) = /(a, Constant(b))
 
 # Inverse: inv
 function inv(a::Measurement)
-    inverse = inv(a.value)
+    inverse = inv(a.val)
     return Measurement(promote(inverse, inverse*inverse*a.err)...)
 end
 
 # Power: ^
 function ^(a::Measurement, b::Measurement)
-    if b.value == -1
+    if b.val == -1
         return inv(a)
     else
-        pow = a.value^b.value
-        return Measurement(promote(pow, hypot(pow*inv(a.value)*b.value*a.err,
-                                              pow*log(a.value)*b.err))...)
+        pow = a.val^b.val
+        return Measurement(promote(pow, hypot(pow*inv(a.val)*b.val*a.err,
+                                              pow*log(a.val)*b.err))...)
     end
 end
 ^{T<:Integer}(a::Measurement, b::T) = ^(a, Constant(b))
@@ -92,7 +92,7 @@ end
 ^(::Irrational{:e}, b::Measurement) = exp(b)
 
 function exp2(a::Measurement)
-    pow = exp2(a.value)
+    pow = exp2(a.val)
     return Measurement(promote(pow, abs(pow*logtwo*a.err))...)
 end
 
@@ -102,40 +102,40 @@ deg2rad(z::Measurement) = z*(pi/180.0)
 
 # Cosine: cos
 function cos(a::Measurement)
-    return Measurement(promote(cos(a.value), abs(sin(a.value)*a.err))...)
+    return Measurement(promote(cos(a.val), abs(sin(a.val)*a.err))...)
 end
 cosd(a::Measurement) = cos(deg2rad(a))
 
 # Sine: sin
 function sin(a::Measurement)
-    return Measurement(promote(sin(a.value),
-                               abs(cos(a.value)*a.err))...)
+    return Measurement(promote(sin(a.val),
+                               abs(cos(a.val)*a.err))...)
 end
 sind(a::Measurement) = sin(deg2rad(a))
 
 # Exponentials: exp, expm1
 function exp(a::Measurement)
-    val = exp(a.value)
+    val = exp(a.val)
     return Measurement(promote(val, abs(val*a.err))...)
 end
 
 expm1(a::Measurement) =
-    Measurement(promote(expm1(a.value), abs(exp(a.value)*a.err))...)
+    Measurement(promote(expm1(a.val), abs(exp(a.val)*a.err))...)
 
 # Logarithm: log
 function log(a::Measurement, b::Measurement)
-    val = log(a.value, b.value)
-    loga = log(a.value)
+    val = log(a.val, b.val)
+    loga = log(a.val)
     logb = val*loga # This should avoid some calculations
-    return Measurement(promote(val, hypot(a.err*val*inv(a.value*loga),
-                                          b.err*inv(loga*b.value)))...)
+    return Measurement(promote(val, hypot(a.err*val*inv(a.val*loga),
+                                          b.err*inv(loga*b.val)))...)
 end
 log(a::Measurement) = # Special case
-    Measurement(promote(log(a.value), a.err*inv(a.value))...)
+    Measurement(promote(log(a.val), a.err*inv(a.val))...)
 log10(a::Measurement) = # Special case
-    Measurement(promote(log10(a.value), a.err*inv(logten*a.value))...)
+    Measurement(promote(log10(a.val), a.err*inv(logten*a.val))...)
 log1p(a::Measurement) = # Special case
-    Measurement(promote(log1p(a.value), a.err*inv(a.value + one(a.value)))...)
+    Measurement(promote(log1p(a.val), a.err*inv(a.val + one(a.val)))...)
 log(::Irrational{:e}, a::Measurement) = log(a)
 log(a, b::Measurement) = log(Constant(a), b)
 log(a::Irrational, b::Measurement) = log(float(a), b)
@@ -143,26 +143,26 @@ log(a::Measurement, b) = log(a, Constant(b))
 
 # Hypotenuse: hypot
 function hypot(a::Measurement, b::Measurement)
-    val = hypot(a.value, b.value)
-    return Measurement(promote(val, abs(hypot(a.value*a.err,
-                                              b.value*b.err)*inv(val)))...)
+    val = hypot(a.val, b.val)
+    return Measurement(promote(val, abs(hypot(a.val*a.err,
+                                              b.val*b.err)*inv(val)))...)
 end
 hypot(a, b::Measurement) = hypot(Constant(a), b)
 hypot(a::Measurement, b) = hypot(a, Constant(b))
 
 # Square root: sqrt
 function sqrt(a::Measurement)
-    val = sqrt(a.value)
+    val = sqrt(a.val)
     return Measurement(promote(val, 0.5*a.err*inv(val))...)
 end
 
 # Cube root: cbrt
 function cbrt(a::Measurement)
-    val = cbrt(a.value)
-    return Measurement(promote(val, a.err*val*inv(3.0*a.value))...)
+    val = cbrt(a.val)
+    return Measurement(promote(val, a.err*val*inv(3.0*a.val))...)
 end
 
 # Zero: zero
-zero(a::Measurement) = Measurement(promote(zero(a.value), zero(a.err))...)
+zero(a::Measurement) = Measurement(promote(zero(a.val), zero(a.err))...)
 
 end # module

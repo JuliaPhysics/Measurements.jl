@@ -2,7 +2,7 @@ using Measurements
 using Base.Test
 
 test_approx_eq(a::Measurement, b::Measurement) =
-    (@test_approx_eq(a.value, b.value) ; @test_approx_eq(a.err, b.err))
+    (@test_approx_eq(a.val, b.val) ; @test_approx_eq(a.err, b.err))
 
 let
     local x, y
