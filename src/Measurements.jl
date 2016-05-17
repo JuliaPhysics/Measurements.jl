@@ -9,7 +9,10 @@ import Base: show
 import Base: ==, isless
 # Mathematical operations to be redefined
 import Base: +, -, *, /, inv, ^, exp2, cos, sin, deg2rad, rad2deg, cosd, sind,
-             exp, expm1, log, log10, log1p, hypot, sqrt, cbrt, zero
+             cosh, sinh, tan, tand, tanh, acos, acosd, acosh, asin, asind,
+             asinh, atan, atan2, atand, atanh, csc, cscd, csch, sec, secd, sech,
+             cot, cotd, coth, exp, expm1, log, log10, log1p, hypot, sqrt, cbrt,
+             abs, sign, zero, one
 
 export Measurement, Constant
 
@@ -110,18 +113,88 @@ end
 rad2deg(z::Measurement) = z*(180.0/pi)
 deg2rad(z::Measurement) = z*(pi/180.0)
 
-# Cosine: cos
-function cos(a::Measurement)
-    return Measurement(promote(cos(a.val), abs(sin(a.val)*a.err))...)
-end
+# Cosine: cos cosd cosh
+cos(a::Measurement) =
+    Measurement(promote(cos(a.val), abs(sin(a.val)*a.err))...)
 cosd(a::Measurement) = cos(deg2rad(a))
+cosh(a::Measurement) =
+    Measurement(promote(cosh(a.val), abs(sinh(a.val)*a.err))...)
 
-# Sine: sin
-function sin(a::Measurement)
-    return Measurement(promote(sin(a.val),
-                               abs(cos(a.val)*a.err))...)
-end
+# Sine: sin sind sinh
+sin(a::Measurement) =
+    Measurement(promote(sin(a.val), abs(cos(a.val)*a.err))...)
 sind(a::Measurement) = sin(deg2rad(a))
+sinh(a::Measurement) =
+    Measurement(promote(sinh(a.val), abs(cosh(a.val)*a.err))...)
+
+# Tangent: tan tand tanh
+function tan(a::Measurement)
+    seca = sec(a.val)
+    return Measurement(promote(tan(a.val), abs(seca*seca*a.err))...)
+end
+tand(a::Measurement) = tan(deg2rad(a))
+function tanh(a::Measurement)
+    secha = sech(a.val)
+    return Measurement(promote(tanh(a.val), abs(secha*secha*a.err))...)
+end
+
+# Inverse trig functions: acos acosd acosh asin asind asinh atan atan2 atand atanh
+acos(a::Measurement) =
+    Measurement(promote(acos(a.val), abs(a.err*inv(sqrt(1.0 - a.val*a.val))))...)
+acosd(a::Measurement) = rad2deg(acos(a))
+acosh(a::Measurement) =
+    Measurement(promote(acosh(a.val), abs(a.err*inv(sqrt(a.val*a.val - 1.0))))...)
+
+asin(a::Measurement) =
+    Measurement(promote(asin(a.val), abs(a.err*inv(sqrt(1.0 - a.val*a.val))))...)
+asind(a::Measurement) = rad2deg(asin(a))
+asinh(a::Measurement) =
+    Measurement(promote(asinh(a.val), abs(a.err*inv(hypot(a.val, 1.0))))...)
+
+atan(a::Measurement) =
+    Measurement(promote(atan(a.val), abs(a.err*inv(a.val*a.val + 1.0)))...)
+atand(a::Measurement) = rad2deg(atan(a))
+atanh(a::Measurement) =
+    Measurement(promote(atanh(a.val), abs(a.err*inv(1.0 - a.val*a.val)))...)
+function atan2(a::Measurement, b::Measurement)
+    invdenom = inv(a.val*a.val + b.val*b.val)
+    return Measurement(promote(atan2(a.val, b.val),
+                               hypot(a.err*b.val*invdenom,
+                                     b.err*a.val*invdenom))...)
+end
+atan2(a::Measurement, b) = atan2(a, Constant(b))
+atan2(a, b::Measurement) = atan2(Constant(a), b)
+
+# Reciprocal trig functions: csc cscd csch sec secd sec cot cotd coth
+function csc(a::Measurement)
+    val = csc(a.val)
+    return Measurement(promote(val, abs(a.err*val*cot(a.val)))...)
+end
+cscd(a::Measurement) = rad2deg(csc(a))
+function csch(a::Measurement)
+    val = csch(a.val)
+    return Measurement(promote(val, abs(a.err*val*coth(a.val)))...)
+end
+
+function sec(a::Measurement)
+    val = sec(a.val)
+    return Measurement(promote(val, abs(a.err*val*tan(a.val)))...)
+end
+secd(a::Measurement) = rad2deg(sec(a))
+function sech(a::Measurement)
+    val = sech(a.val)
+    return Measurement(promote(val, abs(a.err*val*tanh(a.val)))...)
+end
+
+function cot(a::Measurement)
+    csca = csc(a.val)
+    return Measurement(promote(cot(a.val), abs(a.err*csca*csca))...)
+end
+cotd(a::Measurement) = rad2deg(cot(a))
+function coth(a::Measurement)
+    cscha = csch(a.val)
+    return Measurement(promote(coth(a.val), abs(a.err*cscha*cscha))...)
+end
 
 # Exponentials: exp, expm1
 function exp(a::Measurement)
@@ -172,7 +245,16 @@ function cbrt(a::Measurement)
     return Measurement(promote(val, a.err*val*inv(3.0*a.val))...)
 end
 
+# Absolute value: abs
+abs(a::Measurement) = Measurement(promote(abs(a.val), a.err)...)
+
+# Sign: sign
+sign(a::Measurement) = Constant(sign(a.val))
+
 # Zero: zero
-zero(a::Measurement) = Measurement(promote(zero(a.val), zero(a.err))...)
+zero(a::Measurement) = Constant(zero(a.val))
+
+# One: one
+one(a::Measurement) = Constant(one(a.val))
 
 end # module

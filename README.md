@@ -34,6 +34,14 @@ sind(Measurement(94, 1.2))
 # => 0.9975640502598242 ± 0.0014609761696991563
 ```
 
+TODO
+----
+
+* Add pretty printing: print only the relevant significant digits
+* Add support for correlation, so that `x-x == zero(x)`, `x*x == x^2`, `tan(x)
+  == sin(x)/cos(x)`, etc...
+* Suggestions welcome
+
 License
 -------
 
