@@ -45,6 +45,7 @@ let
     test_approx_eq(2^y, 2.0^y)
     test_approx_eq(pi^x, Measurement(31.006276680299816, 3.5493811564854525))
     test_approx_eq(e^y, exp(y))
+    test_approx_eq(2^x, exp2(x))
     # rad2deg
     test_approx_eq(rad2deg(x), Measurement(171.88733853924697, 5.729577951308232))
     # Cosine
@@ -53,11 +54,13 @@ let
     # Sine
     test_approx_eq(sin(y), Measurement(-0.7568024953079282, 0.13072872417272238))
     test_approx_eq(sind(y), Measurement(0.0697564737441253, 0.0034821554353128255))
-    # Exponential
+    # Exponentials
     test_approx_eq(exp(x), Measurement(20.085536923187668, 2.008553692318767))
+    test_approx_eq(expm1(y), exp(y) - 1)
     # Logarithm
     test_approx_eq(log(x, y), Measurement(1.261859507142915, 0.059474298734200806))
     test_approx_eq(log(y), Measurement(1.3862943611198906, 0.05))
+    test_approx_eq(log(y, 4), Measurement(1, 0.03606737602222409))
     test_approx_eq(log(e, y), log(y))
     test_approx_eq(log(10, x), log10(x))
     test_approx_eq(log1p(x), log(1 + x))
@@ -70,8 +73,11 @@ let
     # Square root
     test_approx_eq(sqrt(y), Measurement(2, 0.05))
     test_approx_eq(sqrt(x), x^0.5)
+    # Cube root
+    test_approx_eq(cbrt(x), Measurement(1.4422495703074083, 0.01602499522563787))
+    test_approx_eq(cbrt(y), y^(1/3))
     # Zero
-    test_approx_eq(zero(x), Measurement(0, 0))
+    test_approx_eq(zero(x), Measurement(0))
     # Dummy call to show
     show(DevNull, x)
 end

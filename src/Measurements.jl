@@ -8,13 +8,14 @@ import Base: show
 # Comparison operators
 import Base: ==, isless
 # Mathematical operations to be redefined
-import Base: +, -, *, /, inv, ^, cos, sin, deg2rad, rad2deg, cosd, sind, exp,
-             log, log10, log1p, hypot, sqrt, zero
+import Base: +, -, *, /, inv, ^, exp2, cos, sin, deg2rad, rad2deg, cosd, sind,
+             exp, expm1, log, log10, log1p, hypot, sqrt, cbrt, zero
 
 export Measurement, Constant
 
 # Useful constants
 const logten = log(10)
+const logtwo = log(2)
 
 # Define the new type
 type Measurement
@@ -90,6 +91,11 @@ end
 ^(a::Irrational, b::Measurement) = Constant(float(a))^b
 ^(::Irrational{:e}, b::Measurement) = exp(b)
 
+function exp2(a::Measurement)
+    pow = exp2(a.value)
+    return Measurement(promote(pow, abs(pow*logtwo*a.err))...)
+end
+
 # deg2rad and rad2deg
 rad2deg(z::Measurement) = z*(180.0/pi)
 deg2rad(z::Measurement) = z*(pi/180.0)
@@ -107,11 +113,14 @@ function sin(a::Measurement)
 end
 sind(a::Measurement) = sin(deg2rad(a))
 
-# Exponential: exp
+# Exponentials: exp, expm1
 function exp(a::Measurement)
     val = exp(a.value)
     return Measurement(promote(val, abs(val*a.err))...)
 end
+
+expm1(a::Measurement) =
+    Measurement(promote(expm1(a.value), abs(exp(a.value)*a.err))...)
 
 # Logarithm: log
 function log(a::Measurement, b::Measurement)
@@ -132,7 +141,6 @@ log(a, b::Measurement) = log(Constant(a), b)
 log(a::Irrational, b::Measurement) = log(float(a), b)
 log(a::Measurement, b) = log(a, Constant(b))
 
-
 # Hypotenuse: hypot
 function hypot(a::Measurement, b::Measurement)
     val = hypot(a.value, b.value)
@@ -146,6 +154,12 @@ hypot(a::Measurement, b) = hypot(a, Constant(b))
 function sqrt(a::Measurement)
     val = sqrt(a.value)
     return Measurement(promote(val, 0.5*a.err*inv(val))...)
+end
+
+# Cube root: cbrt
+function cbrt(a::Measurement)
+    val = cbrt(a.value)
+    return Measurement(promote(val, a.err*val*inv(3.0*a.value))...)
 end
 
 # Zero: zero

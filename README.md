@@ -1,6 +1,6 @@
 # Measurements
 
-[![Build Status](https://travis-ci.org/giordano/Measurements.jl.svg?branch=master)](https://travis-ci.org/giordano/Measurements.jl)
+[![Build Status](https://travis-ci.org/giordano/Measurements.jl.svg?branch=master)](https://travis-ci.org/giordano/Measurements.jl) [![Appveyor Build Status on Windows](https://ci.appveyor.com/api/projects/status/u8mg5dlhyb1vjcpe?svg=true)](https://ci.appveyor.com/project/giordano/measurements-jl) [![Coverage Status](https://coveralls.io/repos/github/giordano/Measurements.jl/badge.svg?branch=master)](https://coveralls.io/github/giordano/Measurements.jl?branch=master) [![codecov.io](https://codecov.io/github/giordano/Measurements.jl/coverage.svg?branch=master)](https://codecov.io/github/giordano/Measurements.jl?branch=master)
 
 Introduction
 ------------
@@ -33,3 +33,9 @@ a*c
 sind(Measurement(94, 1.2))
 # => 0.9975640502598242 ± 0.0014609761696991563
 ```
+
+License
+-------
+
+The `Measurements.jl` package is licensed under the MIT "Expat" License.  The
+original author is Mosè Giordano.
