@@ -14,7 +14,7 @@ import Base: +, -, *, /, inv, ^, exp2, cos, sin, deg2rad, rad2deg, cosd, sind,
              cot, cotd, coth, exp, expm1, log, log10, log1p, hypot, sqrt, cbrt,
              abs, sign, zero, one
 
-export Measurement, Constant
+export Measurement, Constant, ±
 
 # Useful constants
 const logten = log(10)
@@ -28,6 +28,7 @@ end
 # Constructors
 Constant(value) = Measurement(value, zero(value))
 Measurement(value) = Constant(value)
+± = Measurement
 
 # Type representation
 function show(io::IO, measure::Measurement)

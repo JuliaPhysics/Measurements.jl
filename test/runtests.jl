@@ -6,11 +6,11 @@ test_approx_eq(a::Measurement, b::Measurement) =
 
 let
     local w, x, y, z
-    x = z = Measurement(3, 0.1)
-    y = Measurement(4, 0.2)
-    w = Measurement(-0.5, 0.03)
+    x = z = 3 ± 0.1
+    y = 4 ± 0.2
+    w = -0.5 ± 0.03
     ##### Comparisons
-    @test Measurement(3, 0.1) != z == x != y != Measurement(4, 0.2)
+    @test 3 ± 0.1 != z == x != y != 4 ± 0.2
     @test x == x
     @test w < x < y
     ##### Mathematical Operations
