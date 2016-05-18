@@ -14,6 +14,8 @@ let
     @test z == x != y
     @test x == x
     @test w < x < y
+    @test 3 == x
+    @test y == 4 != w
     ##### Mathematical Operations
     # Addition
     test_approx_eq(+x, x)
@@ -147,6 +149,8 @@ let
     test_approx_eq(gamma(y), factorial(y - 1))
     test_approx_eq(gamma(w + 1), factorial(w))
     test_approx_eq(lgamma(x), log(gamma(x)))
+    # Sum
+    test_approx_eq(sum((w, x, y)), w+x+y)
     # Dummy call to show
     show(DevNull, x)
 end
