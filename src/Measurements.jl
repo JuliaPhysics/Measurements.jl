@@ -21,7 +21,7 @@ const logten = log(10)
 const logtwo = log(2)
 
 # Define the new type
-type Measurement
+immutable Measurement
     val
     err
 end
@@ -36,18 +36,18 @@ function show(io::IO, measure::Measurement)
 end
 
 ##### Comparison Operators
-# Rationale: if "a" and "b" are two different measures they are different, even
-# if they have the same value and uncertainty.  With this position we have:
-#   x = Measurement(5, 1)
-#   y = Measurement(5, 1)
-#   x == x
-#   x != y
-# Instead, if you assign the value of "x" to another variable "z", they're the
-# same measure, so they are really equal:
-#   z = x
-#   z == x
-==(a::Measurement, b::Measurement) = ===(a, b)
+# Two measurements are equal if they have same value and same uncertainty.  XXX:
+# Make two measurements equal if they are exaclty the same thing?  This can be
+# done, for example, by adding another field with a random (or randn'om) value.
+==(a::Measurement, b::Measurement) = (a.val==b.val && a.err==b.err)
 
+# Comparison with Numbers: they are equal if the value of Measurement is equal
+# to the number.  If you want to treat the Number like a measurement convert it
+# with `Constant'.
+==(a::Measurement, b::Number) = a.val==b
+==(a::Number, b::Measurement) = a==b.val
+
+# Order relation is based on the value of measurements, uncertainties are ignored
 isless(a::Measurement, b::Measurement) = isless(a.val, b.val)
 
 ##### Mathematical Operations
@@ -90,7 +90,7 @@ end
 
 # Power: ^
 function ^(a::Measurement, b::Measurement)
-    if b.val == -1
+    if b == -1
         return inv(a)
     else
         pow = a.val^b.val
