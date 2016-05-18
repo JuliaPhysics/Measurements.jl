@@ -139,6 +139,14 @@ let
     test_approx_eq(sign(Measurement(0, 5)), Measurement(0))
     # One
     test_approx_eq(one(y), Measurement(1))
+    # Error function
+    test_approx_eq(erf(x), Measurement(0.9999779095030014, 1.3925305194674787e-5))
+    test_approx_eq(erfc(w), 1 - erf(w))
+    # Factorial and gamma
+    test_approx_eq(factorial(x), Measurement(6, 0.7536706010590813))
+    test_approx_eq(gamma(y), factorial(y - 1))
+    test_approx_eq(gamma(w + 1), factorial(w))
+    test_approx_eq(lgamma(x), log(gamma(x)))
     # Dummy call to show
     show(DevNull, x)
 end

@@ -12,13 +12,14 @@ import Base: +, -, *, /, inv, ^, exp2, cos, sin, deg2rad, rad2deg, cosd, sind,
              cosh, sinh, tan, tand, tanh, acos, acosd, acosh, asin, asind,
              asinh, atan, atan2, atand, atanh, csc, cscd, csch, sec, secd, sech,
              cot, cotd, coth, exp, expm1, log, log10, log1p, hypot, sqrt, cbrt,
-             abs, sign, zero, one
+             abs, sign, zero, one, erf, erfc, factorial, gamma, lgamma
 
 export Measurement, Constant, ±
 
 # Useful constants
 const logten = log(10)
 const logtwo = log(2)
+const twooversqrtpi = 2/sqrt(pi)
 
 # Define the new type
 immutable Measurement
@@ -257,5 +258,36 @@ zero(a::Measurement) = Constant(zero(a.val))
 
 # One: one
 one(a::Measurement) = Constant(one(a.val))
+
+# Error function: erf erfc
+function erf(a::Measurement)
+    aval = a.val
+    return Measurement(promote(erf(aval),
+                               twooversqrtpi*exp(-aval*aval)*a.err)...)
+end
+function erfc(a::Measurement)
+    aval = a.val
+    return Measurement(promote(erfc(aval),
+                               twooversqrtpi*exp(-aval*aval)*a.err)...)
+end
+
+# Factorial and gamma: factorial gamma lgamma
+function factorial(a::Measurement)
+    aval = a.val
+    fact = factorial(aval)
+    return Measurement(promote(fact,
+                               abs(fact*a.err*polygamma(0, aval + one(aval))))...)
+end
+function gamma(a::Measurement)
+    aval = a.val
+    Γ = gamma(aval)
+    return Measurement(promote(Γ,
+                               abs(Γ*a.err*polygamma(0, aval)))...)
+end
+function lgamma(a::Measurement)
+    aval = a.val
+    return Measurement(promote(lgamma(aval),
+                               abs(a.err*polygamma(0, aval)))...)
+end
 
 end # module
