@@ -12,7 +12,7 @@ import Base: +, -, *, /, inv, ^, exp2, cos, sin, deg2rad, rad2deg, cosd, sind,
              cosh, sinh, tan, tand, tanh, acos, acosd, acosh, asin, asind,
              asinh, atan, atan2, atand, atanh, csc, cscd, csch, sec, secd, sech,
              cot, cotd, coth, exp, expm1, log, log10, log1p, hypot, sqrt, cbrt,
-             abs, sign, zero, one, erf, erfc, factorial, gamma, lgamma, sum
+             abs, sign, zero, one, erf, erfc, factorial, gamma, lgamma
 
 export Measurement, Constant, ±
 
@@ -50,12 +50,6 @@ end
 
 # Order relation is based on the value of measurements, uncertainties are ignored
 isless(a::Measurement, b::Measurement) = isless(a.val, b.val)
-
-##### Helper Functions
-# Get the "val" fields from a list of iterables
-getval(itr) = ntuple(i->itr[i].val, length(itr))
-# Get the "err" fields from a list of iterables
-geterr(itr) = ntuple(i->itr[i].err, length(itr))
 
 ##### Mathematical Operations
 # Addition: +
@@ -295,9 +289,5 @@ function lgamma(a::Measurement)
     return Measurement(promote(lgamma(aval),
                                abs(a.err*polygamma(0, aval)))...)
 end
-
-# Sum: sum
-sum(a::Measurement...) =
-    Measurement(promote(sum(getval(a)), vecnorm(geterr(a)))...)
 
 end # module
