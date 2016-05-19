@@ -10,6 +10,15 @@ let
     x = 3 ± 0.1
     y = 4 ± 0.2
     z = complex(3.0) ± 0.1
+    # Conversion and Promotion
+    @test convert(Measurement{Float64}, 3) === 3.0 ± 0.0
+    @test convert(Measurement{Float64}, 3 ± 1) === 3.0 ± 1.0
+    @test convert(Measurement, x) === x
+    @test convert(Measurement, 3) === 3 ± 0
+    @test promote(x, complex(7)) === (complex(3.0) ± complex(0.1),
+                                      Constant(complex(7.0)))
+    @test promote(1im ± 0, 2.1 ± 0.2) === (1.0im ± complex(0),
+                                           complex(2.1) ± complex(0.2))
     ##### Comparisons
     @test z == x != y
     @test x == x

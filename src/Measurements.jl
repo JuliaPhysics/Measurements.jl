@@ -3,8 +3,8 @@
 
 module Measurements
 
-# Function(s) to handle new type
-import Base: show
+# Functions to handle new type
+import Base: show, convert, promote_rule
 # Comparison operators
 import Base: ==, isless
 # Mathematical operations to be redefined
@@ -28,9 +28,24 @@ immutable Measurement{T<:Number} <: Number
 end
 # Constructors
 Measurement(val::Number, err::Number) = Measurement(promote(val, err)...)
-Constant(value) = Measurement(value, zero(value))
-Measurement(value) = Constant(value)
+Constant(value::Number) = Measurement(value, zero(value))
+Measurement(value::Number) = Constant(value)
 const ± = Measurement
+
+# Conversion and Promotion
+convert{T<:Number}(::Type{Measurement{T}}, a::Number) =
+    Measurement{T}(a, zero(a))
+convert{T<:Number}(::Type{Measurement{T}}, a::Measurement) =
+    Measurement{T}(a.val, a.err)
+convert(::Type{Measurement}, a::Measurement) = a
+convert(::Type{Measurement}, a::Number) = Constant(a)
+
+
+promote_rule{T<:Number, S<:Number}(::Type{Measurement{T}}, ::Type{S}) =
+    Measurement{promote_type(T, S)}
+promote_rule{T<:Number, S<:Number}(::Type{Measurement{T}},
+                                   ::Type{Measurement{S}}) =
+                                       Measurement{promote_type(T, S)}
 
 # Type representation
 function show(io::IO, measure::Measurement)
