@@ -10,6 +10,47 @@ quantity with its uncertainty and
 [propagate errors](https://en.wikipedia.org/wiki/Propagation_of_uncertainty)
 when performing mathematical operations involving `Measurement` objects.
 
+For those interested in the technical details of the package, `Measurement` is a
+[composite](http://docs.julialang.org/en/stable/manual/types/#composite-types)
+[parametric](http://docs.julialang.org/en/stable/manual/types/#man-parametric-types)
+type, whose definition is:
+
+``` julia
+immutable Measurement{T<:Number}
+    val::T # The value
+    err::T # The uncertainty, assumed to be standard deviation
+end
+```
+
+Users that want to hack into `Measurements.jl` should use objects with type that
+is a subtype of `Number`.
+
+Installation
+------------
+
+`Measurements.jl` is available for Julia 0.4 and later versions, and can be
+installed with
+[Julia built-in package manager](http://docs.julialang.org/en/stable/manual/packages/).
+In a Julia session run the command
+
+```julia
+julia> Pkg.add("Measurements")
+```
+
+You may need to update your package list with `Pkg.update()` in order to get the
+latest version of `Measurements.jl`.
+
+Usage
+-----
+
+After installing the package, you can start using it with
+
+```julia
+using Measurements
+```
+
+Many mathematical operations are redefined to accept `Measurement` type.
+
 Examples
 --------
 
@@ -49,6 +90,14 @@ log(2x^2 - 3.4y)
 atan2(y, x)
 # => 1.0411291003154137 ± 0.07141014208254456
 ```
+
+How Can I Help?
+---------------
+
+Have a look at the TODO list below, feel free to implement those features and
+send a pull request.  In addition, you can instruct more mathematical functions
+to accept `Measurement` type arguments.  Bug reports and wishlists are welcome
+as well.
 
 TODO
 ----

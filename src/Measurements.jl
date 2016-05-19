@@ -22,11 +22,12 @@ const logtwo = log(2)
 const twooversqrtpi = 2/sqrt(pi)
 
 # Define the new type
-immutable Measurement
-    val
-    err
+immutable Measurement{T<:Number}
+    val::T # The value
+    err::T # The uncertainty, assumed to be standard deviation
 end
 # Constructors
+Measurement(val::Number, err::Number) = Measurement(promote(val, err)...)
 Constant(value) = Measurement(value, zero(value))
 Measurement(value) = Constant(value)
 const ± = Measurement
