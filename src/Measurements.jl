@@ -73,6 +73,7 @@ function *(a::Measurement, b::Measurement)
                                                      b.err*inv(b.val)))...)
 end
 *(a::Bool, b::Measurement) = *(Constant(a), b)
+*(a::Measurement, b::Bool) = *(a, Constant(b))
 *(a::Number, b::Measurement) = *(Constant(a), b)
 *(a::Measurement, b::Number) = *(a, Constant(b))
 
