@@ -12,7 +12,7 @@ import Base: +, -, *, /, inv, ^, exp2, cos, sin, deg2rad, rad2deg, cosd, sind,
              cosh, sinh, tan, tand, tanh, acos, acosd, acosh, asin, asind,
              asinh, atan, atan2, atand, atanh, csc, cscd, csch, sec, secd, sech,
              cot, cotd, coth, exp, expm1, log, log10, log1p, hypot, sqrt, cbrt,
-             abs, sign, zero, one, erf, erfc, factorial, gamma, lgamma
+             abs, sign, zero, one, erf, erfc, factorial, gamma, lgamma, signbit
 
 export Measurement, Constant, ±
 
@@ -22,7 +22,7 @@ const logtwo = log(2)
 const twooversqrtpi = 2/sqrt(pi)
 
 # Define the new type
-immutable Measurement{T<:Number}
+immutable Measurement{T<:Number} <: Number
     val::T # The value
     err::T # The uncertainty, assumed to be standard deviation
 end
@@ -57,14 +57,14 @@ isless(a::Measurement, b::Measurement) = isless(a.val, b.val)
 +(a::Measurement) = a
 +(a::Measurement, b::Measurement) =
     Measurement(promote(a.val + b.val, hypot(a.err, b.err))...)
-+(a, b::Measurement) = +(Constant(a), b)
-+(a::Measurement, b) = +(a, Constant(b))
++(a::Number, b::Measurement) = +(Constant(a), b)
++(a::Measurement, b::Number) = +(a, Constant(b))
 
 # Subtraction: -
 -(a::Measurement) = Measurement(-a.val, a.err)
 -(a::Measurement, b::Measurement) = a + (-b)
--(a, b::Measurement) = -(Constant(a), b)
--(a::Measurement, b) = -(a, Constant(b))
+-(a::Number, b::Measurement) = -(Constant(a), b)
+-(a::Measurement, b::Number) = -(a, Constant(b))
 
 # Multiplication: *
 function *(a::Measurement, b::Measurement)
@@ -72,8 +72,9 @@ function *(a::Measurement, b::Measurement)
     return Measurement(promote(prod, abs(prod)*hypot(a.err*inv(a.val),
                                                      b.err*inv(b.val)))...)
 end
-*(a, b::Measurement) = *(Constant(a), b)
-*(a::Measurement, b) = *(a, Constant(b))
+*(a::Bool, b::Measurement) = *(Constant(a), b)
+*(a::Number, b::Measurement) = *(Constant(a), b)
+*(a::Measurement, b::Number) = *(a, Constant(b))
 
 # Division: /
 function /(a::Measurement, b::Measurement)
@@ -81,14 +82,17 @@ function /(a::Measurement, b::Measurement)
     return Measurement(promote(div, abs(div)*(hypot(a.err*inv(a.val),
                                                     b.err*inv(b.val))))...)
 end
-/(a, b::Measurement) = /(Constant(a), b)
-/(a::Measurement, b) = /(a, Constant(b))
+/(a::Number, b::Measurement) = /(Constant(a), b)
+/(a::Measurement, b::Number) = /(a, Constant(b))
 
 # Inverse: inv
 function inv(a::Measurement)
     inverse = inv(a.val)
     return Measurement(promote(inverse, inverse*inverse*a.err)...)
 end
+
+# signbit
+signbit(a::Measurement) = signbit(a.val)
 
 # Power: ^
 function ^(a::Measurement, b::Measurement)
@@ -101,11 +105,12 @@ function ^(a::Measurement, b::Measurement)
     end
 end
 ^{T<:Integer}(a::Measurement, b::T) = ^(a, Constant(b))
+^{T<:Rational}(a::Measurement, b::T) = ^(a, Constant(b))
 ^{T<:Number}(a::Measurement,  b::T) = ^(a, Constant(b))
 ^{T<:Integer}(a::T, b::Measurement) = ^(Constant(a), b)
-^{T<:Number}(a::T,  b::Measurement) = ^(Constant(a), b)
-^(a::Irrational, b::Measurement) = Constant(float(a))^b
 ^(::Irrational{:e}, b::Measurement) = exp(b)
+^(a::Irrational, b::Measurement) = Constant(float(a))^b
+^{T<:Number}(a::T,  b::Measurement) = ^(Constant(a), b)
 
 function exp2(a::Measurement)
     pow = exp2(a.val)
@@ -165,8 +170,8 @@ function atan2(a::Measurement, b::Measurement)
                                hypot(a.err*b.val*invdenom,
                                      b.err*a.val*invdenom))...)
 end
-atan2(a::Measurement, b) = atan2(a, Constant(b))
-atan2(a, b::Measurement) = atan2(Constant(a), b)
+atan2(a::Measurement, b::Number) = atan2(a, Constant(b))
+atan2(a::Number, b::Measurement) = atan2(Constant(a), b)
 
 # Reciprocal trig functions: csc cscd csch sec secd sec cot cotd coth
 function csc(a::Measurement)
@@ -223,9 +228,9 @@ log10(a::Measurement) = # Special case
 log1p(a::Measurement) = # Special case
     Measurement(promote(log1p(a.val), a.err*inv(a.val + one(a.val)))...)
 log(::Irrational{:e}, a::Measurement) = log(a)
-log(a, b::Measurement) = log(Constant(a), b)
+log(a::Number, b::Measurement) = log(Constant(a), b)
 log(a::Irrational, b::Measurement) = log(float(a), b)
-log(a::Measurement, b) = log(a, Constant(b))
+log(a::Measurement, b::Number) = log(a, Constant(b))
 
 # Hypotenuse: hypot
 function hypot(a::Measurement, b::Measurement)
@@ -233,8 +238,8 @@ function hypot(a::Measurement, b::Measurement)
     return Measurement(promote(val, abs(hypot(a.val*a.err,
                                               b.val*b.err)*inv(val)))...)
 end
-hypot(a, b::Measurement) = hypot(Constant(a), b)
-hypot(a::Measurement, b) = hypot(a, Constant(b))
+hypot(a::Number, b::Measurement) = hypot(Constant(a), b)
+hypot(a::Measurement, b::Number) = hypot(a, Constant(b))
 
 # Square root: sqrt
 function sqrt(a::Measurement)

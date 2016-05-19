@@ -33,17 +33,23 @@ let
     test_approx_eq(x*y, y*x) # Commutativity
     test_approx_eq(2x, Measurement(6, 0.2))
     test_approx_eq(x*3, Measurement(9, 0.3))
+    test_approx_eq(true*x, x)
+    test_approx_eq(y*false, Constant(0))
     # Division
     test_approx_eq(x/y, Measurement(0.75, 0.04506939094329987))
     test_approx_eq(x/10, Measurement(0.3, 0.01))
     test_approx_eq(1/y, Measurement(0.25, 0.0125))
     # Inverse
     test_approx_eq(inv(y), 1/y)
+    # signbit
+    @test signbit(x) == false
+    @test signbit(w) == true
     # Power
     test_approx_eq(x^y, Measurement(81, 20.818061515800505))
     test_approx_eq(x^(-1), inv(x))
     test_approx_eq(x^2, Measurement(9, 0.6))
     test_approx_eq(y^2, y^2.0)
+    test_approx_eq(y^(1//2), Measurement(2, 0.05))
     test_approx_eq(2^x, Measurement(8, 0.5545177444479562))
     test_approx_eq(2^y, 2.0^y)
     test_approx_eq(pi^x, Measurement(31.006276680299816, 3.5493811564854525))

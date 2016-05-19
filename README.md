@@ -5,7 +5,7 @@
 Introduction
 ------------
 
-This package defines a new data type, `Measurement`, that allows you to enter a
+This module defines a new data type, `Measurement`, that allows you to enter a
 quantity with its uncertainty and
 [propagate errors](https://en.wikipedia.org/wiki/Propagation_of_uncertainty)
 when performing mathematical operations involving `Measurement` objects.
@@ -16,7 +16,7 @@ For those interested in the technical details of the package, `Measurement` is a
 type, whose definition is:
 
 ``` julia
-immutable Measurement{T<:Number}
+immutable Measurement{T<:Number} <: Number
     val::T # The value
     err::T # The uncertainty, assumed to be standard deviation
 end
@@ -49,7 +49,32 @@ After installing the package, you can start using it with
 using Measurements
 ```
 
-Many mathematical operations are redefined to accept `Measurement` type.
+`Measurement` quantity can be defined with either one of the two following
+constructors:
+
+``` julia
+Measurement(value, uncertainty)
+value ± uncertainty
+```
+
+where `value` and `uncertainty` are both subtype of `Number`.  `Constant(value)`
+is a convenient function that can be used to create `Measurement` object that
+doesn’t have uncertainty (like mathematical constants).  See below for further
+examples.
+
+Many basic mathematical operations are redefined to accept `Measurement` type
+and uncertainty is calculated exactly using analityc expressions of function
+derivatives.  In addition, being `Measurement` a subtype of `Number`,
+`Measurement` objects can be used in any function taking `Number` arguments
+without redefining it, and calculation of uncertainty will be exact.  This
+greatly expands the power of `Measurements.jl` with little overhead for the
+users.
+
+**NOTE:** This module currently doesn’t take into account correlation between
+operands when calculating uncertainties (see TODO list below), so operations
+like `x+x`,`x*x`, `sin(x)/cos(x)` will have inaccurate uncertainties.  Use
+expressions not involving correlated variables when possible (e.g., `2x` in
+place of `x+x`, `x^2` for `x*x`, and `tan(x)` for `sin(x)/cos(x)`).
 
 Examples
 --------
