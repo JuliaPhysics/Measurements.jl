@@ -14,7 +14,7 @@ import Base: +, -, *, /, inv, ^, exp2, cos, sin, deg2rad, rad2deg, cosd, sind,
              cot, cotd, coth, exp, expm1, log, log10, log1p, hypot, sqrt, cbrt,
              abs, sign, zero, one, erf, erfc, factorial, gamma, lgamma, signbit
 
-export Measurement, Constant, ±
+export Measurement, Constant, ±, stdscore
 
 # Useful constants
 const logten = log(10)
@@ -51,6 +51,17 @@ promote_rule{T<:Number, S<:Number}(::Type{Measurement{T}},
 function show(io::IO, measure::Measurement)
     print(io, measure.val, " ± ", measure.err)
 end
+
+# Standard Score
+"""
+    stdscore(measure::Measurement, expected_value::Number) -> standard_score
+
+Gives the standard score between a measure, with uncertainty, and its expected
+value (that may or may not have the uncertainty):
+
+    (measure.val - expected_value)/measure.err
+"""
+stdscore(a::Measurement, b::Number) = (a.val - b)/(a.err)
 
 ##### Comparison Operators
 # Two measurements are equal if they have same value and same uncertainty.  XXX:

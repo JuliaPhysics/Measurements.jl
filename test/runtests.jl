@@ -8,6 +8,11 @@ w = -0.5 ± 0.03
 x = 3 ± 0.1
 y = 4 ± 0.2
 z = complex(3.0) ± 0.1
+
+# Standard Score
+test_approx_eq(stdscore(x, y), -10 ± 2)
+@test_approx_eq stdscore(w, x.val) -350/3
+
 # Conversion and Promotion
 @test convert(Measurement{Float64}, 3) === 3.0 ± 0.0
 @test convert(Measurement{Float64}, 3 ± 1) === 3.0 ± 1.0

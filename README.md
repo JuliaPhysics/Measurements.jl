@@ -70,6 +70,11 @@ without redefining it, and calculation of uncertainty will be exact.  This
 greatly expands the power of `Measurements.jl` with little overhead for the
 users.
 
+In addition to constructors functions, also the `stdscore` function is provided.
+This can be used to calculate the
+[standard score](https://en.wikipedia.org/wiki/Standard_score) between a
+measurement and its expected value.
+
 **NOTE:** This module currently doesn’t take into account correlation between
 operands when calculating uncertainties (see TODO list below), so operations
 like `x+x`,`x*x`, `sin(x)/cos(x)` will have inaccurate uncertainties.  Use
@@ -83,7 +88,7 @@ Examples
 using Measurements
 a = Measurement(4.5, 0.1)
 # => 4.5 ± 0.1
-b = Measurement(3.8, 0.4)
+b = 3.8 ± 0.4
 # => 3.8 ± 0.4
 2a + b
 # => 12.8 ± 0.4472135954999579
@@ -99,21 +104,37 @@ a*c
 # => 18.0 ± 0.4
 sind(Measurement(94, 1.2))
 # => 0.9975640502598242 ± 0.0014609761696991563
-```
-
-`±` is defined as an alias for the `Measurement` constructor, so you can simply
-define a new quantity with uncertainty with this syntax:
-
-``` julia
-using Measurements
 x = 5.48 ± 0.67
 # => 5.48 ± 0.67
-y = 9.36 ± 1.02
+y = Measurement(9.36, 1.02)
 # => 9.36 ± 1.02
 log(2x^2 - 3.4y)
 # =>  3.3406260917568824 ± 0.5344198747546611
 atan2(y, x)
 # => 1.0411291003154137 ± 0.07141014208254456
+```
+
+You can get the distance in number of standard deviations between a measurement
+and its expected value (this can be with or without uncertainty) using
+`stdscore`:
+
+``` julia
+stdscore(1.3 ± 0.12, 1)
+# => 2.5000000000000004
+stdscore(4.7 ± 0.58, 5 ± 0.01)
+# => -0.5172413793103445 ± 0.017241379310344827
+```
+
+The `±` sign is a convenient symbol to define quantity with uncertainty, but can
+lead to unexpected results if used in elaborate expressions involving many `±`
+signs.  Use parantheses where appropriate to avoid confusion, for example see
+the following cases:
+
+``` julia
+7.5±1.2 + 3.9±0.9
+# => 11.4 ± 1.2 ± 0.9 ± 0.0
+(7.5±1.2) + (3.9±0.9)
+# => 11.4 ± 1.5
 ```
 
 How Can I Help?
