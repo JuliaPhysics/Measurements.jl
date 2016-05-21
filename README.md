@@ -57,10 +57,9 @@ Measurement(value, uncertainty)
 value ± uncertainty
 ```
 
-where `value` and `uncertainty` are both subtype of `Number`.  `Constant(value)`
-is a convenient function that can be used to create `Measurement` object that
-doesn’t have uncertainty (like mathematical constants).  See below for further
-examples.
+where `value` and `uncertainty` are both subtype of `Number`.
+`Measurement(value)` creates a `Measurement` object that doesn’t have
+uncertainty, like mathematical constants.  See below for further examples.
 
 Many basic mathematical operations are redefined to accept `Measurement` type
 and uncertainty is calculated exactly using analityc expressions of function
@@ -98,7 +97,7 @@ l = Measurement(0.936, 1e-3);
 T = Measurement(1.942, 4e-3);
 P = 4pi^2*l/T^2
 # => 9.797993213510699 ± 0.041697817535336676
-c = Constant(4)
+c = Measurement(4)
 # => 4 ± 0
 a*c
 # => 18.0 ± 0.4

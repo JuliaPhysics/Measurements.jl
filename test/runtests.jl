@@ -19,7 +19,7 @@ test_approx_eq(stdscore(x, y), -10 ± 2)
 @test convert(Measurement, x) === x
 @test convert(Measurement, 3) === 3 ± 0
 @test promote(x, complex(7)) === (complex(3.0) ± complex(0.1),
-                                  Constant(complex(7.0)))
+                                  Measurement(complex(7.0)))
 @test promote(1im ± 0, 2.1 ± 0.2) === (1.0im ± complex(0),
                                        complex(2.1) ± complex(0.2))
 ##### Comparisons
@@ -46,7 +46,7 @@ test_approx_eq(x*y, y*x) # Commutativity
 test_approx_eq(2x, Measurement(6, 0.2))
 test_approx_eq(x*3, Measurement(9, 0.3))
 test_approx_eq(true*x, x)
-test_approx_eq(y*false, Constant(0))
+test_approx_eq(y*false, Measurement(0))
 # Division
 test_approx_eq(x/y, Measurement(0.75, 0.04506939094329987))
 test_approx_eq(x/10, Measurement(0.3, 0.01))
