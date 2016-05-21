@@ -4,9 +4,9 @@
 module Measurements
 
 # Functions to handle new type
-import Base: show, convert, promote_rule
+import Base: show, convert, promote_rule, float
 # Comparison operators
-import Base: ==, isless
+import Base: ==, isless, <
 # Mathematical operations to be redefined
 import Base: +, -, *, /, inv, ^, exp2, cos, sin, deg2rad, rad2deg, cosd, sind,
              cosh, sinh, tan, tand, tanh, acos, acosd, acosh, asin, asind,
@@ -22,27 +22,29 @@ const logtwo = log(2)
 const twooversqrtpi = 2/sqrt(pi)
 
 # Define the new type
-immutable Measurement{T<:Number} <: Number
+immutable Measurement{T<:Real} <: Real
     val::T # The value
     err::T # The uncertainty, assumed to be standard deviation
 end
 # Constructors
-Measurement(val::Number, err::Number) = Measurement(promote(val, err)...)
-Measurement(value::Number) = Measurement(value, zero(value))
+Measurement(val::Real, err::Real) = Measurement(promote(val, err)...)
+Measurement(value::Real) = Measurement(value, zero(value))
 const ± = Measurement
 
 # Conversion and Promotion
-convert{T<:Number}(::Type{Measurement{T}}, a::Number) =
+convert{T<:Real}(::Type{Measurement{T}}, a::Real) =
     Measurement{T}(a, zero(a))
-convert{T<:Number}(::Type{Measurement{T}}, a::Measurement) =
+convert{T<:Real}(::Type{Measurement{T}}, a::Measurement) =
     Measurement{T}(a.val, a.err)
 convert(::Type{Measurement}, a::Measurement) = a
-convert(::Type{Measurement}, a::Number) = Measurement(a)
+convert(::Type{Measurement}, a::Real) = Measurement(a)
 
+float{T<:AbstractFloat}(a::Measurement{T}) = a
+float(a::Measurement) = Measurement(float(a.val), float(a.err))
 
-promote_rule{T<:Number, S<:Number}(::Type{Measurement{T}}, ::Type{S}) =
+promote_rule{T<:Real, S<:Real}(::Type{Measurement{T}}, ::Type{S}) =
     Measurement{promote_type(T, S)}
-promote_rule{T<:Number, S<:Number}(::Type{Measurement{T}},
+promote_rule{T<:Real, S<:Real}(::Type{Measurement{T}},
                                    ::Type{Measurement{S}}) =
                                        Measurement{promote_type(T, S)}
 
@@ -53,14 +55,14 @@ end
 
 # Standard Score
 """
-    stdscore(measure::Measurement, expected_value::Number) -> standard_score
+    stdscore(measure::Measurement, expected_value::Real) -> standard_score
 
 Gives the standard score between a measure, with uncertainty, and its expected
 value (that may or may not have the uncertainty):
 
     (measure.val - expected_value)/measure.err
 """
-stdscore(a::Measurement, b::Number) = (a.val - b)/(a.err)
+stdscore(a::Measurement, b::Real) = (a.val - b)/(a.err)
 
 ##### Comparison Operators
 # Two measurements are equal if they have same value and same uncertainty.  XXX:
@@ -68,28 +70,36 @@ stdscore(a::Measurement, b::Number) = (a.val - b)/(a.err)
 # done, for example, by adding another field with a random (or randn'om) value.
 ==(a::Measurement, b::Measurement) = (a.val==b.val && a.err==b.err)
 
-# Comparison with Numbers: they are equal if the value of Measurement is equal
-# to the number.  If you want to treat the Number like a measurement convert it
-# with `Measurement'.
-==(a::Measurement, b::Number) = a.val==b
-==(a::Number, b::Measurement) = a==b.val
+# Comparison with Real: they are equal if the value of Measurement is equal to
+# the number.  If you want to treat the Real like a measurement convert it with
+# `Measurement'.
+==(a::Measurement, b::Irrational) = a.val==b
+==(a::Measurement, b::Real) = a.val==b
+==(a::Irrational, b::Measurement) = a==b.val
+==(a::Real, b::Measurement) = a==b.val
 
 # Order relation is based on the value of measurements, uncertainties are ignored
+<(a::Measurement, b::Measurement) = <(a.val, b.val)
+
 isless(a::Measurement, b::Measurement) = isless(a.val, b.val)
+isless(a::Measurement, b::AbstractFloat) = isless(a.val, b)
+isless(a::Measurement, b::Real) = isless(a.val, b)
+isless(a::AbstractFloat, b::Measurement) = isless(a, b.val)
+isless(a::Real, b::Measurement) = isless(a, b.val)
 
 ##### Mathematical Operations
 # Addition: +
 +(a::Measurement) = a
 +(a::Measurement, b::Measurement) =
     Measurement(promote(a.val + b.val, hypot(a.err, b.err))...)
-+(a::Number, b::Measurement) = +(Measurement(a), b)
-+(a::Measurement, b::Number) = +(a, Measurement(b))
++(a::Real, b::Measurement) = +(Measurement(a), b)
++(a::Measurement, b::Real) = +(a, Measurement(b))
 
 # Subtraction: -
 -(a::Measurement) = Measurement(-a.val, a.err)
 -(a::Measurement, b::Measurement) = a + (-b)
--(a::Number, b::Measurement) = -(Measurement(a), b)
--(a::Measurement, b::Number) = -(a, Measurement(b))
+-(a::Real, b::Measurement) = -(Measurement(a), b)
+-(a::Measurement, b::Real) = -(a, Measurement(b))
 
 # Multiplication: *
 function *(a::Measurement, b::Measurement)
@@ -99,8 +109,8 @@ function *(a::Measurement, b::Measurement)
 end
 *(a::Bool, b::Measurement) = *(Measurement(a), b)
 *(a::Measurement, b::Bool) = *(a, Measurement(b))
-*(a::Number, b::Measurement) = *(Measurement(a), b)
-*(a::Measurement, b::Number) = *(a, Measurement(b))
+*(a::Real, b::Measurement) = *(Measurement(a), b)
+*(a::Measurement, b::Real) = *(a, Measurement(b))
 
 # Division: /
 function /(a::Measurement, b::Measurement)
@@ -108,8 +118,8 @@ function /(a::Measurement, b::Measurement)
     return Measurement(promote(div, abs(div)*(hypot(a.err*inv(a.val),
                                                     b.err*inv(b.val))))...)
 end
-/(a::Number, b::Measurement) = /(Measurement(a), b)
-/(a::Measurement, b::Number) = /(a, Measurement(b))
+/(a::Real, b::Measurement) = /(Measurement(a), b)
+/(a::Measurement, b::Real) = /(a, Measurement(b))
 
 # Inverse: inv
 function inv(a::Measurement)
@@ -132,11 +142,11 @@ function ^(a::Measurement, b::Measurement)
 end
 ^{T<:Integer}(a::Measurement, b::T) = ^(a, Measurement(b))
 ^{T<:Rational}(a::Measurement, b::T) = ^(a, Measurement(b))
-^{T<:Number}(a::Measurement,  b::T) = ^(a, Measurement(b))
+^{T<:Real}(a::Measurement,  b::T) = ^(a, Measurement(b))
 ^{T<:Integer}(a::T, b::Measurement) = ^(Measurement(a), b)
 ^(::Irrational{:e}, b::Measurement) = exp(b)
 ^(a::Irrational, b::Measurement) = Measurement(float(a))^b
-^{T<:Number}(a::T,  b::Measurement) = ^(Measurement(a), b)
+^{T<:Real}(a::T,  b::Measurement) = ^(Measurement(a), b)
 
 function exp2(a::Measurement)
     pow = exp2(a.val)
@@ -196,8 +206,8 @@ function atan2(a::Measurement, b::Measurement)
                                hypot(a.err*b.val*invdenom,
                                      b.err*a.val*invdenom))...)
 end
-atan2(a::Measurement, b::Number) = atan2(a, Measurement(b))
-atan2(a::Number, b::Measurement) = atan2(Measurement(a), b)
+atan2(a::Measurement, b::Real) = atan2(a, Measurement(b))
+atan2(a::Real, b::Measurement) = atan2(Measurement(a), b)
 
 # Reciprocal trig functions: csc cscd csch sec secd sec cot cotd coth
 function csc(a::Measurement)
@@ -254,9 +264,9 @@ log10(a::Measurement) = # Special case
 log1p(a::Measurement) = # Special case
     Measurement(promote(log1p(a.val), a.err*inv(a.val + one(a.val)))...)
 log(::Irrational{:e}, a::Measurement) = log(a)
-log(a::Number, b::Measurement) = log(Measurement(a), b)
+log(a::Real, b::Measurement) = log(Measurement(a), b)
 log(a::Irrational, b::Measurement) = log(float(a), b)
-log(a::Measurement, b::Number) = log(a, Measurement(b))
+log(a::Measurement, b::Real) = log(a, Measurement(b))
 
 # Hypotenuse: hypot
 function hypot(a::Measurement, b::Measurement)
@@ -264,8 +274,8 @@ function hypot(a::Measurement, b::Measurement)
     return Measurement(promote(val, abs(hypot(a.val*a.err,
                                               b.val*b.err)*inv(val)))...)
 end
-hypot(a::Number, b::Measurement) = hypot(Measurement(a), b)
-hypot(a::Measurement, b::Number) = hypot(a, Measurement(b))
+hypot(a::Real, b::Measurement) = hypot(Measurement(a), b)
+hypot(a::Measurement, b::Real) = hypot(a, Measurement(b))
 
 # Square root: sqrt
 function sqrt(a::Measurement)

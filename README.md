@@ -16,14 +16,14 @@ For those interested in the technical details of the package, `Measurement` is a
 type, whose definition is:
 
 ``` julia
-immutable Measurement{T<:Number} <: Number
+immutable Measurement{T<:Real} <: Real
     val::T # The value
     err::T # The uncertainty, assumed to be standard deviation
 end
 ```
 
 Users that want to hack into `Measurements.jl` should use objects with type that
-is a subtype of `Number`.
+is a subtype of `Real`.
 
 Installation
 ------------
@@ -57,14 +57,14 @@ Measurement(value, uncertainty)
 value ± uncertainty
 ```
 
-where `value` and `uncertainty` are both subtype of `Number`.
+where `value` and `uncertainty` are both subtype of `Real`.
 `Measurement(value)` creates a `Measurement` object that doesn’t have
 uncertainty, like mathematical constants.  See below for further examples.
 
 Many basic mathematical operations are redefined to accept `Measurement` type
 and uncertainty is calculated exactly using analityc expressions of function
-derivatives.  In addition, being `Measurement` a subtype of `Number`,
-`Measurement` objects can be used in any function taking `Number` arguments
+derivatives.  In addition, being `Measurement` a subtype of `Real`,
+`Measurement` objects can be used in any function taking `Real` arguments
 without redefining it, and calculation of uncertainty will be exact.  This
 greatly expands the power of `Measurements.jl` with little overhead for the
 users.
@@ -74,11 +74,18 @@ This can be used to calculate the
 [standard score](https://en.wikipedia.org/wiki/Standard_score) between a
 measurement and its expected value.
 
-**NOTE:** This module currently doesn’t take into account correlation between
+**NOTE 1:** This module currently doesn’t take into account correlation between
 operands when calculating uncertainties (see TODO list below), so operations
-like `x+x`,`x*x`, `sin(x)/cos(x)` will have inaccurate uncertainties.  Use
-expressions not involving correlated variables when possible (e.g., `2x` in
-place of `x+x`, `x^2` for `x*x`, and `tan(x)` for `sin(x)/cos(x)`).
+like `x+x`,`x*x`, `sin(x)/cos(x)` will have inaccurate uncertainties (usually
+overestimated).  Use expressions not involving correlated variables when
+possible (e.g., `2x` in place of `x+x`, `x^2` for `x*x`, and `tan(x)` for
+`sin(x)/cos(x)`).
+
+**NOTE 2:** Currently this module supports real-only measurements.  It is
+possible to create a `Complex` measurement with `complex(Measurement(a, b),
+Measurement(c, d))` and error propagation should work for a few basic operations
+like addition and subtraction, but no work has been done to further support
+complex quantities with attached uncertainty.
 
 Examples
 --------
@@ -130,9 +137,9 @@ signs.  Use parantheses where appropriate to avoid confusion, for example see
 the following cases:
 
 ``` julia
-7.5±1.2 + 3.9±0.9
+7.5±1.2 + 3.9±0.9 # This is wrong!
 # => 11.4 ± 1.2 ± 0.9 ± 0.0
-(7.5±1.2) + (3.9±0.9)
+(7.5±1.2) + (3.9±0.9) # This is correct
 # => 11.4 ± 1.5
 ```
 
@@ -155,6 +162,7 @@ TODO
   any_function(4.3 ± 0.4)`.  This calculates the value of `any_function(4.3)`
   and the approximated uncertainty using numerical derivatives or so, and
   finally construct the `Measurement` object `any_function(4.3) ± uncertainty`
+* Support error propagation for complex measurements
 * Other suggestions welcome `:-)`
 
 License
