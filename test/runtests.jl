@@ -18,6 +18,7 @@ test_approx_eq(stdscore(x, y), -10 ± 2)
 @test convert(Measurement{Float64}, 3 ± 1) === 3.0 ± 1.0
 @test convert(Measurement, x) === x
 @test convert(Measurement, 3) === 3 ± 0
+@test float(3 ± 1) === 3.0 ± 1.0
 @test promote(x, complex(7)) === (complex(3.0 ± 0.1),
                                   complex(Measurement(7.0)))
 @test promote(complex(0, 1 ± 0), 2.1 ± 0.2) ===
@@ -29,6 +30,8 @@ test_approx_eq(stdscore(x, y), -10 ± 2)
 @test -2 < w < x < y < 5
 @test 3 == x
 @test y == 4 != w
+@test Measurement(π) == π
+@test e == Measurement(e)
 
 ##### Mathematical Operations
 # Addition
@@ -207,3 +210,6 @@ test_approx_eq(mean((w, x, y)), (w + x + y)/3)
 @test min(w, x, y) === w
 @test max(w, x, y) === y
 @test extrema([w, x, y]) === (w, y)
+
+# sort
+@test sort([y, w, x]) == [w, x, y]

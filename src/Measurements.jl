@@ -28,6 +28,7 @@ immutable Measurement{T<:Real} <: Real
 end
 # Constructors
 Measurement(val::Real, err::Real) = Measurement(promote(val, err)...)
+Measurement(value::Irrational) = Measurement(value, zero(float(value)))
 Measurement(value::Real) = Measurement(value, zero(value))
 const ± = Measurement
 
@@ -73,19 +74,14 @@ stdscore(a::Measurement, b::Real) = (a.val - b)/(a.err)
 # Comparison with Real: they are equal if the value of Measurement is equal to
 # the number.  If you want to treat the Real like a measurement convert it with
 # `Measurement'.
-==(a::Measurement, b::Irrational) = a.val==b
+==(a::Measurement, b::Irrational) = a.val==float(b)
 ==(a::Measurement, b::Real) = a.val==b
-==(a::Irrational, b::Measurement) = a==b.val
+==(a::Irrational, b::Measurement) = float(a)==b.val
 ==(a::Real, b::Measurement) = a==b.val
 
 # Order relation is based on the value of measurements, uncertainties are ignored
 <(a::Measurement, b::Measurement) = <(a.val, b.val)
-
 isless(a::Measurement, b::Measurement) = isless(a.val, b.val)
-isless(a::Measurement, b::AbstractFloat) = isless(a.val, b)
-isless(a::Measurement, b::Real) = isless(a.val, b)
-isless(a::AbstractFloat, b::Measurement) = isless(a, b.val)
-isless(a::Real, b::Measurement) = isless(a, b.val)
 
 ##### Mathematical Operations
 # Addition: +
