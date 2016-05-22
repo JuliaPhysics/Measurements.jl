@@ -13,12 +13,17 @@ z = complex(3.0 ± 0.1)
 test_approx_eq(stdscore(x, y), -10 ± 2)
 @test_approx_eq stdscore(w, x.val) -350/3
 
+# Weighted Average with Inverse-Variance Weighting
+test_approx_eq(weightedmean((w, x, y)),
+               Measurement(-0.12584269662921355, 0.028442727788398632))
+
 # Conversion and Promotion
 @test convert(Measurement{Float64}, 3) === 3.0 ± 0.0
 @test convert(Measurement{Float64}, 3 ± 1) === 3.0 ± 1.0
 @test convert(Measurement, x) === x
 @test convert(Measurement, 3) === 3 ± 0
 @test float(3 ± 1) === 3.0 ± 1.0
+@test float(x) === x
 @test promote(x, complex(7)) === (complex(3.0 ± 0.1),
                                   complex(Measurement(7.0)))
 @test promote(complex(0, 1 ± 0), 2.1 ± 0.2) ===

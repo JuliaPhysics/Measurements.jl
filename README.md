@@ -49,7 +49,7 @@ After installing the package, you can start using it with
 using Measurements
 ```
 
-`Measurement` quantity can be defined with either one of the two following
+`Measurement` objects can be defined with either one of the two following
 constructors:
 
 ``` julia
@@ -69,11 +69,6 @@ without redefining it, and calculation of uncertainty will be exact.  This
 greatly expands the power of `Measurements.jl` with little overhead for the
 users.
 
-In addition to constructors functions, also the `stdscore` function is provided.
-This can be used to calculate the
-[standard score](https://en.wikipedia.org/wiki/Standard_score) between a
-measurement and its expected value.
-
 **NOTE 1:** This module currently doesn’t take into account correlation between
 operands when calculating uncertainties (see TODO list below), so operations
 like `x+x`,`x*x`, `sin(x)/cos(x)` will have inaccurate uncertainties (usually
@@ -86,6 +81,20 @@ possible to create a `Complex` measurement with `complex(Measurement(a, b),
 Measurement(c, d))` and error propagation should work for a few basic operations
 like addition and subtraction, but no work has been done to further support
 complex quantities with attached uncertainty.
+
+### Standard Score ###
+
+The `stdscore` function is available to calculate the
+[standard score](https://en.wikipedia.org/wiki/Standard_score) between a
+measurement and its expected value.
+
+### Weighted Average ###
+
+`weightedmean` function gives the
+[weighted mean](https://en.wikipedia.org/wiki/Weighted_arithmetic_mean) of a set
+of measurements using
+[inverses of variance as weights](https://en.wikipedia.org/wiki/Inverse-variance_weighting).
+Use `mean` for the simple arithmetic mean.
 
 Examples
 --------
@@ -129,6 +138,16 @@ stdscore(1.3 ± 0.12, 1)
 # => 2.5000000000000004
 stdscore(4.7 ± 0.58, 5 ± 0.01)
 # => -0.5172413793103445 ± 0.017241379310344827
+```
+
+Calculate the weighted and arithmetic means of your set of measurements with
+`weightedmean` and `mean` respectively:
+
+``` julia
+weightedmean((3.1±0.32, 3.2±0.38, 3.5±0.61, 3.8±0.25))
+# => 3.4665384454054498 ± 0.16812474090663868
+mean((3.1±0.32, 3.2±0.38, 3.5±0.61, 3.8±0.25))
+# => 3.4000000000000004 ± 0.2063673908348894
 ```
 
 The `±` sign is a convenient symbol to define quantity with uncertainty, but can

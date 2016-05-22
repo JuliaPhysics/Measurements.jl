@@ -6,7 +6,7 @@ module Measurements
 # Functions to handle new type
 import Base: show, convert, promote_rule, float
 # Comparison operators
-import Base: ==, isless, <
+import Base: ==, isless, <, <=
 # Mathematical operations to be redefined
 import Base: +, -, *, /, inv, ^, exp2, cos, sin, deg2rad, rad2deg, cosd, sind,
              cosh, sinh, tan, tand, tanh, acos, acosd, acosh, asin, asind,
@@ -14,7 +14,7 @@ import Base: +, -, *, /, inv, ^, exp2, cos, sin, deg2rad, rad2deg, cosd, sind,
              cot, cotd, coth, exp, expm1, log, log10, log1p, hypot, sqrt, cbrt,
              abs, sign, zero, one, erf, erfc, factorial, gamma, lgamma, signbit
 
-export Measurement, ±, stdscore
+export Measurement, ±, stdscore, weightedmean
 
 # Useful constants
 const logten = log(10)
@@ -33,6 +33,8 @@ Measurement(value::Real) = Measurement(value, zero(value))
 const ± = Measurement
 
 # Conversion and Promotion
+convert{T<:Real}(::Type{Measurement{T}}, a::Irrational) =
+    Measurement{T}(a, zero(float(a)))
 convert{T<:Real}(::Type{Measurement{T}}, a::Real) =
     Measurement{T}(a, zero(a))
 convert{T<:Real}(::Type{Measurement{T}}, a::Measurement) =
@@ -65,6 +67,20 @@ value (that may or may not have the uncertainty):
 """
 stdscore(a::Measurement, b::Real) = (a.val - b)/(a.err)
 
+# Weighted Average with Inverse-Variance Weighting
+"""
+    weightedmean(iterable) -> Measurement(weighted_mean, standard_deviation)
+
+Return the weighted mean of measurements listed in `iterable`, using
+inverse-variance weighting.
+"""
+function weightedmean(iterable)
+    v = [el.val for el in iterable]
+    w = [inv(el.err)^2 for el in iterable]
+    invsumw = inv(sum(w))
+    return Measurement(dot(v, w)*invsumw, sqrt(invsumw))
+end
+
 ##### Comparison Operators
 # Two measurements are equal if they have same value and same uncertainty.  XXX:
 # Make two measurements equal if they are exaclty the same thing?  This can be
@@ -81,6 +97,7 @@ stdscore(a::Measurement, b::Real) = (a.val - b)/(a.err)
 
 # Order relation is based on the value of measurements, uncertainties are ignored
 <(a::Measurement, b::Measurement) = <(a.val, b.val)
+<=(a::Measurement, b::Measurement) = <=(a.val, b.val)
 isless(a::Measurement, b::Measurement) = isless(a.val, b.val)
 
 ##### Mathematical Operations
