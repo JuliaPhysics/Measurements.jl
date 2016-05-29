@@ -30,7 +30,7 @@ test_approx_eq(weightedmean((w, x, y)),
 @test promote(complex(0, 1 ± 0), 2.1 ± 0.2) ===
     (complex(0, 1.0 ± 0), complex(2.1 ± 0.2))
 
-##### Comparisons
+##### Comparisons and Tests
 @test z == x != y
 @test x == x
 @test -2 < w <= x < y < 5
@@ -38,6 +38,8 @@ test_approx_eq(weightedmean((w, x, y)),
 @test y == 4 != w
 @test Measurement(π) == π
 @test e == Measurement(e)
+@test isnan(x) == false
+@test isfinite(y) == true
 
 ##### Mathematical Operations
 # Addition

@@ -5,8 +5,8 @@ module Measurements
 
 # Functions to handle new type
 import Base: show, convert, promote_rule, float
-# Comparison operators
-import Base: ==, isless, <, <=
+# Comparison and test operators
+import Base: ==, isless, <, <=, isnan, isfinite
 # Mathematical operations to be redefined
 import Base: +, -, *, /, inv, ^, exp2, cos, sin, deg2rad, rad2deg, cosd, sind,
              cosh, sinh, tan, tand, tanh, acos, acosd, acosh, asin, asind,
@@ -82,7 +82,7 @@ function weightedmean(iterable)
     return Measurement(dot(v, w)*invsumw, sqrt(invsumw))
 end
 
-##### Comparison Operators
+##### Comparison and Test Operators
 # Two measurements are equal if they have same value and same uncertainty.  XXX:
 # Make two measurements equal if they are exaclty the same thing?  This can be
 # done, for example, by adding another field with a random (or randn'om) value.
@@ -100,6 +100,9 @@ end
 <(a::Measurement, b::Measurement) = <(a.val, b.val)
 <=(a::Measurement, b::Measurement) = <=(a.val, b.val)
 isless(a::Measurement, b::Measurement) = isless(a.val, b.val)
+
+isnan(a::Measurement) = isnan(a.val)
+isfinite(a::Measurement) = isfinite(a.val)
 
 ##### Mathematical Operations
 # Addition: +
