@@ -11,8 +11,9 @@ import Base: ==, isless, <, <=
 import Base: +, -, *, /, inv, ^, exp2, cos, sin, deg2rad, rad2deg, cosd, sind,
              cosh, sinh, tan, tand, tanh, acos, acosd, acosh, asin, asind,
              asinh, atan, atan2, atand, atanh, csc, cscd, csch, sec, secd, sech,
-             cot, cotd, coth, exp, expm1, log, log10, log1p, hypot, sqrt, cbrt,
-             abs, sign, zero, one, erf, erfc, factorial, gamma, lgamma, signbit
+             cot, cotd, coth, exp, expm1, exp10, log, log10, log1p, hypot, sqrt,
+             cbrt, abs, sign, zero, one, erf, erfc, factorial, gamma, lgamma,
+             signbit, modf
 
 export Measurement, ±, stdscore, weightedmean
 
@@ -262,6 +263,11 @@ end
 expm1(a::Measurement) =
     Measurement(promote(expm1(a.val), abs(exp(a.val)*a.err))...)
 
+function exp10(a::Measurement)
+    val = exp10(a.val)
+    return Measurement(promote(float(val), abs(logten*val*a.err))...)
+end
+
 # Logarithm: log
 function log(a::Measurement, b::Measurement)
     val = log(a.val, b.val)
@@ -343,6 +349,12 @@ function lgamma(a::Measurement)
     aval = a.val
     return Measurement(promote(lgamma(aval),
                                abs(a.err*polygamma(0, aval)))...)
+end
+
+# Modulo: modf
+function modf(a::Measurement)
+    frac, int = modf(a.val)
+    return (Measurement(frac, a.err), int)
 end
 
 end # module

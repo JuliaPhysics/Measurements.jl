@@ -21,6 +21,7 @@ test_approx_eq(weightedmean((w, x, y)),
 @test convert(Measurement{Float64}, 3) === 3.0 ± 0.0
 @test convert(Measurement{Float64}, 3 ± 1) === 3.0 ± 1.0
 @test convert(Measurement, x) === x
+@test convert(Measurement, pi) === pi ± 0
 @test convert(Measurement, 3) === 3 ± 0
 @test float(3 ± 1) === 3.0 ± 1.0
 @test float(x) === x
@@ -32,7 +33,7 @@ test_approx_eq(weightedmean((w, x, y)),
 ##### Comparisons
 @test z == x != y
 @test x == x
-@test -2 < w < x < y < 5
+@test -2 < w <= x < y < 5
 @test 3 == x
 @test y == 4 != w
 @test Measurement(π) == π
@@ -148,6 +149,7 @@ test_approx_eq(coth(w), 1/tanh(w))
 # Exponentials
 test_approx_eq(exp(x), Measurement(20.085536923187668, 2.008553692318767))
 test_approx_eq(expm1(y), exp(y) - 1)
+test_approx_eq(exp10(w), 10^w)
 
 # Logarithm
 test_approx_eq(log(x, y), Measurement(1.261859507142915, 0.059474298734200806))
@@ -200,6 +202,14 @@ test_approx_eq(factorial(x), Measurement(6, 0.7536706010590813))
 test_approx_eq(gamma(y), factorial(y - 1))
 test_approx_eq(gamma(w + 1), factorial(w))
 test_approx_eq(lgamma(x), log(gamma(x)))
+
+# Modulo
+let
+    local frac, int
+    frac, int = modf(x + w)
+    test_approx_eq(frac, x + w - int)
+    @test_approx_eq int floor((x + w).val)
+end
 
 # Dummy call to show
 show(DevNull, x)
