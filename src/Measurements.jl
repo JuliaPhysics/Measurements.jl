@@ -11,9 +11,9 @@ import Base: ==, isless, <, <=, isnan, isfinite, isinf
 import Base: +, -, *, /, inv, ^, exp2, cos, sin, deg2rad, rad2deg, cosd, sind,
              cosh, sinh, tan, tand, tanh, acos, acosd, acosh, asin, asind,
              asinh, atan, atan2, atand, atanh, csc, cscd, csch, sec, secd, sech,
-             cot, cotd, coth, exp, expm1, exp10, log, log10, log1p, hypot, sqrt,
-             cbrt, abs, sign, copysign, zero, one, erf, erfc, factorial, gamma,
-             lgamma, signbit, modf
+             cot, cotd, coth, exp, expm1, exp10, exp2, frexp, log, log10, log1p,
+             hypot, sqrt, cbrt, abs, sign, copysign, zero, one, erf, erfc,
+             factorial, gamma, lgamma, signbit, modf
 
 export Measurement, ±, stdscore, weightedmean
 
@@ -266,7 +266,7 @@ function coth(a::Measurement)
     return Measurement(promote(coth(a.val), abs(a.err*cscha*cscha))...)
 end
 
-# Exponentials: exp, expm1
+# Exponentials: exp, expm1, exp2, frexp
 function exp(a::Measurement)
     val = exp(a.val)
     return Measurement(promote(val, abs(val*a.err))...)
@@ -278,6 +278,16 @@ expm1(a::Measurement) =
 function exp10(a::Measurement)
     val = exp10(a.val)
     return Measurement(promote(float(val), abs(logten*val*a.err))...)
+end
+
+function exp2(a::Measurement)
+    val = exp2(a.val)
+    return Measurement(promote(float(val), abs(logtwo*val*a.err))...)
+end
+
+function frexp(a::Measurement)
+    x, y = frexp(a.val)
+    return (Measurement(x, a.err/2^y), y)
 end
 
 # Logarithm: log

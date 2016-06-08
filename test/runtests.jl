@@ -156,6 +156,13 @@ test_approx_eq(coth(w), 1/tanh(w))
 test_approx_eq(exp(x), Measurement(20.085536923187668, 2.008553692318767))
 test_approx_eq(expm1(y), exp(y) - 1)
 test_approx_eq(exp10(w), 10^w)
+for val in (w, x, y)
+    test_approx_eq(exp2(val), 2^val)
+end
+for val in (w, x, y)
+    a, b = frexp(val)
+    test_approx_eq(a*2^b, val)
+end
 
 # Logarithm
 test_approx_eq(log(x, y), Measurement(1.261859507142915, 0.059474298734200806))
