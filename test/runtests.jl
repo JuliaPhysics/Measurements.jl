@@ -71,6 +71,12 @@ test_approx_eq(x/y, Measurement(0.75, 0.04506939094329987))
 test_approx_eq(x/10, Measurement(0.3, 0.01))
 test_approx_eq(1/y, Measurement(0.25, 0.0125))
 test_approx_eq(0/x, Measurement(0))
+test_approx_eq(div(1.2*x, w), Measurement(-7))
+test_approx_eq(div(x, 1.2), Measurement(2))
+test_approx_eq(div(9.4, y), Measurement(2))
+test_approx_eq(fld(1.2*x, w), Measurement(-8))
+test_approx_eq(fld(x, 1.2), Measurement(2))
+test_approx_eq(fld(9.4, y), Measurement(2))
 
 # Inverse
 test_approx_eq(inv(y), 1/y)
@@ -232,6 +238,20 @@ let
     test_approx_eq(frac, x + w - int)
     @test_approx_eq int floor((x + w).val)
 end
+
+for a in (x, y) # Test property of "mod" function
+    b = 10.0*w
+    test_approx_eq(mod(a, b), a - fld(a, b)*b)
+end
+test_approx_eq(mod(y, -3), y + fld(y, -3)*3)
+test_approx_eq(mod(-5.8, x), 0.2 ± 0.2)
+
+for a in (x, y) # Test property of "rem" function
+    b = 10.0*w
+    test_approx_eq(rem(a, b), a - div(a, b)*b)
+end
+test_approx_eq(rem(y, -3), y + div(y, -3)*3)
+test_approx_eq(rem(-5.8, x), -2.8 ± 0.1)
 
 # Dummy call to show
 show(DevNull, x)

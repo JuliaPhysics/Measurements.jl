@@ -13,7 +13,7 @@ import Base: +, -, *, /, inv, ^, exp2, cos, sin, deg2rad, rad2deg, cosd, sind,
              asinh, atan, atan2, atand, atanh, csc, cscd, csch, sec, secd, sech,
              cot, cotd, coth, exp, expm1, exp10, frexp, log, log10, log1p,
              hypot, sqrt, cbrt, abs, sign, copysign, zero, one, erf, erfc,
-             factorial, gamma, lgamma, signbit, modf
+             factorial, gamma, lgamma, signbit, modf, div, fld, mod, rem
 
 export Measurement, ±, stdscore, weightedmean
 
@@ -134,7 +134,7 @@ end
 *(a::Real, b::Measurement) = *(Measurement(a), b)
 *(a::Measurement, b::Real) = *(a, Measurement(b))
 
-# Division: /
+# Division: /, div, fld
 function /(a::Measurement, b::Measurement)
     div = a.val*inv(b.val)
     if div == 0
@@ -146,6 +146,14 @@ function /(a::Measurement, b::Measurement)
 end
 /(a::Real, b::Measurement) = /(Measurement(a), b)
 /(a::Measurement, b::Real) = /(a, Measurement(b))
+
+div(a::Measurement, b::Measurement) = Measurement(div(a.val, b.val))
+div(a::Measurement, b::Real) = div(a, Measurement(b))
+div(a::Real, b::Measurement) = div(Measurement(a), b)
+
+fld(a::Measurement, b::Measurement) = Measurement(fld(a.val, b.val))
+fld(a::Measurement, b::Real) = fld(a, Measurement(b))
+fld(a::Real, b::Measurement) = fld(Measurement(a), b)
 
 # Inverse: inv
 function inv(a::Measurement)
@@ -376,10 +384,26 @@ function lgamma(a::Measurement)
                                abs(a.err*polygamma(0, aval)))...)
 end
 
-# Modulo: modf
+# Modulo: modf, mod, rem
 function modf(a::Measurement)
     frac, int = modf(a.val)
     return (Measurement(frac, a.err), int)
 end
+
+mod(a::Measurement, b::Measurement) =
+    # To calculate the uncertainty, use the property of "mod" function, see
+    # http://docs.julialang.org/en/stable/manual/mathematical-operations/#division-functions
+    # TODO: find a smarter way to calculate the uncertainty, if possible.
+    Measurement(mod(a.val, b.val), (a - fld(a, b)*b).err)
+mod(a::Measurement, b::Real) = mod(a, Measurement(b))
+mod(a::Real, b::Measurement) = mod(Measurement(a), b)
+
+rem(a::Measurement, b::Measurement) =
+    # To calculate the uncertainty, use the property of "rem" function, see
+    # http://docs.julialang.org/en/stable/manual/mathematical-operations/#division-functions
+    # TODO: find a smarter way to calculate the uncertainty, if possible.
+    Measurement(rem(a.val, b.val), (a - div(a, b)*b).err)
+rem(a::Measurement, b::Real) = rem(a, Measurement(b))
+rem(a::Real, b::Measurement) = rem(Measurement(a), b)
 
 end # module
