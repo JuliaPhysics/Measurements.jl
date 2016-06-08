@@ -88,8 +88,13 @@ test_approx_eq(y^(1//2), Measurement(2, 0.05))
 test_approx_eq(2^x, Measurement(8, 0.5545177444479562))
 test_approx_eq(2^y, 2.0^y)
 test_approx_eq(pi^x, Measurement(31.006276680299816, 3.5493811564854525))
-test_approx_eq(e^y, exp(y))
-test_approx_eq(2^x, exp2(x))
+for val in (w, x, y)
+    test_approx_eq(e^val, exp(val))
+end
+for val in (w, x, y)
+    test_approx_eq(exp2(val), 2^val)
+end
+
 
 # rad2deg
 test_approx_eq(rad2deg(x), Measurement(171.88733853924697, 5.729577951308232))
@@ -156,9 +161,6 @@ test_approx_eq(coth(w), 1/tanh(w))
 test_approx_eq(exp(x), Measurement(20.085536923187668, 2.008553692318767))
 test_approx_eq(expm1(y), exp(y) - 1)
 test_approx_eq(exp10(w), 10^w)
-for val in (w, x, y)
-    test_approx_eq(exp2(val), 2^val)
-end
 for val in (w, x, y)
     a, b = frexp(val)
     test_approx_eq(a*2^b, val)
