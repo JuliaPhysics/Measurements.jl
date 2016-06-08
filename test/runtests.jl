@@ -18,6 +18,7 @@ test_approx_eq(weightedmean((w, x, y)),
                Measurement(-0.12584269662921355, 0.028442727788398632))
 
 # Conversion and Promotion
+@test convert(Measurement{Float64}, pi) === pi ± 0
 @test convert(Measurement{Float64}, 3) === 3.0 ± 0.0
 @test convert(Measurement{Float64}, 3 ± 1) === 3.0 ± 1.0
 @test convert(Measurement, x) === x
@@ -39,7 +40,8 @@ test_approx_eq(weightedmean((w, x, y)),
 @test Measurement(π) == π
 @test e == Measurement(e)
 @test isnan(x) == false
-@test isfinite(y) == true
+@test isfinite(y) == true && isfinite(Measurement(Inf)) == false
+@test isinf(Measurement(Inf)) == true && isinf(x) == false
 
 ##### Mathematical Operations
 # Addition
@@ -191,6 +193,13 @@ test_approx_eq(zero(x), Measurement(0))
 test_approx_eq(sign(x), Measurement(1))
 test_approx_eq(sign(-y), Measurement(-1))
 test_approx_eq(sign(Measurement(0, 5)), Measurement(0))
+@test copysign(x, -5) == -x
+@test copysign(x, w) == -x
+@test copysign(5, w) == -5
+@test copysign(1//2, w) == -1//2
+@test copysign(Float32(5), w) == -Float32(5)
+@test copysign(Float64(5), w) == -Float64(5)
+@test copysign(pi, w) == -pi
 
 # One
 test_approx_eq(one(y), Measurement(1))

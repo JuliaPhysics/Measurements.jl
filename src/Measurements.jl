@@ -6,14 +6,14 @@ module Measurements
 # Functions to handle new type
 import Base: show, convert, promote_rule, float
 # Comparison and test operators
-import Base: ==, isless, <, <=, isnan, isfinite
+import Base: ==, isless, <, <=, isnan, isfinite, isinf
 # Mathematical operations to be redefined
 import Base: +, -, *, /, inv, ^, exp2, cos, sin, deg2rad, rad2deg, cosd, sind,
              cosh, sinh, tan, tand, tanh, acos, acosd, acosh, asin, asind,
              asinh, atan, atan2, atand, atanh, csc, cscd, csch, sec, secd, sech,
              cot, cotd, coth, exp, expm1, exp10, log, log10, log1p, hypot, sqrt,
-             cbrt, abs, sign, zero, one, erf, erfc, factorial, gamma, lgamma,
-             signbit, modf
+             cbrt, abs, sign, copysign, zero, one, erf, erfc, factorial, gamma,
+             lgamma, signbit, modf
 
 export Measurement, ±, stdscore, weightedmean
 
@@ -103,6 +103,7 @@ isless(a::Measurement, b::Measurement) = isless(a.val, b.val)
 
 isnan(a::Measurement) = isnan(a.val)
 isfinite(a::Measurement) = isfinite(a.val)
+isinf(a::Measurement) = isinf(a.val)
 
 ##### Mathematical Operations
 # Addition: +
@@ -314,8 +315,16 @@ end
 # Absolute value: abs
 abs(a::Measurement) = Measurement(promote(abs(a.val), a.err)...)
 
-# Sign: sign
+# Sign: sign copysign
 sign(a::Measurement) = Measurement(sign(a.val))
+copysign(a::Measurement, b::Measurement) =
+    Measurement(copysign(a.val, b.val), a.err)
+copysign(a::Measurement, b::Real) = copysign(a, Measurement(b))
+copysign(a::Signed, b::Measurement) = copysign(Measurement(a), b)
+copysign(a::Rational, b::Measurement) = copysign(Measurement(a), b)
+copysign(a::Float32, b::Measurement) = copysign(Measurement(a), b)
+copysign(a::Float64, b::Measurement) = copysign(Measurement(a), b)
+copysign(a::Real, b::Measurement) = copysign(Measurement(a), b)
 
 # Zero: zero
 zero(a::Measurement) = Measurement(zero(a.val))
