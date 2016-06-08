@@ -62,6 +62,7 @@ test_approx_eq(x*y, Measurement(12, 0.7211102550927979))
 test_approx_eq(x*y, y*x) # Commutativity
 test_approx_eq(2x, Measurement(6, 0.2))
 test_approx_eq(x*3, Measurement(9, 0.3))
+test_approx_eq(w*0, Measurement(0))
 test_approx_eq(true*x, x)
 test_approx_eq(y*false, Measurement(0))
 
@@ -69,6 +70,7 @@ test_approx_eq(y*false, Measurement(0))
 test_approx_eq(x/y, Measurement(0.75, 0.04506939094329987))
 test_approx_eq(x/10, Measurement(0.3, 0.01))
 test_approx_eq(1/y, Measurement(0.25, 0.0125))
+test_approx_eq(0/x, Measurement(0))
 
 # Inverse
 test_approx_eq(inv(y), 1/y)

@@ -122,8 +122,12 @@ isinf(a::Measurement) = isinf(a.val)
 # Multiplication: *
 function *(a::Measurement, b::Measurement)
     prod = a.val*b.val
-    return Measurement(promote(prod, abs(prod)*hypot(a.err*inv(a.val),
-                                                     b.err*inv(b.val)))...)
+    if prod == 0
+        return Measurement(zero(prod))
+    else
+        return Measurement(promote(prod, abs(prod)*hypot(a.err*inv(a.val),
+                                                         b.err*inv(b.val)))...)
+    end
 end
 *(a::Bool, b::Measurement) = *(Measurement(a), b)
 *(a::Measurement, b::Bool) = *(a, Measurement(b))
@@ -133,8 +137,12 @@ end
 # Division: /
 function /(a::Measurement, b::Measurement)
     div = a.val*inv(b.val)
-    return Measurement(promote(div, abs(div)*(hypot(a.err*inv(a.val),
-                                                    b.err*inv(b.val))))...)
+    if div == 0
+        return Measurement(zero(div))
+    else
+        return Measurement(promote(div, abs(div)*(hypot(a.err*inv(a.val),
+                                                        b.err*inv(b.val))))...)
+    end
 end
 /(a::Real, b::Measurement) = /(Measurement(a), b)
 /(a::Measurement, b::Real) = /(a, Measurement(b))
