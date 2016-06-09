@@ -1,29 +1,34 @@
 # Measurements
 
-[![Build Status](https://travis-ci.org/giordano/Measurements.jl.svg?branch=master)](https://travis-ci.org/giordano/Measurements.jl) [![Appveyor Build Status on Windows](https://ci.appveyor.com/api/projects/status/u8mg5dlhyb1vjcpe?svg=true)](https://ci.appveyor.com/project/giordano/measurements-jl) [![Coverage Status](https://coveralls.io/repos/github/giordano/Measurements.jl/badge.svg?branch=master)](https://coveralls.io/github/giordano/Measurements.jl?branch=master) [![codecov.io](https://codecov.io/github/giordano/Measurements.jl/coverage.svg?branch=master)](https://codecov.io/github/giordano/Measurements.jl?branch=master)
+[![Build Status](https://travis-ci.org/giordano/Measurements.jl.svg?branch=master)](https://travis-ci.org/giordano/Measurements.jl) [![Appveyor Build Status on Windows](https://ci.appveyor.com/api/projects/status/u8mg5dlhyb1vjcpe?svg=true)](https://ci.appveyor.com/project/giordano/measurements-jl) [![Coverage Status](https://coveralls.io/repos/github/giordano/Measurements.jl/badge.svg?branch=master)](https://coveralls.io/github/giordano/Measurements.jl?branch=master) [![codecov.io](https://codecov.io/github/giordano/Measurements.jl/coverage.svg?branch=master)](https://codecov.io/github/giordano/Measurements.jl?branch=master) [![Measurements](http://pkg.julialang.org/badges/Measurements_0.4.svg)](http://pkg.julialang.org/?pkg=Measurements) [![Measurements](http://pkg.julialang.org/badges/Measurements_0.5.svg)](http://pkg.julialang.org/?pkg=Measurements)
 
 Introduction
 ------------
 
-This module defines a new data type, `Measurement`, that allows you to enter a
-quantity with its uncertainty and
-[propagate errors](https://en.wikipedia.org/wiki/Propagation_of_uncertainty)
-when performing mathematical operations involving `Measurement` objects.
+This package allows you to perform calculations involving numbers with
+uncertainties and easily get the uncertainty according to
+[linear error propagation theory](https://en.wikipedia.org/wiki/Propagation_of_uncertainty).
 
-For those interested in the technical details of the package, `Measurement` is a
-[composite](http://docs.julialang.org/en/stable/manual/types/#composite-types)
-[parametric](http://docs.julialang.org/en/stable/manual/types/#man-parametric-types)
-type, whose definition is:
+### Features List ###
 
-``` julia
-immutable Measurement{T<:Real} <: Real
-    val::T # The value
-    err::T # The uncertainty, assumed to be standard deviation
-end
-```
+* Support for most of basic mathematical operations available in Julia involving
+  real numbers with uncertainties.  All existing functions that accept `Real`
+  arguments and internally use already supported functions can in turn perform
+  calculations involving numbers with uncertainties without being redefined.
+  This greatly expands the power of `Measurements.jl` with no to little overhead
+  for the users
+* Support for
+  [arbitrary precision](http://docs.julialang.org/en/stable/manual/integers-and-floating-point-numbers/#arbitrary-precision-arithmetic)
+  numbers with uncertainties (though it may not be very useful for quantities
+  that are intrinsically imprecise)
+* Limited support for complex numbers with uncertainties
+* Functions to calculate
+  [standard score](https://en.wikipedia.org/wiki/Standard_score) and
+  [weighted mean](https://en.wikipedia.org/wiki/Weighted_arithmetic_mean)
+* Easy way to attach the uncertainty to a number using `±` sign
 
-Users that want to hack into `Measurements.jl` should use objects with type that
-is a subtype of `Real`.
+Further features are expected to come in the future, see the section "How Can I
+Help?" and the TODO list below.
 
 Installation
 ------------
@@ -49,8 +54,8 @@ After installing the package, you can start using it with
 using Measurements
 ```
 
-`Measurement` objects can be defined with either one of the two following
-constructors:
+The module defines a new `Measurement` data type.  `Measurement` objects can be
+defined with either one of the two following constructors:
 
 ``` julia
 Measurement(value, uncertainty)
@@ -59,27 +64,41 @@ value ± uncertainty
 
 where `value` and `uncertainty` are both subtype of `Real`.
 `Measurement(value)` creates a `Measurement` object that doesn’t have
-uncertainty, like mathematical constants.  See below for further examples.
+uncertainty, like mathematical constants.  See below for further examples.  Some
+keyboard layouts provide an easy way to type the `±` sign, if your does not,
+remember you can insert it in Julia REPL with `\pm` followed by `TAB` key.
 
-Many basic mathematical operations are redefined to accept `Measurement` type
+For those interested in the technical details of the package, `Measurement` is a
+[composite](http://docs.julialang.org/en/stable/manual/types/#composite-types)
+[parametric](http://docs.julialang.org/en/stable/manual/types/#man-parametric-types)
+type, whose definition is:
+
+``` julia
+immutable Measurement{T<:Real} <: Real
+    val::T # The value
+    err::T # The uncertainty, assumed to be standard deviation
+end
+```
+
+Users that want to hack into `Measurements.jl` should use objects with type that
+is a subtype of `Real`.
+
+Many basic mathematical operations are instructed to accept `Measurement` type
 and uncertainty is calculated exactly using analityc expressions of function
 derivatives.  In addition, being `Measurement` a subtype of `Real`,
 `Measurement` objects can be used in any function taking `Real` arguments
-without redefining it, and calculation of uncertainty will be exact.  This
-greatly expands the power of `Measurements.jl` with little overhead for the
-users.
+without redefining it, and calculation of uncertainty will be exact.
 
 **NOTE 1:** This module currently doesn’t take into account correlation between
 operands when calculating uncertainties (see TODO list below), so operations
-like `x+x`,`x*x`, `sin(x)/cos(x)` will have inaccurate uncertainties (usually
-overestimated).  Use expressions not involving correlated variables when
-possible (e.g., `2x` in place of `x+x`, `x^2` for `x*x`, and `tan(x)` for
-`sin(x)/cos(x)`).
+like `x+x`,`x*x`, `sin(x)/cos(x)` will have inaccurate uncertainties.  Use
+expressions not involving correlated variables when possible (e.g., `2x` in
+place of `x+x`, `x^2` for `x*x`, and `tan(x)` instead of `sin(x)/cos(x)`).
 
-**NOTE 2:** Currently this module supports real-only measurements.  It is
+**NOTE 2:** Currently this module fully supports real-only measurements.  It is
 possible to create a `Complex` measurement with `complex(Measurement(a, b),
-Measurement(c, d))` and error propagation should work for a few basic operations
-like addition and subtraction, but no work has been done to further support
+Measurement(c, d))` and error propagation should work for some basic operations
+like arithmentic operations, but no active work has been done to further support
 complex quantities with attached uncertainty.
 
 ### Standard Score ###
