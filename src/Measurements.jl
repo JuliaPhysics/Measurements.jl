@@ -6,14 +6,14 @@ module Measurements
 # Functions to handle new type
 import Base: show, convert, promote_rule, float
 # Comparison and test operators
-import Base: ==, isless, <, <=, isnan, isfinite, isinf
+import Base: ==, isless, <, <=, isnan, isfinite, isinf, isinteger
 # Mathematical operations to be redefined
 import Base: +, -, *, /, inv, ^, exp2, cos, sin, deg2rad, rad2deg, cosd, sind,
              cosh, sinh, tan, tand, tanh, acos, acosd, acosh, asin, asind,
              asinh, atan, atan2, atand, atanh, csc, cscd, csch, sec, secd, sech,
              cot, cotd, coth, exp, expm1, exp10, frexp, log, log10, log1p,
              hypot, sqrt, cbrt, abs, sign, copysign, zero, one, erf, erfc,
-             factorial, gamma, lgamma, signbit, modf, div, fld, mod, rem
+             factorial, gamma, lgamma, signbit, modf, div, fld, mod, rem, eps
 
 export Measurement, ±, stdscore, weightedmean
 
@@ -42,6 +42,7 @@ convert{T<:Real}(::Type{Measurement{T}}, a::Measurement) =
     Measurement{T}(a.val, a.err)
 convert(::Type{Measurement}, a::Measurement) = a
 convert(::Type{Measurement}, a::Real) = Measurement(a)
+convert(::Type{Signed}, a::Measurement) = convert(Signed, a.val)
 
 float{T<:AbstractFloat}(a::Measurement{T}) = a
 float(a::Measurement) = Measurement(float(a.val), float(a.err))
@@ -104,6 +105,7 @@ isless(a::Measurement, b::Measurement) = isless(a.val, b.val)
 isnan(a::Measurement) = isnan(a.val)
 isfinite(a::Measurement) = isfinite(a.val)
 isinf(a::Measurement) = isinf(a.val)
+isinteger(a::Measurement) = isinteger(a.val)
 
 ##### Mathematical Operations
 # Addition: +
@@ -405,5 +407,9 @@ rem(a::Measurement, b::Measurement) =
     Measurement(rem(a.val, b.val), (a - div(a, b)*b).err)
 rem(a::Measurement, b::Real) = rem(a, Measurement(b))
 rem(a::Real, b::Measurement) = rem(Measurement(a), b)
+
+# Machine precision: eps
+eps{T<:Real}(::Type{Measurement{T}}) = eps(T)
+eps{T<:Real}(a::Measurement{T}) = eps(a.val)
 
 end # module

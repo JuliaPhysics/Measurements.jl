@@ -3,11 +3,17 @@ using Base.Test
 
 test_approx_eq(a::Measurement, b::Measurement) =
     (@test_approx_eq(a.val, b.val) ; @test_approx_eq(a.err, b.err))
+test_approx_eq{T1<:Real,T2<:Real}(a::Complex{Measurement{T1}}, b::Complex{Measurement{T2}}) =
+    (@test_approx_eq(real(a), real(b)) ; @test_approx_eq(imag(a), imag(b)))
+test_approx_eq{T1<:Real,T2<:Real}(a::Complex{Measurement{T1}}, b::Measurement{T2}) =
+    test_approx_eq(a, complex(b))
+test_approx_eq{T1<:Real,T2<:Real}(a::Measurement{T1}, b::Complex{Measurement{T2}}) =
+    test_approx_eq(complex(a), b)
 
 w = -0.5 ± 0.03
 x = 3 ± 0.1
 y = 4 ± 0.2
-z = complex(3.0 ± 0.1)
+z = complex(x)
 
 # Standard Score
 test_approx_eq(stdscore(x, y), -10 ± 2)
@@ -24,6 +30,7 @@ test_approx_eq(weightedmean((w, x, y)),
 @test convert(Measurement, x) === x
 @test convert(Measurement, pi) === pi ± 0
 @test convert(Measurement, 3) === 3 ± 0
+@test convert(Signed, x) === 3
 @test float(3 ± 1) === 3.0 ± 1.0
 @test float(x) === x
 @test promote(x, complex(7)) === (complex(3.0 ± 0.1),
@@ -42,6 +49,7 @@ test_approx_eq(weightedmean((w, x, y)),
 @test isnan(x) == false
 @test isfinite(y) == true && isfinite(Measurement(Inf)) == false
 @test isinf(Measurement(Inf)) == true && isinf(x) == false
+@test (isinteger(x) == true && isinteger(w) == false)
 
 ##### Mathematical Operations
 # Addition
@@ -100,7 +108,8 @@ end
 for val in (w, x, y)
     test_approx_eq(exp2(val), 2^val)
 end
-
+test_approx_eq(z^2.5, x^2.5)
+test_approx_eq(z^3, x*x*x) # XXX: currently, x*x*x != x^3
 
 # rad2deg
 test_approx_eq(rad2deg(x), Measurement(171.88733853924697, 5.729577951308232))
@@ -252,6 +261,10 @@ for a in (x, y) # Test property of "rem" function
 end
 test_approx_eq(rem(y, -3), y + div(y, -3)*3)
 test_approx_eq(rem(-5.8, x), -2.8 ± 0.1)
+
+# Machine precisionx
+@test_approx_eq eps(Measurement{Float64}) eps(Float64)
+@test_approx_eq eps(x) eps(x.val)
 
 # Dummy call to show
 show(DevNull, x)
