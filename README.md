@@ -165,22 +165,26 @@ the following cases:
 How Can I Help?
 ---------------
 
-Have a look at the TODO list below, feel free to implement those features and
-send a pull request.  In addition, you can instruct more mathematical functions
-to accept `Measurement` type arguments.  Bug reports and wishlists are welcome
-as well.
+Have a look at the TODO list below and the bug list at
+https://github.com/giordano/Measurements.jl/issues, feel free to implement those
+features and send a pull request.  In addition, you can instruct more
+mathematical functions to accept `Measurement` type arguments.  Bug reports and
+wishlists are welcome as well.
 
 TODO
 ----
 
 * Add pretty printing: optionally print only the relevant significant digits
+  ([issue #5](https://github.com/giordano/Measurements.jl/issues/5))
 * Add support for correlation, so that `x-x == zero(x)`, `x*x == x^2`, `tan(x)
-  == sin(x)/cos(x)`, etc...
+  == sin(x)/cos(x)`,
+  etc... ([issue #3](https://github.com/giordano/Measurements.jl/issues/3))
 * Extend to generic functions, also those not taking `Measurement` type
-  arguments.  This should be possible with a macro like `@macroname
-  any_function(4.3 ± 0.4)`.  This calculates the value of `any_function(4.3)`
-  and the approximated uncertainty using numerical derivatives or so, and
-  finally construct the `Measurement` object `any_function(4.3) ± uncertainty`
+  arguments.  This should be possible with a macro like `@macroname function(4.3
+  ± 0.4)`.  This calculates the value of `function(4.3)` and the approximated
+  uncertainty using numerical derivatives or so, and finally construct the
+  `Measurement` object `function(4.3) ± uncertainty`
+  ([issue #4](https://github.com/giordano/Measurements.jl/issues/4))
 * Support error propagation for complex measurements
 * Other suggestions welcome `:-)`
 
