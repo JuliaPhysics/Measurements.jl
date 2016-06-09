@@ -13,7 +13,8 @@ New Features
   using
   [inverse-variance weighting](https://en.wikipedia.org/wiki/Inverse-variance_weighting).
 * New methods: `modf`, `exp10`, `isnan`, `isfinite`, `isinf`, `isinteger`,
-  `copysign`, `frexp`, `ldexp`, `div`, `fld`, `mod`, `rem`, `eps`.
+  `copysign`, `frexp`, `ldexp`, `div`, `cld`, `fld`, `mod`, `rem`, `mod2pi`,
+  `eps`.
 
 Breaking Changes
 ----------------

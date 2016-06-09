@@ -14,7 +14,8 @@ import Base: +, -, *, /, inv, ^, exp2, cos, sin, deg2rad, rad2deg, cosd, sind,
              cot, cotd, coth, exp, expm1, exp10, frexp, log, log10, log1p,
              hypot, sqrt, cbrt, abs, sign, copysign, zero, one, erf, erfc,
              factorial, gamma, lgamma, signbit, modf, div, fld, mod, rem, eps,
-             ldexp, maxintfloat, nextfloat, round, floor, ceil, trunc
+             ldexp, maxintfloat, nextfloat, round, floor, ceil, trunc, cld,
+             mod2pi
 
 export Measurement, ±, stdscore, weightedmean
 
@@ -157,6 +158,10 @@ div(a::Real, b::Measurement) = div(Measurement(a), b)
 fld(a::Measurement, b::Measurement) = Measurement(fld(a.val, b.val))
 fld(a::Measurement, b::Real) = fld(a, Measurement(b))
 fld(a::Real, b::Measurement) = fld(Measurement(a), b)
+
+cld(a::Measurement, b::Measurement) = Measurement(cld(a.val, b.val))
+cld(a::Measurement, b::Real) = cld(a, Measurement(b))
+cld(a::Real, b::Measurement) = cld(Measurement(a), b)
 
 # Inverse: inv
 function inv(a::Measurement)
@@ -389,7 +394,7 @@ function lgamma(a::Measurement)
                                abs(a.err*polygamma(0, aval)))...)
 end
 
-# Modulo: modf, mod, rem
+# Modulo: modf, mod, rem, mod2pi
 function modf(a::Measurement)
     frac, int = modf(a.val)
     return (Measurement(frac, a.err), int)
@@ -410,6 +415,8 @@ rem(a::Measurement, b::Measurement) =
     Measurement(rem(a.val, b.val), (a - div(a, b)*b).err)
 rem(a::Measurement, b::Real) = rem(a, Measurement(b))
 rem(a::Real, b::Measurement) = rem(Measurement(a), b)
+
+mod2pi(a::Measurement) = Measurement(mod2pi(a.val), a.err)
 
 # Machine precision: eps, nextfloat, maxintfloat
 eps{T<:Real}(::Type{Measurement{T}}) = eps(T)

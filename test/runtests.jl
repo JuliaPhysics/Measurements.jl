@@ -85,6 +85,9 @@ test_approx_eq(div(9.4, y), Measurement(2))
 test_approx_eq(fld(1.2*x, w), Measurement(-8))
 test_approx_eq(fld(x, 1.2), Measurement(2))
 test_approx_eq(fld(9.4, y), Measurement(2))
+test_approx_eq(cld(1.2*x, w), Measurement(-7))
+test_approx_eq(cld(x, 1.2), Measurement(3))
+test_approx_eq(cld(9.4, y), Measurement(3))
 
 # Inverse
 test_approx_eq(inv(y), 1/y)
@@ -264,6 +267,7 @@ for a in (x, y) # Test property of "rem" function
 end
 test_approx_eq(rem(y, -3), y + div(y, -3)*3)
 test_approx_eq(rem(-5.8, x), -2.8 ± 0.1)
+test_approx_eq(mod2pi(pi*x), Measurement(pi, 0.1*pi))
 
 # Machine precisionx
 @test_approx_eq eps(Measurement{Float64}) eps(Float64)
