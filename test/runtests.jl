@@ -180,6 +180,9 @@ for val in (w, x, y)
     a, b = frexp(val)
     test_approx_eq(a*2^b, val)
 end
+for val in (w, x, y)
+    test_approx_eq(ldexp(val, 3), val*2^3)
+end
 
 # Logarithm
 test_approx_eq(log(x, y), Measurement(1.261859507142915, 0.059474298734200806))
@@ -265,6 +268,18 @@ test_approx_eq(rem(-5.8, x), -2.8 ± 0.1)
 # Machine precisionx
 @test_approx_eq eps(Measurement{Float64}) eps(Float64)
 @test_approx_eq eps(x) eps(x.val)
+@test_approx_eq nextfloat(x) nextfloat(x.val)
+@test_approx_eq maxintfloat(x) maxintfloat(typeof(x.val))
+
+# Rounding
+@test_approx_eq round(w) round(w.val)
+@test_approx_eq round(Int, w) round(Int, w.val)
+@test_approx_eq floor(w) floor(w.val)
+@test_approx_eq floor(Int, w) floor(Int, w.val)
+@test_approx_eq ceil(w) ceil(w.val)
+@test_approx_eq ceil(Int, w) ceil(Int, w.val)
+@test_approx_eq trunc(w) trunc(w.val)
+@test_approx_eq trunc(Int, w) trunc(Int, w.val)
 
 # Dummy call to show
 show(DevNull, x)

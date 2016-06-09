@@ -13,7 +13,8 @@ import Base: +, -, *, /, inv, ^, exp2, cos, sin, deg2rad, rad2deg, cosd, sind,
              asinh, atan, atan2, atand, atanh, csc, cscd, csch, sec, secd, sech,
              cot, cotd, coth, exp, expm1, exp10, frexp, log, log10, log1p,
              hypot, sqrt, cbrt, abs, sign, copysign, zero, one, erf, erfc,
-             factorial, gamma, lgamma, signbit, modf, div, fld, mod, rem, eps
+             factorial, gamma, lgamma, signbit, modf, div, fld, mod, rem, eps,
+             ldexp, maxintfloat, nextfloat, round, floor, ceil, trunc
 
 export Measurement, ±, stdscore, weightedmean
 
@@ -276,7 +277,7 @@ function coth(a::Measurement)
     return Measurement(promote(coth(a.val), abs(a.err*cscha*cscha))...)
 end
 
-# Exponentials: exp, expm1, exp2, frexp
+# Exponentials: exp, expm1, exp2, frexp, ldexp
 function exp(a::Measurement)
     val = exp(a.val)
     return Measurement(promote(val, abs(val*a.err))...)
@@ -294,6 +295,8 @@ function frexp(a::Measurement)
     x, y = frexp(a.val)
     return (Measurement(x, a.err/2^y), y)
 end
+
+ldexp(a::Measurement, e::Integer) = Measurement(ldexp(a.val, e), ldexp(a.err, e))
 
 # Logarithm: log
 function log(a::Measurement, b::Measurement)
@@ -408,8 +411,22 @@ rem(a::Measurement, b::Measurement) =
 rem(a::Measurement, b::Real) = rem(a, Measurement(b))
 rem(a::Real, b::Measurement) = rem(Measurement(a), b)
 
-# Machine precision: eps
+# Machine precision: eps, nextfloat, maxintfloat
 eps{T<:Real}(::Type{Measurement{T}}) = eps(T)
 eps{T<:Real}(a::Measurement{T}) = eps(a.val)
+
+nextfloat(a::Measurement) = nextfloat(a.val)
+
+maxintfloat{T<:Real}(::Type{Measurement{T}}) = maxintfloat(T)
+
+# Rounding: round, floor, ceil, trunc
+round(a::Measurement) = round(a.val)
+round{T}(::Type{T}, a::Measurement) = round(T, a.val)
+floor(a::Measurement) = floor(a.val)
+floor{T}(::Type{T}, a::Measurement) = floor(T, a.val)
+ceil(a::Measurement) = ceil(a.val)
+ceil{T}(::Type{T}, a::Measurement) = ceil(T, a.val)
+trunc(a::Measurement) = trunc(a.val)
+trunc{T}(::Type{T}, a::Measurement) = trunc(T, a.val)
 
 end # module

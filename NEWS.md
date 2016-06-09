@@ -4,20 +4,22 @@ vX.Y.Z (201?-??-??)
 New Features
 ------------
 
-* `Measurement` is now subtype of `Real` ([#1]).  In order to define complex
-  `Measurement`s you can use `complex(Measurement(a, b), Measurement(c, d))` so
-  real and imaginary parts of the number have each their uncertainty.
+* `Measurement` is now subtype of `Real`
+  ([#1](https://github.com/giordano/Measurements.jl/issues/1)).  In order to
+  define complex `Measurement`s you can use `complex(Measurement(a, b),
+  Measurement(c, d))` so real and imaginary parts of the number have each their
+  uncertainty.
 * New `weightedmean` function for calculating the weighted mean of measurements
   using
   [inverse-variance weighting](https://en.wikipedia.org/wiki/Inverse-variance_weighting).
 * New methods: `modf`, `exp10`, `isnan`, `isfinite`, `isinf`, `isinteger`,
-  `copysign`, `frexp`, `div`, `fld`, `mod`, `rem`, `eps`.
+  `copysign`, `frexp`, `ldexp`, `div`, `fld`, `mod`, `rem`, `eps`.
 
 Breaking Changes
 ----------------
 
 * Function `Constant` has been removed as it was mostly redundant and badly
-  capitalized ([#2]).
+  capitalized ([#2](https://github.com/giordano/Measurements.jl/issues/2)).
 
 Bug Fixes
 ---------
