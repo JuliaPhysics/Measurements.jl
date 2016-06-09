@@ -269,7 +269,7 @@ test_approx_eq(rem(-5.8, x), -2.8 ± 0.1)
 @test_approx_eq eps(Measurement{Float64}) eps(Float64)
 @test_approx_eq eps(x) eps(x.val)
 @test_approx_eq nextfloat(x) nextfloat(x.val)
-@test_approx_eq maxintfloat(x) maxintfloat(typeof(x.val))
+@test_approx_eq maxintfloat(Measurement{Float64}) maxintfloat(Float64)
 
 # Rounding
 @test_approx_eq round(w) round(w.val)
