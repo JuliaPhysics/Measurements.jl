@@ -12,9 +12,9 @@ New Features
 * New `weightedmean` function for calculating the weighted mean of measurements
   using
   [inverse-variance weighting](https://en.wikipedia.org/wiki/Inverse-variance_weighting).
-* New methods: `modf`, `exp10`, `isnan`, `isfinite`, `isinf`, `isinteger`,
-  `copysign`, `frexp`, `ldexp`, `div`, `cld`, `fld`, `mod`, `rem`, `mod2pi`,
-  `eps`.
+* New mathematical operations supported: `modf`, `exp10`, `isnan`, `isfinite`,
+  `isinf`, `isinteger`, `copysign`, `frexp`, `ldexp`, `div`, `cld`, `fld`,
+  `mod`, `rem`, `mod2pi`, `eps`, `flipsign`, `erfinv`, `erfcinv`, `erfcx`.
 
 Breaking Changes
 ----------------
@@ -42,3 +42,10 @@ New Features
   can also employ the shorter syntax `a ± b`.
 * The function `stdscore` to calculate the
   [standard score](https://en.wikipedia.org/wiki/Standard_score) is available.
+* Mathematical operation supported: `+`, `-`, `*`, `/`, `inv`, `^`, `exp2`,
+  `cos`, `sin`, `deg2rad`, `rad2deg`, `cosd`, `sind`, `cosh`, `sinh`, `tan`,
+  `tand`, `tanh`, `acos`, `acosd`, `acosh`, `asin`, `asind`, `asinh`, `atan`,
+  `atan2`, `atand`, `atanh`, `csc`, `cscd`, `csch`, `sec`, `secd`, `sech`,
+  `cot`, `cotd`, `coth`, `exp`, `expm1`, `log`, `log10`, `log1p`, `hypot`,
+  `sqrt`, `cbrt`, `abs`, `sign`, `zero`, `one`, `erf`, `erfc`, `factorial`,
+  `gamma`, `lgamma`, `signbit`.

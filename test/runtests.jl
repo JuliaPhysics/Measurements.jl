@@ -232,13 +232,23 @@ test_approx_eq(sign(Measurement(0, 5)), Measurement(0))
 @test copysign(Float32(5), w) == -Float32(5)
 @test copysign(Float64(5), w) == -Float64(5)
 @test copysign(pi, w) == -pi
+@test flipsign(x, -5) == -x
+@test flipsign(w, w) == -w
+@test flipsign(-5, w) == 5
+@test flipsign(Float32(-5), w) == Float32(5)
+@test flipsign(Float64(-5), w) == Float64(5)
+@test flipsign(pi, w) == -pi
 
 # One
 test_approx_eq(one(y), Measurement(1))
 
 # Error function
 test_approx_eq(erf(x), Measurement(0.9999779095030014, 1.3925305194674787e-5))
+test_approx_eq(erfinv(erf(w)), w)
 test_approx_eq(erfc(w), 1 - erf(w))
+test_approx_eq(erfcinv(erfc(w)), w)
+# XXX: currently erfcx(x) != exp(x^2)*erfc(x)
+test_approx_eq(erfcx(x), Measurement(0.17900115118138998, 0.005437226000717277))
 
 # Factorial and gamma
 test_approx_eq(factorial(x), Measurement(6, 0.7536706010590813))

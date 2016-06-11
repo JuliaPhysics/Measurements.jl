@@ -15,7 +15,7 @@ import Base: +, -, *, /, inv, ^, exp2, cos, sin, deg2rad, rad2deg, cosd, sind,
              hypot, sqrt, cbrt, abs, sign, copysign, zero, one, erf, erfc,
              factorial, gamma, lgamma, signbit, modf, div, fld, mod, rem, eps,
              ldexp, maxintfloat, nextfloat, round, floor, ceil, trunc, cld,
-             mod2pi
+             mod2pi, flipsign, erfinv, erfcinv, erfcx
 
 export Measurement, ±, stdscore, weightedmean
 
@@ -346,8 +346,9 @@ end
 # Absolute value: abs
 abs(a::Measurement) = Measurement(promote(abs(a.val), a.err)...)
 
-# Sign: sign copysign
+# Sign: sign copysign flipsign
 sign(a::Measurement) = Measurement(sign(a.val))
+
 copysign(a::Measurement, b::Measurement) =
     Measurement(copysign(a.val, b.val), a.err)
 copysign(a::Measurement, b::Real) = copysign(a, Measurement(b))
@@ -357,22 +358,52 @@ copysign(a::Float32, b::Measurement) = copysign(Measurement(a), b)
 copysign(a::Float64, b::Measurement) = copysign(Measurement(a), b)
 copysign(a::Real, b::Measurement) = copysign(Measurement(a), b)
 
+flipsign(a::Measurement, b::Measurement) =
+    Measurement(flipsign(a.val, b.val), a.err)
+flipsign(a::Measurement, b::Real) = flipsign(a, Measurement(b))
+flipsign(a::Signed, b::Measurement) = flipsign(Measurement(a), b)
+flipsign(a::Float32, b::Measurement) = flipsign(Measurement(a), b)
+flipsign(a::Float64, b::Measurement) = flipsign(Measurement(a), b)
+flipsign(a::Real, b::Measurement) = flipsign(Measurement(a), b)
+
 # Zero: zero
 zero(a::Measurement) = Measurement(zero(a.val))
 
 # One: one
 one(a::Measurement) = Measurement(one(a.val))
 
-# Error function: erf erfc
+# Error function: erf erfinv erfc erfcinv erfcx
 function erf(a::Measurement)
     aval = a.val
     return Measurement(promote(erf(aval),
                                twooversqrtpi*exp(-aval*aval)*a.err)...)
 end
+
+function erfinv(a::Measurement)
+    result = erfinv(a.val)
+    # For the derivative, see http://mathworld.wolfram.com/InverseErf.html
+    return Measurement(promote(result,
+                               0.5*sqrt(pi)*exp(result*result)*a.err)...)
+end
+
 function erfc(a::Measurement)
     aval = a.val
     return Measurement(promote(erfc(aval),
                                twooversqrtpi*exp(-aval*aval)*a.err)...)
+end
+
+function erfcinv(a::Measurement)
+    result = erfcinv(a.val)
+    # For the derivative, see http://mathworld.wolfram.com/InverseErfc.html
+    return Measurement(promote(result,
+                               0.5*sqrt(pi)*exp(result*result)*a.err)...)
+end
+
+function erfcx(a::Measurement)
+    aval = a.val
+    result = erfcx(aval)
+    return Measurement(promote(result,
+                               abs(2*aval*result - twooversqrtpi)*a.err)...)
 end
 
 # Factorial and gamma: factorial gamma lgamma
