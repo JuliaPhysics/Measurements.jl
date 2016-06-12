@@ -25,6 +25,7 @@ test_approx_eq(weightedmean((w, x, y)),
 
 # Conversion and Promotion
 @test convert(Measurement{Float64}, pi) === pi ± 0
+@test convert(Measurement{Float64}, 1//2) === 0.5 ± 0
 @test convert(Measurement{Float64}, 3) === 3.0 ± 0.0
 @test convert(Measurement{Float64}, 3 ± 1) === 3.0 ± 1.0
 @test convert(Measurement, x) === x
@@ -34,6 +35,8 @@ test_approx_eq(weightedmean((w, x, y)),
 @test convert(Signed, x) === 3
 @test float(3 ± 1) === 3.0 ± 1.0
 @test float(x) === x
+@test promote(Measurement{Float32}(3, 0.5), Measurement{Float64}(4, 0)) ===
+    (Measurement{Float64}(3, 0.5), Measurement{Float64}(4, 0))
 @test promote(x, complex(7)) === (complex(3.0 ± 0.1),
                                   complex(Measurement(7.0)))
 @test promote(complex(0, 1 ± 0), 2.1 ± 0.2) ===

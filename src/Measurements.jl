@@ -50,7 +50,6 @@ convert(::Type{Measurement}, a::Real) = Measurement(a)
 convert(::Type{Signed}, a::Measurement) = convert(Signed, a.val)
 
 float{T<:AbstractFloat}(a::Measurement{T}) = a
-float(a::Measurement) = Measurement(float(a.val), float(a.err))
 
 promote_rule{T<:AbstractFloat, S<:Real}(::Type{Measurement{T}}, ::Type{S}) =
     Measurement{promote_type(T, S)}
