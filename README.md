@@ -11,17 +11,22 @@ uncertainties and easily get the uncertainty according to
 
 ### Features List ###
 
-* Support for most of basic mathematical operations available in Julia involving
-  real numbers with uncertainties.  All existing functions that accept
-  `AbstractFloat` arguments and internally use already supported Julia functions
-  can in turn perform calculations involving numbers with uncertainties without
+* Support for most of mathematical operations available in Julia involving real
+  numbers with uncertainties.  All existing functions that accept
+  `AbstractFloat` arguments and internally use already supported functions can
+  in turn perform calculations involving numbers with uncertainties without
   being redefined.  This greatly expands the power of `Measurements.jl` with no
   to little overhead for the users
 * Support for
   [arbitrary precision](http://docs.julialang.org/en/stable/manual/integers-and-floating-point-numbers/#arbitrary-precision-arithmetic)
-  numbers with uncertainties (though it may not be very useful for quantities
+  numbers with uncertainties (though this may not be very useful for quantities
   that are intrinsically imprecise)
 * Limited support for complex numbers with uncertainties
+* Propagate uncertainty for any real function of one real argument (even
+  functions based on
+  [C/Fortran calls](http://docs.julialang.org/en/stable/manual/calling-c-and-fortran-code/)),
+  using new `@uncertain`
+  [macro](http://docs.julialang.org/en/stable/manual/metaprogramming/)
 * Functions to calculate
   [standard score](https://en.wikipedia.org/wiki/Standard_score) and
   [weighted mean](https://en.wikipedia.org/wiki/Weighted_arithmetic_mean)
@@ -87,11 +92,13 @@ end
 Users that want to hack into `Measurements.jl` should use objects with type that
 is a subtype of `AbstractFloat`.
 
-Many basic mathematical operations are instructed to accept `Measurement` type
-and uncertainty is calculated exactly using analityc expressions of function
-derivatives.  In addition, being `Measurement` a subtype of `AbstractFloat`,
-`Measurement` objects can be used in any function taking `AbstractFloat`
-arguments without redefining it, and calculation of uncertainty will be exact.
+Many basic mathematical operations are instructed, by
+[operator overloading](https://en.wikipedia.org/wiki/Operator_overloading), to
+accept `Measurement` type and uncertainty is calculated exactly using analityc
+expressions of function derivatives.  In addition, being `Measurement` a subtype
+of `AbstractFloat`, `Measurement` objects can be used in any function taking
+`AbstractFloat` arguments without redefining it, and calculation of uncertainty
+will be exact.
 
 **NOTE 1:** This package currently doesn’t take into account correlation between
 operands when calculating uncertainties (see TODO list below), so operations
@@ -107,6 +114,15 @@ complex quantities with attached uncertainty.
 
 **NOTE 3:** Loading the module with `using Measurements` in Julia 0.4 will emit
 a harmless warning, you can ignore it.  The warning goes away in Julia 0.5.
+
+### Propagate Uncertainty for Arbitrary Functions ###
+
+The package provides a new `@uncertain` macro that further extends the power of
+this package.  It allows you to propagate uncertainty in arbitrary real
+functions, including those based on C/Fortran calls, that accept one real
+argument.  The macro exploits `derivative` function from
+[`Calculus`](https://github.com/johnmyleswhite/Calculus.jl) package in order to
+perform numerical differentiation.
 
 ### Standard Score ###
 
@@ -155,6 +171,39 @@ atan2(y, x)
 # => 1.0411291003154137 ± 0.07141014208254456
 ```
 
+### `@uncertain` Macro ###
+
+Macro `@uncertain` can be used to propagate uncertainty in an arbitrary real
+function of a real argument, even in functions not natively supported by this
+package.
+
+``` julia
+@uncertain zeta(2 ± 0.13)
+# => 1.6449340668482273 ± 0.12188127308075564
+```
+
+The macro works with functions calling C/Fortran functions as well.  Consider
+the following example:
+
+``` julia
+# Define a Julia function
+f(x) = -x*x
+# Define a C pointer to "f" function, just to show that "@uncertain" works
+# with "ccall"
+ptr = cfunction(f, Cdouble, (Cdouble,))
+# Define a new function that uses a "ccall".  In the end, this involute g(x)
+# function computes exp(-x^2)
+g(x) = exp(ccall(ptr, Cdouble, (Cdouble,), x))
+# Compare result of using "@uncertain" macro with directly calculating exp(-x^2)
+x = 0.97 ± 0.023
+@uncertain g(x)
+# => 0.3902764284635212 ± 0.017414134237825774
+exp(-x^2)
+# => 0.3902764284635212 ± 0.017414134238042316
+```
+
+### `stdscore` Function ###
+
 You can get the distance in number of standard deviations between a measurement
 and its expected value (this can be with or without uncertainty) using
 `stdscore`:
@@ -165,6 +214,8 @@ stdscore(1.3 ± 0.12, 1)
 stdscore(4.7 ± 0.58, 5 ± 0.01)
 # => -0.5172413793103445 ± 0.017241379310344827
 ```
+
+### `weightedmean` Function ###
 
 Calculate the weighted and arithmetic means of your set of measurements with
 `weightedmean` and `mean` respectively:
@@ -205,12 +256,6 @@ TODO
 * Add support for correlation, so that `x-x == zero(x)`, `x*x == x^2`, `tan(x)
   == sin(x)/cos(x)`,
   etc... ([issue #3](https://github.com/giordano/Measurements.jl/issues/3))
-* Extend to generic functions, also those not taking `Measurement` type
-  arguments.  This should be possible with a macro like `@macroname function(4.3
-  ± 0.4)`.  This calculates the value of `function(4.3)` and the approximated
-  uncertainty using numerical derivatives or so, and finally construct the
-  `Measurement` object `function(4.3) ± uncertainty`
-  ([issue #4](https://github.com/giordano/Measurements.jl/issues/4))
 * Support error propagation for complex measurements
 * Other suggestions welcome `:-)`
 

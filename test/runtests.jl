@@ -328,3 +328,10 @@ test_approx_eq_eps(@uncertain(tan(x)), tan(x), 2e-11)
 test_approx_eq_eps(@uncertain((a -> a + a + a)(x)), 3x, 3e-12)
 test_approx_eq(@uncertain(zeta(x)),
                Measurement(1.2020569031595951, 0.019812624290876782))
+let
+    # Test with a "ccall"
+    f(x) = x*x
+    ptr = cfunction(f, Cdouble, (Cdouble,))
+    g(x) = ccall(ptr, Cdouble, (Cdouble,), x)*x
+    test_approx_eq_eps(@uncertain(g(x)), x^3, 4e-11)
+end
