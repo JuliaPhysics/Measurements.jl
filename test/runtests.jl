@@ -9,6 +9,8 @@ test_approx_eq{T1<:Real,T2<:Real}(a::Complex{Measurement{T1}}, b::Measurement{T2
     test_approx_eq(a, complex(b))
 test_approx_eq{T1<:Real,T2<:Real}(a::Measurement{T1}, b::Complex{Measurement{T2}}) =
     test_approx_eq(complex(a), b)
+test_approx_eq_eps(a::Measurement, b::Measurement, tol::Real) =
+    (@test_approx_eq_eps(a.val, b.val, tol) ; @test_approx_eq_eps(a.err, b.err, tol))
 
 w = -0.5 ± 0.03
 x = 3 ± 0.1
@@ -320,3 +322,9 @@ test_approx_eq(mean((w, x, y)), (w + x + y)/3)
 
 # sort
 @test sort([y, w, x]) == [w, x, y]
+
+##### Test @uncertain macro
+test_approx_eq_eps(@uncertain(tan(x)), tan(x), 2e-11)
+test_approx_eq_eps(@uncertain((a -> a + a + a)(x)), 3x, 3e-12)
+test_approx_eq(@uncertain(zeta(x)),
+               Measurement(1.2020569031595951, 0.019812624290876782))
