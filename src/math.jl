@@ -17,7 +17,7 @@
 ### Code:
 
 ### Elementary arithmetic operations:
-import Base: +, -, *, /, div, fld, inv
+import Base: +, -, *, /, div, inv, fld, cld
 
 # Addition: +
 +(a::Measurement) = a
@@ -49,7 +49,7 @@ end
 *(a::Real, b::Measurement) = *(Measurement(a), b)
 *(a::Measurement, b::Real) = *(a, Measurement(b))
 
-# Division: /, div, fld
+# Division: /, div, fld, cld
 function /(a::Measurement, b::Measurement)
     div = a.val*inv(b.val)
     if div == 0
