@@ -25,35 +25,37 @@ const logtwo = log(2)
 const twooversqrtpi = 2/sqrt(pi)
 
 # Define the new type
-immutable Measurement{T<:Real} <: Real
+immutable Measurement{T<:AbstractFloat} <: AbstractFloat
     val::T # The value
     err::T # The uncertainty, assumed to be standard deviation
 end
 # Constructors
-Measurement(val::Real, err::Real) = Measurement(promote(val, err)...)
+Measurement(val::Real, err::Real) = Measurement(promote(float(val), float(err))...)
 Measurement(value::Irrational) = Measurement(value, zero(float(value)))
 Measurement(value::Real) = Measurement(value, zero(value))
 const ± = Measurement
 
 # Conversion and Promotion
-convert{T<:Real}(::Type{Measurement{T}}, a::Irrational) =
+convert{T<:AbstractFloat}(::Type{Measurement{T}}, a::Irrational) =
     Measurement{T}(a, zero(float(a)))
-convert{T<:Real}(::Type{Measurement{T}}, a::Real) =
+convert{T<:AbstractFloat, S}(::Type{Measurement{T}}, a::Rational{S}) =
     Measurement{T}(a, zero(a))
-convert{T<:Real}(::Type{Measurement{T}}, a::Measurement) =
+convert{T<:AbstractFloat}(::Type{Measurement{T}}, a::Real) =
+    Measurement{T}(a, zero(a))
+convert{T<:AbstractFloat}(::Type{Measurement{T}}, a::Measurement) =
     Measurement{T}(a.val, a.err)
 convert(::Type{Measurement}, a::Measurement) = a
+convert{S}(::Type{Measurement}, a::Rational{S}) = Measurement(a)
 convert(::Type{Measurement}, a::Real) = Measurement(a)
 convert(::Type{Signed}, a::Measurement) = convert(Signed, a.val)
 
 float{T<:AbstractFloat}(a::Measurement{T}) = a
 float(a::Measurement) = Measurement(float(a.val), float(a.err))
 
-promote_rule{T<:Real, S<:Real}(::Type{Measurement{T}}, ::Type{S}) =
+promote_rule{T<:AbstractFloat, S<:Real}(::Type{Measurement{T}}, ::Type{S}) =
     Measurement{promote_type(T, S)}
-promote_rule{T<:Real, S<:Real}(::Type{Measurement{T}},
-                                   ::Type{Measurement{S}}) =
-                                       Measurement{promote_type(T, S)}
+promote_rule{T<:AbstractFloat, S<:AbstractFloat}(::Type{Measurement{T}}, ::Type{Measurement{S}}) =
+    Measurement{promote_type(T, S)}
 
 # Type representation
 function show(io::IO, measure::Measurement)
@@ -95,8 +97,10 @@ end
 # the number.  If you want to treat the Real like a measurement convert it with
 # `Measurement'.
 ==(a::Measurement, b::Irrational) = a.val==float(b)
+==(a::Measurement, b::Rational) = a.val==float(b)
 ==(a::Measurement, b::Real) = a.val==b
 ==(a::Irrational, b::Measurement) = float(a)==b.val
+==(a::Rational, b::Measurement) = float(a)==b.val
 ==(a::Real, b::Measurement) = a==b.val
 
 # Order relation is based on the value of measurements, uncertainties are ignored
@@ -115,6 +119,8 @@ isinteger(a::Measurement) = isinteger(a.val)
 +(a::Measurement, b::Measurement) =
     Measurement(promote(a.val + b.val, hypot(a.err, b.err))...)
 +(a::Real, b::Measurement) = +(Measurement(a), b)
++(a::Measurement, b::Bool) = +(a, Measurement(b))
++(a::Measurement, b::Rational) = +(a, Measurement(b))
 +(a::Measurement, b::Real) = +(a, Measurement(b))
 
 # Subtraction: -
@@ -450,21 +456,21 @@ rem(a::Real, b::Measurement) = rem(Measurement(a), b)
 mod2pi(a::Measurement) = Measurement(mod2pi(a.val), a.err)
 
 # Machine precision: eps, nextfloat, maxintfloat
-eps{T<:Real}(::Type{Measurement{T}}) = eps(T)
-eps{T<:Real}(a::Measurement{T}) = eps(a.val)
+eps{T<:AbstractFloat}(::Type{Measurement{T}}) = eps(T)
+eps{T<:AbstractFloat}(a::Measurement{T}) = eps(a.val)
 
 nextfloat(a::Measurement) = nextfloat(a.val)
 
-maxintfloat{T<:Real}(::Type{Measurement{T}}) = maxintfloat(T)
+maxintfloat{T<:AbstractFloat}(::Type{Measurement{T}}) = maxintfloat(T)
 
 # Rounding: round, floor, ceil, trunc
 round(a::Measurement) = round(a.val)
-round{T}(::Type{T}, a::Measurement) = round(T, a.val)
+round{T<:Integer}(::Type{T}, a::Measurement) = round(T, a.val)
 floor(a::Measurement) = floor(a.val)
-floor{T}(::Type{T}, a::Measurement) = floor(T, a.val)
+floor{T<:Integer}(::Type{T}, a::Measurement) = floor(T, a.val)
 ceil(a::Measurement) = ceil(a.val)
-ceil{T}(::Type{T}, a::Measurement) = ceil(T, a.val)
+ceil{T<:Integer}(::Type{T}, a::Measurement) = ceil(Integer, a.val)
 trunc(a::Measurement) = trunc(a.val)
-trunc{T}(::Type{T}, a::Measurement) = trunc(T, a.val)
+trunc{T<:Integer}(::Type{T}, a::Measurement) = trunc(T, a.val)
 
 end # module

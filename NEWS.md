@@ -4,7 +4,7 @@ vX.Y.Z (201?-??-??)
 New Features
 ------------
 
-* `Measurement` is now subtype of `Real`
+* `Measurement` is now subtype of `AbstractFloat`
   ([#1](https://github.com/giordano/Measurements.jl/issues/1)).  In order to
   define complex `Measurement`s you can use `complex(Measurement(a, b),
   Measurement(c, d))` so real and imaginary parts of the number have each their

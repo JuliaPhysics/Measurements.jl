@@ -12,11 +12,11 @@ uncertainties and easily get the uncertainty according to
 ### Features List ###
 
 * Support for most of basic mathematical operations available in Julia involving
-  real numbers with uncertainties.  All existing functions that accept `Real`
-  arguments and internally use already supported functions can in turn perform
-  calculations involving numbers with uncertainties without being redefined.
-  This greatly expands the power of `Measurements.jl` with no to little overhead
-  for the users
+  real numbers with uncertainties.  All existing functions that accept
+  `AbstractFloat` arguments and internally use already supported functions can
+  in turn perform calculations involving numbers with uncertainties without
+  being redefined.  This greatly expands the power of `Measurements.jl` with no
+  to little overhead for the users
 * Support for
   [arbitrary precision](http://docs.julialang.org/en/stable/manual/integers-and-floating-point-numbers/#arbitrary-precision-arithmetic)
   numbers with uncertainties (though it may not be very useful for quantities
@@ -62,11 +62,14 @@ Measurement(value, uncertainty)
 value ± uncertainty
 ```
 
-where `value` and `uncertainty` are both subtype of `Real`.
-`Measurement(value)` creates a `Measurement` object that doesn’t have
-uncertainty, like mathematical constants.  See below for further examples.  Some
+where `value` and `uncertainty` are both subtype of `AbstractFloat`.  Some
 keyboard layouts provide an easy way to type the `±` sign, if your does not,
-remember you can insert it in Julia REPL with `\pm` followed by `TAB` key.
+remember you can insert it in Julia REPL with `\pm` followed by `TAB` key.  You
+can provide `value` and `uncertainty` of any subtype of `Real` that can be
+converted to `AbstractFloat`.  Thus, `Measurement(42, 6)` is a valid syntax.
+
+`Measurement(value)` creates a `Measurement` object that doesn’t have
+uncertainty, like mathematical constants.  See below for further examples.
 
 For those interested in the technical details of the package, `Measurement` is a
 [composite](http://docs.julialang.org/en/stable/manual/types/#composite-types)
@@ -74,32 +77,35 @@ For those interested in the technical details of the package, `Measurement` is a
 type, whose definition is:
 
 ``` julia
-immutable Measurement{T<:Real} <: Real
+immutable Measurement{T<:AbstractFloat} <: AbstractFloat
     val::T # The value
     err::T # The uncertainty, assumed to be standard deviation
 end
 ```
 
 Users that want to hack into `Measurements.jl` should use objects with type that
-is a subtype of `Real`.
+is a subtype of `AbstractFloat`.
 
 Many basic mathematical operations are instructed to accept `Measurement` type
 and uncertainty is calculated exactly using analityc expressions of function
-derivatives.  In addition, being `Measurement` a subtype of `Real`,
-`Measurement` objects can be used in any function taking `Real` arguments
-without redefining it, and calculation of uncertainty will be exact.
+derivatives.  In addition, being `Measurement` a subtype of `AbstractFloat`,
+`Measurement` objects can be used in any function taking `AbstractFloat`
+arguments without redefining it, and calculation of uncertainty will be exact.
 
-**NOTE 1:** This module currently doesn’t take into account correlation between
+**NOTE 1:** This package currently doesn’t take into account correlation between
 operands when calculating uncertainties (see TODO list below), so operations
 like `x+x`,`x*x`, `sin(x)/cos(x)` will have inaccurate uncertainties.  Use
 expressions not involving correlated variables when possible (e.g., `2x` in
 place of `x+x`, `x^2` for `x*x`, and `tan(x)` instead of `sin(x)/cos(x)`).
 
-**NOTE 2:** Currently this module fully supports real-only measurements.  It is
+**NOTE 2:** Currently this package fully supports real-only measurements.  It is
 possible to create a `Complex` measurement with `complex(Measurement(a, b),
 Measurement(c, d))` and error propagation should work for some basic operations
 like arithmentic operations, but no active work has been done to further support
 complex quantities with attached uncertainty.
+
+**NOTE 3:** Loading the module with `using Measurements` in Julia 0.4 will emit
+a harmless warning, you can ignore it.  The warning goes away in Julia 0.5.
 
 ### Standard Score ###
 
@@ -133,7 +139,7 @@ T = Measurement(1.942, 4e-3);
 P = 4pi^2*l/T^2
 # => 9.797993213510699 ± 0.041697817535336676
 c = Measurement(4)
-# => 4 ± 0
+# => 4.0 ± 0.0
 a*c
 # => 18.0 ± 0.4
 sind(Measurement(94, 1.2))

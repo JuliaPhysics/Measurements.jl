@@ -29,6 +29,7 @@ test_approx_eq(weightedmean((w, x, y)),
 @test convert(Measurement{Float64}, 3 ± 1) === 3.0 ± 1.0
 @test convert(Measurement, x) === x
 @test convert(Measurement, pi) === pi ± 0
+@test convert(Measurement, 1//2) === 0.5 ± 0
 @test convert(Measurement, 3) === 3 ± 0
 @test convert(Signed, x) === 3
 @test float(3 ± 1) === 3.0 ± 1.0
@@ -44,8 +45,10 @@ test_approx_eq(weightedmean((w, x, y)),
 @test -2 < w <= x < y < 5
 @test 3 == x
 @test y == 4 != w
+@test Measurement(0.8, 0.01) == 4//5
 @test Measurement(π) == π
 @test e == Measurement(e)
+@test 4//5 == Measurement(0.8, 0.03)
 @test isnan(x) == false
 @test isfinite(y) == true && isfinite(Measurement(Inf)) == false
 @test isinf(Measurement(Inf)) == true && isinf(x) == false
@@ -57,6 +60,8 @@ test_approx_eq(+x, x)
 test_approx_eq(x + y, Measurement(7, 0.22360679774997896))
 test_approx_eq(x + y, y + x) # Commutativity
 test_approx_eq(2 + x, Measurement(5, 0.1))
+test_approx_eq(x + 5//2, Measurement(5.5, 0.1))
+test_approx_eq(x + true, Measurement(4, 0.1))
 test_approx_eq(x + 2, Measurement(5, 0.1))
 
 # Subtraction
