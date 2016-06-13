@@ -105,9 +105,9 @@ end
 ^(a::Irrational, b::Measurement) = Measurement(float(a))^b
 ^{T<:Real}(a::T,  b::Measurement) = ^(Measurement(a), b)
 
-function exp2(a::Measurement)
+function exp2{T<:AbstractFloat}(a::Measurement{T})
     pow = exp2(a.val)
-    return Measurement(promote(pow, abs(pow*log(2)*a.err))...)
+    return Measurement(promote(pow, abs(pow*log(T(2))*a.err))...)
 end
 
 # Cosine: cos, cosh
@@ -221,9 +221,9 @@ end
 expm1(a::Measurement) =
     Measurement(promote(expm1(a.val), abs(exp(a.val)*a.err))...)
 
-function exp10(a::Measurement)
+function exp10{T<:AbstractFloat}(a::Measurement{T})
     val = exp10(a.val)
-    return Measurement(promote(float(val), abs(log(10)*val*a.err))...)
+    return Measurement(promote(float(val), abs(log(T(10))*val*a.err))...)
 end
 
 function frexp(a::Measurement)
@@ -245,8 +245,8 @@ function log(a::Measurement, b::Measurement)
 end
 log(a::Measurement) = # Special case
     Measurement(promote(log(a.val), a.err*inv(a.val))...)
-log10(a::Measurement) = # Special case
-    Measurement(promote(log10(a.val), a.err*inv(log(10)*a.val))...)
+log10{T<:AbstractFloat}(a::Measurement{T}) = # Special case
+    Measurement(promote(log10(a.val), a.err*inv(log(T(10))*a.val))...)
 log1p(a::Measurement) = # Special case
     Measurement(promote(log1p(a.val), a.err*inv(a.val + one(a.val)))...)
 log(::Irrational{:e}, a::Measurement) = log(a)
@@ -321,37 +321,37 @@ one(a::Measurement) = Measurement(one(a.val))
 # Error function: erf, erfinv, erfc, erfcinv, erfcx
 import Base: erf, erfinv, erfc, erfcinv, erfcx
 
-function erf(a::Measurement)
+function erf{T<:AbstractFloat}(a::Measurement{T})
     aval = a.val
     return Measurement(promote(erf(aval),
-                               2*exp(-aval*aval)*a.err/sqrt(pi))...)
+                               2*exp(-aval*aval)*a.err/sqrt(T(pi)))...)
 end
 
-function erfinv(a::Measurement)
+function erfinv{T<:AbstractFloat}(a::Measurement{T})
     result = erfinv(a.val)
     # For the derivative, see http://mathworld.wolfram.com/InverseErf.html
     return Measurement(promote(result,
-                               0.5*sqrt(pi)*exp(result*result)*a.err)...)
+                               0.5*sqrt(T(pi))*exp(result*result)*a.err)...)
 end
 
-function erfc(a::Measurement)
+function erfc{T<:AbstractFloat}(a::Measurement{T})
     aval = a.val
     return Measurement(promote(erfc(aval),
-                               2*exp(-aval*aval)*a.err/sqrt(pi))...)
+                               2*exp(-aval*aval)*a.err/sqrt(T(pi)))...)
 end
 
-function erfcinv(a::Measurement)
+function erfcinv{T<:AbstractFloat}(a::Measurement{T})
     result = erfcinv(a.val)
     # For the derivative, see http://mathworld.wolfram.com/InverseErfc.html
     return Measurement(promote(result,
-                               0.5*sqrt(pi)*exp(result*result)*a.err)...)
+                               0.5*sqrt(T(pi))*exp(result*result)*a.err)...)
 end
 
-function erfcx(a::Measurement)
+function erfcx{T<:AbstractFloat}(a::Measurement{T})
     aval = a.val
     result = erfcx(aval)
     return Measurement(promote(result,
-                               abs(2*(aval*result - inv(sqrt(pi))))*a.err)...)
+                               abs(2*(aval*result - inv(sqrt(T(pi)))))*a.err)...)
 end
 
 # Factorial and gamma: factorial, gamma, lgamma
