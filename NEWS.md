@@ -1,14 +1,13 @@
-vX.Y.Z (201?-??-??)
+v0.0.2 (2016-06-13)
 ===================
 
 New Features
 ------------
 
 * `Measurement` is now subtype of `AbstractFloat`
-  ([#1](https://github.com/giordano/Measurements.jl/issues/1)).  In order to
-  define complex `Measurement`s you can use `complex(Measurement(a, b),
-  Measurement(c, d))` so real and imaginary parts of the number have each their
-  uncertainty.
+  ([#1](https://github.com/giordano/Measurements.jl/issues/1)), but you can feed
+  the constructor with any subtype of `Real` that can be converted to an
+  `AbstractFloat`.
 * New `weightedmean` function for calculating the weighted mean of measurements
   using
   [inverse-variance weighting](https://en.wikipedia.org/wiki/Inverse-variance_weighting).
@@ -21,6 +20,9 @@ Breaking Changes
 
 * Function `Constant` has been removed as it was mostly redundant and badly
   capitalized ([#2](https://github.com/giordano/Measurements.jl/issues/2)).
+* In order to define complex `Measurement`s you have to use
+  `complex(Measurement(a, b), Measurement(c, d))` so real and imaginary parts of
+  the number have each their uncertainty.
 
 Bug Fixes
 ---------

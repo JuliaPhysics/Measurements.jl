@@ -13,8 +13,8 @@ uncertainties and easily get the uncertainty according to
 
 * Support for most of basic mathematical operations available in Julia involving
   real numbers with uncertainties.  All existing functions that accept
-  `AbstractFloat` arguments and internally use already supported functions can
-  in turn perform calculations involving numbers with uncertainties without
+  `AbstractFloat` arguments and internally use already supported Julia functions
+  can in turn perform calculations involving numbers with uncertainties without
   being redefined.  This greatly expands the power of `Measurements.jl` with no
   to little overhead for the users
 * Support for
@@ -66,7 +66,8 @@ where `value` and `uncertainty` are both subtype of `AbstractFloat`.  Some
 keyboard layouts provide an easy way to type the `±` sign, if your does not,
 remember you can insert it in Julia REPL with `\pm` followed by `TAB` key.  You
 can provide `value` and `uncertainty` of any subtype of `Real` that can be
-converted to `AbstractFloat`.  Thus, `Measurement(42, 6)` is a valid syntax.
+converted to `AbstractFloat`.  Thus, `Measurement(42, 33//12)` is a valid
+syntax.
 
 `Measurement(value)` creates a `Measurement` object that doesn’t have
 uncertainty, like mathematical constants.  See below for further examples.
