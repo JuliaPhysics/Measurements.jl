@@ -1,3 +1,12 @@
+v0.0.3 (2016-^^-??)
+===================
+
+New Features
+------------
+
+* Macro `@uncertain` enables propagation of uncertainty in any real function of
+  one real argument, including those making use of C/Fortran calls.
+
 v0.0.2 (2016-06-13)
 ===================
 
