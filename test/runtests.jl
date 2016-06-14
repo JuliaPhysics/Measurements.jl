@@ -69,7 +69,7 @@ test_approx_eq(x + 5//2, Measurement(5.5, 0.1))
 test_approx_eq(x + true, Measurement(4, 0.1))
 test_approx_eq(x + 2, Measurement(5, 0.1))
 for a in (w, x, y) # Test correlation
-    test_approx_eq(a + a, 2a)
+    test_approx_eq(a + a + a, 3a)
 end
 
 # Subtraction
@@ -90,7 +90,7 @@ test_approx_eq(w*0, Measurement(0))
 test_approx_eq(true*x, x)
 test_approx_eq(y*false, Measurement(0))
 for a in (x, y) # Test correlation
-    test_approx_eq(a*a, a^2)
+    test_approx_eq(a*a*a, a^3)
 end
 
 # Division
@@ -107,7 +107,7 @@ test_approx_eq(fld(9.4, y), Measurement(2))
 test_approx_eq(cld(1.2*x, w), Measurement(-7))
 test_approx_eq(cld(x, 1.2), Measurement(3))
 test_approx_eq(cld(9.4, y), Measurement(3))
-for a in (w, y) # Test correlation
+for a in (w, x, y) # Test correlation
     test_approx_eq(a/a, Measurement(1))
 end
 

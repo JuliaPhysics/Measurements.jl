@@ -58,33 +58,9 @@ Measurement(value::Irrational) = Measurement(value, zero(float(value)))
 Measurement(value::Real) = Measurement(value, zero(value))
 const ± = Measurement
 
-"""
-    gettag(a::Measurement) -> (a.val, a.err, a.tag)
-
-Return the tag for `a` used in `der` field of a `Measurement` object.
-"""
-gettag(a::Measurement) = (a.val, a.err, a.tag)
-
 # Type representation
 function show(io::IO, measure::Measurement)
     print(io, measure.val, " ± ", measure.err)
-end
-
-"""
-    getder(a::Measurement, b::Measurement) -> derivative
-
-Return the derivative of `a` with respect to `b`.
-"""
-function getder{T<:AbstractFloat}(a::Measurement{T}, b::Measurement)
-    der = zero(T)
-    @inbounds for x in keys(b.der)
-        der += try
-            a.der[x]
-        catch
-            zero(T)
-        end
-    end
-    return der
 end
 
 # Standard Score

@@ -18,14 +18,6 @@
 
 export @uncertain
 
-function cov(a::Measurement, b::Measurement)
-    tmp = 0.0
-    for tag in intersect(keys(a.der), keys(b.der))
-        tmp += 2.0*a.der[tag]*b.der[tag]*abs2(a.err)
-    end
-    tmp
-end
-
 function result{T<:AbstractFloat}(val::Real, der::Real, a::Measurement{T})
     val, der = promote(val, der)
     newder = similar(a.der)
@@ -39,21 +31,22 @@ function result(val::Real, der::Tuple{Vararg{Real}},
                 a::Tuple{Vararg{Measurement}})
     @assert length(der) == length(a)
     a = promote(a...)
-    err = zero(typeof(a[1].err)) # Total uncertainty of result
-    @inbounds for (i, x) in enumerate(a)
-        err = err + abs2(der[i]*x.err) # (∂f/∂x·σ_{x})²
-        for (j, y) in enumerate(a[i+1:end])
-            # Correlation term: 2·(∂f/∂x)·(∂f/∂y)·(∂y/∂x)·σ_{x}^2
-            err = err + 2.0*der[i]*der[j+i]*getder(y, x)*abs2(x.err)
+    newder = similar(a[1].der)
+    err = zero(typeof(a[1].err))
+    @inbounds for tag in union([keys(x.der) for x in a]...)
+        derivative = 0.0
+        for (i, x) in enumerate(a)
+            derivative = derivative +
+                try
+                    der[i]*x.der[tag]
+                catch
+                    0.0
+                end
         end
+        merge!(newder, Dict(tag=>derivative))
+        err = err + abs2(derivative*tag[2])
     end
-    Measurement(val, sqrt(err))
-    # val, der = promote(val, der)
-    # newder = similar(a.der)
-    # @inbounds for tag in keys(a.der)
-    #     merge!(newder, Dict(tag=>der*a.der[tag]))
-    # end
-    # Measurement(val, sqrt(err), NaN, newder)
+    return Measurement(val, sqrt(err), NaN, newder)
 end
 
 # @uncertain macro
