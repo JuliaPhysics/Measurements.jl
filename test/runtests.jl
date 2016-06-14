@@ -26,22 +26,22 @@ test_approx_eq(weightedmean((w, x, y)),
                Measurement(-0.12584269662921355, 0.028442727788398632))
 
 # Conversion and Promotion
-@test convert(Measurement{Float64}, pi) === pi ± 0
-@test convert(Measurement{Float64}, 1//2) === 0.5 ± 0
-@test convert(Measurement{Float64}, 3) === 3.0 ± 0.0
-@test convert(Measurement{Float64}, 3 ± 1) === 3.0 ± 1.0
+@test convert(Measurement{Float64}, pi) == pi ± 0
+@test convert(Measurement{Float64}, 1//2) == 0.5 ± 0
+@test convert(Measurement{Float64}, 3) == 3.0 ± 0.0
+@test convert(Measurement{Float64}, 3 ± 1) == 3.0 ± 1.0
 @test convert(Measurement, x) === x
-@test convert(Measurement, pi) === pi ± 0
-@test convert(Measurement, 1//2) === 0.5 ± 0
-@test convert(Measurement, 3) === 3 ± 0
-@test convert(Signed, x) === 3
-@test float(3 ± 1) === 3.0 ± 1.0
+@test convert(Measurement, pi) == pi ± 0
+@test convert(Measurement, 1//2) == 0.5 ± 0
+@test convert(Measurement, 3) == 3 ± 0
+@test convert(Signed, x) == 3
+@test float(3 ± 1) == 3.0 ± 1.0
 @test float(x) === x
-@test promote(Measurement{Float32}(3, 0.5), Measurement{Float64}(4, 0)) ===
-    (Measurement{Float64}(3, 0.5), Measurement{Float64}(4, 0))
-@test promote(x, complex(7)) === (complex(3.0 ± 0.1),
+@test promote(Measurement{Float32}(3 ± 0.5), Measurement{Float64}(4 ± 0)) ==
+    (Measurement{Float64}(3 ± 0.5), Measurement{Float64}(4 ± 0))
+@test promote(x, complex(7)) == (complex(3.0 ± 0.1),
                                   complex(Measurement(7.0)))
-@test promote(complex(0, 1 ± 0), 2.1 ± 0.2) ===
+@test promote(complex(0, 1 ± 0), 2.1 ± 0.2) ==
     (complex(0, 1.0 ± 0), complex(2.1 ± 0.2))
 
 ##### Comparisons and Tests
@@ -318,7 +318,7 @@ test_approx_eq(mean((w, x, y)), (w + x + y)/3)
 # min, max, extrema
 @test min(w, x, y) === w
 @test max(w, x, y) === y
-@test extrema([w, x, y]) === (w, y)
+@test extrema([w, x, y]) == (w, y)
 
 # sort
 @test sort([y, w, x]) == [w, x, y]

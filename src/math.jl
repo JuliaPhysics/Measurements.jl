@@ -18,6 +18,23 @@
 
 export @uncertain
 
+function cov(a::Measurement, b::Measurement)
+    tmp = 0.0
+    for tag in intersect(keys(a.der), keys(b.der))
+        tmp += 2.0*a.der[tag]*b.der[tag]*abs2(a.err)
+    end
+    tmp
+end
+
+function result{T<:AbstractFloat}(val::Real, der::Real, a::Measurement{T})
+    val, der = promote(val, der)
+    newder = similar(a.der)
+    @inbounds for tag in keys(a.der)
+        merge!(newder, Dict(tag=>der*a.der[tag]))
+    end
+    Measurement(val, abs(der*a.err), NaN, newder)
+end
+
 # @uncertain macro
 """
     @uncertain f(value ± stddev)
@@ -30,7 +47,7 @@ be `Measurement`.
 macro uncertain(expr::Expr)
     f = esc(expr.args[1]) # Function name
     a = esc(expr.args[2]) # Argument, of Measurement type
-    return :( Measurement($f($a.val), abs(Calculus.derivative($f, $a.val)*$a.err)) )
+    return :( result($f($a.val), Calculus.derivative($f, $a.val), $a) )
 end
 
 ### Elementary arithmetic operations:
@@ -46,7 +63,7 @@ import Base: +, -, *, /, div, inv, fld, cld
 +(a::Measurement, b::Real) = +(a, Measurement(b))
 
 # Subtraction: -
--(a::Measurement) = Measurement(-a.val, a.err)
+-(a::Measurement) = result(-a.val, -1, a)
 -(a::Measurement, b::Measurement) = a + (-b)
 -(a::Real, b::Measurement) = -(Measurement(a), b)
 -(a::Measurement, b::Real) = -(a, Measurement(b))
@@ -94,7 +111,7 @@ cld(a::Real, b::Measurement) = cld(Measurement(a), b)
 # Inverse: inv
 function inv(a::Measurement)
     inverse = inv(a.val)
-    return Measurement(promote(inverse, inverse*inverse*a.err)...)
+    return result(inverse, -abs2(inverse), a)
 end
 
 # signbit
@@ -124,39 +141,37 @@ end
 
 function exp2{T<:AbstractFloat}(a::Measurement{T})
     pow = exp2(a.val)
-    return Measurement(promote(pow, abs(pow*log(T(2))*a.err))...)
+    return result(pow, pow*log(T(2)), a)
 end
 
 # Cosine: cos, cosh
 import Base: cos, cosh
 
 cos(a::Measurement) =
-    Measurement(promote(cos(a.val), abs(sin(a.val)*a.err))...)
+    result(cos(a.val), -sin(a.val), a)
 cosh(a::Measurement) =
-    Measurement(promote(cosh(a.val), abs(sinh(a.val)*a.err))...)
+    result(cosh(a.val), sinh(a.val), a)
 
 # Sine: sin, sinh
 import Base: sin, sinh
 
 sin(a::Measurement) =
-    Measurement(promote(sin(a.val), abs(cos(a.val)*a.err))...)
+    result(sin(a.val), cos(a.val), a)
 sinh(a::Measurement) =
-    Measurement(promote(sinh(a.val), abs(cosh(a.val)*a.err))...)
+    result(sinh(a.val), cosh(a.val), a)
 
 # Tangent: tan, tand, tanh
 import Base: tan, tand, tanh
 
 function tan(a::Measurement)
-    seca = sec(a.val)
-    return Measurement(promote(tan(a.val), abs(seca*seca*a.err))...)
+    return result(tan(a.val), abs2(sec(a.val)), a)
 end
 
 # TODO: remove when correlation will be supported
 tand(a::Measurement) = tan(deg2rad(a))
 
 function tanh(a::Measurement)
-    secha = sech(a.val)
-    return Measurement(promote(tanh(a.val), abs(secha*secha*a.err))...)
+    return result(tanh(a.val), abs2(sech(a.val)), a)
 end
 
 # Inverse trig functions: acos, acosh, asin, asinh, atan, atan2, atanh

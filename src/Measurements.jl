@@ -22,47 +22,65 @@ module Measurements
 # This is used to calculate numerical derivatives in "@uncertain" macro.
 using Calculus
 
-# Functions to handle new type
-import Base: show, convert, promote_rule, float
+# Function to handle new type
+import Base: show
 
 # Functions provided by this package and exposed to users
 export Measurement, ±, stdscore, weightedmean
 
-# Define the new type
+##### New Type: Measurement
+# Definition.  The Measurement type is composed by the following fields:
+#   * val: the nominal value of the measurement
+#   * err: the uncertainty, assumed to be standard deviation
+#   * tag: a (hopefully) unique identifier, it is used to identify a specific
+#     measurement in the list of derivatives.  This is usually created with
+#     `rand'.
+#   * der: the list of derivates.  It is a dictionary, whose keys are the tuples
+#     (nominal value, uncertainty, tag) of all quantities with which the
+#     measurement has been derived, the corresponding value is the derivative of
+#     the new measurement with respect to that measurement.  This dictionary is
+#     useful to trace the contribution of each measurement.
 immutable Measurement{T<:AbstractFloat} <: AbstractFloat
-    val::T # The value
-    err::T # The uncertainty, assumed to be standard deviation
+    val::T
+    err::T
+    tag::Float64
+    der::Dict{Tuple{T, T, Float64}, T}
 end
+
 # Constructors
-Measurement(val::Real, err::Real) = Measurement(promote(float(val), float(err))...)
+function Measurement(val::Real, err::Real)
+    val, err, der = promote(float(val), float(err), one(float(val)))
+    tag = rand()
+    return Measurement(val, err, tag, Dict((val, err, tag)=>der))
+end
+
 Measurement(value::Irrational) = Measurement(value, zero(float(value)))
 Measurement(value::Real) = Measurement(value, zero(value))
 const ± = Measurement
 
-# Conversion and Promotion
-convert{T<:AbstractFloat}(::Type{Measurement{T}}, a::Irrational) =
-    Measurement{T}(a, zero(float(a)))
-convert{T<:AbstractFloat, S}(::Type{Measurement{T}}, a::Rational{S}) =
-    Measurement{T}(a, zero(a))
-convert{T<:AbstractFloat}(::Type{Measurement{T}}, a::Real) =
-    Measurement{T}(a, zero(a))
-convert{T<:AbstractFloat}(::Type{Measurement{T}}, a::Measurement) =
-    Measurement{T}(a.val, a.err)
-convert(::Type{Measurement}, a::Measurement) = a
-convert{S}(::Type{Measurement}, a::Rational{S}) = Measurement(a)
-convert(::Type{Measurement}, a::Real) = Measurement(a)
-convert(::Type{Signed}, a::Measurement) = convert(Signed, a.val)
+"""
+    gettag(a::Measurement) -> (a.val, a.err, a.tag)
 
-float{T<:AbstractFloat}(a::Measurement{T}) = a
-
-promote_rule{T<:AbstractFloat, S<:Real}(::Type{Measurement{T}}, ::Type{S}) =
-    Measurement{promote_type(T, S)}
-promote_rule{T<:AbstractFloat, S<:AbstractFloat}(::Type{Measurement{T}}, ::Type{Measurement{S}}) =
-    Measurement{promote_type(T, S)}
+Return the tag for `a` used in `der` field of a `Measurement` object.
+"""
+gettag(a::Measurement) = (a.val, a.err, a.tag)
 
 # Type representation
 function show(io::IO, measure::Measurement)
     print(io, measure.val, " ± ", measure.err)
+end
+
+"""
+    getder(a::Measurement, b::Measurement) -> derivative
+
+Return the derivative of `a` with respect to `b`.
+"""
+function getder{T<:AbstractFloat}(a::Measurement{T}, b::Measurement)
+    return try
+        a.der[tag(b)]
+    catch
+        zero(T)
+    end
 end
 
 # Standard Score
@@ -90,6 +108,7 @@ function weightedmean(iterable)
     return Measurement(dot(v, w)*invsumw, sqrt(invsumw))
 end
 
+include("conversions.jl")
 include("comparisons-tests.jl")
 include("math.jl")
 

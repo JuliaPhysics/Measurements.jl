@@ -18,9 +18,10 @@
 
 import Base: ==, isless, <, <=, isnan, isfinite, isinf, isinteger
 
-# Two measurements are equal if they have same value and same uncertainty.  XXX:
-# Make two measurements equal if they are exaclty the same thing?  This can be
-# done, for example, by adding another field with a random (or randn'om) value.
+# Two measurements are equal if they have same value and same uncertainty.
+# NB: Two measurements are egal (===) if they are exactly the same thing,
+# i.e. if they share all the same fields, including the (hopefully) unique tag.
+# If you need stricter equality use "===" instead of "==".
 ==(a::Measurement, b::Measurement) = (a.val==b.val && a.err==b.err)
 
 # Comparison with Real: they are equal if the value of Measurement is equal to
