@@ -26,7 +26,7 @@ using Calculus
 import Base: show, convert, promote_rule, float
 
 # Functions provided by this package and exposed to users
-export Measurement, ±, stdscore, weightedmean, @uncertain
+export Measurement, ±, stdscore, weightedmean
 
 # Define the new type
 immutable Measurement{T<:AbstractFloat} <: AbstractFloat
@@ -63,21 +63,6 @@ promote_rule{T<:AbstractFloat, S<:AbstractFloat}(::Type{Measurement{T}}, ::Type{
 # Type representation
 function show(io::IO, measure::Measurement)
     print(io, measure.val, " ± ", measure.err)
-end
-
-# @uncertain macro
-"""
-    @uncertain f(value ± stddev)
-
-A macro to calculate \$f(value) ± uncertainty\$, with \$uncertainty\$ derived
-from \$stddev\$ according to rules of linear error propagation theory.  Function
-\$f\$ must accept only one real argument, the type of the argument provided must
-be `Measurement`.
-"""
-macro uncertain(expr::Expr)
-    f = esc(expr.args[1]) # Function name
-    a = esc(expr.args[2]) # Argument, of Measurement type
-    return :( Measurement($f($a.val), abs(Calculus.derivative($f, $a.val)*$a.err)) )
 end
 
 # Standard Score

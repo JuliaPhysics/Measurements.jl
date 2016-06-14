@@ -16,6 +16,23 @@
 #
 ### Code:
 
+export @uncertain
+
+# @uncertain macro
+"""
+    @uncertain f(value ± stddev)
+
+A macro to calculate \$f(value) ± uncertainty\$, with \$uncertainty\$ derived
+from \$stddev\$ according to rules of linear error propagation theory.  Function
+\$f\$ must accept only one real argument, the type of the argument provided must
+be `Measurement`.
+"""
+macro uncertain(expr::Expr)
+    f = esc(expr.args[1]) # Function name
+    a = esc(expr.args[2]) # Argument, of Measurement type
+    return :( Measurement($f($a.val), abs(Calculus.derivative($f, $a.val)*$a.err)) )
+end
+
 ### Elementary arithmetic operations:
 import Base: +, -, *, /, div, inv, fld, cld
 
