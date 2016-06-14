@@ -6,6 +6,8 @@ os:
 julia:
   - release
   - nightly
+git:
+  depth: 999999
 notifications:
   email: false
 script:
