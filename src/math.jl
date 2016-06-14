@@ -35,6 +35,27 @@ function result{T<:AbstractFloat}(val::Real, der::Real, a::Measurement{T})
     Measurement(val, abs(der*a.err), NaN, newder)
 end
 
+function result(val::Real, der::Tuple{Vararg{Real}},
+                a::Tuple{Vararg{Measurement}})
+    @assert length(der) == length(a)
+    a = promote(a...)
+    err = zero(typeof(a[1].err)) # Total uncertainty of result
+    @inbounds for (i, x) in enumerate(a)
+        err = err + abs2(der[i]*x.err) # (∂f/∂x·σ_{x})²
+        for (j, y) in enumerate(a[i+1:end])
+            # Correlation term: 2·(∂f/∂x)·(∂f/∂y)·(∂y/∂x)·σ_{x}^2
+            err = err + 2.0*der[i]*der[j]*getder(y, x)*abs2(x.err)
+        end
+    end
+    Measurement(val, sqrt(err))
+    # val, der = promote(val, der)
+    # newder = similar(a.der)
+    # @inbounds for tag in keys(a.der)
+    #     merge!(newder, Dict(tag=>der*a.der[tag]))
+    # end
+    # Measurement(val, sqrt(err), NaN, newder)
+end
+
 # @uncertain macro
 """
     @uncertain f(value ± stddev)
@@ -56,7 +77,7 @@ import Base: +, -, *, /, div, inv, fld, cld
 # Addition: +
 +(a::Measurement) = a
 +(a::Measurement, b::Measurement) =
-    Measurement(promote(a.val + b.val, hypot(a.err, b.err))...)
+    result(a.val + b.val, (1.0, 1.0), (a, b))
 +(a::Real, b::Measurement) = +(Measurement(a), b)
 +(a::Measurement, b::Bool) = +(a, Measurement(b))
 +(a::Measurement, b::Rational) = +(a, Measurement(b))
@@ -70,13 +91,9 @@ import Base: +, -, *, /, div, inv, fld, cld
 
 # Multiplication: *
 function *(a::Measurement, b::Measurement)
-    prod = a.val*b.val
-    if prod == 0
-        return Measurement(zero(prod))
-    else
-        return Measurement(promote(prod, abs(prod)*hypot(a.err*inv(a.val),
-                                                         b.err*inv(b.val)))...)
-    end
+    aval = a.val
+    bval = b.val
+    return result(aval*bval, (bval, aval), (a, b))
 end
 *(a::Bool, b::Measurement) = *(Measurement(a), b)
 *(a::Measurement, b::Bool) = *(a, Measurement(b))
@@ -85,13 +102,10 @@ end
 
 # Division: /, div, fld, cld
 function /(a::Measurement, b::Measurement)
-    div = a.val*inv(b.val)
-    if div == 0
-        return Measurement(zero(div))
-    else
-        return Measurement(promote(div, abs(div)*(hypot(a.err*inv(a.val),
-                                                        b.err*inv(b.val))))...)
-    end
+    aval = a.val
+    oneoverbval = inv(b.val)
+    return result(aval*oneoverbval, (oneoverbval, -aval*abs2(oneoverbval)),
+                  (a, b))
 end
 /(a::Real, b::Measurement) = /(Measurement(a), b)
 /(a::Measurement, b::Real) = /(a, Measurement(b))

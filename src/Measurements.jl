@@ -76,11 +76,15 @@ end
 Return the derivative of `a` with respect to `b`.
 """
 function getder{T<:AbstractFloat}(a::Measurement{T}, b::Measurement)
-    return try
-        a.der[tag(b)]
-    catch
-        zero(T)
+    der = zero(T)
+    @inbounds for x in keys(b.der)
+        der += try
+            a.der[x]
+        catch
+            zero(T)
+        end
     end
+    return der
 end
 
 # Standard Score
