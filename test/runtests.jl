@@ -107,6 +107,9 @@ test_approx_eq(fld(9.4, y), Measurement(2))
 test_approx_eq(cld(1.2*x, w), Measurement(-7))
 test_approx_eq(cld(x, 1.2), Measurement(3))
 test_approx_eq(cld(9.4, y), Measurement(3))
+for a in (w, y) # Test correlation
+    test_approx_eq(a/a, Measurement(1))
+end
 
 # Inverse
 test_approx_eq(inv(y), 1/y)

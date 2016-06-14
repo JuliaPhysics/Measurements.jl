@@ -44,7 +44,7 @@ function result(val::Real, der::Tuple{Vararg{Real}},
         err = err + abs2(der[i]*x.err) # (∂f/∂x·σ_{x})²
         for (j, y) in enumerate(a[i+1:end])
             # Correlation term: 2·(∂f/∂x)·(∂f/∂y)·(∂y/∂x)·σ_{x}^2
-            err = err + 2.0*der[i]*der[j]*getder(y, x)*abs2(x.err)
+            err = err + 2.0*der[i]*der[j+i]*getder(y, x)*abs2(x.err)
         end
     end
     Measurement(val, sqrt(err))
@@ -140,14 +140,34 @@ function ^(a::Measurement, b::Measurement)
     if b == -1
         return inv(a)
     else
-        pow = a.val^b.val
-        return Measurement(promote(pow, hypot(pow*inv(a.val)*b.val*a.err,
-                                              pow*log(a.val)*b.err))...)
+        aval = a.val
+        bval = b.val
+        pow = aval^bval
+        return result(pow, (aval^(bval - 1.0)*bval, pow*log(aval)), (a, b))
     end
 end
-^{T<:Integer}(a::Measurement, b::T) = ^(a, Measurement(b))
-^{T<:Rational}(a::Measurement, b::T) = ^(a, Measurement(b))
-^{T<:Real}(a::Measurement,  b::T) = ^(a, Measurement(b))
+
+function ^{T<:Integer}(a::Measurement, b::T)
+    aval = a.val
+    return result(aval^b, aval^(b-1)*b, a)
+end
+
+function ^{T<:Rational}(a::Measurement,  b::T)
+    if isinteger(b)
+        return a^trunc(Integer, b)
+    else
+        return ^(a, Measurement(b))
+    end
+end
+
+function ^{T<:Real}(a::Measurement,  b::T)
+    if isinteger(b)
+        return a^trunc(Integer, b)
+    else
+        return ^(a, Measurement(b))
+    end
+end
+
 ^{T<:Integer}(a::T, b::Measurement) = ^(Measurement(a), b)
 ^(::Irrational{:e}, b::Measurement) = exp(b)
 ^(a::Irrational, b::Measurement) = Measurement(float(a))^b
