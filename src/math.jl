@@ -175,14 +175,10 @@ signbit(a::Measurement) = signbit(a.val)
 import Base: ^, exp2
 
 function ^(a::Measurement, b::Measurement)
-    if b == -1
-        return inv(a)
-    else
-        aval = a.val
-        bval = b.val
-        pow = aval^bval
-        return result(pow, (aval^(bval - 1.0)*bval, pow*log(aval)), (a, b))
-    end
+    aval = a.val
+    bval = b.val
+    pow = aval^bval
+    return result(pow, (aval^(bval - 1.0)*bval, pow*log(aval)), (a, b))
 end
 
 function ^{T<:Integer}(a::Measurement, b::T)

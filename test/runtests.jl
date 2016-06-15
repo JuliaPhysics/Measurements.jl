@@ -87,6 +87,7 @@ test_approx_eq(x*3, Measurement(9, 0.3))
 test_approx_eq(w*0, Measurement(0))
 test_approx_eq(true*x, x)
 test_approx_eq(y*false, Measurement(0))
+for a in (w, x, y); test_approx_eq(a*(0 ± 1), Measurement(0, abs(a.val))); end
 # Test correlation
 for a in (x, y); test_approx_eq(a*a*a, a^3); end
 
@@ -104,6 +105,7 @@ test_approx_eq(fld(9.4, y), Measurement(2))
 test_approx_eq(cld(1.2*x, w), Measurement(-7))
 test_approx_eq(cld(x, 1.2), Measurement(3))
 test_approx_eq(cld(9.4, y), Measurement(3))
+for a in (w, x, y); test_approx_eq((0 ± 1)/a, Measurement(0, 1/abs(a.val))); end
 # Test correlation
 for a in (w, x, y); test_approx_eq(a/a, Measurement(1)); end
 
@@ -120,6 +122,7 @@ for a in (w, x, y); test_approx_eq(a^(-1), inv(a)); end
 test_approx_eq(x^2, Measurement(9, 0.6))
 for a in (w, x, y); test_approx_eq(a^2, a^2.0); end
 test_approx_eq(y^(1//2), Measurement(2, 0.05))
+for a in (w, x, y); test_approx_eq(a^(4//2), a*a); end
 test_approx_eq(2^x, Measurement(8, 0.5545177444479562))
 for a in (w, x, y); test_approx_eq(2^a, 2.0^a); end
 test_approx_eq(pi^x, Measurement(31.006276680299816, 3.5493811564854525))
