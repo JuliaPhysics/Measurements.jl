@@ -14,6 +14,11 @@
 # This file contains definition of mathematical functions that support
 # Measurement objects.
 #
+# Note: some functions defined here (like all reciprocal trigonometric
+# functions, fld, cld, hypot, cbrt, abs, mod) are redundant in the sense that
+# you would get the correct result also without their definitions, but having
+# them defined here avoids some calculations and slightly improves performance.
+#
 ### Code:
 
 export @uncertain
@@ -460,16 +465,6 @@ flipsign(a::Float32, b::Measurement) = flipsign(Measurement(a), b)
 flipsign(a::Float64, b::Measurement) = flipsign(Measurement(a), b)
 flipsign(a::Real, b::Measurement) = flipsign(Measurement(a), b)
 
-# Zero: zero
-import Base: zero
-
-zero(a::Measurement) = Measurement(zero(a.val))
-
-# One: one
-import Base: one
-
-one(a::Measurement) = Measurement(one(a.val))
-
 # Error function: erf, erfinv, erfc, erfcinv, erfcx
 import Base: erf, erfinv, erfc, erfcinv, erfcx
 
@@ -522,7 +517,13 @@ function lgamma(a::Measurement)
 end
 
 # Modulo: rem, mod2pi
-import Base: rem, mod2pi
+import Base: mod, rem, mod2pi
+
+# Use definition of "mod" function:
+# http://docs.julialang.org/en/stable/manual/mathematical-operations/#division-functions
+mod(a::Measurement, b::Measurement) = a - fld(a, b)*b
+mod(a::Measurement, b::Real) = mod(a, Measurement(b))
+mod(a::Real, b::Measurement) = mod(Measurement(a), b)
 
 # Use definition of "rem" function:
 # http://docs.julialang.org/en/stable/manual/mathematical-operations/#division-functions
