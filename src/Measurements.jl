@@ -36,10 +36,12 @@ export Measurement, ±, stdscore, weightedmean
 #     measurement in the list of derivatives.  This is usually created with
 #     `rand'.
 #   * der: the list of derivates.  It is a dictionary, whose keys are the tuples
-#     (nominal value, uncertainty, tag) of all quantities with which the
-#     measurement has been derived, the corresponding value is the derivative of
-#     the new measurement with respect to that measurement.  This dictionary is
-#     useful to trace the contribution of each measurement.
+#     (nominal value, uncertainty, tag) of all independent variables from which
+#     the object has been derived, the corresponding value is the total
+#     derivative of the object with respect to that independent variable.  This
+#     dictionary is useful to trace the contribution of each measurement and
+#     propagate the uncertainty in the case of functions with more than one
+#     argument (in order to deal with correlation between arguments).
 immutable Measurement{T<:AbstractFloat} <: AbstractFloat
     val::T
     err::T

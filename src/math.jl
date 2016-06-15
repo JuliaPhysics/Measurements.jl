@@ -18,6 +18,16 @@
 
 export @uncertain
 
+# This function is to be used by methods of mathematical operations to prduce a
+# `Measurement' object in output.  Arguments are:
+#   * val: the nominal result of operation G(a)
+#   * der: the derivative ∂G/∂a of G with respect to the variable a
+#   * a: the only argument of G
+# In this simple case of unary function, we don't have the problem of correlated
+# variables, so we can calculate the uncertainty of G(a) as
+#   σ_G = |σ_a·∂G/∂a|
+# The list of derivatives with respect to each measurement is updated with
+#   ∂G/∂a · previous_derivatives
 function result{T<:AbstractFloat}(val::Real, der::Real, a::Measurement{T})
     val, der = promote(val, der)
     newder = similar(a.der)
@@ -26,20 +36,44 @@ function result{T<:AbstractFloat}(val::Real, der::Real, a::Measurement{T})
             merge!(newder, Dict(tag=>der*a.der[tag]))
         end
     end
-    Measurement(val, abs(der*a.err), NaN, newder)
+    #          (G(a), σ_G = |σ_a·∂G/∂a|, tag, derivatives)
+    Measurement(val,  abs(der*a.err),    NaN, newder)
 end
 
+# This function is similar to the previous one, but applies to mathematical
+# operations with more than one argument, so the formula to propagate
+# uncertainty is more complicated because we have to take into account
+# correlation between arguments.  The arguments are the same as above, but `der'
+# and `a' are tuples of the same length (`der' has the derivatives of G with
+# respect to the corresponding variable in `a').
+#
+# Suppose we have a function G = G(a1, a2) of two arguments.  a1 and a2 are
+# correlated, because they come from some mathematical operations on really
+# independent variables x, y, z, say a1 = a1(x, y), a2 = a2(x, z).  The
+# uncertainty on G(a1, a2) is calculated as follows:
+#   σ_G = sqrt((σ_x·dG/dx)^2 + (σ_y·dG/dy)^2 + (σ_z·dG/dz)^2)
+# where dG/dx is the total derivative of G with respect to x, and so on.  We can
+# expand the previous formula to:
+#   σ_G = sqrt((σ_x·(∂G/∂a1·∂a1/∂x + ∂G/∂a2·∂a2/∂x))^2 + (σ_y·∂G/∂a1·∂a1/∂y)^2 +
+#               + (σ_z·∂G/∂a2·∂a2/∂z)^2)
 function result(val::Real, der::Tuple{Vararg{Real}},
                 a::Tuple{Vararg{Measurement}})
     @assert length(der) == length(a)
     a = promote(a...)
     T = typeof(a[1].val)
     newder = similar(a[1].der)
-    err = zero(T)
+    err::T = zero(T)
+    # Iterate over all independent variables (merge together the list of
+    # independent variables from all the arguments listed in `a').
     @inbounds for tag in union([keys(x.der) for x in a]...)
         if tag[2] != 0.0 # Exclude values with 0 uncertainty
-            derivative = 0.0
+            derivative::T = 0.0
+            # Iteratate over all the arguments of the function
             for (i, x) in enumerate(a)
+                # Calculate the derivative of G with respect to the current
+                # independent variable.  In the case of the x independent
+                # variable of the example above, we should get
+                #    dG/dx = ∂G/∂a1·∂a1/∂x + ∂G/∂a2·∂a2/∂x
                 derivative = derivative +
                     try
                         der[i]*x.der[tag]
@@ -48,6 +82,7 @@ function result(val::Real, der::Tuple{Vararg{Real}},
                     end
             end
             merge!(newder, Dict(tag=>derivative))
+            # Add (σ_x·dG/dx)^2 to the total uncertainty (squared)
             err = err + abs2(derivative*tag[2])
         end
     end
