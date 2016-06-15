@@ -22,7 +22,9 @@ function result{T<:AbstractFloat}(val::Real, der::Real, a::Measurement{T})
     val, der = promote(val, der)
     newder = similar(a.der)
     @inbounds for tag in keys(a.der)
-        merge!(newder, Dict(tag=>der*a.der[tag]))
+        if tag[2] != 0.0 # Exclude values with 0 uncertainty
+            merge!(newder, Dict(tag=>der*a.der[tag]))
+        end
     end
     Measurement(val, abs(der*a.err), NaN, newder)
 end
@@ -31,22 +33,25 @@ function result(val::Real, der::Tuple{Vararg{Real}},
                 a::Tuple{Vararg{Measurement}})
     @assert length(der) == length(a)
     a = promote(a...)
+    T = typeof(a[1].val)
     newder = similar(a[1].der)
-    err = zero(typeof(a[1].err))
+    err = zero(T)
     @inbounds for tag in union([keys(x.der) for x in a]...)
-        derivative = 0.0
-        for (i, x) in enumerate(a)
-            derivative = derivative +
-                try
-                    der[i]*x.der[tag]
-                catch
-                    0.0
-                end
+        if tag[2] != 0.0 # Exclude values with 0 uncertainty
+            derivative = 0.0
+            for (i, x) in enumerate(a)
+                derivative = derivative +
+                    try
+                        der[i]*x.der[tag]
+                    catch
+                        0.0
+                    end
+            end
+            merge!(newder, Dict(tag=>derivative))
+            err = err + abs2(derivative*tag[2])
         end
-        merge!(newder, Dict(tag=>derivative))
-        err = err + abs2(derivative*tag[2])
     end
-    return Measurement(val, sqrt(err), NaN, newder)
+    return Measurement(T(val), sqrt(err), NaN, newder)
 end
 
 # @uncertain macro
@@ -174,99 +179,122 @@ end
 # Cosine: cos, cosh
 import Base: cos, cosh
 
-cos(a::Measurement) =
-    result(cos(a.val), -sin(a.val), a)
-cosh(a::Measurement) =
-    result(cosh(a.val), sinh(a.val), a)
+function cos(a::Measurement)
+    aval = a.val
+    result(cos(aval), -sin(aval), a)
+end
+
+function cosh(a::Measurement)
+    aval = a.val
+    result(cosh(aval), sinh(aval), a)
+end
 
 # Sine: sin, sinh
 import Base: sin, sinh
 
-sin(a::Measurement) =
-    result(sin(a.val), cos(a.val), a)
-sinh(a::Measurement) =
-    result(sinh(a.val), cosh(a.val), a)
-
-# Tangent: tan, tand, tanh
-import Base: tan, tand, tanh
-
-function tan(a::Measurement)
-    return result(tan(a.val), abs2(sec(a.val)), a)
+function sin(a::Measurement)
+    aval = a.val
+    result(sin(aval), cos(aval), a)
 end
 
-# TODO: remove when correlation will be supported
-tand(a::Measurement) = tan(deg2rad(a))
+function sinh(a::Measurement)
+    aval = a.val
+    result(sinh(aval), cosh(aval), a)
+end
+
+# Tangent: tan, tanh
+import Base: tan, tanh
+
+function tan(a::Measurement)
+    aval = a.val
+    return result(tan(aval), abs2(sec(aval)), a)
+end
 
 function tanh(a::Measurement)
-    return result(tanh(a.val), abs2(sech(a.val)), a)
+    aval = a.val
+    return result(tanh(aval), abs2(sech(aval)), a)
 end
 
 # Inverse trig functions: acos, acosh, asin, asinh, atan, atan2, atanh
 import Base: acos, acosh, asin, asinh, atan, atan2, atanh
 
-acos(a::Measurement) =
-    Measurement(promote(acos(a.val), abs(a.err*inv(sqrt(1.0 - a.val*a.val))))...)
-acosh(a::Measurement) =
-    Measurement(promote(acosh(a.val), abs(a.err*inv(sqrt(a.val*a.val - 1.0))))...)
-
-asin(a::Measurement) =
-    Measurement(promote(asin(a.val), abs(a.err*inv(sqrt(1.0 - a.val*a.val))))...)
-asinh(a::Measurement) =
-    Measurement(promote(asinh(a.val), abs(a.err*inv(hypot(a.val, 1.0))))...)
-
-atan(a::Measurement) =
-    Measurement(promote(atan(a.val), abs(a.err*inv(a.val*a.val + 1.0)))...)
-atanh(a::Measurement) =
-    Measurement(promote(atanh(a.val), abs(a.err*inv(1.0 - a.val*a.val)))...)
-function atan2(a::Measurement, b::Measurement)
-    invdenom = inv(a.val*a.val + b.val*b.val)
-    return Measurement(promote(atan2(a.val, b.val),
-                               hypot(a.err*b.val*invdenom,
-                                     b.err*a.val*invdenom))...)
+function acos(a::Measurement)
+    aval = a.val
+    return result(acos(aval), -inv(sqrt(1.0 - abs2(aval))), a)
 end
+
+function acosh(a::Measurement)
+    aval = a.val
+    return result(acosh(aval), inv(sqrt(abs2(aval) - 1.0)), a)
+end
+
+function asin(a::Measurement)
+    aval = a.val
+    return result(asin(aval), inv(sqrt(1.0 - abs2(aval))), a)
+end
+
+function asinh(a::Measurement)
+    aval = a.val
+    return result(asinh(a.val), inv(hypot(aval, 1.0)), a)
+end
+
+function atan(a::Measurement)
+    aval = a.val
+    return result(atan(aval), inv(abs2(aval) + 1.0), a)
+end
+
+function atanh(a::Measurement)
+    aval = a.val
+    return result(atanh(aval), inv(1.0 - abs2(aval)), a)
+end
+
+function atan2(a::Measurement, b::Measurement)
+    aval = a.val
+    bval = b.val
+    invdenom = inv(abs2(aval) + abs2(bval))
+    return result(atan2(aval, bval),
+                  (bval*invdenom, -aval*invdenom),
+                  (a, b))
+end
+
 atan2(a::Measurement, b::Real) = atan2(a, Measurement(b))
 atan2(a::Real, b::Measurement) = atan2(Measurement(a), b)
 
-# Reciprocal trig functions: csc, cscd, csch, sec, secd, sech, cot, cotd, coth
-import Base: csc, cscd, csch, sec, secd, sech, cot, cotd, coth
+# Reciprocal trig functions: csc, csch, sec, sech, cot, coth
+import Base: csc, csch, sec, sech, cot, coth
 
 function csc(a::Measurement)
-    val = csc(a.val)
-    return Measurement(promote(val, abs(a.err*val*cot(a.val)))...)
+    aval = a.val
+    val = csc(aval)
+    return result(val, -val*cot(aval), a)
 end
 
-# TODO: remove when correlation will be supported
-cscd(a::Measurement) = rad2deg(csc(a))
-
 function csch(a::Measurement)
-    val = csch(a.val)
-    return Measurement(promote(val, abs(a.err*val*coth(a.val)))...)
+    aval = a.val
+    val = csch(aval)
+    return result(val, -val*coth(aval), a)
 end
 
 function sec(a::Measurement)
-    val = sec(a.val)
-    return Measurement(promote(val, abs(a.err*val*tan(a.val)))...)
+    aval = a.val
+    val = sec(aval)
+    return result(val, val*tan(aval), a)
 end
 
-# TODO: remove when correlation will be supported
-secd(a::Measurement) = rad2deg(sec(a))
-
 function sech(a::Measurement)
-    val = sech(a.val)
-    return Measurement(promote(val, abs(a.err*val*tanh(a.val)))...)
+    aval = a.val
+    val = sech(aval)
+    return result(val, val*tanh(aval), a)
 end
 
 function cot(a::Measurement)
-    csca = csc(a.val)
-    return Measurement(promote(cot(a.val), abs(a.err*csca*csca))...)
+    aval = a.val
+    return result(cot(aval), -abs2(csc(aval)), a)
 end
 
-# TODO: remove when correlation will be supported
-cotd(a::Measurement) = rad2deg(cot(a))
-
 function coth(a::Measurement)
-    cscha = csch(a.val)
-    return Measurement(promote(coth(a.val), abs(a.err*cscha*cscha))...)
+    aval = a.val
+    return result(coth(aval), -abs2(csch(aval)), a)
 end
 
 # Exponentials: exp, expm1, exp10, frexp, ldexp
@@ -274,40 +302,52 @@ import Base: exp, expm1, exp10, frexp, ldexp
 
 function exp(a::Measurement)
     val = exp(a.val)
-    return Measurement(promote(val, abs(val*a.err))...)
+    return result(val, val, a)
 end
 
-expm1(a::Measurement) =
-    Measurement(promote(expm1(a.val), abs(exp(a.val)*a.err))...)
+function expm1(a::Measurement)
+    aval = a.val
+    return result(expm1(aval), exp(aval), a)
+end
 
 function exp10{T<:AbstractFloat}(a::Measurement{T})
     val = exp10(a.val)
-    return Measurement(promote(float(val), abs(log(T(10))*val*a.err))...)
+    return result(val, log(T(10))*val, a)
 end
 
 function frexp(a::Measurement)
     x, y = frexp(a.val)
-    return (Measurement(x, a.err/2^y), y)
+    return (result(x, inv(2^y), a), y)
 end
 
-ldexp(a::Measurement, e::Integer) = Measurement(ldexp(a.val, e), ldexp(a.err, e))
+ldexp(a::Measurement, e::Integer) = result(ldexp(a.val, e), ldexp(1.0, e), a)
 
 # Logarithm: log, log10, log1p
 import Base: log, log10, log1p
 
 function log(a::Measurement, b::Measurement)
-    val = log(a.val, b.val)
-    loga = log(a.val)
-    logb = val*loga # This should avoid some calculations
-    return Measurement(promote(val, hypot(a.err*val*inv(a.val*loga),
-                                          b.err*inv(loga*b.val)))...)
+    aval = a.val
+    bval = b.val
+    val = log(aval, bval)
+    loga = log(aval)
+    return result(val, (-val/(aval*loga), inv(loga*bval)), (a, b))
 end
-log(a::Measurement) = # Special case
-    Measurement(promote(log(a.val), a.err*inv(a.val))...)
-log10{T<:AbstractFloat}(a::Measurement{T}) = # Special case
-    Measurement(promote(log10(a.val), a.err*inv(log(T(10))*a.val))...)
-log1p(a::Measurement) = # Special case
-    Measurement(promote(log1p(a.val), a.err*inv(a.val + one(a.val)))...)
+
+function log(a::Measurement) # Special case
+    aval = a.val
+    return result(log(aval), inv(aval), a)
+end
+
+function log10{T<:AbstractFloat}(a::Measurement{T}) # Special case
+    aval = a.val
+    return result(log10(aval), inv(log(T(10))*aval), a)
+end
+
+function log1p(a::Measurement) # Special case
+    aval = a.val
+    return result(log1p(aval), inv(aval + one(aval)), a)
+end
+
 log(::Irrational{:e}, a::Measurement) = log(a)
 log(a::Real, b::Measurement) = log(Measurement(a), b)
 log(a::Irrational, b::Measurement) = log(float(a), b)
@@ -317,10 +357,15 @@ log(a::Measurement, b::Real) = log(a, Measurement(b))
 import Base: hypot
 
 function hypot(a::Measurement, b::Measurement)
-    val = hypot(a.val, b.val)
-    return Measurement(promote(val, abs(hypot(a.val*a.err,
-                                              b.val*b.err)*inv(val)))...)
+    aval = a.val
+    bval = b.val
+    val = hypot(aval, bval)
+    invval = inv(val)
+    return result(val,
+                  (aval*invval, bval*invval),
+                  (a, b))
 end
+
 hypot(a::Real, b::Measurement) = hypot(Measurement(a), b)
 hypot(a::Measurement, b::Real) = hypot(a, Measurement(b))
 
@@ -329,29 +374,39 @@ import Base: sqrt
 
 function sqrt(a::Measurement)
     val = sqrt(a.val)
-    return Measurement(promote(val, 0.5*a.err*inv(val))...)
+    return result(val, 0.5*inv(val), a)
 end
 
 # Cube root: cbrt
 import Base: cbrt
 
 function cbrt(a::Measurement)
-    val = cbrt(a.val)
-    return Measurement(promote(val, a.err*val*inv(3.0*a.val))...)
+    aval = a.val
+    val = cbrt(aval)
+    return result(val, val*inv(3.0*aval), a)
 end
 
 # Absolute value: abs
 import Base: abs
 
-abs(a::Measurement) = Measurement(promote(abs(a.val), a.err)...)
+function abs(a::Measurement)
+    aval = a.val
+    return result(abs(aval), copysign(1, aval), a)
+end
 
 # Sign: sign, copysign, flipsign
 import Base: sign, copysign, flipsign
 
-sign(a::Measurement) = Measurement(sign(a.val))
+sign(a::Measurement) = result(sign(a.val), 0.0, a)
 
-copysign(a::Measurement, b::Measurement) =
-    Measurement(copysign(a.val, b.val), a.err)
+function copysign(a::Measurement, b::Measurement)
+    aval = a.val
+    bval = b.val
+    result(copysign(aval, bval),
+           (copysign(1, aval)/copysign(1, bval), 0.0),
+           (a, b))
+end
+
 copysign(a::Measurement, b::Real) = copysign(a, Measurement(b))
 copysign(a::Signed, b::Measurement) = copysign(Measurement(a), b)
 copysign(a::Rational, b::Measurement) = copysign(Measurement(a), b)
@@ -359,8 +414,11 @@ copysign(a::Float32, b::Measurement) = copysign(Measurement(a), b)
 copysign(a::Float64, b::Measurement) = copysign(Measurement(a), b)
 copysign(a::Real, b::Measurement) = copysign(Measurement(a), b)
 
-flipsign(a::Measurement, b::Measurement) =
-    Measurement(flipsign(a.val, b.val), a.err)
+function flipsign(a::Measurement, b::Measurement)
+    flip = flipsign(a.val, b.val)
+    return result(flip, (copysign(1.0, flip), 0.0), (a, b))
+end
+
 flipsign(a::Measurement, b::Real) = flipsign(a, Measurement(b))
 flipsign(a::Signed, b::Measurement) = flipsign(Measurement(a), b)
 flipsign(a::Float32, b::Measurement) = flipsign(Measurement(a), b)
@@ -382,35 +440,30 @@ import Base: erf, erfinv, erfc, erfcinv, erfcx
 
 function erf{T<:AbstractFloat}(a::Measurement{T})
     aval = a.val
-    return Measurement(promote(erf(aval),
-                               2*exp(-aval*aval)*a.err/sqrt(T(pi)))...)
+    return result(erf(aval), 2*exp(-abs2(aval))/sqrt(T(pi)), a)
 end
 
 function erfinv{T<:AbstractFloat}(a::Measurement{T})
-    result = erfinv(a.val)
+    res = erfinv(a.val)
     # For the derivative, see http://mathworld.wolfram.com/InverseErf.html
-    return Measurement(promote(result,
-                               0.5*sqrt(T(pi))*exp(result*result)*a.err)...)
+    return result(res, 0.5*sqrt(T(pi))*exp(abs2(res)), a)
 end
 
 function erfc{T<:AbstractFloat}(a::Measurement{T})
     aval = a.val
-    return Measurement(promote(erfc(aval),
-                               2*exp(-aval*aval)*a.err/sqrt(T(pi)))...)
+    return result(erfc(aval), -2*exp(-abs2(aval))/sqrt(T(pi)), a)
 end
 
 function erfcinv{T<:AbstractFloat}(a::Measurement{T})
-    result = erfcinv(a.val)
+    res = erfcinv(a.val)
     # For the derivative, see http://mathworld.wolfram.com/InverseErfc.html
-    return Measurement(promote(result,
-                               0.5*sqrt(T(pi))*exp(result*result)*a.err)...)
+    return result(res, -0.5*sqrt(T(pi))*exp(abs2(res)), a)
 end
 
 function erfcx{T<:AbstractFloat}(a::Measurement{T})
     aval = a.val
-    result = erfcx(aval)
-    return Measurement(promote(result,
-                               abs(2*(aval*result - inv(sqrt(T(pi)))))*a.err)...)
+    res = erfcx(aval)
+    return result(res, 2*(aval*res - inv(sqrt(T(pi)))), a)
 end
 
 # Factorial and gamma: factorial, gamma, lgamma
@@ -419,48 +472,30 @@ import Base: factorial, gamma, lgamma
 function factorial(a::Measurement)
     aval = a.val
     fact = factorial(aval)
-    return Measurement(promote(fact,
-                               abs(fact*a.err*polygamma(0, aval + one(aval))))...)
+    return result(fact, fact*polygamma(0, aval + one(aval)), a)
 end
 
 function gamma(a::Measurement)
     aval = a.val
     Γ = gamma(aval)
-    return Measurement(promote(Γ,
-                               abs(Γ*a.err*polygamma(0, aval)))...)
+    return result(Γ, Γ*polygamma(0, aval), a)
 end
 
 function lgamma(a::Measurement)
     aval = a.val
-    return Measurement(promote(lgamma(aval),
-                               abs(a.err*polygamma(0, aval)))...)
+    return result(lgamma(aval), polygamma(0, aval), a)
 end
 
-# Modulo: modf, mod, rem, mod2pi
-import Base: modf, mod, rem, mod2pi
+# Modulo: rem, mod2pi
+import Base: rem, mod2pi
 
-function modf(a::Measurement)
-    frac, int = modf(a.val)
-    return (Measurement(frac, a.err), int)
-end
-
-mod(a::Measurement, b::Measurement) =
-    # To calculate the uncertainty, use the property of "mod" function, see
-    # http://docs.julialang.org/en/stable/manual/mathematical-operations/#division-functions
-    # TODO: find a smarter way to calculate the uncertainty, if possible.
-    Measurement(mod(a.val, b.val), (a - fld(a, b)*b).err)
-mod(a::Measurement, b::Real) = mod(a, Measurement(b))
-mod(a::Real, b::Measurement) = mod(Measurement(a), b)
-
-rem(a::Measurement, b::Measurement) =
-    # To calculate the uncertainty, use the property of "rem" function, see
-    # http://docs.julialang.org/en/stable/manual/mathematical-operations/#division-functions
-    # TODO: find a smarter way to calculate the uncertainty, if possible.
-    Measurement(rem(a.val, b.val), (a - div(a, b)*b).err)
+# Use definition of "rem" function:
+# http://docs.julialang.org/en/stable/manual/mathematical-operations/#division-functions
+rem(a::Measurement, b::Measurement) = a - div(a, b)*b
 rem(a::Measurement, b::Real) = rem(a, Measurement(b))
 rem(a::Real, b::Measurement) = rem(Measurement(a), b)
 
-mod2pi(a::Measurement) = Measurement(mod2pi(a.val), a.err)
+mod2pi(a::Measurement) = result(mod2pi(a.val), 1, a)
 
 # Machine precision: eps, nextfloat, maxintfloat
 import Base: eps, nextfloat, maxintfloat
