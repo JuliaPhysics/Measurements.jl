@@ -79,12 +79,7 @@ function result(val::Real, der::Tuple{Vararg{Real}},
                 # independent variable.  In the case of the x independent
                 # variable of the example above, we should get
                 #    dG/dx = ∂G/∂a1·∂a1/∂x + ∂G/∂a2·∂a2/∂x
-                derivative = derivative +
-                    try
-                        der[i]*x.der[tag]
-                    catch
-                        0.0
-                    end
+                derivative = derivative + der[i]*get(x.der, tag, 0.0)
             end
             merge!(newder, Dict(tag=>derivative))
             # Add (σ_x·dG/dx)^2 to the total uncertainty (squared)
