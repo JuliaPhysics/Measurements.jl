@@ -10,6 +10,7 @@ New Features
 * Macro `@uncertain` enables propagation of uncertainty in any real function of
   one real argument, including those making use of C/Fortran calls
   ([#4](https://github.com/giordano/Measurements.jl/issues/4)).
+* Precompilation enabled.
 * New method supported: `typemax`.
 
 v0.0.2 (2016-06-13)

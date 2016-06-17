@@ -17,6 +17,8 @@
 #
 ### Code:
 
+__precompile__()
+
 module Measurements
 
 # This is used to calculate numerical derivatives in "@uncertain" macro.
