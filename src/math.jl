@@ -42,8 +42,13 @@ function result{T<:AbstractFloat}(val::Real, der::Real, a::Measurement{T})
             newder = Derivatives(newder, tag=>der*a.der[tag])
         end
     end
-    #          (G(a), σ_G = |σ_a·∂G/∂a|, tag, derivatives)
-    Measurement(val,  abs(der*a.err),    NaN, newder)
+    # If uncertainty of "a" is null, the uncertainty of result is null as well,
+    # even if the derivative is NaN or infinite.  In any other case, use
+    # σ_G = |σ_a·∂G/∂a|.
+    σ = (a.err == 0.0) ? 0.0 : abs(der*a.err)
+    # The tag is NaN because we don't care about tags of derived quantities, we
+    # are only interested in independent ones.
+    Measurement(val,  σ, NaN, newder)
 end
 
 # This function is similar to the previous one, but applies to mathematical

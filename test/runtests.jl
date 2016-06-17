@@ -226,6 +226,9 @@ test_approx_eq(hypot(3, y), Measurement(5, 0.16))
 test_approx_eq(sqrt(y), Measurement(2, 0.05))
 for a in (x, y); test_approx_eq(sqrt(a), a^0.5); end
 for a in (x, y); test_approx_eq(sqrt(a)*sqrt(a), a); end
+# Derivative of sqrt diverges in 0, but if the measurement is exact (like "a-a"
+# is) also the resulting quantity must have 0 uncertainty.
+for a in (w, x, y); test_approx_eq(sqrt(a - a), Measurement(0)); end
 
 # Cube root
 test_approx_eq(cbrt(x), Measurement(1.4422495703074083, 0.01602499522563787))
