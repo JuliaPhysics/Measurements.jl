@@ -125,6 +125,7 @@ test_approx_eq(x^2, Measurement(9, 0.6))
 for a in (w, x, y); test_approx_eq(a^2, a^2.0); end
 test_approx_eq(y^(1//2), Measurement(2, 0.05))
 for a in (w, x, y); test_approx_eq(a^(4//2), a*a); end
+test_approx_eq(x^(pi), Measurement(31.54428070019754, 3.3033093503504967))
 test_approx_eq(2^x, Measurement(8, 0.5545177444479562))
 for a in (w, x, y); test_approx_eq(2^a, 2.0^a); end
 test_approx_eq(pi^x, Measurement(31.006276680299816, 3.5493811564854525))

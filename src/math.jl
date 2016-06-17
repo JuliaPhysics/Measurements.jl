@@ -197,7 +197,7 @@ function ^{T<:Rational}(a::Measurement,  b::T)
 end
 
 function ^{T<:Real}(a::Measurement,  b::T)
-    if isinteger(b)
+    if isinteger(float(b))
         return a^trunc(Integer, b)
     else
         return ^(a, Measurement(b))
