@@ -5,26 +5,28 @@
 Introduction
 ------------
 
-This package allows you to define numbers with uncertainties and perform
-calculations involving them easily getting the uncertainty of the result
-according to
+`Measurements.jl` is a [Julia](http://julialang.org/) package that allows you to
+define numbers with uncertainties and perform calculations involving them easily
+getting the uncertainty of the result according to
 [linear error propagation theory](https://en.wikipedia.org/wiki/Propagation_of_uncertainty).
 
 ### Features List ###
 
-* Support for most of mathematical operations available in Julia involving real
-  and complex numbers with uncertainties.  All existing functions that accept
-  `AbstractFloat` (and `Complex{AbstractFloat}`) arguments and internally use
-  already supported functions can in turn perform calculations involving numbers
-  with uncertainties without being redefined.  This greatly expands the power of
+* Support for most mathematical operations available in Julia involving real and
+  complex numbers.  All existing functions that accept `AbstractFloat` (and
+  `Complex{AbstractFloat}`) arguments and internally use already supported
+  functions can in turn perform calculations involving numbers with
+  uncertainties without being redefined.  This greatly enhances the power of
   `Measurements.jl` without effort for the users
-* Support for correlation between variables, so `x-x == zero(x)`, `x*x == x^2`,
-  `tan(x) == sin(x)/cos(x)`, etc...
+* Support for
+  [correlation](https://en.wikipedia.org/wiki/Correlation_and_dependence)
+  between variables, so `x-x == zero(x)`, `x*x == x^2`, `tan(x) ==
+  sin(x)/cos(x)`, etc...
 * Support for
   [arbitrary precision](http://docs.julialang.org/en/stable/manual/integers-and-floating-point-numbers/#arbitrary-precision-arithmetic)
   numbers with uncertainties (though this may not be very useful for quantities
   that are intrinsically imprecise)
-* Propagate uncertainty for any real function of one real argument (even
+* Propagate uncertainty for any real function of one or two real arguments (even
   functions based on
   [C/Fortran calls](http://docs.julialang.org/en/stable/manual/calling-c-and-fortran-code/)),
   using `@uncertain`
@@ -62,19 +64,24 @@ using Measurements
 ```
 
 The module defines a new `Measurement` data type.  `Measurement` objects can be
-defined with either one of the two following constructors:
+created with the two following constructors:
 
 ``` julia
 Measurement(value, uncertainty)
 value ± uncertainty
 ```
 
-where `value` and `uncertainty` are both subtype of `AbstractFloat`.  Some
-keyboard layouts provide an easy way to type the `±` sign, if your does not,
-remember you can insert it in Julia REPL with `\pm` followed by `TAB` key.  You
-can provide `value` and `uncertainty` of any subtype of `Real` that can be
-converted to `AbstractFloat`.  Thus, `Measurement(42, 33//12)` is a valid
-syntax.
+where
+
+* `value` is the nominal value of the measurement
+* `uncertainty` is its uncertainty, assumed to be a
+  [standard deviation](https://en.wikipedia.org/wiki/Standard_deviation).
+
+They are both subtype of `AbstractFloat`.  Some keyboard layouts provide an easy
+way to type the `±` sign, if your does not, remember you can insert it in Julia
+REPL with `\pm` followed by `TAB` key.  You can provide `value` and
+`uncertainty` of any subtype of `Real` that can be converted to `AbstractFloat`.
+Thus, `Measurement(42, 33//12)` and `pi ± 0.1` are valid.
 
 `Measurement(value)` creates a `Measurement` object that doesn’t have
 uncertainty, like mathematical constants.  See below for further examples.
@@ -84,36 +91,36 @@ For those interested in the technical details of the package, `Measurement` is a
 [parametric](http://docs.julialang.org/en/stable/manual/types/#man-parametric-types)
 type, whose parameter is the `AbstractFloat` subtype of the nominal value and
 the uncertainty of the measurement.  `Measurement` type itself is subtype of
-`AbstractFloat`, this users that want to hack into `Measurements.jl` should use
-objects with type that is a subtype of `AbstractFloat`.
-
-Most basic mathematical operations are instructed, by
-[operator overloading](https://en.wikipedia.org/wiki/Operator_overloading), to
-accept `Measurement` type and uncertainty is calculated exactly using analityc
-expressions of function derivatives.  In addition, being `Measurement` a subtype
-of `AbstractFloat`, `Measurement` objects can be used in any function taking
+`AbstractFloat`, thus `Measurement` objects can be used in any function taking
 `AbstractFloat` arguments without redefining it, and calculation of uncertainty
 will be exact.
+
+Most mathematical operations are instructed, by
+[operator overloading](https://en.wikipedia.org/wiki/Operator_overloading), to
+accept `Measurement` type, and uncertainty is calculated exactly using analityc
+expressions of function derivatives.
 
 In addition, it is possible to create a `Complex` measurement with
 `complex(Measurement(a, b), Measurement(c, d))`.
 
 ### Correlation Between Variables ###
 
-This package is able to handle correlation between variables, this means that
-uncertainty is correctly propagated also for functions taking two or more
-arguments that are correlated (one is derived from the other or both arguments
-are derived from a set of common independent variables).  As a result, `x - x ==
-zero(x)` and `x/x == one(x)`.  Instead, two measurements that come from truly
-different measurements and share the same nominal value and uncertainty only by
-chance are not treated as correlated.
+This package is able to handle
+[correlation](https://en.wikipedia.org/wiki/Correlation_and_dependence) between
+variables.  This means that uncertainty is correctly propagated also for
+functions taking two or more arguments that are correlated, that is one is
+derived from the other or both arguments are derived from a set of common
+independent variables.  As a result, `x - x == zero(x)` and `x/x == one(x)`.
+Instead, two measurements that come from truly different measurements and only
+by chance share the same nominal value and uncertainty are not treated as
+correlated.
 
 ### Propagate Uncertainty for Arbitrary Functions ###
 
 The package provides a new `@uncertain` macro that further extends the power of
-this package.  It allows you to propagate uncertainty in arbitrary real
-functions, including those based on C/Fortran calls, that accept one real
-argument.  The macro exploits `derivative` function from
+`Measurements.jl`.  This macro allows you to propagate uncertainty in arbitrary
+real functions, including those based on C/Fortran calls, that accept one or two
+real arguments.  The macro exploits `derivative` and `gradient` functions from
 [`Calculus`](https://github.com/johnmyleswhite/Calculus.jl) package in order to
 perform numerical differentiation.
 
@@ -196,7 +203,8 @@ cos(x)^2 - (1 + cos(u))/2
 # => 0.0 ± 0.0
 ```
 
-Two uncorrelated measurements will give completely different outcomes:
+A variable that has the same nominal value and uncertainty as `u` above but is
+not correlated with `x` will give different outcomes:
 
 ``` julia
 # Define a new measurement but with same nominal value and uncertainty as u, so
@@ -214,13 +222,28 @@ cos(x)^2 - (1 + cos(v))/2
 
 ### `@uncertain` Macro ###
 
-Macro `@uncertain` can be used to propagate uncertainty in an arbitrary real
-function of a real argument, even in functions not natively supported by this
-package.
+Macro `@uncertain` can be used to propagate uncertainty in arbitrary real
+functions of one or two real arguments, even in functions not natively supported
+by this package.
 
 ``` julia
 @uncertain zeta(2 ± 0.13)
 # => 1.6449340668482273 ± 0.12188127308075564
+@uncertain log(9.4 ± 1.3, 58.8 ± 3.7)
+# => 1.8182372640255153 ± 0.11568300475873611
+log(9.4 ± 1.3, 58.8 ± 3.7)
+# => 1.8182372640255153 ± 0.11568300475593848
+```
+
+The type of the arguments provided must be `Measurement`.  If one of the
+arguments is actually an exact number (so without uncertainty), convert it to
+`Measurement` type:
+
+``` julia
+atan2(10, 13.5 ± 0.8)
+# => 0.6375487981386927 ± 0.028343666961913202
+@uncertain atan2(Measurement(10), 13.5 ± 0.8)
+# => 0.6375487981386927 ± 0.028343666962347438
 ```
 
 The macro works with functions calling C/Fortran functions as well.  Consider
@@ -233,14 +256,15 @@ f(x) = -x*x
 # with "ccall"
 ptr = cfunction(f, Cdouble, (Cdouble,))
 # Define a new function that uses a "ccall".  In the end, this involute g(x)
-# function computes exp(-x^2)
-g(x) = exp(ccall(ptr, Cdouble, (Cdouble,), x))
-# Compare result of using "@uncertain" macro with directly calculating exp(-x^2)
-x = 0.97 ± 0.023
-@uncertain g(x)
-# => 0.3902764284635212 ± 0.017414134237825774
-exp(-x^2)
-# => 0.3902764284635212 ± 0.017414134238042316
+# function computes exp(-(µ/σ)^2)
+g(x, y) = exp(ccall(ptr, Cdouble, (Cdouble,), x)/y^2)
+# Compare result of using "@uncertain" macro with directly calculating exp(-(µ/σ)^2)
+µ = 0.97 ± 0.023
+σ = 2.5 ± 0.16
+@uncertain g(µ, σ)
+# => 0.8602398786200295 ± 0.017677602865095236
+exp(-(µ/σ)^2)
+# => 0.8602398786200295 ± 0.01767760286379497
 ```
 
 ### Complex Measurements ###
@@ -296,9 +320,9 @@ mean((3.1±0.32, 3.2±0.38, 3.5±0.61, 3.8±0.25))
 
 ### Caveat about `±` Sign ###
 
-The `±` sign is a convenient symbol to define quantity with uncertainty, but can
-lead to unexpected results if used in elaborate expressions involving many `±`
-signs.  Use parantheses where appropriate to avoid confusion, for example see
+The `±` sign is a convenient symbol to define quantities with uncertainty, but
+can lead to unexpected results if used in elaborate expressions involving many
+`±`s.  Use parantheses where appropriate to avoid confusion.  See for example
 the following cases:
 
 ``` julia

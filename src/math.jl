@@ -101,19 +101,29 @@ function result(val::Real, der::Tuple{Vararg{Real}},
     return Measurement(T(val), sqrt(err), NaN, newder)
 end
 
-# @uncertain macro
+# @uncertain macro.  TODO: generalize to any number of arguments.
 """
-    @uncertain f(value ± stddev)
+    @uncertain f(value ± stddev[, value ± stddev])
 
 A macro to calculate \$f(value) ± uncertainty\$, with \$uncertainty\$ derived
 from \$stddev\$ according to rules of linear error propagation theory.  Function
-\$f\$ must accept only one real argument, the type of the argument provided must
-be `Measurement`.
+\$f\$ can accept one or two real argument, the type of the arguments provided
+must be `Measurement`.
 """
 macro uncertain(expr::Expr)
     f = esc(expr.args[1]) # Function name
-    a = esc(expr.args[2]) # Argument, of Measurement type
-    return :( result($f($a.val), Calculus.derivative($f, $a.val), $a) )
+    if length(expr.args) == 2
+        a = esc(expr.args[2]) # Argument, of Measurement type
+        return :( Measurements.result($f($a.val), Calculus.derivative($f, $a.val), $a) )
+    elseif length(expr.args) == 3
+        a1 = esc(expr.args[2]) # First argument
+        a2 = esc(expr.args[3]) # Second argument
+        return :( result($f($a1.val, $a2.val),
+                         (Calculus.gradient(x -> $f(x...), [$a1.val, $a2.val])...),
+                         ($a1, $a2)) )
+    else
+        throw(ArgumentError("@uncertain only supports functions with one or two arguments"))
+    end
 end
 
 ### Elementary arithmetic operations:

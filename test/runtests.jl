@@ -338,6 +338,8 @@ test_approx_eq_eps(@uncertain(tan(x)), tan(x), 2e-11)
 test_approx_eq_eps(@uncertain((a -> a + a + a)(x)), 3x, 3e-12)
 test_approx_eq(@uncertain(zeta(x)),
                Measurement(1.2020569031595951, 0.019812624290876782))
+for f in (log, hypot, atan2); test_approx_eq_eps(@uncertain(f(x, y)), f(x, y), 2e-12); end
+@test_throws(ArgumentError, eval(:(@uncertain(f(x, y, w)))))
 let
     # Test with a "ccall"
     f(x) = x*x
