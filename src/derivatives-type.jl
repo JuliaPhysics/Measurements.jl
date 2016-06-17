@@ -12,11 +12,12 @@
 ### Commentary:
 #
 # This file containes the definition of Derivatives type.  This is borrowed from
-# Base.ImmutableDict type, introduced in Julia 0.5.
+# Base.ImmutableDict type (see base/dict.jl in Julia source code), introduced in
+# Julia 0.5.
 #
 ### Code:
 
-import Base: in, getindex, get, start, next, done, length, isempty, similar
+import Base: getindex, get, start, next, done, similar
 
 immutable Derivatives{K, V} <: Associative{K,V}
     parent::Derivatives{K, V}
@@ -29,25 +30,6 @@ end
 
 Derivatives{K,V}(KV::Pair{K,V}) = Derivatives{K,V}(KV[1], KV[2])
 Derivatives{K,V}(t::Derivatives{K,V}, KV::Pair) = Derivatives{K,V}(t, KV[1], KV[2])
-
-function in(key_value::Pair, dict::Derivatives, valcmp=(==))
-    key, value = key_value
-    while isdefined(dict, :parent)
-        if dict.key == key
-            valcmp(value, dict.value) && return true
-        end
-        dict = dict.parent
-    end
-    return false
-end
-
-function haskey(dict::Derivatives, key)
-    while isdefined(dict, :parent)
-        dict.key == key && return true
-        dict = dict.parent
-    end
-    return false
-end
 
 function getindex(dict::Derivatives, key)
     while isdefined(dict, :parent)
@@ -68,8 +50,6 @@ end
 start(t::Derivatives) = t
 next{K,V}(::Derivatives{K,V}, t) = (Pair{K,V}(t.key, t.value), t.parent)
 done(::Derivatives, t) = !isdefined(t, :parent)
-length(t::Derivatives) = count(x->1, t)
-isempty(t::Derivatives) = done(t, start(t))
 function similar(t::Derivatives)
     while isdefined(t, :parent)
         t = t.parent

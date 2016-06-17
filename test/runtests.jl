@@ -343,4 +343,7 @@ let
     test_approx_eq_eps(@uncertain(g(x)), x^3, 4e-11)
 end
 
+# Test getindex with Derivatives type
+@test_throws KeyError getindex(x.der, 0)
+
 include("complex.jl")
