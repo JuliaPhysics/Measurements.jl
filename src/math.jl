@@ -23,13 +23,14 @@
 
 export @uncertain
 
-# This function is to be used by methods of mathematical operations to prduce a
+# This function is to be used by methods of mathematical operations to produce a
 # `Measurement' object in output.  Arguments are:
 #   * val: the nominal result of operation G(a)
 #   * der: the derivative ∂G/∂a of G with respect to the variable a
 #   * a: the only argument of G
 # In this simple case of unary function, we don't have the problem of correlated
-# variables, so we can calculate the uncertainty of G(a) as
+# variables (thus making this method much faster than the next one), so we can
+# calculate the uncertainty of G(a) as
 #   σ_G = |σ_a·∂G/∂a|
 # The list of derivatives with respect to each measurement is updated with
 #   ∂G/∂a · previous_derivatives

@@ -1,11 +1,14 @@
-v0.0.3 (2016-^^-??)
+v0.1.0 (2016-??-??)
 ===================
 
 New Features
 ------------
 
+* Support for correlated variables has been added
+  ([#3](https://github.com/giordano/Measurements.jl/issues/3))
 * Macro `@uncertain` enables propagation of uncertainty in any real function of
-  one real argument, including those making use of C/Fortran calls.
+  one real argument, including those making use of C/Fortran calls
+  ([#4](https://github.com/giordano/Measurements.jl/issues/4)).
 
 v0.0.2 (2016-06-13)
 ===================

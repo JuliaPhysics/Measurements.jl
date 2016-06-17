@@ -22,6 +22,8 @@ uncertainties and easily get the uncertainty according to
   numbers with uncertainties (though this may not be very useful for quantities
   that are intrinsically imprecise)
 * Limited support for complex numbers with uncertainties
+* Support for correlation between variables, so `x-x == zero(x)`, `x*x == x^2`,
+  `tan(x) == sin(x)/cos(x)`, etc...
 * Propagate uncertainty for any real function of one real argument (even
   functions based on
   [C/Fortran calls](http://docs.julialang.org/en/stable/manual/calling-c-and-fortran-code/)),
@@ -80,19 +82,12 @@ uncertainty, like mathematical constants.  See below for further examples.
 For those interested in the technical details of the package, `Measurement` is a
 [composite](http://docs.julialang.org/en/stable/manual/types/#composite-types)
 [parametric](http://docs.julialang.org/en/stable/manual/types/#man-parametric-types)
-type, whose definition is:
+type, whose parameter is the `AbstractFloat` subtype of the nominal value and
+the uncertainty of the measurement.  `Measurement` type itself is subtype of
+`AbstractFloat`, this users that want to hack into `Measurements.jl` should use
+objects with type that is a subtype of `AbstractFloat`.
 
-``` julia
-immutable Measurement{T<:AbstractFloat} <: AbstractFloat
-    val::T # The value
-    err::T # The uncertainty, assumed to be standard deviation
-end
-```
-
-Users that want to hack into `Measurements.jl` should use objects with type that
-is a subtype of `AbstractFloat`.
-
-Many basic mathematical operations are instructed, by
+Most basic mathematical operations are instructed, by
 [operator overloading](https://en.wikipedia.org/wiki/Operator_overloading), to
 accept `Measurement` type and uncertainty is calculated exactly using analityc
 expressions of function derivatives.  In addition, being `Measurement` a subtype
@@ -100,20 +95,21 @@ of `AbstractFloat`, `Measurement` objects can be used in any function taking
 `AbstractFloat` arguments without redefining it, and calculation of uncertainty
 will be exact.
 
-**NOTE 1:** This package currently doesn’t take into account correlation between
-operands when calculating uncertainties (see TODO list below), so operations
-like `x+x`,`x*x`, `sin(x)/cos(x)` will have inaccurate uncertainties.  Use
-expressions not involving correlated variables when possible (e.g., `2x` in
-place of `x+x`, `x^2` for `x*x`, and `tan(x)` instead of `sin(x)/cos(x)`).
-
-**NOTE 2:** Currently this package fully supports real-only measurements.  It is
+**NOTE:** Currently this package fully supports real-only measurements.  It is
 possible to create a `Complex` measurement with `complex(Measurement(a, b),
 Measurement(c, d))` and error propagation should work for some basic operations
 like arithmentic operations, but no active work has been done to further support
 complex quantities with attached uncertainty.
 
-**NOTE 3:** Loading the module with `using Measurements` in Julia 0.4 will emit
-a harmless warning, you can ignore it.  The warning goes away in Julia 0.5.
+### Correlation Between Variables ###
+
+This package is able to handle correlation between variables, this means that
+uncertainty is correctly propagated also for functions taking two or more
+arguments that are correlated (one is derived from the other or both arguments
+are derived from a set of common independent variables).  As a result, `x - x ==
+zero(x)` and `x/x == one(x)`.  Instead, two measurements that come from truly
+different measurements and share the same nominal value and uncertainty only by
+chance are not treated as correlated.
 
 ### Propagate Uncertainty for Arbitrary Functions ###
 
@@ -169,6 +165,54 @@ log(2x^2 - 3.4y)
 # =>  3.3406260917568824 ± 0.5344198747546611
 atan2(y, x)
 # => 1.0411291003154137 ± 0.07141014208254456
+```
+
+### Correlation Between Variables ###
+
+Here you can see example of how correlated variables are treated within the
+package:
+
+``` julia
+x = 8.4 ± 0.7
+x - x
+# => 0.0 ± 0.0
+x/x
+# => 1.0 ± 0.0
+x*x*x - x^3
+# => 0.0 ± 0.0
+sin(x)/cos(x) - tan(x)
+# => -2.220446049250313e-16 ± 0.0 # They are equal within numerical accuracy
+```
+
+You will get similar results for a variable that is a function of an already
+existing `Measurement` object:
+
+``` julia
+u = 2x
+(x + x) - u
+# => 0.0 ± 0.0
+u/2x
+# => 1.0 ± 0.0
+u^3 - 8x^3
+# => 0.0 ± 0.0
+cos(x)^2 - (1 + cos(u))/2
+# => 0.0 ± 0.0
+```
+
+Two uncorrelated measurements will give completely different outcomes:
+
+``` julia
+# Define a new measurement but with same nominal value and uncertainty as u, so
+# v is not correlated with x
+v = 16.8 ± 1.4
+(x + x) - v
+# => 0.0 ± 1.979898987322333
+v/2x
+# => 1.0 ± 0.11785113019775792
+v^3 - 8x^3
+# => 0.0 ± 1676.4200705455657
+cos(x)^2 - (1 + cos(v))/2
+# => 0.0 ± 0.8786465354843539
 ```
 
 ### `@uncertain` Macro ###
@@ -253,9 +297,6 @@ TODO
 
 * Add pretty printing: optionally print only the relevant significant digits
   ([issue #5](https://github.com/giordano/Measurements.jl/issues/5))
-* Add support for correlation, so that `x-x == zero(x)`, `x*x == x^2`, `tan(x)
-  == sin(x)/cos(x)`,
-  etc... ([issue #3](https://github.com/giordano/Measurements.jl/issues/3))
 * Support error propagation for complex measurements
 * Other suggestions welcome `:-)`
 
