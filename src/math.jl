@@ -526,7 +526,7 @@ rem(a::Real, b::Measurement) = rem(Measurement(a), b)
 mod2pi(a::Measurement) = result(mod2pi(a.val), 1, a)
 
 # Machine precision: eps, nextfloat, maxintfloat
-import Base: eps, nextfloat, maxintfloat
+import Base: eps, nextfloat, maxintfloat, typemax
 
 eps{T<:AbstractFloat}(::Type{Measurement{T}}) = eps(T)
 eps{T<:AbstractFloat}(a::Measurement{T}) = eps(a.val)
@@ -534,6 +534,8 @@ eps{T<:AbstractFloat}(a::Measurement{T}) = eps(a.val)
 nextfloat(a::Measurement) = nextfloat(a.val)
 
 maxintfloat{T<:AbstractFloat}(::Type{Measurement{T}}) = maxintfloat(T)
+
+typemax{T<:AbstractFloat}(::Type{Measurement{T}}) = typemax(T)
 
 # Rounding: round, floor, ceil, trunc
 import Base: round, floor, ceil, trunc
