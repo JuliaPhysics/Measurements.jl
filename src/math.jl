@@ -38,7 +38,7 @@ function result{T<:AbstractFloat}(val::Real, der::Real, a::Measurement{T})
     val, der = promote(val, der)
     newder = similar(a.der)
     @inbounds for tag in keys(a.der)
-        if tag[2] != 0.0 # Exclude values with 0 uncertainty
+        if tag[2] != 0.0 # Skip values with 0 uncertainty
             newder = Derivatives(newder, tag=>der*a.der[tag])
         end
     end
@@ -69,22 +69,28 @@ function result(val::Real, der::Tuple{Vararg{Real}},
     T = typeof(a[1].val)
     newder = similar(a[1].der)
     err::T = zero(T)
-    # Iterate over all independent variables (merge together the list of
-    # independent variables from all the arguments listed in `a').
-    @inbounds for tag in union([keys(x.der) for x in a]...)
-        if tag[2] != 0.0 # Exclude values with 0 uncertainty
-            derivative::T = 0.0
-            # Iteratate over all the arguments of the function
-            for (i, x) in enumerate(a)
-                # Calculate the derivative of G with respect to the current
-                # independent variable.  In the case of the x independent
-                # variable of the example above, we should get
-                #    dG/dx = ∂G/∂a1·∂a1/∂x + ∂G/∂a2·∂a2/∂x
-                derivative = derivative + der[i]*get(x.der, tag, 0.0)
+    # Iterate over all independent variables.  We first iterate over all
+    # variables listed in `a' in order to get all independent variables upon
+    # which those variables depend, then we get the `tag' of each independent
+    # variable, skipping variables that have been already taken into account.
+    @inbounds for y in a
+        for tag in keys(y.der)
+            if tag ∉ keys(newder) # Skip independent variables already considered
+                if tag[2] != 0.0 # Skip values with 0 uncertainty
+                    derivative::T = 0.0
+                    # Iteratate over all the arguments of the function
+                    for (i, x) in enumerate(a)
+                        # Calculate the derivative of G with respect to the
+                        # current independent variable.  In the case of the x
+                        # independent variable of the example above, we should
+                        # get   dG/dx = ∂G/∂a1·∂a1/∂x + ∂G/∂a2·∂a2/∂x
+                        derivative = derivative + der[i]*get(x.der, tag, 0.0)
+                    end
+                    newder = Derivatives(newder, tag=>derivative)
+                    # Add (σ_x·dG/dx)^2 to the total uncertainty (squared)
+                    err = err + abs2(derivative*tag[2])
+                end
             end
-            newder = Derivatives(newder, tag=>derivative)
-            # Add (σ_x·dG/dx)^2 to the total uncertainty (squared)
-            err = err + abs2(derivative*tag[2])
         end
     end
     return Measurement(T(val), sqrt(err), NaN, newder)
