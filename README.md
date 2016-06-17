@@ -21,7 +21,7 @@ uncertainties and easily get the uncertainty according to
   [arbitrary precision](http://docs.julialang.org/en/stable/manual/integers-and-floating-point-numbers/#arbitrary-precision-arithmetic)
   numbers with uncertainties (though this may not be very useful for quantities
   that are intrinsically imprecise)
-* Limited support for complex numbers with uncertainties
+* Support for complex numbers with uncertainties
 * Support for correlation between variables, so `x-x == zero(x)`, `x*x == x^2`,
   `tan(x) == sin(x)/cos(x)`, etc...
 * Propagate uncertainty for any real function of one real argument (even
@@ -95,11 +95,8 @@ of `AbstractFloat`, `Measurement` objects can be used in any function taking
 `AbstractFloat` arguments without redefining it, and calculation of uncertainty
 will be exact.
 
-**NOTE:** Currently this package fully supports real-only measurements.  It is
-possible to create a `Complex` measurement with `complex(Measurement(a, b),
-Measurement(c, d))` and error propagation should work for some basic operations
-like arithmentic operations, but no active work has been done to further support
-complex quantities with attached uncertainty.
+In addition, it is possible to create a `Complex` measurement with
+`complex(Measurement(a, b), Measurement(c, d))`.
 
 ### Correlation Between Variables ###
 
@@ -246,6 +243,32 @@ exp(-x^2)
 # => 0.3902764284635212 ± 0.017414134238042316
 ```
 
+### Complex Measurements ###
+
+Here are a few examples about uncertainty propagation of complex-valued
+measurements.
+
+``` julia
+u = complex(32.7 ± 1.1, -3.1 ± 0.2)
+v = complex(7.6 ± 0.9, 53.2 ± 3.4)
+2u+v
+# => (73.0 ± 2.3769728648009427) + (47.0 ± 3.4234485537247377)*im
+sqrt(u*v)
+# => (33.004702573592 ± 1.0831254428098636) + (25.997507418428984 ± 1.1082833691607152)*im
+gamma(u/v)
+# => (-0.25050193836584694 ± 0.011473098558745594) + (1.2079738483289788 ± 0.133606565257322)*im
+```
+
+You can also verify the
+[Euler’s formula](https://en.wikipedia.org/wiki/Euler%27s_formula)
+
+``` julia
+exp(im*u)
+# => (6.27781144696534 ± 23.454542573739754) + (21.291738410228678 ± 8.112997844397572)*im
+cos(u) + sin(u)*im
+# => (6.277811446965339 ± 23.454542573739754) + (21.291738410228678 ± 8.112997844397572)im
+```
+
 ### `stdscore` Function ###
 
 You can get the distance in number of standard deviations between a measurement
@@ -270,6 +293,8 @@ weightedmean((3.1±0.32, 3.2±0.38, 3.5±0.61, 3.8±0.25))
 mean((3.1±0.32, 3.2±0.38, 3.5±0.61, 3.8±0.25))
 # => 3.4000000000000004 ± 0.2063673908348894
 ```
+
+### Caveat about `±` Sign ###
 
 The `±` sign is a convenient symbol to define quantity with uncertainty, but can
 lead to unexpected results if used in elaborate expressions involving many `±`

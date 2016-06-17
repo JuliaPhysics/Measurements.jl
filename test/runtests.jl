@@ -3,14 +3,16 @@ using Base.Test
 
 test_approx_eq(a::Measurement, b::Measurement) =
     (@test_approx_eq(a.val, b.val) ; @test_approx_eq(a.err, b.err))
-test_approx_eq{T1<:Real,T2<:Real}(a::Complex{Measurement{T1}}, b::Complex{Measurement{T2}}) =
+test_approx_eq{T1<:AbstractFloat,T2<:AbstractFloat}(a::Complex{Measurement{T1}}, b::Complex{Measurement{T2}}) =
     (@test_approx_eq(real(a), real(b)) ; @test_approx_eq(imag(a), imag(b)))
-test_approx_eq{T1<:Real,T2<:Real}(a::Complex{Measurement{T1}}, b::Measurement{T2}) =
+test_approx_eq{T1<:AbstractFloat,T2<:AbstractFloat}(a::Complex{Measurement{T1}}, b::Measurement{T2}) =
     test_approx_eq(a, complex(b))
-test_approx_eq{T1<:Real,T2<:Real}(a::Measurement{T1}, b::Complex{Measurement{T2}}) =
+test_approx_eq{T1<:AbstractFloat,T2<:AbstractFloat}(a::Measurement{T1}, b::Complex{Measurement{T2}}) =
     test_approx_eq(complex(a), b)
 test_approx_eq_eps(a::Measurement, b::Measurement, tol::Real) =
     (@test_approx_eq_eps(a.val, b.val, tol) ; @test_approx_eq_eps(a.err, b.err, tol))
+test_approx_eq_eps{T1<:AbstractFloat,T2<:AbstractFloat}(a::Complex{Measurement{T1}}, b::Complex{Measurement{T2}}, tol::Real) =
+    (@test_approx_eq_eps(real(a), real(b), tol) ; @test_approx_eq_eps(imag(a), imag(b), tol))
 
 w = -0.5 ± 0.03
 x = 3 ± 0.1
@@ -339,3 +341,5 @@ let
     g(x) = ccall(ptr, Cdouble, (Cdouble,), x)*x
     test_approx_eq_eps(@uncertain(g(x)), x^3, 4e-11)
 end
+
+include("complex.jl")

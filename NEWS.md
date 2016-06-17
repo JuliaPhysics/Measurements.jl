@@ -6,6 +6,7 @@ New Features
 
 * Support for correlated variables has been added
   ([#3](https://github.com/giordano/Measurements.jl/issues/3)).
+* Full support for complex measurements.
 * Macro `@uncertain` enables propagation of uncertainty in any real function of
   one real argument, including those making use of C/Fortran calls
   ([#4](https://github.com/giordano/Measurements.jl/issues/4)).
