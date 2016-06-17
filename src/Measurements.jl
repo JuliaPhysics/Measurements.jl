@@ -28,6 +28,16 @@ import Base: show
 # Functions provided by this package and exposed to users
 export Measurement, ±, stdscore, weightedmean
 
+# Define the "Derivatives" type, used inside "Measurement" type.  This should be
+# a lightweight and immutable dictionary.  In Julia 0.5 we just use
+# "Base.ImmutableDict", in previous versions we define the type just like
+# "Base.ImmutableDict".
+if VERSION >= v"0.5-dev+1910"
+    const Derivatives = Base.ImmutableDict
+else
+    include("derivatives-type.jl")
+end
+
 ##### New Type: Measurement
 # Definition.  The Measurement type is composed by the following fields:
 #   * val: the nominal value of the measurement
@@ -35,25 +45,26 @@ export Measurement, ±, stdscore, weightedmean
 #   * tag: a (hopefully) unique identifier, it is used to identify a specific
 #     measurement in the list of derivatives.  This is usually created with
 #     `rand'.
-#   * der: the list of derivates.  It is a dictionary, whose keys are the tuples
-#     (nominal value, uncertainty, tag) of all independent variables from which
-#     the object has been derived, the corresponding value is the total
-#     derivative of the object with respect to that independent variable.  This
-#     dictionary is useful to trace the contribution of each measurement and
-#     propagate the uncertainty in the case of functions with more than one
-#     argument (in order to deal with correlation between arguments).
+#   * der: the list of derivates.  It is a lightweight dictionary, whose keys
+#     are the tuples (nominal value, uncertainty, tag) of all independent
+#     variables from which the object has been derived, the corresponding value
+#     is the total derivative of the object with respect to that independent
+#     variable.  This dictionary is useful to trace the contribution of each
+#     measurement and propagate the uncertainty in the case of functions with
+#     more than one argument (in order to deal with correlation between
+#     arguments).
 immutable Measurement{T<:AbstractFloat} <: AbstractFloat
     val::T
     err::T
     tag::Float64
-    der::Dict{Tuple{T, T, Float64}, T}
+    der::Derivatives{Tuple{T, T, Float64}, T}
 end
 
 # Constructors
 function Measurement(val::Real, err::Real)
     val, err, der = promote(float(val), float(err), one(float(val)))
     tag = rand()
-    return Measurement(val, err, tag, Dict((val, err, tag)=>der))
+    return Measurement(val, err, tag, Derivatives((val, err, tag)=>der))
 end
 
 Measurement(value::Irrational) = Measurement(value, zero(float(value)))

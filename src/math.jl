@@ -38,7 +38,7 @@ function result{T<:AbstractFloat}(val::Real, der::Real, a::Measurement{T})
     newder = similar(a.der)
     @inbounds for tag in keys(a.der)
         if tag[2] != 0.0 # Exclude values with 0 uncertainty
-            merge!(newder, Dict(tag=>der*a.der[tag]))
+            newder = Derivatives(newder, tag=>der*a.der[tag])
         end
     end
     #          (G(a), σ_G = |σ_a·∂G/∂a|, tag, derivatives)
@@ -81,7 +81,7 @@ function result(val::Real, der::Tuple{Vararg{Real}},
                 #    dG/dx = ∂G/∂a1·∂a1/∂x + ∂G/∂a2·∂a2/∂x
                 derivative = derivative + der[i]*get(x.der, tag, 0.0)
             end
-            merge!(newder, Dict(tag=>derivative))
+            newder = Derivatives(newder, tag=>derivative)
             # Add (σ_x·dG/dx)^2 to the total uncertainty (squared)
             err = err + abs2(derivative*tag[2])
         end

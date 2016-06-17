@@ -26,9 +26,9 @@ convert{T<:AbstractFloat}(::Type{Measurement{T}}, a::Real) =
     Measurement(T(a), zero(T))
 
 function convert{T<:AbstractFloat}(::Type{Measurement{T}}, a::Measurement)
-    newder = Dict{Tuple{T, T, Float64}, T}()
+    newder = Derivatives{Tuple{T, T, Float64}, T}()
     for tag in keys(a.der)
-        merge!(newder, Dict((T(tag[1]), T(tag[2]), tag[3])=>T(a.der[tag])))
+        newder = Derivatives(newder, (T(tag[1]), T(tag[2]), tag[3])=>T(a.der[tag]))
     end
     Measurement(T(a.val), T(a.err), a.tag, newder)
 end
