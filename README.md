@@ -5,29 +5,29 @@
 Introduction
 ------------
 
-This package allows you to perform calculations involving numbers with
-uncertainties and easily get the uncertainty according to
+This package allows you to define numbers with uncertainties and perform
+calculations involving them easily getting the uncertainty of the result
+according to
 [linear error propagation theory](https://en.wikipedia.org/wiki/Propagation_of_uncertainty).
 
 ### Features List ###
 
 * Support for most of mathematical operations available in Julia involving real
-  numbers with uncertainties.  All existing functions that accept
-  `AbstractFloat` arguments and internally use already supported functions can
-  in turn perform calculations involving numbers with uncertainties without
-  being redefined.  This greatly expands the power of `Measurements.jl` with no
-  to little overhead for the users
+  and complex numbers with uncertainties.  All existing functions that accept
+  `AbstractFloat` (and `Complex{AbstractFloat}`) arguments and internally use
+  already supported functions can in turn perform calculations involving numbers
+  with uncertainties without being redefined.  This greatly expands the power of
+  `Measurements.jl` without effort for the users
+* Support for correlation between variables, so `x-x == zero(x)`, `x*x == x^2`,
+  `tan(x) == sin(x)/cos(x)`, etc...
 * Support for
   [arbitrary precision](http://docs.julialang.org/en/stable/manual/integers-and-floating-point-numbers/#arbitrary-precision-arithmetic)
   numbers with uncertainties (though this may not be very useful for quantities
   that are intrinsically imprecise)
-* Support for complex numbers with uncertainties
-* Support for correlation between variables, so `x-x == zero(x)`, `x*x == x^2`,
-  `tan(x) == sin(x)/cos(x)`, etc...
 * Propagate uncertainty for any real function of one real argument (even
   functions based on
   [C/Fortran calls](http://docs.julialang.org/en/stable/manual/calling-c-and-fortran-code/)),
-  using new `@uncertain`
+  using `@uncertain`
   [macro](http://docs.julialang.org/en/stable/manual/metaprogramming/)
 * Functions to calculate
   [standard score](https://en.wikipedia.org/wiki/Standard_score) and
@@ -166,7 +166,7 @@ atan2(y, x)
 
 ### Correlation Between Variables ###
 
-Here you can see example of how correlated variables are treated within the
+Here you can see examples of how correlated variables are treated within the
 package:
 
 ``` julia
@@ -322,7 +322,6 @@ TODO
 
 * Add pretty printing: optionally print only the relevant significant digits
   ([issue #5](https://github.com/giordano/Measurements.jl/issues/5))
-* Support error propagation for complex measurements
 * Other suggestions welcome `:-)`
 
 License
