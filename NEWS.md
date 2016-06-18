@@ -10,6 +10,9 @@ New Features
 * Macro `@uncertain` enables propagation of uncertainty in any real function of
   one or two real arguments, including those functions making use of C/Fortran
   calls ([#4](https://github.com/giordano/Measurements.jl/issues/4)).
+* New functions `Measurements.derivative` and `Measurements.gradient` to get the
+  derivative and the gradient of an expression with respect to one or more
+  independent measurements.
 * Precompilation enabled.
 * New method supported: `typemax`.
 

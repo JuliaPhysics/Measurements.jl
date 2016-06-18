@@ -82,18 +82,18 @@ function result(val::Real, der::Tuple{Vararg{Real}},
         for tag in keys(y.der)
             if tag ∉ keys(newder) # Skip independent variables already considered
                 if tag[2] != 0.0 # Skip values with 0 uncertainty
-                    derivative::T = 0.0
+                    deriv::T = 0.0
                     # Iteratate over all the arguments of the function
                     for (i, x) in enumerate(a)
                         # Calculate the derivative of G with respect to the
                         # current independent variable.  In the case of the x
                         # independent variable of the example above, we should
                         # get   dG/dx = ∂G/∂a1·∂a1/∂x + ∂G/∂a2·∂a2/∂x
-                        derivative = derivative + der[i]*get(x.der, tag, 0.0)
+                        deriv = deriv + der[i]*derivative(x, tag)
                     end
-                    newder = Derivatives(newder, tag=>derivative)
+                    newder = Derivatives(newder, tag=>deriv)
                     # Add (σ_x·dG/dx)^2 to the total uncertainty (squared)
-                    err = err + abs2(derivative*tag[2])
+                    err = err + abs2(deriv*tag[2])
                 end
             end
         end

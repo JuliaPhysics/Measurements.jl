@@ -27,6 +27,11 @@ test_approx_eq(stdscore(x, y), -10 ± 2)
 test_approx_eq(weightedmean((w, x, y)),
                Measurement(-0.12584269662921355, 0.028442727788398632))
 
+# Derivative
+@test_approx_eq(Measurements.derivative(3*x^2, (x.val, x.err, x.tag)), 18)
+@test_approx_eq(Measurements.derivative(3*x^2, x), 18)
+@test_approx_eq(Measurements.gradient(2x + y - w, [x, y, w]), [2, 1, -1])
+
 # Conversion and Promotion
 @test convert(Measurement{Float64}, pi) == pi ± 0
 @test convert(Measurement{Float64}, 1//2) == 0.5 ± 0

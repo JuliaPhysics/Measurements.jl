@@ -6,8 +6,8 @@ Introduction
 ------------
 
 `Measurements.jl` is a [Julia](http://julialang.org/) package that allows you to
-define numbers with uncertainties and perform calculations involving them easily
-getting the uncertainty of the result according to
+define numbers with uncertainties, perform calculations involving them, and
+easily get the uncertainty of the result according to
 [linear error propagation theory](https://en.wikipedia.org/wiki/Propagation_of_uncertainty).
 
 ### Features List ###
@@ -20,7 +20,7 @@ getting the uncertainty of the result according to
   `Measurements.jl` without effort for the users
 * Support for
   [correlation](https://en.wikipedia.org/wiki/Correlation_and_dependence)
-  between variables, so `x-x == zero(x)`, `x*x == x^2`, `tan(x) ==
+  between variables, so `x-x == zero(x)`, `x/x == one(x)`, `tan(x) ==
   sin(x)/cos(x)`, etc...
 * Support for
   [arbitrary precision](http://docs.julialang.org/en/stable/manual/integers-and-floating-point-numbers/#arbitrary-precision-arithmetic)
@@ -31,6 +31,8 @@ getting the uncertainty of the result according to
   [C/Fortran calls](http://docs.julialang.org/en/stable/manual/calling-c-and-fortran-code/)),
   using `@uncertain`
   [macro](http://docs.julialang.org/en/stable/manual/metaprogramming/)
+* Functions to get the derivative and the gradient of an expression with respect
+  to one or more independent measurements.
 * Functions to calculate
   [standard score](https://en.wikipedia.org/wiki/Standard_score) and
   [weighted mean](https://en.wikipedia.org/wiki/Weighted_arithmetic_mean)
@@ -98,7 +100,7 @@ will be exact.
 Most mathematical operations are instructed, by
 [operator overloading](https://en.wikipedia.org/wiki/Operator_overloading), to
 accept `Measurement` type, and uncertainty is calculated exactly using analityc
-expressions of function derivatives.
+expressions of functions’ derivatives.
 
 In addition, it is possible to create a `Complex` measurement with
 `complex(Measurement(a, b), Measurement(c, d))`.
@@ -117,12 +119,21 @@ correlated.
 
 ### Propagate Uncertainty for Arbitrary Functions ###
 
-The package provides a new `@uncertain` macro that further extends the power of
+The package provides the `@uncertain` macro that further extends the power of
 `Measurements.jl`.  This macro allows you to propagate uncertainty in arbitrary
 real functions, including those based on C/Fortran calls, that accept one or two
 real arguments.  The macro exploits `derivative` and `gradient` functions from
 [`Calculus`](https://github.com/johnmyleswhite/Calculus.jl) package in order to
 perform numerical differentiation.
+
+### Derivative and Gradient ###
+
+In order to propagate the uncertainties, `Measurements.jl` keeps track of the
+total derivative of an expression with respect to all independent measurements
+from which the expression comes.  For this reason, the package provides two
+convenient functions, `Measurements.derivative` and `Measurements.gradient`, to
+get the total derivative and the gradient of an expression with respect to
+independent measurements.
 
 ### Standard Score ###
 
@@ -135,7 +146,7 @@ measurement and its expected value.
 `weightedmean` function gives the
 [weighted mean](https://en.wikipedia.org/wiki/Weighted_arithmetic_mean) of a set
 of measurements using
-[inverses of variance as weights](https://en.wikipedia.org/wiki/Inverse-variance_weighting).
+[inverses of variances as weights](https://en.wikipedia.org/wiki/Inverse-variance_weighting).
 Use `mean` for the simple arithmetic mean.
 
 Examples
@@ -207,8 +218,8 @@ A variable that has the same nominal value and uncertainty as `u` above but is
 not correlated with `x` will give different outcomes:
 
 ``` julia
-# Define a new measurement but with same nominal value and uncertainty as u, so
-# v is not correlated with x
+# Define a new measurement but with same nominal value
+# and uncertainty as u, so v is not correlated with x
 v = 16.8 ± 1.4
 (x + x) - v
 # => 0.0 ± 1.979898987322333
@@ -252,13 +263,14 @@ the following example:
 ``` julia
 # Define a Julia function
 f(x) = -x*x
-# Define a C pointer to "f" function, just to show that "@uncertain" works
-# with "ccall"
+# Define a C pointer to "f" function, just to show
+# that "@uncertain" works with "ccall"
 ptr = cfunction(f, Cdouble, (Cdouble,))
-# Define a new function that uses a "ccall".  In the end, this involute g(x)
-# function computes exp(-(µ/σ)^2)
+# Define a new function that uses a "ccall".  In the end,
+# this involute g(x) function computes exp(-(µ/σ)^2)
 g(x, y) = exp(ccall(ptr, Cdouble, (Cdouble,), x)/y^2)
-# Compare result of using "@uncertain" macro with directly calculating exp(-(µ/σ)^2)
+# Compare result of using "@uncertain" macro
+# with directly calculating exp(-(µ/σ)^2)
 µ = 0.97 ± 0.023
 σ = 2.5 ± 0.16
 @uncertain g(µ, σ)
@@ -291,6 +303,30 @@ exp(im*u)
 # => (6.27781144696534 ± 23.454542573739754) + (21.291738410228678 ± 8.112997844397572)*im
 cos(u) + sin(u)*im
 # => (6.277811446965339 ± 23.454542573739754) + (21.291738410228678 ± 8.112997844397572)im
+```
+
+### Derivative and Gradient ###
+
+In order to propagate the uncertainties, `Measurements.jl` keeps track of the
+total derivative of an expression with respect to all independent measurements
+from which the expression comes.  The package provides two convenient functions,
+`Measurements.derivative` and `Measurements.gradient`, that return the total
+derivative and the gradient of an expression with respect to independent
+measurements.
+
+``` julia
+x = 98.1 ± 12.7
+y = 105.4 ± 25.6
+z = 78.3 ± 14.1
+Measurements.derivative(2x - 4y, x)
+# => 2.0
+Measurements.derivative(2x - 4y, y)
+# => -4.0
+Measurements.gradient(log1p(x) + y^2 - cos(x/y), [x, y, z])
+# => 3-element Array{Float64,1}:
+#       0.0177005
+#     210.793
+#       0.0       # The expression does not depend on z
 ```
 
 ### `stdscore` Function ###
@@ -336,10 +372,10 @@ How Can I Help?
 ---------------
 
 Have a look at the TODO list below and the bug list at
-https://github.com/giordano/Measurements.jl/issues, feel free to implement those
-features and send a pull request.  In addition, you can instruct more
-mathematical functions to accept `Measurement` type arguments.  Bug reports and
-wishlists are welcome as well.
+https://github.com/giordano/Measurements.jl/issues, pick-up a task, write great
+code to accomplish it and send a pull request.  In addition, you can instruct
+more mathematical functions to accept `Measurement` type arguments.  Bug reports
+and wishlists are welcome as well.
 
 TODO
 ----
