@@ -101,9 +101,12 @@ expressions of functions’ derivatives.
 In addition, it is possible to create a `Complex` measurement with
 `complex(Measurement(a, b), Measurement(c, d))`.
 
-Those interested in the technical details of the package, in order integrate the
-package in their workflow, can have a look at the technical appendix of the full
-manual.
+The complete manual of `Measurements.jl` is available at
+http://measurementsjl.readthedocs.io.  There, people interested in the details
+of the package, in order integrate the package in their workflow, can can find a
+technical appendix explaining how the package internally works.  You can also
+download the PDF version of the manual from
+https://media.readthedocs.org/pdf/measurementsjl/latest/measurementsjl.pdf.
 
 Examples
 --------
@@ -276,9 +279,10 @@ Have a look at the TODO list below and the bug list at
 https://github.com/giordano/Measurements.jl/issues, pick-up a task, write great
 code to accomplish it and send a pull request.  In addition, you can instruct
 more mathematical functions to accept `Measurement` type arguments.  Please,
-read the technical appendix of the complete documentation in order to understand
-the design of this package.  Bug reports
-and wishlists are welcome as well.
+read the
+[technical appendix](http://measurementsjl.readthedocs.io/en/latest/appendix.html)
+of the complete documentation in order to understand the design of this package.
+Bug reports and wishlists are welcome as well.
 
 TODO
 ----

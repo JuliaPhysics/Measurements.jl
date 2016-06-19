@@ -67,7 +67,7 @@ The package provides the ``@uncertain`` macro that further extends the power of
 ``Measurements.jl``. This macro allows you to propagate uncertainty in arbitrary
 real functions, including those based on C/Fortran calls, that accept one or two
 real arguments. The macro exploits ``derivative`` and ``gradient`` functions
-from ```Calculus`` <https://github.com/johnmyleswhite/Calculus.jl>`__ package in
+from `Calculus <https://github.com/johnmyleswhite/Calculus.jl>`__ package in
 order to perform numerical differentiation.
 
 Derivative and Gradient
