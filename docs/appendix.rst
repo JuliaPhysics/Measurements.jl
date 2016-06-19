@@ -79,19 +79,19 @@ use assignment:
     x === y
     # => true
 
-Thanks to how the Julia language is designed, support for complex measurements
-and arbitrary precision calculations came with practically no effort during the
-development of the package.  As `explained
+Thanks to how the Julia language is designed, support for complex measurements,
+arbitrary precision calculations and array operations came with practically no
+effort during the development of the package.  As `explained
 <https://github.com/giordano/Measurements.jl/issues/1#issuecomment-220727553>`__
 by Steven G. Johnson, since in Julia a lot of nonlinear functions are internally
 implemented in terms of elementary operations on the real and imaginary parts it
-was natural to make the type subtype of ``Real``.  In particular, it was then
-chosen to select the ``AbstractFloat`` type because some functions of complex
-arguments (like ``sqrt`` and ``log``) take ``Complex{AbstractFloat}`` arguments
-instead of generic ``Complex{Real}``, and any operation on a ``Measurement{R}``
-object, with ``R`` subtype of ``Real`` different from ``AbstractFloat``, would
-turn it into ``Measurement{F}``, with ``F`` subtype of ``AbstractFloat``,
-anyway.
+was natural to make the type subtype of ``Real`` in order to easily work with
+complex measurements.  In particular, it was then chosen to select the
+``AbstractFloat`` type because some functions of complex arguments (like
+``sqrt`` and ``log``) take ``Complex{AbstractFloat}`` arguments instead of
+generic ``Complex{Real}``, and any operation on a ``Measurement{R}`` object,
+with ``R`` subtype of ``Real`` different from ``AbstractFloat``, would turn it
+into ``Measurement{F}``, with ``F`` subtype of ``AbstractFloat``, anyway.
 
 Correlation
 ~~~~~~~~~~~

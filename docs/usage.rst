@@ -63,12 +63,22 @@ as correlated.
 Propagate Uncertainty for Arbitrary Functions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The package provides the ``@uncertain`` macro that further extends the power of
-``Measurements.jl``. This macro allows you to propagate uncertainty in arbitrary
-real functions, including those based on C/Fortran calls, that accept one or two
-real arguments. The macro exploits ``derivative`` and ``gradient`` functions
-from `Calculus <https://github.com/johnmyleswhite/Calculus.jl>`__ package in
-order to perform numerical differentiation.
+Existing functions implemented exclusively in Julia that accept
+``AbstractFloat`` arguments will work out-of-the-box with ``Measurement``
+objects as long as they internally use functions already supported by this
+package.  However, there are functions that take arguments that are specific
+subtype of ``AbstractFloat``, or are implemented in such a way that does not
+play nicely with ``Measurement`` variables.
+
+The package provides the ``@uncertain`` macro that overcomes this limitation and
+further extends the power of ``Measurements.jl``. This macro allows you to
+propagate uncertainty in arbitrary real functions, including those based on
+`C/Fortran calls
+<http://docs.julialang.org/en/stable/manual/calling-c-and-fortran-code/>`__,
+that accept one or two real arguments.  The macro exploits ``derivative`` and
+``gradient`` functions from `Calculus
+<https://github.com/johnmyleswhite/Calculus.jl>`__ package in order to perform
+numerical differentiation.
 
 Derivative and Gradient
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -95,3 +105,18 @@ Weighted Average
 measurements using `inverses of variances as weights
 <https://en.wikipedia.org/wiki/Inverse-variance_weighting>`__.  Use ``mean`` for
 the simple arithmetic mean.
+
+Caveat about ``±`` Sign
+~~~~~~~~~~~~~~~~~~~~~~~
+
+The ``±`` sign is a convenient symbol to define quantities with uncertainty, but
+can lead to unexpected results if used in elaborate expressions involving many
+``±``\ s. Use parantheses where appropriate to avoid confusion. See for example
+the following cases:
+
+.. code-block:: julia
+
+    7.5±1.2 + 3.9±0.9 # This is wrong!
+    # => 11.4 ± 1.2 ± 0.9 ± 0.0
+    (7.5±1.2) + (3.9±0.9) # This is correct
+    # => 11.4 ± 1.5

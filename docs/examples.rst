@@ -1,7 +1,7 @@
 Examples
 --------
 
-These are the first basic examples of use of the package:
+These are the some basic examples of use of the package:
 
 .. code-block:: julia
 
@@ -99,7 +99,7 @@ by this package.
     log(9.4 ± 1.3, 58.8 ± 3.7)
     # => 1.8182372640255153 ± 0.11568300475593848
 
-The type of the arguments provided must be ``Measurement``. If one of the
+The type of all the arguments provided must be ``Measurement``. If one of the
 arguments is actually an exact number (so without uncertainty), convert it to
 ``Measurement`` type:
 
@@ -107,7 +107,7 @@ arguments is actually an exact number (so without uncertainty), convert it to
 
     atan2(10, 13.5 ± 0.8)
     # => 0.6375487981386927 ± 0.028343666961913202
-    @uncertain atan2(Measurement(10), 13.5 ± 0.8)
+    @uncertain atan2(10 ± 0, 13.5 ± 0.8)
     # => 0.6375487981386927 ± 0.028343666962347438
 
 The macro works with functions calling C/Fortran functions as well.  For
@@ -164,6 +164,25 @@ You can also verify the `Euler’s formula
     cos(u) + sin(u)*im
     # => (6.277811446965339 ± 23.454542573739754) + (21.291738410228678 ± 8.112997844397572)im
 
+Arbitrary Precision Calculations
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+`Arbitrary precision calculations
+<http://docs.julialang.org/en/stable/manual/integers-and-floating-point-numbers/#arbitrary-precision-arithmetic>`__
+involving quantities that are intrinsically imprecise may not be very useful,
+but Julia natively supports this type of arithmetic and so ``Measurements.jl``
+does.  You only have to create ``Measurement`` objects with nominal value and/or
+uncertainty of type ``BigFloat`` (or ``BigInt`` as well, actually):
+
+.. code-block:: julia
+
+    a = BigInt(3) ± 0.01
+    b = 4 ± 0.03
+    hypot(a, b)
+    # => 5.000000000000000000000000000000000000000000000000000000000000000000000000000000 ± 2.473863375370596246756154793364399326509001412701084709723336101627452857843757e-02
+    log(2a)^b
+    # => 1.030668097314957384421465902631648727333270687596715387736946157489404400228445e+01 ± 1.959580475953079233643030915452927748488408893913287402297342303952280925878254e-01
+
 Arrays of Measurements
 ~~~~~~~~~~~~~~~~~~~~~~
 
@@ -173,11 +192,12 @@ operations on them:
 .. code-block:: julia
 
     A = [1.03 ± 0.14, 2.88 ± 0.35, 5.46 ± 0.97]
-    log(A)
+    B = [0.92 ± 0.11, 3.14 ± 0.42, 4.67 ± 0.58]
+    exp(sqrt(B)) - log(A)
     # => 3-element Array{Measurements.Measurement{Float64},1}:
-    #     0.02955880224154443 ± 0.1359223300970874
-    #     1.0577902941478545 ± 0.12152777777777776
-    #     1.6974487897568138 ± 0.17765567765567764
+    #     2.5799612193837493 ± 0.20215123893809778
+    #     4.824843081566397 ± 0.7076631767039828
+    #     6.982522998771525 ± 1.178287422979362
     cos(A).^2 + sin(A).^2
     # 3-element Array{Measurements.Measurement{Float64},1}:
     #     1.0 ± 0.0
@@ -185,8 +205,8 @@ operations on them:
     #     1.0 ± 0.0
     sum(A)
     # => 9.370000000000001 ± 1.0406728592598156
-    mean(A)
-    # => 3.1233333333333335 ± 0.34689095308660517
+    mean(B - A)
+    # => -0.21333333333333326 ± 0.42267665603337445
 
 Derivative and Gradient
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -239,18 +259,3 @@ Calculate the weighted and arithmetic means of your set of measurements with
     # => 3.4665384454054498 ± 0.16812474090663868
     mean((3.1±0.32, 3.2±0.38, 3.5±0.61, 3.8±0.25))
     # => 3.4000000000000004 ± 0.2063673908348894
-
-Caveat about ``±`` Sign
-~~~~~~~~~~~~~~~~~~~~~~~
-
-The ``±`` sign is a convenient symbol to define quantities with uncertainty, but
-can lead to unexpected results if used in elaborate expressions involving many
-``±``\ s. Use parantheses where appropriate to avoid confusion. See for example
-the following cases:
-
-.. code-block:: julia
-
-    7.5±1.2 + 3.9±0.9 # This is wrong!
-    # => 11.4 ± 1.2 ± 0.9 ± 0.0
-    (7.5±1.2) + (3.9±0.9) # This is correct
-    # => 11.4 ± 1.5

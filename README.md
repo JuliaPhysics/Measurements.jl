@@ -41,6 +41,13 @@ easily get the uncertainty of the result according to
 Further features are expected to come in the future, see the section "How Can I
 Help?" and the TODO list below.
 
+The complete manual of `Measurements.jl` is available at
+http://measurementsjl.readthedocs.io.  There, people interested in the details
+of the package, in order integrate the package in their workflow, can can find a
+technical appendix explaining how the package internally works.  You can also
+download the PDF version of the manual from
+https://media.readthedocs.org/pdf/measurementsjl/latest/measurementsjl.pdf.
+
 Installation
 ------------
 
@@ -101,12 +108,19 @@ expressions of functions’ derivatives.
 In addition, it is possible to create a `Complex` measurement with
 `complex(Measurement(a, b), Measurement(c, d))`.
 
-The complete manual of `Measurements.jl` is available at
-http://measurementsjl.readthedocs.io.  There, people interested in the details
-of the package, in order integrate the package in their workflow, can can find a
-technical appendix explaining how the package internally works.  You can also
-download the PDF version of the manual from
-https://media.readthedocs.org/pdf/measurementsjl/latest/measurementsjl.pdf.
+### Caveat about `±` Sign ###
+
+The `±` sign is a convenient symbol to define quantities with uncertainty, but
+can lead to unexpected results if used in elaborate expressions involving many
+`±`s.  Use parantheses where appropriate to avoid confusion.  See for example
+the following cases:
+
+``` julia
+7.5±1.2 + 3.9±0.9 # This is wrong!
+# => 11.4 ± 1.2 ± 0.9 ± 0.0
+(7.5±1.2) + (3.9±0.9) # This is correct
+# => 11.4 ± 1.5
+```
 
 Examples
 --------
@@ -256,20 +270,6 @@ weightedmean((3.1±0.32, 3.2±0.38, 3.5±0.61, 3.8±0.25))
 # => 3.4665384454054498 ± 0.16812474090663868
 mean((3.1±0.32, 3.2±0.38, 3.5±0.61, 3.8±0.25))
 # => 3.4000000000000004 ± 0.2063673908348894
-```
-
-### Caveat about `±` Sign ###
-
-The `±` sign is a convenient symbol to define quantities with uncertainty, but
-can lead to unexpected results if used in elaborate expressions involving many
-`±`s.  Use parantheses where appropriate to avoid confusion.  See for example
-the following cases:
-
-``` julia
-7.5±1.2 + 3.9±0.9 # This is wrong!
-# => 11.4 ± 1.2 ± 0.9 ± 0.0
-(7.5±1.2) + (3.9±0.9) # This is correct
-# => 11.4 ± 1.5
 ```
 
 How Can I Help?
