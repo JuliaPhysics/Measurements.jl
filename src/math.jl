@@ -14,10 +14,11 @@
 # This file contains definition of mathematical functions that support
 # Measurement objects.
 #
-# Note: some functions defined here (like all reciprocal trigonometric
-# functions, fld, cld, hypot, cbrt, abs, mod) are redundant in the sense that
-# you would get the correct result also without their definitions, but having
-# them defined here avoids some calculations and slightly improves performance.
+# Note: some functions defined here (like all degree-related and reciprocal
+# trigonometric functions, fld, cld, hypot, cbrt, abs, mod) are redundant in the
+# sense that you would get the correct result also without their definitions,
+# but having them defined here avoids some calculations and slightly improves
+# performance.
 #
 ### Code:
 
@@ -132,16 +133,15 @@ import Base: +, -, *, /, div, inv, fld, cld
 # Addition: +
 +(a::Measurement) = a
 +(a::Measurement, b::Measurement) = result(a.val + b.val, (1.0, 1.0), (a, b))
-+(a::Real, b::Measurement) = +(Measurement(a), b)
-+(a::Measurement, b::Bool) = +(a, Measurement(b))
-+(a::Measurement, b::Rational) = +(a, Measurement(b))
-+(a::Measurement, b::Real) = +(a, Measurement(b))
++(a::Real, b::Measurement) = result(a + b.val, 1.0, b)
++(a::Measurement, b::Bool) = result(a.val +b, 1.0, a)
++(a::Measurement, b::Real) = result(a.val + b, 1.0, a)
 
 # Subtraction: -
 -(a::Measurement) = result(-a.val, -1.0, a)
 -(a::Measurement, b::Measurement) = result(a.val - b.val, (1.0, -1.0), (a, b))
--(a::Real, b::Measurement) = -(Measurement(a), b)
--(a::Measurement, b::Real) = -(a, Measurement(b))
+-(a::Real, b::Measurement) = result(a - b.val, -1.0, b)
+-(a::Measurement, b::Real) = result(a.val - b, 1.0, a)
 
 # Multiplication: *
 function *(a::Measurement, b::Measurement)
@@ -149,10 +149,10 @@ function *(a::Measurement, b::Measurement)
     bval = b.val
     return result(aval*bval, (bval, aval), (a, b))
 end
-*(a::Bool, b::Measurement) = *(Measurement(a), b)
-*(a::Measurement, b::Bool) = *(a, Measurement(b))
-*(a::Real, b::Measurement) = *(Measurement(a), b)
-*(a::Measurement, b::Real) = *(a, Measurement(b))
+*(a::Bool, b::Measurement) = result(a*b.val, a, b)
+*(a::Real, b::Measurement) = result(a*b.val, a, b)
+*(a::Measurement, b::Bool) = result(a.val*b, b, a)
+*(a::Measurement, b::Real) = result(a.val*b, b, a)
 
 # Division: /, div, fld, cld
 function /(a::Measurement, b::Measurement)
@@ -161,8 +161,8 @@ function /(a::Measurement, b::Measurement)
     return result(aval*oneoverbval, (oneoverbval, -aval*abs2(oneoverbval)),
                   (a, b))
 end
-/(a::Real, b::Measurement) = /(Measurement(a), b)
-/(a::Measurement, b::Real) = /(a, Measurement(b))
+/(a::Real, b::Measurement) = result(a/b.val, -a/abs2(b.val), b)
+/(a::Measurement, b::Real) = result(a.val/b, 1/b, a)
 
 div(a::Measurement, b::Measurement) = Measurement(div(a.val, b.val))
 div(a::Measurement, b::Real) = div(a, Measurement(b))
@@ -206,7 +206,8 @@ function ^{T<:Rational}(a::Measurement,  b::T)
     if isinteger(b)
         return a^trunc(Integer, b)
     else
-        return ^(a, Measurement(b))
+        aval = a.val
+        return result(aval^b, b*aval^(b - 1.0), a)
     end
 end
 
@@ -214,26 +215,40 @@ function ^{T<:Real}(a::Measurement,  b::T)
     if isinteger(float(b))
         return a^trunc(Integer, b)
     else
-        return ^(a, Measurement(b))
+        aval = a.val
+        return result(aval^b, b*aval^(b - 1.0), a)
     end
 end
 
-^{T<:Integer}(a::T, b::Measurement) = ^(Measurement(a), b)
 ^(::Irrational{:e}, b::Measurement) = exp(b)
-^(a::Irrational, b::Measurement) = Measurement(float(a))^b
-^{T<:Real}(a::T,  b::Measurement) = ^(Measurement(a), b)
+
+function ^{T<:Real}(a::T,  b::Measurement)
+    res = a^b.val
+    return result(res, res*log(a), b)
+end
 
 function exp2{T<:AbstractFloat}(a::Measurement{T})
     pow = exp2(a.val)
     return result(pow, pow*log(T(2)), a)
 end
 
-# Cosine: cos, cosh
-import Base: cos, cosh
+# deg2rad, rad2deg
+import Base: deg2rad, rad2deg
+
+deg2rad(a::Measurement) = result(deg2rad(a.val), oftype(a.val, pi)/180, a)
+rad2deg(a::Measurement) = result(rad2deg(a.val), 180/oftype(a.val, pi), a)
+
+# Cosine: cos, cosd, cosh
+import Base: cos, cosd, cosh
 
 function cos(a::Measurement)
     aval = a.val
     result(cos(aval), -sin(aval), a)
+end
+
+function cosd(a::Measurement)
+    aval = a.val
+    return result(cosd(aval), -deg2rad(sind(aval)), a)
 end
 
 function cosh(a::Measurement)
@@ -241,12 +256,17 @@ function cosh(a::Measurement)
     result(cosh(aval), sinh(aval), a)
 end
 
-# Sine: sin, sinh
-import Base: sin, sinh
+# Sine: sin, sind, sinh
+import Base: sin, sind, sinh
 
 function sin(a::Measurement)
     aval = a.val
     result(sin(aval), cos(aval), a)
+end
+
+function sind(a::Measurement)
+    aval = a.val
+    return result(sind(aval), deg2rad(cosd(aval)), a)
 end
 
 function sinh(a::Measurement)
@@ -254,12 +274,17 @@ function sinh(a::Measurement)
     result(sinh(aval), cosh(aval), a)
 end
 
-# Tangent: tan, tanh
-import Base: tan, tanh
+# Tangent: tan, tand, tanh
+import Base: tan, tand, tanh
 
 function tan(a::Measurement)
     aval = a.val
     return result(tan(aval), abs2(sec(aval)), a)
+end
+
+function tand(a::Measurement)
+    aval = a.val
+    return result(tand(aval), deg2rad(abs2(secd(aval))), a)
 end
 
 function tanh(a::Measurement)
@@ -267,12 +292,18 @@ function tanh(a::Measurement)
     return result(tanh(aval), abs2(sech(aval)), a)
 end
 
-# Inverse trig functions: acos, acosh, asin, asinh, atan, atan2, atanh
-import Base: acos, acosh, asin, asinh, atan, atan2, atanh
+# Inverse trig functions: acos, acosd, acosh, asin, asind, asinh, atan, atand,
+# atan2, atanh
+import Base: acos, acosd, acosh, asin, asind, asinh, atan, atand, atan2, atanh
 
 function acos(a::Measurement)
     aval = a.val
     return result(acos(aval), -inv(sqrt(1.0 - abs2(aval))), a)
+end
+
+function acosd(a::Measurement)
+    aval = a.val
+    return result(acosd(aval), -rad2deg(inv(sqrt(1.0 - abs2(aval)))), a)
 end
 
 function acosh(a::Measurement)
@@ -285,6 +316,11 @@ function asin(a::Measurement)
     return result(asin(aval), inv(sqrt(1.0 - abs2(aval))), a)
 end
 
+function asind(a::Measurement)
+    aval = a.val
+    return result(asind(aval), rad2deg(inv(sqrt(1.0 - abs2(aval)))), a)
+end
+
 function asinh(a::Measurement)
     aval = a.val
     return result(asinh(aval), inv(hypot(aval, 1.0)), a)
@@ -293,6 +329,11 @@ end
 function atan(a::Measurement)
     aval = a.val
     return result(atan(aval), inv(abs2(aval) + 1.0), a)
+end
+
+function atand(a::Measurement)
+    aval = a.val
+    return result(atand(aval), rad2deg(inv(abs2(aval) + 1.0)), a)
 end
 
 function atanh(a::Measurement)
@@ -312,13 +353,19 @@ end
 atan2(a::Measurement, b::Real) = atan2(a, Measurement(b))
 atan2(a::Real, b::Measurement) = atan2(Measurement(a), b)
 
-# Reciprocal trig functions: csc, csch, sec, sech, cot, coth
-import Base: csc, csch, sec, sech, cot, coth
+# Reciprocal trig functions: csc, cscd, csch, sec, secd, sech, cot, cotd, coth
+import Base: csc, cscd, csch, sec, secd, sech, cot, cotd, coth
 
 function csc(a::Measurement)
     aval = a.val
     val = csc(aval)
     return result(val, -val*cot(aval), a)
+end
+
+function cscd(a::Measurement)
+    aval = a.val
+    val = cscd(aval)
+    return result(val, -deg2rad(val*cotd(aval)), a)
 end
 
 function csch(a::Measurement)
@@ -333,6 +380,12 @@ function sec(a::Measurement)
     return result(val, val*tan(aval), a)
 end
 
+function secd(a::Measurement)
+    aval = a.val
+    val = secd(aval)
+    return result(val, deg2rad(val*tand(aval)), a)
+end
+
 function sech(a::Measurement)
     aval = a.val
     val = sech(aval)
@@ -342,6 +395,11 @@ end
 function cot(a::Measurement)
     aval = a.val
     return result(cot(aval), -abs2(csc(aval)), a)
+end
+
+function cotd(a::Measurement)
+    aval = a.val
+    return result(cotd(aval), -deg2rad(abs2(cscd(aval))), a)
 end
 
 function coth(a::Measurement)
@@ -401,9 +459,17 @@ function log1p(a::Measurement) # Special case
 end
 
 log(::Irrational{:e}, a::Measurement) = log(a)
-log(a::Real, b::Measurement) = log(Measurement(a), b)
-log(a::Irrational, b::Measurement) = log(float(a), b)
-log(a::Measurement, b::Real) = log(a, Measurement(b))
+
+function log(a::Real, b::Measurement)
+    bval = b.val
+    return result(log(a, bval), inv(log(a)*bval), b)
+end
+
+function log(a::Measurement, b::Real)
+    aval = a.val
+    res = log(aval, b)
+    return result(res, -res/(aval*log(aval)), a)
+end
 
 # Hypotenuse: hypot
 import Base: hypot
@@ -418,8 +484,17 @@ function hypot(a::Measurement, b::Measurement)
                   (a, b))
 end
 
-hypot(a::Real, b::Measurement) = hypot(Measurement(a), b)
-hypot(a::Measurement, b::Real) = hypot(a, Measurement(b))
+function hypot(a::Real, b::Measurement)
+    bval = b.val
+    res = hypot(a, bval)
+    return result(res, bval*inv(res), b)
+end
+
+function hypot(a::Measurement, b::Real)
+    aval = a.val
+    res = hypot(aval, b)
+    return result(res, aval*inv(res), a)
+end
 
 # Square root: sqrt
 import Base: sqrt
