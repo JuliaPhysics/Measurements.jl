@@ -186,30 +186,6 @@ gamma(u/v)
 # => (-0.25050193836584694 ± 0.011473098558745594) + (1.2079738483289788 ± 0.133606565257322)*im
 ```
 
-Arrays of Measurements
-~~~~~~~~~~~~~~~~~~~~~~
-
-You can create arrays of ``Measurement`` objects and perform mathematical
-operations on them:
-
-.. code-block:: julia
-
-    A = [1.03 ± 0.14, 2.88 ± 0.35, 5.46 ± 0.97]
-    log(A)
-    # => 3-element Array{Measurements.Measurement{Float64},1}:
-    #     0.02955880224154443 ± 0.1359223300970874
-    #     1.0577902941478545 ± 0.12152777777777776
-    #     1.6974487897568138 ± 0.17765567765567764
-    cos(A).^2 + sin(A).^2
-    # 3-element Array{Measurements.Measurement{Float64},1}:
-    #     1.0 ± 0.0
-    #     1.0 ± 0.0
-    #     1.0 ± 0.0
-    sum(A)
-    # => 9.370000000000001 ± 1.0406728592598156
-    mean(A)
-    # => 3.1233333333333335 ± 0.34689095308660517
-
 ### Arrays of Measurements ###
 
 You can create arrays of `Measurement` objects and perform mathematical

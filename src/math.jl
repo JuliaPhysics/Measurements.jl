@@ -131,16 +131,15 @@ import Base: +, -, *, /, div, inv, fld, cld
 
 # Addition: +
 +(a::Measurement) = a
-+(a::Measurement, b::Measurement) =
-    result(a.val + b.val, (1.0, 1.0), (a, b))
++(a::Measurement, b::Measurement) = result(a.val + b.val, (1.0, 1.0), (a, b))
 +(a::Real, b::Measurement) = +(Measurement(a), b)
 +(a::Measurement, b::Bool) = +(a, Measurement(b))
 +(a::Measurement, b::Rational) = +(a, Measurement(b))
 +(a::Measurement, b::Real) = +(a, Measurement(b))
 
 # Subtraction: -
--(a::Measurement) = result(-a.val, -1, a)
--(a::Measurement, b::Measurement) = a + (-b)
+-(a::Measurement) = result(-a.val, -1.0, a)
+-(a::Measurement, b::Measurement) = result(a.val - b.val, (1.0, -1.0), (a, b))
 -(a::Real, b::Measurement) = -(Measurement(a), b)
 -(a::Measurement, b::Real) = -(a, Measurement(b))
 
@@ -288,7 +287,7 @@ end
 
 function asinh(a::Measurement)
     aval = a.val
-    return result(asinh(a.val), inv(hypot(aval, 1.0)), a)
+    return result(asinh(aval), inv(hypot(aval, 1.0)), a)
 end
 
 function atan(a::Measurement)
