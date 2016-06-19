@@ -1,3 +1,13 @@
+v0.1.1 (2016-??-??)
+===================
+
+New Features
+------------
+
+* New mathematical operations supported: `erfi`, `dawson`, `digamma`,
+  `polygamma`.
+
+
 v0.1.0 (2016-06-18)
 ===================
 

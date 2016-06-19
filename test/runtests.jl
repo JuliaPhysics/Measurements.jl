@@ -275,6 +275,11 @@ test_approx_eq(erfinv(erf(w)), w)
 test_approx_eq(erfc(w), 1 - erf(w))
 for a in (w, x, y); test_approx_eq(erfcinv(erfc(a)), a); end
 for a in (w, x, y); test_approx_eq(erfcx(a), exp(a^2)*erfc(a)); end
+test_approx_eq(erfi(x), 1629.9946226015657 ± 914.3351093102547)
+for a in (w, x, y); test_approx_eq(dawson(a), 0.5*exp(-a^2)*erfi(a)*sqrt(pi)); end
+test_approx_eq(digamma(y), 1.256117668431802 ± 0.056764591147422994)
+for a in (w, x, y); test_approx_eq(digamma(a), polygamma(0, a)); end
+test_approx_eq(polygamma(3, w), 193.40909103400242 ± 0.10422749480000776)
 
 # Factorial and gamma
 test_approx_eq(factorial(x), Measurement(6, 0.7536706010590813))

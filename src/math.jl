@@ -552,8 +552,8 @@ flipsign(a::Float32, b::Measurement) = flipsign(Measurement(a), b)
 flipsign(a::Float64, b::Measurement) = flipsign(Measurement(a), b)
 flipsign(a::Real, b::Measurement) = flipsign(Measurement(a), b)
 
-# Error function: erf, erfinv, erfc, erfcinv, erfcx
-import Base: erf, erfinv, erfc, erfcinv, erfcx
+# Error function: erf, erfinv, erfc, erfcinv, erfcx, erfi, dawson
+import Base: erf, erfinv, erfc, erfcinv, erfcx, erfi, dawson
 
 function erf{T<:AbstractFloat}(a::Measurement{T})
     aval = a.val
@@ -583,8 +583,19 @@ function erfcx{T<:AbstractFloat}(a::Measurement{T})
     return result(res, 2*(aval*res - inv(sqrt(T(pi)))), a)
 end
 
-# Factorial and gamma: factorial, gamma, lgamma
-import Base: factorial, gamma, lgamma
+function erfi{T<:AbstractFloat}(a::Measurement{T})
+    aval = a.val
+    return result(erfi(aval), 2*exp(abs2(aval))/sqrt(T(pi)), a)
+end
+
+function dawson{T<:AbstractFloat}(a::Measurement{T})
+    aval = a.val
+    res = dawson(aval)
+    return result(res, 1.0 - 2.0*aval*res, a)
+end
+
+# Factorial and gamma: factorial, gamma, lgamma, digamma, polygamma
+import Base: factorial, gamma, lgamma, digamma, polygamma
 
 function factorial(a::Measurement)
     aval = a.val
@@ -601,6 +612,16 @@ end
 function lgamma(a::Measurement)
     aval = a.val
     return result(lgamma(aval), polygamma(0, aval), a)
+end
+
+function digamma(a::Measurement)
+    aval = a.val
+    return result(digamma(aval), polygamma(1, aval), a)
+end
+
+function polygamma(n::Integer, a::Measurement)
+    aval = a.val
+    return result(polygamma(n, aval), polygamma(n + 1, aval), a)
 end
 
 # Modulo: rem, mod2pi
