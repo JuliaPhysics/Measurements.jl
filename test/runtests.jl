@@ -280,6 +280,12 @@ for a in (w, x, y); test_approx_eq(dawson(a), 0.5*exp(-a^2)*erfi(a)*sqrt(pi)); e
 test_approx_eq(digamma(y), 1.256117668431802 ± 0.056764591147422994)
 for a in (w, x, y); test_approx_eq(digamma(a), polygamma(0, a)); end
 test_approx_eq(polygamma(3, w), 193.40909103400242 ± 0.10422749480000776)
+for a in (w, x, y); test_approx_eq(beta(a, x), gamma(a)*gamma(x)/gamma(a + x)); end
+for a in (w, x, y); test_approx_eq(beta(a, pi), gamma(a)*gamma(pi)/gamma(a + pi)); end
+for a in (w, x, y); test_approx_eq(beta(e, a), gamma(e)*gamma(a)/gamma(e + a)); end
+for a in (x, y); test_approx_eq(lbeta(a, x), log(beta(a, x))); end
+for a in (x, y); test_approx_eq(lbeta(a, pi), log(beta(a, pi))); end
+for a in (x, y); test_approx_eq(lbeta(e, a), log(beta(e, a))); end
 
 # Factorial and gamma
 test_approx_eq(factorial(x), Measurement(6, 0.7536706010590813))

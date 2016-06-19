@@ -600,18 +600,18 @@ import Base: factorial, gamma, lgamma, digamma, polygamma
 function factorial(a::Measurement)
     aval = a.val
     fact = factorial(aval)
-    return result(fact, fact*polygamma(0, aval + one(aval)), a)
+    return result(fact, fact*digamma(aval + one(aval)), a)
 end
 
 function gamma(a::Measurement)
     aval = a.val
     Γ = gamma(aval)
-    return result(Γ, Γ*polygamma(0, aval), a)
+    return result(Γ, Γ*digamma(aval), a)
 end
 
 function lgamma(a::Measurement)
     aval = a.val
-    return result(lgamma(aval), polygamma(0, aval), a)
+    return result(lgamma(aval), digamma(aval), a)
 end
 
 function digamma(a::Measurement)
@@ -623,6 +623,43 @@ function polygamma(n::Integer, a::Measurement)
     aval = a.val
     return result(polygamma(n, aval), polygamma(n + 1, aval), a)
 end
+
+# Beta function: beta, lbeta
+import Base: beta, lbeta
+
+function beta(a::Measurement, b::Measurement)
+    aval = a.val
+    bval = b.val
+    res = beta(aval, bval)
+    return result(res,
+                  (res*(digamma(aval) - digamma(aval + bval)),
+                   res*(digamma(bval) - digamma(aval + bval))),
+                  (a, b))
+end
+
+function beta(a::Measurement, b::Real)
+    aval = a.val
+    res = beta(aval, b)
+    return result(res, res*(digamma(aval) - digamma(aval + b)), a)
+end
+
+beta(a::Real, b::Measurement) = beta(b, a)
+
+function lbeta(a::Measurement, b::Measurement)
+    aval = a.val
+    bval = b.val
+    return result(lbeta(aval, bval),
+                  (digamma(aval) - digamma(aval + bval),
+                   digamma(bval) - digamma(aval + bval)),
+                  (a, b))
+end
+
+function lbeta(a::Measurement, b::Real)
+    aval = a.val
+    return result(lbeta(aval, b), digamma(aval) - digamma(aval + b), a)
+end
+
+lbeta(a::Real, b::Measurement) = lbeta(b, a)
 
 # Modulo: rem, mod2pi
 import Base: mod, rem, mod2pi
