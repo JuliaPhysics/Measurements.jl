@@ -110,6 +110,22 @@ arguments is actually an exact number (so without uncertainty), convert it to
     @uncertain atan2(10 ± 0, 13.5 ± 0.8)
     # => 0.6375487981386927 ± 0.028343666962347438
 
+The function must be differentiable in all its arguments.  For example, the
+scaled first derivative of the Airy Ai function :math:`\text{airyx}(1, z) =
+\exp((2/3) x \sqrt{x})\text{Ai}'(x)` is not differentiable in the first
+argument, not even the trick of passing an exact measurement would work because
+the first argument must be an integer.  You can easily work around this
+limtation by wrapping the function in a single-argument function
+
+.. code-block:: julia
+
+    @uncertain (x-> airyx(1, x))(4.8 ± 0.2)
+    # => -0.42300740589773583 ± 0.004083414330362105
+
+The `anonymous function
+<http://docs.julialang.org/en/stable/manual/functions/#anonymous-functions>`__
+allows you to avoid defining a brand-new wrapping function before using it.
+
 The macro works with functions calling C/Fortran functions as well.  For
 example, `Cuba.jl <https://github.com/giordano/Cuba.jl>`__ package performs
 numerical integration by wrapping the C `Cuba <http://www.feynarts.de/cuba/>`__
@@ -126,11 +142,9 @@ macro
     @uncertain cubaerf(0.5 ± 0.01)
     # => 0.5204998778130466 ± 0.008787825789336267
 
-(you do not even need to define a new function, you can use an `anonymous
-function
-<http://docs.julialang.org/en/stable/manual/functions/#anonymous-functions>`__,
-do it as an exercise).  Compare the result with that of the ``erf`` function,
-natively supported in ``Measurements.jl`` package:
+(also here you can use an anonymous function, do it as an exercise).  Compare
+the result with that of the ``erf`` function, natively supported in
+``Measurements.jl`` package:
 
 .. code-block:: julia
 

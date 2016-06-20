@@ -594,8 +594,8 @@ function dawson{T<:AbstractFloat}(a::Measurement{T})
     return result(res, 1.0 - 2.0*aval*res, a)
 end
 
-# Factorial and gamma: factorial, gamma, lgamma, digamma, polygamma
-import Base: factorial, gamma, lgamma, digamma, polygamma
+# Factorial and gamma
+import Base: factorial, gamma, lgamma, digamma, invdigamma, trigamma, polygamma
 
 function factorial(a::Measurement)
     aval = a.val
@@ -617,6 +617,17 @@ end
 function digamma(a::Measurement)
     aval = a.val
     return result(digamma(aval), polygamma(1, aval), a)
+end
+
+function invdigamma(a::Measurement)
+    aval = a.val
+    res = invdigamma(aval)
+    return result(res, inv(polygamma(1, res)), a)
+end
+
+function trigamma(a::Measurement)
+    aval = a.val
+    return result(trigamma(aval), polygamma(2, aval), a)
 end
 
 function polygamma(n::Integer, a::Measurement)
@@ -660,6 +671,19 @@ function lbeta(a::Measurement, b::Real)
 end
 
 lbeta(a::Real, b::Measurement) = lbeta(b, a)
+
+# Airy functions
+import Base: airy
+
+function airy(k::Integer, a::Measurement)
+    aval = a.val
+    if k == 0 || k == 2
+        return result(airy(k, aval), airy(k + 1, aval), a)
+    else
+        # Use Airy equation: y'' - xy = 0 => y'' = xy
+        return result(airy(k, aval), aval*airy(k - 1, aval), a)
+    end
+end
 
 # Modulo: rem, mod2pi
 import Base: mod, rem, mod2pi

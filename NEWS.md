@@ -5,8 +5,8 @@ New Features
 ------------
 
 * New mathematical operations supported: `erfi`, `dawson`, `digamma`,
-  `polygamma`, `beta`, `lbeta`.
-
+  `invdigamma`, `trigamma`, `polygamma`, `beta`, `lbeta`, `airy`, `airyai`,
+  `airyprime`, `airyaiprime`, `airybi`, `airybiprime`.
 
 v0.1.0 (2016-06-18)
 ===================
