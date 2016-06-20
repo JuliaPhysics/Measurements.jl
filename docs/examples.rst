@@ -112,14 +112,14 @@ arguments is actually an exact number (so without uncertainty), convert it to
 
 The function must be differentiable in all its arguments.  For example, the
 scaled first derivative of the Airy Ai function :math:`\text{airyx}(1, z) =
-\exp((2/3) x \sqrt{x})\text{Ai}'(x)` is not differentiable in the first
+\exp((2/3) z \sqrt{z})\text{Ai}'(z)` is not differentiable in the first
 argument, not even the trick of passing an exact measurement would work because
 the first argument must be an integer.  You can easily work around this
 limtation by wrapping the function in a single-argument function
 
 .. code-block:: julia
 
-    @uncertain (x-> airyx(1, x))(4.8 ± 0.2)
+    @uncertain (x -> airyx(1, x))(4.8 ± 0.2)
     # => -0.42300740589773583 ± 0.004083414330362105
 
 The `anonymous function

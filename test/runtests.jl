@@ -309,6 +309,21 @@ for a in (w, x, y); test_approx_eq(airyaiprime(a), airy(1, a)); end
 for a in (w, x, y); test_approx_eq(airybi(a), airy(2, a)); end
 for a in (w, x, y); test_approx_eq(airybiprime(a), airy(3, a)); end
 
+# Bessel functions
+for a in (x, y); test_approx_eq(2*besselj1(a)/a, besselj0(a) + besselj(2, a)); end
+for a in (x, y); test_approx_eq(besselj(-1/2, a), sqrt(2/(pi*a))*cos(a)); end
+for a in (x, y); test_approx_eq(besselj(1/2, a), sqrt(2/(pi*a))*sin(a)); end
+test_approx_eq(bessely0(x), 0.3768500100127904 ± 0.03246744247917999)
+for a in (x, y); test_approx_eq(bessely1(a), -bessely(-1, a)); end
+for a in (x, y); test_approx_eq(bessely(5/2, a),
+                                (besselj(5/2, a)*cos(2.5pi) -
+                                 besselj(-5/2, a))/sin(2.5pi)); end
+for a in (x, y), k in (1, 2), nu in -1:1
+    sgn = k == 1 ? +1 : -1
+    test_approx_eq(besselh(nu, k, a),
+                   besselj(nu, a) + sgn*im*bessely(nu, a))
+end
+
 # Modulo
 let
     frac, int = modf(x + w)

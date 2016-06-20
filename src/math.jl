@@ -102,6 +102,14 @@ function result(val::Real, der::Tuple{Vararg{Real}},
     return Measurement(T(val), sqrt(err), NaN, newder)
 end
 
+# "result" function for complex-valued functions (like "hankelh").  The first
+# argument is the value of the function, "der" is the 2-tuple of derivative for
+# real and imaginary part, respectively, and last argument is the only argument
+# of the function.
+function result(val::Complex, der::Tuple{Real, Real}, a::Measurement)
+    return complex(result(real(val), der[1], a), result(imag(val), der[2], a))
+end
+
 # @uncertain macro.  TODO: generalize to any number of arguments.
 """
     @uncertain f(value ± stddev[, value ± stddev])
@@ -231,6 +239,8 @@ function exp2{T<:AbstractFloat}(a::Measurement{T})
     pow = exp2(a.val)
     return result(pow, pow*log(T(2)), a)
 end
+
+### Trigonometric functions
 
 # deg2rad, rad2deg
 import Base: deg2rad, rad2deg
@@ -407,6 +417,8 @@ function coth(a::Measurement)
     return result(coth(aval), -abs2(csch(aval)), a)
 end
 
+### Exponential-related
+
 # Exponentials: exp, expm1, exp10, frexp, ldexp
 import Base: exp, expm1, exp10, frexp, ldexp
 
@@ -513,6 +525,8 @@ function cbrt(a::Measurement)
     return result(val, val*inv(3.0*aval), a)
 end
 
+### Absolute value, sign and the likes
+
 # Absolute value: abs
 import Base: abs
 
@@ -551,6 +565,8 @@ flipsign(a::Signed, b::Measurement) = flipsign(Measurement(a), b)
 flipsign(a::Float32, b::Measurement) = flipsign(Measurement(a), b)
 flipsign(a::Float64, b::Measurement) = flipsign(Measurement(a), b)
 flipsign(a::Real, b::Measurement) = flipsign(Measurement(a), b)
+
+### Special functions
 
 # Error function: erf, erfinv, erfc, erfcinv, erfcx, erfi, dawson
 import Base: erf, erfinv, erfc, erfcinv, erfcx, erfi, dawson
@@ -685,7 +701,56 @@ function airy(k::Integer, a::Measurement)
     end
 end
 
-# Modulo: rem, mod2pi
+# Bessel functions
+import Base: besselj0, besselj1, besselj, bessely0, bessely1, bessely, besselh
+
+function besselj0(a::Measurement)
+    x = a.val
+    return result(besselj0(x), -besselj1(x), a)
+end
+
+function besselj1(a::Measurement)
+    x = a.val
+    return result(besselj1(x), 0.5*(besselj0(x) - besselj(2, x)), a)
+end
+
+# XXX: I don't know a closed form expression for the derivative with respect to
+# first argument of J_n.  Arguably, there will be more cases where the
+# measurement is the second argument, than the first one.  In any case, you can
+# use "@uncertain" macro when both arguments are of Measurement type.
+function besselj(nu::Real, a::Measurement)
+    x = a.val
+    return result(besselj(nu, x), 0.5*(besselj(nu - 1, x) - besselj(nu + 1, x)), a)
+end
+
+function bessely0(a::Measurement)
+    x = a.val
+    return result(bessely0(x), -bessely1(x), a)
+end
+
+function bessely1(a::Measurement)
+    x = a.val
+    return result(bessely1(x), 0.5*(bessely0(x) - bessely(2, x)), a)
+end
+
+# XXX: I don't know a closed form expression for the derivative with respect to
+# first argument of y_n, see comments about "besselj".
+function bessely(nu::Real, a::Measurement)
+    x = a.val
+    return result(bessely(nu, x), 0.5*(bessely(nu - 1, x) - bessely(nu + 1, x)), a)
+end
+
+function besselh(nu::Real, k::Integer, a::Measurement)
+    x = a.val
+    sgn = k == 1 ? +1 : -1
+    return result(besselh(nu, k, x),
+                  (0.5*(besselj(nu - 1, x) - besselj(nu + 1, x)),
+                   sgn*0.5*(bessely(nu - 1, x) - bessely(nu + 1, x))),
+                  a)
+end
+
+### Modulo
+
 import Base: mod, rem, mod2pi
 
 # Use definition of "mod" function:
@@ -702,7 +767,8 @@ rem(a::Real, b::Measurement) = rem(Measurement(a), b)
 
 mod2pi(a::Measurement) = result(mod2pi(a.val), 1, a)
 
-# Machine precision: eps, nextfloat, maxintfloat
+### Machine precision
+
 import Base: eps, nextfloat, maxintfloat, typemax
 
 eps{T<:AbstractFloat}(::Type{Measurement{T}}) = eps(T)
@@ -714,7 +780,7 @@ maxintfloat{T<:AbstractFloat}(::Type{Measurement{T}}) = maxintfloat(T)
 
 typemax{T<:AbstractFloat}(::Type{Measurement{T}}) = typemax(T)
 
-# Rounding: round, floor, ceil, trunc
+### Rounding
 import Base: round, floor, ceil, trunc
 
 round(a::Measurement) = round(a.val)
