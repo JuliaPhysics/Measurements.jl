@@ -762,7 +762,6 @@ end
 
 function besselh(nu::Real, k::Integer, a::Measurement)
     x = a.val
-    sgn = k == 1 ? +1 : -1
     return result(besselh(nu, k, x),
                   0.5*(besselh(nu - 1, k, x) - besselh(nu + 1, k, x)),
                   a)

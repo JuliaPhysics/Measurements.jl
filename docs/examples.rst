@@ -92,39 +92,44 @@ by this package.
 
 .. code-block:: julia
 
-    @uncertain zeta(2 ± 0.13)
-    # => 1.6449340668482273 ± 0.12188127308075564
+    @uncertain (x -> zeta(x) + exp(eta(x)^2))(2 ± 0.13)
+    # => 3.6118209315321526 ± 0.0792673280873273
     @uncertain log(9.4 ± 1.3, 58.8 ± 3.7)
     # => 1.8182372640255153 ± 0.11568300475873611
     log(9.4 ± 1.3, 58.8 ± 3.7)
     # => 1.8182372640255153 ± 0.11568300475593848
 
-The type of all the arguments provided must be ``Measurement``. If one of the
-arguments is actually an exact number (so without uncertainty), convert it to
-``Measurement`` type:
-
-.. code-block:: julia
-
-    atan2(10, 13.5 ± 0.8)
-    # => 0.6375487981386927 ± 0.028343666961913202
-    @uncertain atan2(10 ± 0, 13.5 ± 0.8)
-    # => 0.6375487981386927 ± 0.028343666962347438
-
-The function must be differentiable in all its arguments.  For example, the
-scaled first derivative of the Airy Ai function :math:`\text{airyx}(1, z) =
-\exp((2/3) z \sqrt{z})\text{Ai}'(z)` is not differentiable in the first
-argument, not even the trick of passing an exact measurement would work because
-the first argument must be an integer.  You can easily work around this
-limtation by wrapping the function in a single-argument function
-
-.. code-block:: julia
-
-    @uncertain (x -> airyx(1, x))(4.8 ± 0.2)
-    # => -0.42300740589773583 ± 0.004083414330362105
-
-The `anonymous function
+You usually do not need to define a wrapping function before using it.  In the
+case where you have to define a function, like in the first line of previous
+examples, `anonymous functions
 <http://docs.julialang.org/en/stable/manual/functions/#anonymous-functions>`__
-allows you to avoid defining a brand-new wrapping function before using it.
+allow you to do it in a very concise way.
+
+.. Warning::
+
+   The type of all the arguments provided must be ``Measurement``. If one of the
+   arguments is actually an exact number (so without uncertainty), convert it to
+   ``Measurement`` type:
+
+   .. code-block:: julia
+
+       atan2(10, 13.5 ± 0.8)
+       # => 0.6375487981386927 ± 0.028343666961913202
+       @uncertain atan2(10 ± 0, 13.5 ± 0.8)
+       # => 0.6375487981386927 ± 0.028343666962347438
+
+   In addition, the function must be differentiable in all its arguments.  For
+   example, the scaled first derivative of the Airy Ai function
+   :math:`\text{airyx}(1, z) = \exp((2/3) z \sqrt{z})\text{Ai}'(z)` is not
+   differentiable in the first argument, not even the trick of passing an exact
+   measurement would work because the first argument must be an integer.  You
+   can easily work around this limtation by wrapping the function in a
+   single-argument function
+
+   .. code-block:: julia
+
+       @uncertain (x -> airyx(1, x))(4.8 ± 0.2)
+       # => -0.42300740589773583 ± 0.004083414330362105
 
 The macro works with functions calling C/Fortran functions as well.  For
 example, `Cuba.jl <https://github.com/giordano/Cuba.jl>`__ package performs

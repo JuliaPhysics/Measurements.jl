@@ -10,10 +10,8 @@ After installing the package, you can start using it with
 The module defines a new ``Measurement`` data type. ``Measurement`` objects can
 be created with the two following constructors:
 
-.. code-block:: julia
-
-    Measurement(value, uncertainty)
-    value ± uncertainty
+.. function:: Measurement(value, uncertainty)
+.. function:: value ± uncertainty
 
 where
 
@@ -31,10 +29,12 @@ valid.
 ``Measurement(value)`` creates a ``Measurement`` object that doesn’t have
 uncertainty, like mathematical constants. See below for further examples.
 
-Every time you use one of the constructors above you define a *new independent*
-measurement.  Instead, when you perform mathematical operations involving
-``Measurement`` objects you create a quantity that is not independent, but
-rather depends on really independent measurements.
+.. Note::
+
+   Every time you use one of the constructors above you define a *new
+   independent* measurement.  Instead, when you perform mathematical operations
+   involving ``Measurement`` objects you create a quantity that is not
+   independent, but rather depends on really independent measurements.
 
 Most mathematical operations are instructed, by `operator overloading
 <https://en.wikipedia.org/wiki/Operator_overloading>`__, to accept
@@ -46,6 +46,20 @@ In addition, it is possible to create a ``Complex`` measurement with
 
 Those interested in the technical details of the package, in order integrate the
 package in their workflow, can have a look at the technical appendix.
+
+.. Caution::
+
+   The ``±`` sign is a convenient symbol to define quantities with uncertainty,
+   but can lead to unexpected results if used in elaborate expressions involving
+   many ``±``\ s. Use parantheses where appropriate to avoid confusion. See for
+   example the following cases:
+
+   .. code-block:: julia
+
+       7.5±1.2 + 3.9±0.9 # This is wrong!
+       # => 11.4 ± 1.2 ± 0.9 ± 0.0
+       (7.5±1.2) + (3.9±0.9) # This is correct
+       # => 11.4 ± 1.5
 
 Correlation Between Variables
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -63,6 +77,8 @@ as correlated.
 Propagate Uncertainty for Arbitrary Functions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+.. function:: @uncertain f(x, y)
+
 Existing functions implemented exclusively in Julia that accept
 ``AbstractFloat`` arguments will work out-of-the-box with ``Measurement``
 objects as long as they internally use functions already supported by this
@@ -71,9 +87,10 @@ subtype of ``AbstractFloat``, or are implemented in such a way that does not
 play nicely with ``Measurement`` variables.
 
 The package provides the ``@uncertain`` macro that overcomes this limitation and
-further extends the power of ``Measurements.jl``. This macro allows you to
-propagate uncertainty in arbitrary real functions, including those based on
-`C/Fortran calls
+further extends the power of ``Measurements.jl``.
+
+This macro allows you to propagate uncertainty in arbitrary real functions,
+including those based on `C/Fortran calls
 <http://docs.julialang.org/en/stable/manual/calling-c-and-fortran-code/>`__,
 that accept one or two real arguments.  The macro exploits ``derivative`` and
 ``gradient`` functions from `Calculus
@@ -82,6 +99,9 @@ numerical differentiation.
 
 Derivative and Gradient
 ~~~~~~~~~~~~~~~~~~~~~~~
+
+.. function:: Measurements.derivative(y::Measurement, x::Measurement)
+.. function:: Measurements.gradient(y::Measurement, x::AbstractArray{Measurement})
 
 In order to propagate the uncertainties, ``Measurements.jl`` keeps track of the
 total derivative of an expression with respect to all independent measurements
@@ -93,6 +113,8 @@ independent measurements.
 Standard Score
 ~~~~~~~~~~~~~~
 
+.. function:: stdscore(measure::Measurement, expected_value::Real) -> standard_score
+
 The ``stdscore`` function is available to calculate the `standard score
 <https://en.wikipedia.org/wiki/Standard_score>`__ between a measurement and its
 expected value.
@@ -100,23 +122,10 @@ expected value.
 Weighted Average
 ~~~~~~~~~~~~~~~~
 
+.. function:: weightedmean(iterable) -> weighted_mean
+
 ``weightedmean`` function gives the `weighted mean
 <https://en.wikipedia.org/wiki/Weighted_arithmetic_mean>`__ of a set of
 measurements using `inverses of variances as weights
 <https://en.wikipedia.org/wiki/Inverse-variance_weighting>`__.  Use ``mean`` for
 the simple arithmetic mean.
-
-Caveat about ``±`` Sign
-~~~~~~~~~~~~~~~~~~~~~~~
-
-The ``±`` sign is a convenient symbol to define quantities with uncertainty, but
-can lead to unexpected results if used in elaborate expressions involving many
-``±``\ s. Use parantheses where appropriate to avoid confusion. See for example
-the following cases:
-
-.. code-block:: julia
-
-    7.5±1.2 + 3.9±0.9 # This is wrong!
-    # => 11.4 ± 1.2 ± 0.9 ± 0.0
-    (7.5±1.2) + (3.9±0.9) # This is correct
-    # => 11.4 ± 1.5
