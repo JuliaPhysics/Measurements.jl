@@ -102,12 +102,11 @@ function result(val::Real, der::Tuple{Vararg{Real}},
     return Measurement(T(val), sqrt(err), NaN, newder)
 end
 
-# "result" function for complex-valued functions (like "hankelh").  The first
-# argument is the value of the function, "der" is the 2-tuple of derivative for
-# real and imaginary part, respectively, and last argument is the only argument
-# of the function.
-function result(val::Complex, der::Tuple{Real, Real}, a::Measurement)
-    return complex(result(real(val), der[1], a), result(imag(val), der[2], a))
+# "result" function for complex-valued functions (like "hankelh").  This takes
+# the same argument as the first implementation of "result", but with complex
+# "val" and "der".
+function result(val::Complex, der::Complex, a::Measurement)
+    return complex(result(real(val), real(der), a), result(imag(val), imag(der), a))
 end
 
 # @uncertain macro.  TODO: generalize to any number of arguments.
@@ -765,8 +764,7 @@ function besselh(nu::Real, k::Integer, a::Measurement)
     x = a.val
     sgn = k == 1 ? +1 : -1
     return result(besselh(nu, k, x),
-                  (0.5*(besselj(nu - 1, x) - besselj(nu + 1, x)),
-                   sgn*0.5*(bessely(nu - 1, x) - bessely(nu + 1, x))),
+                  0.5*(besselh(nu - 1, k, x) - besselh(nu + 1, k, x)),
                   a)
 end
 
