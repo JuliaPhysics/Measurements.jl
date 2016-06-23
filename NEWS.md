@@ -1,19 +1,22 @@
-v0.1.1 (2016-??-??)
-===================
+History of Measurements.jl
+==========================
 
-New Features
-------------
+v0.1.1 (2016-06-23)
+-------------------
+
+### New Features ###
 
 * `@uncertain` macro works with functions with any number of arguments.
 * New mathematical operations supported: `erfi`, `dawson`, `digamma`,
   `invdigamma`, `trigamma`, `polygamma`, `beta`, `lbeta`, `airy`, `airyai`,
   `airyprime`, `airyaiprime`, `airybi`, `airybiprime`.
+* The complete documentation of the package is available at
+  http://measurementsjl.readthedocs.io
 
 v0.1.0 (2016-06-18)
-===================
+-------------------
 
-New Features
-------------
+### New Features ###
 
 * Support for correlated variables has been added
   ([#3](https://github.com/giordano/Measurements.jl/issues/3)).
@@ -28,10 +31,9 @@ New Features
 * New method supported: `typemax`.
 
 v0.0.2 (2016-06-13)
-===================
+-------------------
 
-New Features
-------------
+### New Features ###
 
 * `Measurement` is now subtype of `AbstractFloat`
   ([#1](https://github.com/giordano/Measurements.jl/issues/1)), but you can feed
@@ -44,8 +46,7 @@ New Features
   `isinf`, `isinteger`, `copysign`, `frexp`, `ldexp`, `div`, `cld`, `fld`,
   `mod`, `rem`, `mod2pi`, `eps`, `flipsign`, `erfinv`, `erfcinv`, `erfcx`.
 
-Breaking Changes
-----------------
+### Breaking Changes ###
 
 * Function `Constant` has been removed as it was mostly redundant and badly
   capitalized ([#2](https://github.com/giordano/Measurements.jl/issues/2)).
@@ -53,19 +54,17 @@ Breaking Changes
   `complex(Measurement(a, b), Measurement(c, d))` so real and imaginary parts of
   the number have each their uncertainty.
 
-Bug Fixes
----------
+### Bug Fixes ###
 
 * Fix multiplication by and division of 0.  Previously, those operations would
   return `NaN` as uncertainty, now they give 0.
 
 v0.0.1 (2016-05-20)
-===================
+-------------------
 
 Initial release.
 
-New Features
-------------
+### New Features ###
 
 * `Measurement` type is a parametric type, subtype of `Number`.
 * You can define `Measurement` objects with `Measurement(a, b)`, being `a` the

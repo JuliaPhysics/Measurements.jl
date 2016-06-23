@@ -246,7 +246,7 @@ measurements.
     Measurements.derivative(2x - 4y, y)
     # => -4.0
     Measurements.gradient(2x - 4y, [x, y, z])
-    # => 2-element Array{Float64,1}:
+    # => 3-element Array{Float64,1}:
     #      2.0
     #     -4.0
     #      0.0  # The expression does not depend on z
