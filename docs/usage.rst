@@ -11,7 +11,7 @@ The module defines a new ``Measurement`` data type. ``Measurement`` objects can
 be created with the two following constructors:
 
 .. function:: Measurement(value, uncertainty)
-              value ± uncertainty
+.. function:: value ± uncertainty
 
 where
 
@@ -66,7 +66,7 @@ Correlation Between Variables
 
 The fact that two or more measurements are correlated means that there is some
 sort of relationship beetween them.  In the context of measurements and error
-propagation theory, the term `correlation
+propagation theory, the term "`correlation
 <https://en.wikipedia.org/wiki/Correlation_and_dependence>`__" is very broad and
 can indicate different things.  Among others, there may be some dependence
 between uncertainties of different measurements with different values, or a
@@ -76,13 +76,15 @@ different.
 Here, for correlation we mean the most simple case of functional relationship:
 if :math:`x = \bar{x} \pm \sigma_x` is an independent measurement, a quantity
 :math:`y = f(x) = \bar{y} \pm \sigma_y` that is function of :math:`x` is not
-like an independent measurement but is a quantity that depends on :math:`x`.
-The package ``Measurements.jl`` is able to handle this type of correlation.  As
-a result, :math:`x - x = 0 \pm 0` and :math:`x/x = 1 \pm 0`.  If this
-correlation was not accounted for, you would always get non-zero uncertainties
-even for these operations that have exact results.  Two truly different
-measurements that only by chance share the same nominal value and uncertainty
-are not treated as correlated.
+like an independent measurement but is a quantity that depends on :math:`x`, so
+we say that :math:`y` is correlated with :math:`x`.  The package
+``Measurements.jl`` is able to handle this type of correlation when propagating
+the uncertainty for operations and functions taking two or more arguments.  As a
+result, :math:`x - x = 0 \pm 0` and :math:`x/x = 1 \pm 0`.  If this correlation
+was not accounted for, you would always get non-zero uncertainties even for
+these operations that have exact results.  Two truly different measurements that
+only by chance share the same nominal value and uncertainty are not treated as
+correlated.
 
 Propagate Uncertainty for Arbitrary Functions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -93,14 +95,14 @@ Existing functions implemented exclusively in Julia that accept
 ``AbstractFloat`` arguments will work out-of-the-box with ``Measurement``
 objects as long as they internally use functions already supported by this
 package.  However, there are functions that take arguments that are specific
-subtype of ``AbstractFloat``, or are implemented in such a way that does not
+subtypes of ``AbstractFloat``, or are implemented in such a way that does not
 play nicely with ``Measurement`` variables.
 
 The package provides the ``@uncertain`` macro that overcomes this limitation and
 further extends the power of ``Measurements.jl``.
 
-This macro allows you to propagate uncertainty in arbitrary real functions,
-including those based on `C/Fortran calls
+This macro allows you to propagate uncertainty in arbitrary functions, including
+those based on `C/Fortran calls
 <http://docs.julialang.org/en/stable/manual/calling-c-and-fortran-code/>`__,
 that accept any number of real arguments.  The macro exploits ``derivative`` and
 ``gradient`` functions from `Calculus

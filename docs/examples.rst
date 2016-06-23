@@ -50,6 +50,9 @@ within the package:
     # => 0.0 ± 0.0
     sin(x)/cos(x) - tan(x)
     # => -2.220446049250313e-16 ± 0.0 # They are equal within numerical accuracy
+    y = -5.9 ± 0.2
+    beta(x, y) - gamma(x)*gamma(y)/gamma(x + y)
+    # => 0.0 ± 3.979039320256561e-14
 
 You will get similar results for a variable that is a function of an already
 existing ``Measurement`` object:
@@ -243,11 +246,33 @@ measurements.
     # => 2.0
     Measurements.derivative(2x - 4y, y)
     # => -4.0
-    Measurements.gradient(log1p(x) + y^2 - cos(x/y), [x, y, z])
-    # => 3-element Array{Float64,1}:
-    #       0.0177005
-    #     210.793
-    #       0.0       # The expression does not depend on z
+    Measurements.gradient(2x - 4y, [x, y, z])
+    # => 2-element Array{Float64,1}:
+    #      2.0
+    #     -4.0
+    #      0.0  # The expression does not depend on z
+
+.. Tip::
+
+   The ``Measurements.gradient`` function is useful in order to discover which
+   variable contributes most to the total uncertainty of a given expression.
+   This can be calculated as the scalar product between the gradient of the
+   expression with respect to the set of variables and the vector of
+   uncertainties of the same variables in the same order.  For example:
+
+       w = y^(3//4)*log(y) + 3x - cos(y/x)
+       # => 447.0410543780643 ± 52.41813324207829
+       (Measurements.gradient(w, [x, y]).*[a.err for a in (x,y)]).^2
+       # => 2-element Array{Any,1}:
+       #     1442.31
+       #     1305.36
+
+   In this case, the ``x`` variable contributes most to the uncertainty of
+   ``w``.  In addition, note that the 2-norm of the scalar product above is
+   exactly the total uncertainty of the expression:
+
+       vecnorm(Measurements.gradient(w, [x, y]).*[a.err for a in (x,y)])
+       # => 52.41813324207829
 
 ``stdscore`` Function
 ~~~~~~~~~~~~~~~~~~~~~

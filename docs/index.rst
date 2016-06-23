@@ -19,8 +19,8 @@ Features List
   functions can in turn perform calculations involving numbers with
   uncertainties without being redefined. This greatly enhances the power of
   ``Measurements.jl`` without effort for the users
-- Functional correlation between variables is correctly handled, so ``x-x ==
-  zero(x)``, ``x/x == one(x)``, ``tan(x) == sin(x)/cos(x)``, etc...
+- Functional correlation between variables is correctly handled, so :math:`x - x
+  = 0 \pm 0`, :math:`x/x = 1 \pm 0`, :math:`tan(x) == sin(x)/cos(x)`, etc...
 - Support for `arbitrary precision
   <http://docs.julialang.org/en/stable/manual/integers-and-floating-point-numbers/#arbitrary-precision-arithmetic>`__
   numbers with uncertainties (though this may not be very useful for quantities
