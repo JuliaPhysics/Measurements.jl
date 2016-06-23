@@ -18,9 +18,8 @@ easily get the uncertainty of the result according to
   functions can in turn perform calculations involving numbers with
   uncertainties without being redefined.  This greatly enhances the power of
   `Measurements.jl` without effort for the users
-* [Correlation](https://en.wikipedia.org/wiki/Correlation_and_dependence)
-  between variables is correctly handled, so `x-x == zero(x)`, `x/x == one(x)`,
-  `tan(x) == sin(x)/cos(x)`, etc...
+* Functional correlation between variables is correctly handled, so `x-x ==
+  zero(x)`, `x/x == one(x)`, `tan(x) == sin(x)/cos(x)`, etc...
 * Support for
   [arbitrary precision](http://docs.julialang.org/en/stable/manual/integers-and-floating-point-numbers/#arbitrary-precision-arithmetic)
   numbers with uncertainties (though this may not be very useful for quantities
@@ -157,8 +156,8 @@ atan2(y, x)
 
 ### Correlation Between Variables ###
 
-Here you can see examples of how correlated variables are treated within the
-package:
+Here you can see examples of how functionally correlated variables are treated
+within the package:
 
 ``` julia
 x = 8.4 ± 0.7

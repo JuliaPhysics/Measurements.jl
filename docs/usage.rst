@@ -11,7 +11,7 @@ The module defines a new ``Measurement`` data type. ``Measurement`` objects can
 be created with the two following constructors:
 
 .. function:: Measurement(value, uncertainty)
-.. function:: value ± uncertainty
+              value ± uncertainty
 
 where
 
@@ -64,15 +64,25 @@ package in their workflow, can have a look at the technical appendix.
 Correlation Between Variables
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This package is able to handle `correlation
-<https://en.wikipedia.org/wiki/Correlation_and_dependence>`__ between
-variables. This means that uncertainty is correctly propagated also for
-functions taking two or more arguments that are correlated, that is one is
-derived from the other or both arguments are derived from a set of common
-independent variables. As a result, ``x - x == zero(x)`` and ``x/x ==
-one(x)``. Instead, two measurements that come from truly different measurements
-and only by chance share the same nominal value and uncertainty are not treated
-as correlated.
+The fact that two or more measurements are correlated means that there is some
+sort of relationship beetween them.  In the context of measurements and error
+propagation theory, the term `correlation
+<https://en.wikipedia.org/wiki/Correlation_and_dependence>`__" is very broad and
+can indicate different things.  Among others, there may be some dependence
+between uncertainties of different measurements with different values, or a
+dependence between the values of two measurements while their uncertainties are
+different.
+
+Here, for correlation we mean the most simple case of functional relationship:
+if :math:`x = \bar{x} \pm \sigma_x` is an independent measurement, a quantity
+:math:`y = f(x) = \bar{y} \pm \sigma_y` that is function of :math:`x` is not
+like an independent measurement but is a quantity that depends on :math:`x`.
+The package ``Measurements.jl`` is able to handle this type of correlation.  As
+a result, :math:`x - x = 0 \pm 0` and :math:`x/x = 1 \pm 0`.  If this
+correlation was not accounted for, you would always get non-zero uncertainties
+even for these operations that have exact results.  Two truly different
+measurements that only by chance share the same nominal value and uncertainty
+are not treated as correlated.
 
 Propagate Uncertainty for Arbitrary Functions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

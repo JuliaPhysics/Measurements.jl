@@ -96,21 +96,27 @@ into ``Measurement{F}``, with ``F`` subtype of ``AbstractFloat``, anyway.
 Correlation
 ~~~~~~~~~~~
 
-Dealing with `correlation
+One must carefully take care of `correlation
 <https://en.wikipedia.org/wiki/Correlation_and_dependence>`__ between two
-``Measurement`` objects, when using functions with `arity
-<https://en.wikipedia.org/wiki/Arity>`__ larger than one, is an important
-feature of this package.  This is accomplished by keeping inside ``Measurement``
-objects the list of its derivatives with respect to the independent variables
-from which the quantity comes, that is updated every time a new mathematical
-operation is performed.  This role is played by the ``der`` field.  This
-dictionary is useful in order to trace the contribution of each measurement and
-propagate the uncertainty in the case of functions with more than one argument.
+measurements when propagating the uncertainty for an operation.  Actually, the
+term "correlation" may refer to different kind of dependences between two or
+more quantities, what we mean by this term in ``Measurements.jl`` is explained
+in the "Usage" section of this manual.
+
+Dealing with functional correlation between ``Measurement`` objects, when using
+functions with `arity <https://en.wikipedia.org/wiki/Arity>`__ larger than one,
+is an important feature of this package.  This is accomplished by keeping inside
+each ``Measurement`` object the list of its derivatives with respect to the
+independent variables from which the quantity comes, and this list is updated
+every time a new mathematical operation is performed.  This role is played by
+the ``der`` field.  This dictionary is useful in order to trace the contribution
+of each measurement and propagate the uncertainty in the case of functions with
+more than one argument.
 
 The use of the list of derivatives has been inspired by Python package
 `uncertainties <https://pythonhosted.org/uncertainties/>`__, but the rest of the
 implementation of ``Measurements.jl`` is completely independent from that of
-this package, even though it may happen to be similar.
+``uncertainties`` package, even though it may happen to be similar.
 
 Uncertainty Propagation
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -153,11 +159,12 @@ formula for uncertainty propagation simplifies to
 	  \right)^2 + \cdots
 
 In general, calculating the covariances is not an easy task.  The trick adopted
-in ``Measurements.jl`` is to propagate the uncertainty always using really
-independent variables.  Thus, dealing with correlation boils down to finding the
-set of all the independent measurements on which an expression depends.  If this
-set is made up of :math:`\{x, y, z, \dots\}`, it is possible to calculate the
-uncertainty of :math:`G(a, b, c, \dots) = g(x, y, z, \dots)` with
+in ``Measurements.jl`` in order to deal with simple functional correlation is to
+propagate the uncertainty always using really independent variables.  Thus,
+dealing with functional correlation boils down to finding the set of all the
+independent measurements on which an expression depends.  If this set is made up
+of :math:`\{x, y, z, \dots\}`, it is possible to calculate the uncertainty of
+:math:`G(a, b, c, \dots) = g(x, y, z, \dots)` with
 
 .. math:: \sigma_G^2 = \left( \left.\frac{\text{d} g}{\text{d} x}\right\vert_{x
 	  = \bar{x}} \sigma_x \right)^2 + \left( \left.\frac{\text{d}
@@ -170,7 +177,9 @@ respect to :math:`x`, and all covariances are null.  This explains the purpose
 of keeping the list of derivatives with respect to independent variables in
 ``Measurement`` objects: by looking at the ``der`` fields of :math:`a`,
 :math:`b`, :math:`c`, ..., it is possible to determine the set of independent
-variables.
+variables.  If other types of correlation (not functional) between :math:`x`,
+:math:`y`, :math:`z`, ..., are present, they should be treated by calculating
+the covariances as shown above.
 
 For a function of only one argument, :math:`G = G(a)`, there is no problem of
 correlation and the uncertainty propagation formula in the linear approximation
@@ -183,10 +192,10 @@ even if :math:`a` is not an independent variable and comes from operations on
 really independent measurements.
 
 For example, suppose you want to calculate the function :math:`G = G(a, b)` of
-two arguments, and :math:`a` and :math:`b` are correlated, because they come
-from some mathematical operations on really independent variables :math:`x`,
-:math:`y`, :math:`z`, say :math:`a = a(x, y)`, :math:`b = b(x, z)`.  The
-uncertainty on :math:`G(a, b) = g(x, y, z)` is calculated as follows:
+two arguments, and :math:`a` and :math:`b` are functionally correlated, because
+they come from some mathematical operations on really independent variables
+:math:`x`, :math:`y`, :math:`z`, say :math:`a = a(x, y)`, :math:`b = b(x, z)`.
+The uncertainty on :math:`G(a, b) = g(x, y, z)` is calculated as follows:
 
 .. math:: \sigma_G^2 = \left( \left(\frac{\partial G}{\partial a}\frac{\partial
 	  a}{\partial x} + \frac{\partial G}{\partial b}\frac{\partial

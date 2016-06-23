@@ -36,8 +36,8 @@ These are the some basic examples of use of the package:
 Correlation Between Variables
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Here you can see examples of how correlated variables are treated within the
-package:
+Here you can see examples of how functionally correlated variables are treated
+within the package:
 
 .. code-block:: julia
 
@@ -67,7 +67,7 @@ existing ``Measurement`` object:
     # => 0.0 ± 0.0
 
 A variable that has the same nominal value and uncertainty as ``u`` above but is
-not correlated with ``x`` will give different outcomes:
+not functionally correlated with ``x`` will give different outcomes:
 
 .. code-block:: julia
 
