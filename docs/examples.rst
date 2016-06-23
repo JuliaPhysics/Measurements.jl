@@ -260,6 +260,8 @@ measurements.
    expression with respect to the set of variables and the vector of
    uncertainties of the same variables in the same order.  For example:
 
+   .. code-block:: julia
+
        w = y^(3//4)*log(y) + 3x - cos(y/x)
        # => 447.0410543780643 ± 52.41813324207829
        (Measurements.gradient(w, [x, y]).*[a.err for a in (x,y)]).^2
@@ -270,6 +272,8 @@ measurements.
    In this case, the ``x`` variable contributes most to the uncertainty of
    ``w``.  In addition, note that the 2-norm of the scalar product above is
    exactly the total uncertainty of the expression:
+
+   .. code-block:: julia
 
        vecnorm(Measurements.gradient(w, [x, y]).*[a.err for a in (x,y)])
        # => 52.41813324207829
