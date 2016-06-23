@@ -1,7 +1,7 @@
 Examples
 --------
 
-These are the some basic examples of use of the package:
+These are some basic examples of use of the package:
 
 .. code-block:: julia
 
@@ -15,19 +15,17 @@ These are the some basic examples of use of the package:
     a - 1.2b
     # => -0.05999999999999961 ± 0.49030602688525043
     l = Measurement(0.936, 1e-3);
-    T = Measurement(1.942, 4e-3);
+    T = 1.942 ± 4e-3;
     P = 4pi^2*l/T^2
     # => 9.797993213510699 ± 0.041697817535336676
     c = Measurement(4)
     # => 4.0 ± 0.0
     a*c
     # => 18.0 ± 0.4
-    sind(Measurement(94, 1.2))
+    sind(94 ± 1.2)
     # => 0.9975640502598242 ± 0.0014609761696991563
-    x = 5.48 ± 0.67
-    # => 5.48 ± 0.67
-    y = Measurement(9.36, 1.02)
-    # => 9.36 ± 1.02
+    x = 5.48 ± 0.67;
+    y = 9.36 ± 1.02;
     log(2x^2 - 3.4y)
     # =>  3.3406260917568824 ± 0.5344198747546611
     atan2(y, x)
@@ -49,7 +47,8 @@ within the package:
     x*x*x - x^3
     # => 0.0 ± 0.0
     sin(x)/cos(x) - tan(x)
-    # => -2.220446049250313e-16 ± 0.0 # They are equal within numerical accuracy
+    # => -2.220446049250313e-16 ± 0.0
+    # They are equal within numerical accuracy
     y = -5.9 ± 0.2
     beta(x, y) - gamma(x)*gamma(y)/gamma(x + y)
     # => 0.0 ± 3.979039320256561e-14
@@ -148,7 +147,7 @@ function, do it as an exercise.
    :math:`\text{airyx}(1, z) = \exp((2/3) z \sqrt{z})\text{Ai}'(z)` is not
    differentiable in the first argument, not even the trick of passing an exact
    measurement would work because the first argument must be an integer.  You
-   can easily work around this limtation by wrapping the function in a
+   can easily work around this limitation by wrapping the function in a
    single-argument function
 
    .. code-block:: julia
@@ -206,7 +205,7 @@ Arrays of Measurements
 ~~~~~~~~~~~~~~~~~~~~~~
 
 You can create arrays of ``Measurement`` objects and perform mathematical
-operations on them:
+operations on them in the most natural way possible:
 
 .. code-block:: julia
 
@@ -255,10 +254,13 @@ measurements.
 .. Tip::
 
    The ``Measurements.gradient`` function is useful in order to discover which
-   variable contributes most to the total uncertainty of a given expression.
-   This can be calculated as the scalar product between the gradient of the
-   expression with respect to the set of variables and the vector of
-   uncertainties of the same variables in the same order.  For example:
+   variable contributes most to the total uncertainty of a given expression, if
+   you want to minimize it.  This can be calculated as the `Hadamard
+   (element-wise) product
+   <https://en.wikipedia.org/wiki/Hadamard_product_%28matrices%29>`__ between
+   the gradient of the expression with respect to the set of variables and the
+   vector of uncertainties of the same variables in the same order.  For
+   example:
 
    .. code-block:: julia
 
@@ -270,8 +272,9 @@ measurements.
        #     1305.36
 
    In this case, the ``x`` variable contributes most to the uncertainty of
-   ``w``.  In addition, note that the 2-norm of the scalar product above is
-   exactly the total uncertainty of the expression:
+   ``w``.  In addition, note that the `Euclidean norm
+   <https://en.wikipedia.org/wiki/Euclidean_norm>`__ of the Hadamard product
+   above is exactly the total uncertainty of the expression:
 
    .. code-block:: julia
 

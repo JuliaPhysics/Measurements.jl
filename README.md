@@ -40,6 +40,8 @@ easily get the uncertainty of the result according to
 Further features are expected to come in the future, see the section "How Can I
 Help?" and the TODO list below.
 
+### Documentation ###
+
 The complete manual of `Measurements.jl` is available at
 http://measurementsjl.readthedocs.io.  There, people interested in the details
 of the package, in order integrate the package in their workflow, can can find a
@@ -135,19 +137,17 @@ b = 3.8 ± 0.4
 a - 1.2b
 # => -0.05999999999999961 ± 0.49030602688525043
 l = Measurement(0.936, 1e-3);
-T = Measurement(1.942, 4e-3);
+T = 1.942 ± 4e-3;
 P = 4pi^2*l/T^2
 # => 9.797993213510699 ± 0.041697817535336676
 c = Measurement(4)
 # => 4.0 ± 0.0
 a*c
 # => 18.0 ± 0.4
-sind(Measurement(94, 1.2))
+sind(94 ± 1.2)
 # => 0.9975640502598242 ± 0.0014609761696991563
-x = 5.48 ± 0.67
-# => 5.48 ± 0.67
-y = Measurement(9.36, 1.02)
-# => 9.36 ± 1.02
+x = 5.48 ± 0.67;
+y = 9.36 ± 1.02;
 log(2x^2 - 3.4y)
 # =>  3.3406260917568824 ± 0.5344198747546611
 atan2(y, x)
