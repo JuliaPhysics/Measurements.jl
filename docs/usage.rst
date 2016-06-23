@@ -87,7 +87,7 @@ are not treated as correlated.
 Propagate Uncertainty for Arbitrary Functions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. function:: @uncertain f(x, y)
+.. function:: @uncertain f(x, ...)
 
 Existing functions implemented exclusively in Julia that accept
 ``AbstractFloat`` arguments will work out-of-the-box with ``Measurement``
@@ -102,7 +102,7 @@ further extends the power of ``Measurements.jl``.
 This macro allows you to propagate uncertainty in arbitrary real functions,
 including those based on `C/Fortran calls
 <http://docs.julialang.org/en/stable/manual/calling-c-and-fortran-code/>`__,
-that accept one or two real arguments.  The macro exploits ``derivative`` and
+that accept any number of real arguments.  The macro exploits ``derivative`` and
 ``gradient`` functions from `Calculus
 <https://github.com/johnmyleswhite/Calculus.jl>`__ package in order to perform
 numerical differentiation.

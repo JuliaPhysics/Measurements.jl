@@ -25,8 +25,8 @@ easily get the uncertainty of the result according to
   numbers with uncertainties (though this may not be very useful for quantities
   that are intrinsically imprecise)
 * Define arrays of measurements and perform calculations with them
-* Propagate uncertainty for any real function of one or two real arguments (even
-  functions based on
+* Propagate uncertainty for any function of real arguments (including functions
+  based on
   [C/Fortran calls](http://docs.julialang.org/en/stable/manual/calling-c-and-fortran-code/)),
   using `@uncertain`
   [macro](http://docs.julialang.org/en/stable/manual/metaprogramming/)

@@ -86,14 +86,14 @@ not functionally correlated with ``x`` will give different outcomes:
 ``@uncertain`` Macro
 ~~~~~~~~~~~~~~~~~~~~
 
-Macro ``@uncertain`` can be used to propagate uncertainty in arbitrary real
-functions of one or two real arguments, even in functions not natively supported
+Macro ``@uncertain`` can be used to propagate uncertainty in arbitrary real or
+complex functions of real arguments, including functions not natively supported
 by this package.
 
 .. code-block:: julia
 
-    @uncertain (x -> zeta(x) + exp(eta(x)^2))(2 ± 0.13)
-    # => 3.6118209315321526 ± 0.0792673280873273
+    @uncertain (x -> complex(zeta(x), exp(eta(x)^2)))(2 ± 0.13)
+    # => (1.6449340668482273 ± 0.12188127308075564) + (1.9668868646839253 ± 0.042613944993428333)im
     @uncertain log(9.4 ± 1.3, 58.8 ± 3.7)
     # => 1.8182372640255153 ± 0.11568300475873611
     log(9.4 ± 1.3, 58.8 ± 3.7)
@@ -104,6 +104,28 @@ case where you have to define a function, like in the first line of previous
 examples, `anonymous functions
 <http://docs.julialang.org/en/stable/manual/functions/#anonymous-functions>`__
 allow you to do it in a very concise way.
+
+The macro works with functions calling C/Fortran functions as well.  For
+example, `Cuba.jl <https://github.com/giordano/Cuba.jl>`__ package performs
+numerical integration by wrapping the C `Cuba <http://www.feynarts.de/cuba/>`__
+library.  You can define a function to numerically compute with ``Cuba.jl`` the
+integral defining the `error function
+<https://en.wikipedia.org/wiki/Error_function>`__ and pass it to ``@uncertain``
+macro.  Compare the result with that of the ``erf`` function, natively supported
+in ``Measurements.jl`` package
+
+.. code-block:: julia
+
+    using Cuba
+    cubaerf(x::Real) =
+        2x/sqrt(pi)*Cuhre((t, f) -> f[1] = exp(-abs2(t[1]*x)), 1, 1)[1][1]
+    @uncertain cubaerf(0.5 ± 0.01)
+    # => 0.5204998778130466 ± 0.008787825789336267
+    erf(0.5 ± 0.01)
+    # => 0.5204998778130465 ± 0.008787825789354449
+
+Also here you can use an anonymous function instead of defining the ``cubaerf``
+function, do it as an exercise.
 
 .. Warning::
 
@@ -130,31 +152,6 @@ allow you to do it in a very concise way.
 
        @uncertain (x -> airyx(1, x))(4.8 ± 0.2)
        # => -0.42300740589773583 ± 0.004083414330362105
-
-The macro works with functions calling C/Fortran functions as well.  For
-example, `Cuba.jl <https://github.com/giordano/Cuba.jl>`__ package performs
-numerical integration by wrapping the C `Cuba <http://www.feynarts.de/cuba/>`__
-library.  You can define a function to numerically compute with ``Cuba.jl`` the
-integral defining the `error function
-<https://en.wikipedia.org/wiki/Error_function>`__ and pass it to ``@uncertain``
-macro
-
-.. code-block:: julia
-
-    using Cuba
-    cubaerf(x::Real) =
-        2x/sqrt(pi)*Cuhre((t, f) -> f[1] = exp(-abs2(t[1]*x)), 1, 1)[1][1]
-    @uncertain cubaerf(0.5 ± 0.01)
-    # => 0.5204998778130466 ± 0.008787825789336267
-
-(also here you can use an anonymous function, do it as an exercise).  Compare
-the result with that of the ``erf`` function, natively supported in
-``Measurements.jl`` package:
-
-.. code-block:: julia
-
-    erf(0.5 ± 0.01)
-    # => 0.5204998778130465 ± 0.008787825789354449
 
 Complex Measurements
 ~~~~~~~~~~~~~~~~~~~~

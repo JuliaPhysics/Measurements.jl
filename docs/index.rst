@@ -26,8 +26,8 @@ Features List
   numbers with uncertainties (though this may not be very useful for quantities
   that are intrinsically imprecise)
 - Define arrays of measurements and perform calculations with them
-- Propagate uncertainty for any real function of one or two real arguments (even
-  functions based on `C/Fortran calls
+- Propagate uncertainty for any function of real arguments (including functions
+  based on `C/Fortran calls
   <http://docs.julialang.org/en/stable/manual/calling-c-and-fortran-code/>`__),
   using ``@uncertain`` `macro
   <http://docs.julialang.org/en/stable/manual/metaprogramming/>`__

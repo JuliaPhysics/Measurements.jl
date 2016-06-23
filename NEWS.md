@@ -4,6 +4,7 @@ v0.1.1 (2016-??-??)
 New Features
 ------------
 
+* `@uncertain` macro works with functions with any number of arguments.
 * New mathematical operations supported: `erfi`, `dawson`, `digamma`,
   `invdigamma`, `trigamma`, `polygamma`, `beta`, `lbeta`, `airy`, `airyai`,
   `airyprime`, `airyaiprime`, `airybi`, `airybiprime`.
