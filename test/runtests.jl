@@ -115,6 +115,11 @@ test_approx_eq(cld(9.4, y), Measurement(3))
 for a in (w, x, y); test_approx_eq((0 ± 1)/a, Measurement(0, 1/abs(a.val))); end
 # Test correlation
 for a in (w, x, y); test_approx_eq(a/a, Measurement(1)); end
+# Test derivatives of "div", "fld", and "cld".  They're defined to be exactly 0.
+# Should you discover this is not correct, update the test accordingly.
+for f in (div, fld, cld), a in (w, x, y), b in (w, x, y)
+    Measurements.gradient(f(a, b), [a, b]) == [0.0, 0.0]
+end
 
 # Inverse
 for a in (w, x, y); test_approx_eq(inv(a), 1/a); end

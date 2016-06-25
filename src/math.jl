@@ -174,17 +174,19 @@ end
 /(a::Real, b::Measurement) = result(a/b.val, -a/abs2(b.val), b)
 /(a::Measurement, b::Real) = result(a.val/b, 1/b, a)
 
-div(a::Measurement, b::Measurement) = Measurement(div(a.val, b.val))
-div(a::Measurement, b::Real) = div(a, Measurement(b))
-div(a::Real, b::Measurement) = div(Measurement(a), b)
+# 0.0 as partial derivative for both arguments of "div", "fld", "cld" should be
+# correct for most cases.  This has been tested against "@uncertain" macro.
+div(a::Measurement, b::Measurement) = result(div(a.val, b.val), (0.0, 0.0), (a, b))
+div(a::Measurement, b::Real) = result(div(a.val, b), 0.0, a)
+div(a::Real, b::Measurement) = result(div(a, b.val), 0.0, b)
 
-fld(a::Measurement, b::Measurement) = Measurement(fld(a.val, b.val))
-fld(a::Measurement, b::Real) = fld(a, Measurement(b))
-fld(a::Real, b::Measurement) = fld(Measurement(a), b)
+fld(a::Measurement, b::Measurement) = result(fld(a.val, b.val), (0.0, 0.0), (a, b))
+fld(a::Measurement, b::Real) = result(fld(a.val, b), 0.0, a)
+fld(a::Real, b::Measurement) = result(fld(a, b.val), 0.0, b)
 
-cld(a::Measurement, b::Measurement) = Measurement(cld(a.val, b.val))
-cld(a::Measurement, b::Real) = cld(a, Measurement(b))
-cld(a::Real, b::Measurement) = cld(Measurement(a), b)
+cld(a::Measurement, b::Measurement) = result(cld(a.val, b.val), (0.0, 0.0), (a, b))
+cld(a::Measurement, b::Real) = result(cld(a.val, b), 0.0, a)
+cld(a::Real, b::Measurement) = result(cld(a, b.val), 0.0, b)
 
 # Inverse: inv
 function inv(a::Measurement)
