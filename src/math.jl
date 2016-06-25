@@ -362,8 +362,15 @@ function atan2(a::Measurement, b::Measurement)
                   (a, b))
 end
 
-atan2(a::Measurement, b::Real) = atan2(a, Measurement(b))
-atan2(a::Real, b::Measurement) = atan2(Measurement(a), b)
+function atan2(a::Measurement, b::Real)
+    x = a.val
+    return result(atan2(x, b), -b/(abs2(x) + abs2(b)), a)
+end
+
+function atan2(a::Real, b::Measurement)
+    y = b.val
+    return result(atan2(a, y), -a/(abs2(a) + abs2(y)), b)
+end
 
 # Reciprocal trig functions: csc, cscd, csch, sec, secd, sech, cot, cotd, coth
 import Base: csc, cscd, csch, sec, secd, sech, cot, cotd, coth
