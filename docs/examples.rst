@@ -230,10 +230,10 @@ Derivative and Gradient
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 In order to propagate the uncertainties, ``Measurements.jl`` keeps track of the
-total derivative of an expression with respect to all independent measurements
+partial derivative of an expression with respect to all independent measurements
 from which the expression comes. The package provides two convenient functions,
-``Measurements.derivative`` and ``Measurements.gradient``, that return the total
-derivative and the gradient of an expression with respect to independent
+``Measurements.derivative`` and ``Measurements.gradient``, that return the
+partial derivative and the gradient of an expression with respect to independent
 measurements.
 
 .. code-block:: julia

@@ -63,9 +63,9 @@ end
 # correlated, because they come from some mathematical operations on really
 # independent variables x, y, z, say a1 = a1(x, y), a2 = a2(x, z).  The
 # uncertainty on G(a1, a2) is calculated as follows:
-#   σ_G = sqrt((σ_x·dG/dx)^2 + (σ_y·dG/dy)^2 + (σ_z·dG/dz)^2)
-# where dG/dx is the total derivative of G with respect to x, and so on.  We can
-# expand the previous formula to:
+#   σ_G = sqrt((σ_x·∂G/∂x)^2 + (σ_y·∂G/∂y)^2 + (σ_z·∂G/∂z)^2)
+# where ∂G/∂x is the partial derivative of G with respect to x, and so on.  We 
+# can expand the previous formula to:
 #   σ_G = sqrt((σ_x·(∂G/∂a1·∂a1/∂x + ∂G/∂a2·∂a2/∂x))^2 + (σ_y·∂G/∂a1·∂a1/∂y)^2 +
 #               + (σ_z·∂G/∂a2·∂a2/∂z)^2)
 function result(val::Real, der::Tuple{Vararg{Real}},
@@ -89,11 +89,11 @@ function result(val::Real, der::Tuple{Vararg{Real}},
                         # Calculate the derivative of G with respect to the
                         # current independent variable.  In the case of the x
                         # independent variable of the example above, we should
-                        # get   dG/dx = ∂G/∂a1·∂a1/∂x + ∂G/∂a2·∂a2/∂x
+                        # get   ∂g/∂x = ∂G/∂a1·∂a1/∂x + ∂G/∂a2·∂a2/∂x
                         deriv = deriv + der[i]*derivative(x, tag)
                     end
                     newder = Derivatives(newder, tag=>deriv)
-                    # Add (σ_x·dG/dx)^2 to the total uncertainty (squared)
+                    # Add (σ_x·∂g/∂x)^2 to the total uncertainty (squared)
                     err = err + abs2(deriv*tag[2])
                 end
             end

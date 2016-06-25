@@ -40,8 +40,8 @@ The fields represent:
 - ``der``: the list of derivates with respect to the independent variables from
   which the expression comes.  ``Derivatives`` is a lightweight dictionary type.
   The keys are the tuples ``(val, err, tag)`` of all independent variables from
-  which the object has been derived, while the corresponding value is the total
-  derivative of the object with respect to that independent variable.
+  which the object has been derived, while the corresponding value is the
+  partial derivative of the object with respect to that independent variable.
 
 As already explained in the "Usage" section, every time you use one of the
 constructors
@@ -164,18 +164,17 @@ propagate the uncertainty always using really independent variables.  Thus,
 dealing with functional correlation boils down to finding the set of all the
 independent measurements on which an expression depends.  If this set is made up
 of :math:`\{x, y, z, \dots\}`, it is possible to calculate the uncertainty of
-:math:`G(a, b, c, \dots) = g(x, y, z, \dots)` with
+:math:`G(a, b, c, \dots)` with
 
-.. math:: \sigma_G^2 = \left( \left.\frac{\text{d} g}{\text{d} x}\right\vert_{x
-	  = \bar{x}} \sigma_x \right)^2 + \left( \left.\frac{\text{d}
-	  g}{\text{d} y}\right\vert_{y = \bar{y}} \sigma_y \right)^2 + \left(
-	  \left.\frac{\text{d} g}{\text{d} z}\right\vert_{z = \bar{z}} \sigma_z
+.. math:: \sigma_G^2 = \left( \left.\frac{\partial G}{\partial x}\right\vert_{x
+	  = \bar{x}} \sigma_x \right)^2 + \left( \left.\frac{\partial
+	  G}{\partial y}\right\vert_{y = \bar{y}} \sigma_y \right)^2 + \left(
+	  \left.\frac{\partial G}{\partial z}\right\vert_{z = \bar{z}} \sigma_z
 	  \right)^2 + \cdots
 
-where :math:`\text{d} g/\text{d} x` is the total derivative of :math:`g` with
-respect to :math:`x`, and all covariances are null.  This explains the purpose
-of keeping the list of derivatives with respect to independent variables in
-``Measurement`` objects: by looking at the ``der`` fields of :math:`a`,
+where all covariances due to functional correlation are null.  This explains the
+purpose of keeping the list of derivatives with respect to independent variables
+in ``Measurement`` objects: by looking at the ``der`` fields of :math:`a`,
 :math:`b`, :math:`c`, ..., it is possible to determine the set of independent
 variables.  If other types of correlation (not functional) between :math:`x`,
 :math:`y`, :math:`z`, ..., are present, they should be treated by calculating
@@ -195,7 +194,8 @@ For example, suppose you want to calculate the function :math:`G = G(a, b)` of
 two arguments, and :math:`a` and :math:`b` are functionally correlated, because
 they come from some mathematical operations on really independent variables
 :math:`x`, :math:`y`, :math:`z`, say :math:`a = a(x, y)`, :math:`b = b(x, z)`.
-The uncertainty on :math:`G(a, b) = g(x, y, z)` is calculated as follows:
+By using the `chain rule <https://en.wikipedia.org/wiki/Chain_rule>`__, the
+uncertainty on :math:`G(a, b)` is calculated as follows:
 
 .. math:: \sigma_G^2 = \left( \left(\frac{\partial G}{\partial a}\frac{\partial
 	  a}{\partial x} + \frac{\partial G}{\partial b}\frac{\partial
@@ -206,11 +206,11 @@ The uncertainty on :math:`G(a, b) = g(x, y, z)` is calculated as follows:
 	  z}\right)_{z = \bar{z}} \sigma_z \right)^2
 
 What ``Measurements.jl`` really does is to calulate the derivatives like
-:math:`\text{d}a/\text{d}x = \partial a/\partial x` and :math:`\text{d}
-g/\text{d} x = (\partial G/\partial a)(\partial a/\partial x) + (\partial
-G/\partial b)(\partial b/\partial x)`, and store them in the ``der`` field of
-:math:`a` and :math:`G` respectively in order to be able to perform further
-operations involving these quantities.
+:math:`\partial a/\partial x` and :math:`\partial G/\partial x = (\partial
+G/\partial a)(\partial a/\partial x) + (\partial G/\partial b)(\partial
+b/\partial x)`, and store them in the ``der`` field of :math:`a` and :math:`G`
+respectively in order to be able to perform further operations involving these
+quantities.
 
 Defining Methods for Mathematical Operations
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -49,7 +49,7 @@ end
 #   * der: the list of derivates.  It is a lightweight dictionary, whose keys
 #     are the tuples (nominal value, uncertainty, tag) of all independent
 #     variables from which the object has been derived, the corresponding value
-#     is the total derivative of the object with respect to that independent
+#     is the partial derivative of the object with respect to that independent
 #     variable.  This dictionary is useful to trace the contribution of each
 #     measurement and propagate the uncertainty in the case of functions with
 #     more than one argument (in order to deal with correlation between
@@ -110,9 +110,9 @@ derivative{F<:AbstractFloat, T<:AbstractFloat}(a::Measurement{F},
 """
     derivative(x::Measurement, y::Measurement)
 
-Return the value of the total derivative of `x` with respect to the independent
-measurement `y`, calculated on the nominal value of `y`.  Return `0.0` if `x`
-does not depend on `y`.
+Return the value of the partial derivative of `x` with respect to the
+independent measurement `y`, calculated on the nominal value of `y`.  Return
+`0.0` if `x` does not depend on `y`.
 
 Use `Measurements.gradient` to calculate the gradient of `x` with respect to an
 arrays of independent measurements.
@@ -128,7 +128,7 @@ contained in `y` array, each calculated on the nominal value of the
 corresponding measurement.  Return `0.0` for the variables on which `x` does not
 depend.
 
-Use `Measurements.derivative` to calculate the total derivative of `x` with
+Use `Measurements.derivative` to calculate the partial derivative of `x` with
 respect to a single independent measurement.
 """
 function gradient{F<:AbstractFloat, T<:Measurement}(a::Measurement{F},
