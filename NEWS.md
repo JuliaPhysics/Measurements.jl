@@ -7,6 +7,7 @@ v0.1.1 (2016-??-??)
 ### Bug Fixes ###
 
 * Fix derivatives of `div`, `fld`, `cld`.
+* Fix `frexp` with arguments whose absolute value is less than 0.5.
 
 v0.1.1 (2016-06-23)
 -------------------

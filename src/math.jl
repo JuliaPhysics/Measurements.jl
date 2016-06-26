@@ -455,7 +455,7 @@ end
 
 function frexp(a::Measurement)
     x, y = frexp(a.val)
-    return (result(x, inv(2^y), a), y)
+    return (result(x, inv(exp2(y)), a), y)
 end
 
 ldexp(a::Measurement, e::Integer) = result(ldexp(a.val, e), ldexp(1.0, e), a)

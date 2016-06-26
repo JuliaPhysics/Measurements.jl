@@ -212,11 +212,7 @@ for a in (w, x, y); test_approx_eq(coth(a), 1/tanh(a)); end
 test_approx_eq(exp(x), Measurement(20.085536923187668, 2.008553692318767))
 for a in (w, x, y); test_approx_eq(expm1(a), exp(a) - 1); end
 for a in (w, x, y); test_approx_eq(exp10(a), 10^a); end
-for val in (w, x, y)
-    a, b = frexp(val)
-    test_approx_eq(a*2^b, val)
-end
-for a in (w, x, y); test_approx_eq(ldexp(a, 3), a*2^3); end
+for a in (w, 3//5*w, x/10, x, y/50, y); test_approx_eq(ldexp(frexp(a)...), a); end
 
 # Logarithm
 test_approx_eq(log(x, y), Measurement(1.261859507142915, 0.059474298734200806))
