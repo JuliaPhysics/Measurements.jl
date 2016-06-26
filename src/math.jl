@@ -82,19 +82,24 @@ function result(val::Real, der::Tuple{Vararg{Real}},
     @inbounds for y in a
         for tag in keys(y.der)
             if tag ∉ keys(newder) # Skip independent variables already considered
-                if tag[2] != 0.0 # Skip values with 0 uncertainty
-                    deriv::T = 0.0
+                σ_x = tag[2]
+                if σ_x != 0.0 # Skip values with 0 uncertainty
+                    ∂G_∂x::T = 0.0
                     # Iteratate over all the arguments of the function
                     for (i, x) in enumerate(a)
                         # Calculate the derivative of G with respect to the
                         # current independent variable.  In the case of the x
                         # independent variable of the example above, we should
-                        # get   ∂g/∂x = ∂G/∂a1·∂a1/∂x + ∂G/∂a2·∂a2/∂x
-                        deriv = deriv + der[i]*derivative(x, tag)
+                        # get   ∂G/∂x = ∂G/∂a1·∂a1/∂x + ∂G/∂a2·∂a2/∂x
+                        ∂a_∂x = derivative(x, tag) # ∂a_i/∂x
+                        if ∂a_∂x != 0.0 # Skip values with 0 partial derivative
+                            # der[i] = ∂G/∂a_i
+                            ∂G_∂x = ∂G_∂x + der[i]*∂a_∂x
+                        end
                     end
-                    newder = Derivatives(newder, tag=>deriv)
-                    # Add (σ_x·∂g/∂x)^2 to the total uncertainty (squared)
-                    err = err + abs2(deriv*tag[2])
+                    newder = Derivatives(newder, tag=>∂G_∂x)
+                    # Add (σ_x·∂G/∂x)^2 to the total uncertainty (squared)
+                    err = err + abs2(σ_x*∂G_∂x)
                 end
             end
         end
@@ -102,7 +107,7 @@ function result(val::Real, der::Tuple{Vararg{Real}},
     return Measurement(T(val), sqrt(err), NaN, newder)
 end
 
-# "result" function for complex-valued functions (like "hankelh").  This takes
+# "result" function for complex-valued functions (like "besselh").  This takes
 # the same argument as the first implementation of "result", but with complex
 # "val" and "der".
 function result(val::Complex, der::Complex, a::Measurement)

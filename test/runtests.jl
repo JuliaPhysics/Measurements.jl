@@ -143,6 +143,9 @@ for val in (w, x, y); test_approx_eq(e^val, exp(val)); end
 for val in (w, x, y); test_approx_eq(exp2(val), 2^val); end
 test_approx_eq(z^2.5, x^2.5)
 test_approx_eq(z^3, x^3)
+# Make sure "p ± 0" behaves like "p", in particular with regard to the
+# uncertainty.
+for p in (-3, 0, 3); test_approx_eq((0 ± 0.1)^(p ± 0), (0 ± 0.1)^p); end
 
 # rad2deg
 test_approx_eq(rad2deg(x), Measurement(171.88733853924697, 5.729577951308232))
