@@ -141,3 +141,17 @@ Weighted Average
 measurements using `inverses of variances as weights
 <https://en.wikipedia.org/wiki/Inverse-variance_weighting>`__.  Use ``mean`` for
 the simple arithmetic mean.
+
+Access Nominal Value and Uncertainty
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. function:: value(x)
+.. function:: uncertainty(x)
+
+As explained in the technical appendix, the nominal value and the uncertainty of
+``Measurement`` objects are stored in ``val`` and ``err`` fields respectively,
+but you do not need to use those field directly to access this information.
+Functions ``value`` and ``uncertainty`` allows you to get the nominal value and
+the uncertainty of ``x``, be it a single measurement or an array of
+measurements.  They are particularly useful in the case of complex measurements
+or arrays of measurements.

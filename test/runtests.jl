@@ -404,4 +404,10 @@ end
 # Test getindex with Derivatives type
 @test_throws KeyError getindex(x.der, 0)
 
+##### value, uncertainty
+@test value([w, x, y]) == [-0.5, 3.0, 4.0]
+@test value([complex(w, x)]) == [complex(-0.5, 3.0)]
+@test uncertainty([w, x, y]) == [0.03, 0.1, 0.2]
+@test uncertainty([complex(w, x)]) == [complex(0.03, 0.1)]
+
 include("complex.jl")

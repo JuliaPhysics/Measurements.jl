@@ -15,7 +15,7 @@
 #
 ### Code:
 
-export stdscore, weightedmean
+export stdscore, weightedmean, value, uncertainty
 
 # Standard Score
 """
@@ -79,3 +79,51 @@ function gradient{F<:AbstractFloat, T<:Measurement}(a::Measurement{F},
     end
     return out
 end
+
+# value and uncertainty
+for f in (:value, :uncertainty)
+    field = f == :value ? :val : :err
+    @eval begin
+        ($f)(a::Measurement) = a.$field
+        ($f){T<:AbstractFloat}(a::Complex{Measurement{T}}) =
+            complex(($f)(a.re), ($f)(a.im))
+
+        function ($f){T<:AbstractFloat}(A::AbstractArray{Measurement{T}})
+            out = similar(A, T)
+            for i in eachindex(A)
+                out[i] = ($f)(A[i])
+            end
+            return out
+        end
+
+        function ($f){T<:AbstractFloat}(A::AbstractArray{Complex{Measurement{T}}})
+            out = similar(A, Complex{T})
+            for i in eachindex(A)
+                out[i] = ($f)(A[i])
+            end
+            return out
+        end
+    end
+end
+
+"""
+    value(x::Measurement)
+    value(x::Complex{Measurement})
+    value(x::AbstractArray{Measurement})
+    value(x::AbstractArray{Complex{Measurement}})
+
+Return the nominal value of measurement `x`.  If `x` is an array, return an
+array of the same length as `x` with the nominal values of each elements of `x`.
+"""
+value
+
+"""
+    uncertainty(x::Measurement)
+    uncertainty(x::Complex{Measurement})
+    uncertainty(x::AbstractArray{Measurement})
+    uncertainty(x::AbstractArray{Complex{Measurement}})
+
+Return the uncertainty of measurement `x`.  If `x` is an array, return an array
+of the same length as `x` with the uncertainty of each elements of `x`.
+"""
+uncertainty

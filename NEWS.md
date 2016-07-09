@@ -1,6 +1,14 @@
 History of Measurements.jl
 ==========================
 
+v0.1.3 (2016-??-??)
+-------------------
+
+### New Features ###
+
+* New functions `value` and `uncertainty` to access the nominal value and the
+  uncertainty of measurements.
+
 v0.1.2 (2016-07-09)
 -------------------
 

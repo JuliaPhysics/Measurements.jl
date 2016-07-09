@@ -307,3 +307,24 @@ Calculate the weighted and arithmetic means of your set of measurements with
     # => 3.4665384454054498 ± 0.16812474090663868
     mean((3.1±0.32, 3.2±0.38, 3.5±0.61, 3.8±0.25))
     # => 3.4000000000000004 ± 0.2063673908348894
+
+``value`` and ``uncertainty`` Functions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Use ``value`` and ``uncertainty`` to get the values and uncertainties of
+measurements.  They work with real and complex measurements, scalars or arrays:
+
+.. code-block:: julia
+
+    value(94.5 ± 1.6)
+    # => 94.5
+    uncertainty(94.5 ± 1.6)
+    # => 1.6
+    value([complex(87.3 ± 2.9, 64.3 ± 3.0), complex(55.1 ± 2.8, -19.1 ± 4.6)])
+    # => 2-element Array{Complex{Float64},1}:
+    #     87.3+64.3im
+    #     55.1-19.1im
+    uncertainty([complex(87.3 ± 2.9, 64.3 ± 3.0), complex(55.1 ± 2.8, -19.1 ± 4.6)])
+    # => 2-element Array{Complex{Float64},1}:
+    #     2.9+3.0im
+    #     2.8+4.6im
