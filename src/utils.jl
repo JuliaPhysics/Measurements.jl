@@ -81,8 +81,7 @@ function gradient{F<:AbstractFloat, T<:Measurement}(a::Measurement{F},
 end
 
 # value and uncertainty
-for f in (:value, :uncertainty)
-    field = f == :value ? :val : :err
+for (f, field) in ((:value, :val), (:uncertainty, :err))
     @eval begin
         ($f)(a::Measurement) = a.$field
         ($f){T<:AbstractFloat}(a::Complex{Measurement{T}}) =
