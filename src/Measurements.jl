@@ -68,6 +68,7 @@ function Measurement(val::Real, err::Real)
     return Measurement(val, err, tag, Derivatives((val, err, tag)=>der))
 end
 
+@vectorize_2arg Real Measurement
 Measurement(value::Irrational) = Measurement(value, zero(float(value)))
 Measurement(value::Real) = Measurement(value, zero(value))
 const ± = Measurement

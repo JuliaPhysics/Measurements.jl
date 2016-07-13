@@ -221,10 +221,22 @@ operations on them in the most natural way possible:
     #     1.0 ± 0.0
     #     1.0 ± 0.0
     #     1.0 ± 0.0
-    sum(A)
-    # => 9.370000000000001 ± 1.0406728592598156
-    mean(B - A)
-    # => -0.21333333333333326 ± 0.42267665603337445
+
+If you originally have separate arrays of values and uncertainties, you can
+create an array of ``Measurement`` objects by providing ``Measurement`` with
+those arrays:
+
+.. code-block:: julia
+
+    C = Measurement([174.9, 253.8, 626.1], [12.2, 19.4, 38.5])
+    # => 3-element Array{Measurements.Measurement{Float64},1}:
+    #     174.9 ± 12.2
+    #     253.8 ± 19.4
+    #     626.1 ± 38.5
+    sum(C)
+    # => 1054.8000000000002 ± 44.80457565918909
+    mean(C)
+    # => 351.6000000000001 ± 14.93485855306303
 
 Derivative and Gradient
 ~~~~~~~~~~~~~~~~~~~~~~~

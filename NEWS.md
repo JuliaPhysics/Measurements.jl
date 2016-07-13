@@ -6,6 +6,9 @@ v0.1.3 (2016-??-??)
 
 ### New Features ###
 
+* `Measurement` function is made vectorial, so you can create an array of
+  `Measurement` objects by feeding it with the array of nominal values and
+  uncertainties.
 * New functions `value` and `uncertainty` to access the nominal value and the
   uncertainty of measurements.
 
