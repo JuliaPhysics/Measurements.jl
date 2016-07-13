@@ -276,8 +276,13 @@ mean((3.1±0.32, 3.2±0.38, 3.5±0.61, 3.8±0.25))
 # => 3.4000000000000004 ± 0.2063673908348894
 ```
 
-How Can I Help?
----------------
+Development
+-----------
+
+The package is developed at https://github.com/giordano/Measurements.jl.  There
+you can submit bug reports, make suggestions, and propose pull requests.
+
+### How Can I Help? ###
 
 Have a look at the TODO list below and the bug list at
 https://github.com/giordano/Measurements.jl/issues, pick-up a task, write great
@@ -288,12 +293,18 @@ read the
 of the complete documentation in order to understand the design of this package.
 Bug reports and wishlists are welcome as well.
 
-TODO
-----
+### TODO ###
 
 * Add pretty printing: optionally print only the relevant significant digits
   ([issue #5](https://github.com/giordano/Measurements.jl/issues/5))
 * Other suggestions welcome `:-)`
+
+### History ###
+
+The ChangeLog of the package is available in
+[NEWS.md](https://github.com/giordano/Measurements.jl/blob/master/NEWS.md) file
+in top directory.  There have been some breaking changes from time to time,
+beware of them when upgrading the package.
 
 License
 -------
