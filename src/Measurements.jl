@@ -28,7 +28,7 @@ using Calculus
 import Base: show
 
 # Functions provided by this package and exposed to users
-export Measurement, ±
+export Measurement, measurement, ±
 
 # Define the "Derivatives" type, used inside "Measurement" type.  This should be
 # a lightweight and immutable dictionary.  When "ImmutableDict" is available use
@@ -61,17 +61,16 @@ immutable Measurement{T<:AbstractFloat} <: AbstractFloat
     der::Derivatives{Tuple{T, T, Float64}, T}
 end
 
-# Constructors
-function Measurement(val::Real, err::Real)
+# The constructor that users are going to use.  As a Julia convention, the
+# lowercase version of a type constructor does something more than the
+# constructor itself.
+function measurement(val::Real, err::Real=zero(float(val)))
     val, err, der = promote(float(val), float(err), one(float(val)))
     tag = rand()
     return Measurement(val, err, tag, Derivatives((val, err, tag)=>der))
 end
-
-@vectorize_2arg Real Measurement
-Measurement(value::Irrational) = Measurement(value, zero(float(value)))
-Measurement(value::Real) = Measurement(value, zero(value))
-const ± = Measurement
+@vectorize_2arg Real measurement
+const ± = measurement
 
 # Type representation
 function show(io::IO, measure::Measurement)

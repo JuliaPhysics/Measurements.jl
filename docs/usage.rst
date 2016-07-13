@@ -10,7 +10,7 @@ After installing the package, you can start using it with
 The module defines a new ``Measurement`` data type. ``Measurement`` objects can
 be created with the two following constructors:
 
-.. function:: Measurement(value, uncertainty)
+.. function:: measurement(value, uncertainty)
 .. function:: value ± uncertainty
 
 where
@@ -23,10 +23,10 @@ They are both subtype of ``AbstractFloat``.  Some keyboard layouts provide an
 easy way to type the ``±`` sign, if your does not, remember you can insert it in
 Julia REPL with ``\pm`` followed by ``TAB`` key.  You can provide ``value`` and
 ``uncertainty`` of any subtype of ``Real`` that can be converted to
-``AbstractFloat``.  Thus, ``Measurement(42, 33//12)`` and ``pi ± 0.1`` are
+``AbstractFloat``.  Thus, ``measurement(42, 33//12)`` and ``pi ± 0.1`` are
 valid.
 
-``Measurement(value)`` creates a ``Measurement`` object that doesn’t have
+``measurement(value)`` creates a ``Measurement`` object that doesn’t have
 uncertainty, like mathematical constants. See below for further examples.
 
 .. Note::
@@ -42,7 +42,7 @@ Most mathematical operations are instructed, by `operator overloading
 expressions of functions’ derivatives.
 
 In addition, it is possible to create a ``Complex`` measurement with
-``complex(Measurement(a, b), Measurement(c, d))``.
+``complex(measurement(a, b), measurement(c, d))``.
 
 Those interested in the technical details of the package, in order integrate the
 package in their workflow, can have a look at the technical appendix.

@@ -19,11 +19,11 @@
 import Base: convert, float, promote_rule
 
 convert{T<:AbstractFloat}(::Type{Measurement{T}}, a::Irrational) =
-    Measurement(T(a), zero(T))
+    measurement(T(a), zero(T))
 convert{T<:AbstractFloat, S}(::Type{Measurement{T}}, a::Rational{S}) =
-    Measurement(T(a), zero(T))
+    measurement(T(a), zero(T))
 convert{T<:AbstractFloat}(::Type{Measurement{T}}, a::Real) =
-    Measurement(T(a), zero(T))
+    measurement(T(a), zero(T))
 
 function convert{T<:AbstractFloat}(::Type{Measurement{T}}, a::Measurement)
     newder = Derivatives{Tuple{T, T, Float64}, T}()
@@ -34,8 +34,8 @@ function convert{T<:AbstractFloat}(::Type{Measurement{T}}, a::Measurement)
 end
 
 convert(::Type{Measurement}, a::Measurement) = a
-convert{S}(::Type{Measurement}, a::Rational{S}) = Measurement(a)
-convert(::Type{Measurement}, a::Real) = Measurement(a)
+convert{S}(::Type{Measurement}, a::Rational{S}) = measurement(a)
+convert(::Type{Measurement}, a::Real) = measurement(a)
 convert(::Type{Signed}, a::Measurement) = convert(Signed, a.val)
 
 float{T<:AbstractFloat}(a::Measurement{T}) = a

@@ -6,7 +6,7 @@ These are some basic examples of use of the package:
 .. code-block:: julia
 
     using Measurements
-    a = Measurement(4.5, 0.1)
+    a = measurement(4.5, 0.1)
     # => 4.5 ± 0.1
     b = 3.8 ± 0.4
     # => 3.8 ± 0.4
@@ -14,11 +14,11 @@ These are some basic examples of use of the package:
     # => 12.8 ± 0.4472135954999579
     a - 1.2b
     # => -0.05999999999999961 ± 0.49030602688525043
-    l = Measurement(0.936, 1e-3);
+    l = measurement(0.936, 1e-3);
     T = 1.942 ± 4e-3;
     P = 4pi^2*l/T^2
     # => 9.797993213510699 ± 0.041697817535336676
-    c = Measurement(4)
+    c = measurement(4)
     # => 4.0 ± 0.0
     a*c
     # => 18.0 ± 0.4
@@ -223,12 +223,12 @@ operations on them in the most natural way possible:
     #     1.0 ± 0.0
 
 If you originally have separate arrays of values and uncertainties, you can
-create an array of ``Measurement`` objects by providing ``Measurement`` with
+create an array of ``Measurement`` objects by providing ``measurement`` with
 those arrays:
 
 .. code-block:: julia
 
-    C = Measurement([174.9, 253.8, 626.1], [12.2, 19.4, 38.5])
+    C = measurement([174.9, 253.8, 626.1], [12.2, 19.4, 38.5])
     # => 3-element Array{Measurements.Measurement{Float64},1}:
     #     174.9 ± 12.2
     #     253.8 ± 19.4

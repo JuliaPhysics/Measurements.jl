@@ -1,12 +1,22 @@
 History of Measurements.jl
 ==========================
 
-v0.1.3 (2016-??-??)
+v0.2.0 (2016-??-??)
 -------------------
+
+### Breaking Changes ###
+
+* The constructor of `Measurement` objects that you should directly use has been
+  renamed to `measurement`.  What you have to do in your programs is to replace
+  all occurrences of the uppercase version with the lowercase one.
+  `Measurement` constructor is still exported, but you should never use it
+  (unless you know how it works).  `±` is now an alias of `measurement`, so you
+  do not need change anything if you used this sign in place of the
+  `Measurement` function.
 
 ### New Features ###
 
-* `Measurement` function is made vectorial, so you can create an array of
+* `measurement` function is made vectorial, so you can create an array of
   `Measurement` objects by feeding it with the array of nominal values and
   uncertainties.
 * New functions `value` and `uncertainty` to access the nominal value and the

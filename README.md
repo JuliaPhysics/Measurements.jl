@@ -77,7 +77,7 @@ The module defines a new `Measurement` data type.  `Measurement` objects can be
 created with the two following constructors:
 
 ``` julia
-Measurement(value, uncertainty)
+measurement(value, uncertainty)
 value ± uncertainty
 ```
 
@@ -91,9 +91,9 @@ They are both subtype of `AbstractFloat`.  Some keyboard layouts provide an easy
 way to type the `±` sign, if your does not, remember you can insert it in Julia
 REPL with `\pm` followed by `TAB` key.  You can provide `value` and
 `uncertainty` of any subtype of `Real` that can be converted to `AbstractFloat`.
-Thus, `Measurement(42, 33//12)` and `pi ± 0.1` are valid.
+Thus, `measurement(42, 33//12)` and `pi ± 0.1` are valid.
 
-`Measurement(value)` creates a `Measurement` object that doesn’t have
+`measurement(value)` creates a `Measurement` object that doesn’t have
 uncertainty, like mathematical constants.  See below for further examples.
 
 Every time you use one of the constructors above, you define a *new independent*
@@ -107,7 +107,7 @@ accept `Measurement` type, and uncertainty is calculated exactly using analityc
 expressions of functions’ derivatives.
 
 In addition, it is possible to create a `Complex` measurement with
-`complex(Measurement(a, b), Measurement(c, d))`.
+`complex(measurement(a, b), measurement(c, d))`.
 
 ### Caveat about `±` Sign ###
 
@@ -128,7 +128,7 @@ Examples
 
 ``` julia
 using Measurements
-a = Measurement(4.5, 0.1)
+a = measurement(4.5, 0.1)
 # => 4.5 ± 0.1
 b = 3.8 ± 0.4
 # => 3.8 ± 0.4
@@ -136,11 +136,11 @@ b = 3.8 ± 0.4
 # => 12.8 ± 0.4472135954999579
 a - 1.2b
 # => -0.05999999999999961 ± 0.49030602688525043
-l = Measurement(0.936, 1e-3);
+l = measurement(0.936, 1e-3);
 T = 1.942 ± 4e-3;
 P = 4pi^2*l/T^2
 # => 9.797993213510699 ± 0.041697817535336676
-c = Measurement(4)
+c = measurement(4)
 # => 4.0 ± 0.0
 a*c
 # => 18.0 ± 0.4
@@ -219,7 +219,7 @@ cos(A).^2 + sin(A).^2
 #     1.0 ± 0.0
 #     1.0 ± 0.0
 #     1.0 ± 0.0
-B = Measurement([174.9, 253.8, 626.1], [12.2, 19.4, 38.5])
+B = measurement([174.9, 253.8, 626.1], [12.2, 19.4, 38.5])
 # => 3-element Array{Measurements.Measurement{Float64},1}:
 #     174.9 ± 12.2
 #     253.8 ± 19.4

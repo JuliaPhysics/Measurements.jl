@@ -48,7 +48,7 @@ constructors
 
 .. code-block:: julia
 
-    Measurement(value, uncertainty)
+    measurement(value, uncertainty)
     value ± uncertainty
 
 you define a *new independent* measurement.  This happens because these

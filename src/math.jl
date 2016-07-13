@@ -564,23 +564,23 @@ function copysign(a::Measurement, b::Measurement)
            (a, b))
 end
 
-copysign(a::Measurement, b::Real) = copysign(a, Measurement(b))
-copysign(a::Signed, b::Measurement) = copysign(Measurement(a), b)
-copysign(a::Rational, b::Measurement) = copysign(Measurement(a), b)
-copysign(a::Float32, b::Measurement) = copysign(Measurement(a), b)
-copysign(a::Float64, b::Measurement) = copysign(Measurement(a), b)
-copysign(a::Real, b::Measurement) = copysign(Measurement(a), b)
+copysign(a::Measurement, b::Real) = copysign(a, measurement(b))
+copysign(a::Signed, b::Measurement) = copysign(measurement(a), b)
+copysign(a::Rational, b::Measurement) = copysign(measurement(a), b)
+copysign(a::Float32, b::Measurement) = copysign(measurement(a), b)
+copysign(a::Float64, b::Measurement) = copysign(measurement(a), b)
+copysign(a::Real, b::Measurement) = copysign(measurement(a), b)
 
 function flipsign(a::Measurement, b::Measurement)
     flip = flipsign(a.val, b.val)
     return result(flip, (copysign(1.0, flip), 0.0), (a, b))
 end
 
-flipsign(a::Measurement, b::Real) = flipsign(a, Measurement(b))
-flipsign(a::Signed, b::Measurement) = flipsign(Measurement(a), b)
-flipsign(a::Float32, b::Measurement) = flipsign(Measurement(a), b)
-flipsign(a::Float64, b::Measurement) = flipsign(Measurement(a), b)
-flipsign(a::Real, b::Measurement) = flipsign(Measurement(a), b)
+flipsign(a::Measurement, b::Real) = flipsign(a, measurement(b))
+flipsign(a::Signed, b::Measurement) = flipsign(measurement(a), b)
+flipsign(a::Float32, b::Measurement) = flipsign(measurement(a), b)
+flipsign(a::Float64, b::Measurement) = flipsign(measurement(a), b)
+flipsign(a::Real, b::Measurement) = flipsign(measurement(a), b)
 
 ### Special functions
 
@@ -791,14 +791,14 @@ import Base: mod, rem, mod2pi
 # Use definition of "mod" function:
 # http://docs.julialang.org/en/stable/manual/mathematical-operations/#division-functions
 mod(a::Measurement, b::Measurement) = a - fld(a, b)*b
-mod(a::Measurement, b::Real) = mod(a, Measurement(b))
-mod(a::Real, b::Measurement) = mod(Measurement(a), b)
+mod(a::Measurement, b::Real) = mod(a, measurement(b))
+mod(a::Real, b::Measurement) = mod(measurement(a), b)
 
 # Use definition of "rem" function:
 # http://docs.julialang.org/en/stable/manual/mathematical-operations/#division-functions
 rem(a::Measurement, b::Measurement) = a - div(a, b)*b
-rem(a::Measurement, b::Real) = rem(a, Measurement(b))
-rem(a::Real, b::Measurement) = rem(Measurement(a), b)
+rem(a::Measurement, b::Real) = rem(a, measurement(b))
+rem(a::Real, b::Measurement) = rem(measurement(a), b)
 
 mod2pi(a::Measurement) = result(mod2pi(a.val), 1, a)
 

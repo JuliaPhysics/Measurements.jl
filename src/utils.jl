@@ -30,7 +30,7 @@ stdscore(a::Measurement, b::Real) = (a.val - b)/(a.err)
 
 # Weighted Average with Inverse-Variance Weighting
 """
-    weightedmean(iterable) -> Measurement(weighted_mean, standard_deviation)
+    weightedmean(iterable) -> measurement(weighted_mean, standard_deviation)
 
 Return the weighted mean of measurements listed in `iterable`, using
 inverse-variance weighting.
@@ -39,7 +39,7 @@ function weightedmean(iterable)
     v = [el.val for el in iterable]
     w = [inv(el.err)^2 for el in iterable]
     invsumw = inv(sum(w))
-    return Measurement(dot(v, w)*invsumw, sqrt(invsumw))
+    return measurement(dot(v, w)*invsumw, sqrt(invsumw))
 end
 
 # Derivative and Gradient
