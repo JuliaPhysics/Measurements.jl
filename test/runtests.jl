@@ -222,6 +222,7 @@ test_approx_eq(log(x, y), measurement(1.261859507142915, 0.059474298734200806))
 test_approx_eq(log(y), measurement(1.3862943611198906, 0.05))
 test_approx_eq(log(y, 4), measurement(1, 0.03606737602222409))
 for a in (x, y); test_approx_eq(log(e, a), log(a)); end
+for a in (x, y); test_approx_eq(log(2, a), log2(a)); end
 for a in (x, y); test_approx_eq(log(10, a), log10(a)); end
 for a in (x, y); test_approx_eq(log1p(a), log(1 + a)); end
 test_approx_eq(log(pi, x), measurement(0.9597131185693899, 0.029118950894341064))
@@ -250,6 +251,7 @@ for a in (x, y); test_approx_eq(cbrt(a)*cbrt(a)^2, a); end
 # Absolute value
 test_approx_eq(abs(-x), x)
 test_approx_eq(abs(measurement(0, 2)), measurement(0, 2))
+for a in (w, x, y); test_approx_eq(abs2(a), a*a); end
 
 # Zero
 test_approx_eq(zero(x), measurement(0))

@@ -1,6 +1,13 @@
 History of Measurements.jl
 ==========================
 
+v0.2.1 (2016-??-??)
+-------------------
+
+### New Features ###
+
+* New mathematical operations supported: `log2`, `abs2`.
+
 v0.2.0 (2016-07-13)
 -------------------
 

@@ -18,7 +18,10 @@
 # trigonometric functions, fld, cld, hypot, cbrt, abs, mod) are redundant in the
 # sense that you would get the correct result also without their definitions,
 # but having them defined here avoids some calculations and slightly improves
-# performance.
+# performance.  Likewise, multiple methods are provided for functions taking two
+# (or more) arguments because when only one argument is of Measurement type we
+# can use the simple `result' function for one derivative that is faster than
+# the generic method.
 #
 ### Code:
 
@@ -460,8 +463,8 @@ end
 
 ldexp(a::Measurement, e::Integer) = result(ldexp(a.val, e), ldexp(1.0, e), a)
 
-# Logarithm: log, log10, log1p
-import Base: log, log10, log1p
+# Logarithms
+import Base: log, log2, log10, log1p
 
 function log(a::Measurement, b::Measurement)
     aval = a.val
@@ -474,6 +477,11 @@ end
 function log(a::Measurement) # Special case
     aval = a.val
     return result(log(aval), inv(aval), a)
+end
+
+function log2{T<:AbstractFloat}(a::Measurement{T}) # Special case
+    x = a.val
+    return result(log2(x), inv(log(T(2))*x), a)
 end
 
 function log10{T<:AbstractFloat}(a::Measurement{T}) # Special case
@@ -543,12 +551,17 @@ end
 
 ### Absolute value, sign and the likes
 
-# Absolute value: abs
-import Base: abs
+# Absolute value
+import Base: abs, abs2
 
 function abs(a::Measurement)
     aval = a.val
     return result(abs(aval), copysign(1, aval), a)
+end
+
+function abs2(a::Measurement)
+    x = a.val
+    return result(abs2(x), 2*x, a)
 end
 
 # Sign: sign, copysign, flipsign
@@ -648,13 +661,13 @@ end
 
 function digamma(a::Measurement)
     aval = a.val
-    return result(digamma(aval), polygamma(1, aval), a)
+    return result(digamma(aval), trigamma(aval), a)
 end
 
 function invdigamma(a::Measurement)
     aval = a.val
     res = invdigamma(aval)
-    return result(res, inv(polygamma(1, res)), a)
+    return result(res, inv(trigamma(res)), a)
 end
 
 function trigamma(a::Measurement)
