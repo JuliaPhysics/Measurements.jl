@@ -67,7 +67,7 @@ end
 # independent variables x, y, z, say a1 = a1(x, y), a2 = a2(x, z).  The
 # uncertainty on G(a1, a2) is calculated as follows:
 #   σ_G = sqrt((σ_x·∂G/∂x)^2 + (σ_y·∂G/∂y)^2 + (σ_z·∂G/∂z)^2)
-# where ∂G/∂x is the partial derivative of G with respect to x, and so on.  We 
+# where ∂G/∂x is the partial derivative of G with respect to x, and so on.  We
 # can expand the previous formula to:
 #   σ_G = sqrt((σ_x·(∂G/∂a1·∂a1/∂x + ∂G/∂a2·∂a2/∂x))^2 + (σ_y·∂G/∂a1·∂a1/∂y)^2 +
 #               + (σ_z·∂G/∂a2·∂a2/∂z)^2)
@@ -171,6 +171,53 @@ end
 *(a::Real, b::Measurement) = result(a*b.val, a, b)
 *(a::Measurement, b::Bool) = result(a.val*b, b, a)
 *(a::Measurement, b::Real) = result(a.val*b, b, a)
+
+# muladd and fma
+import Base: muladd, fma
+
+for f in (:fma, :muladd)
+    @eval begin
+        # All three arguments are Measurement
+        function ($f)(a::Measurement, b::Measurement, c::Measurement)
+            x = a.val
+            y = b.val
+            z = c.val
+            return result(($f)(x, y, z), (y, x, one(z)), (a, b, c))
+        end
+
+        # First argument is always Measurement
+        function ($f)(a::Measurement, b::Measurement, c::Real)
+            x = a.val
+            y = b.val
+            return result(($f)(x, y, c), (y, x), (a, b))
+        end
+
+        function ($f)(a::Measurement, b::Real, c::Measurement)
+            x = a.val
+            z = c.val
+            return result(($f)(x, b, z), (b, one(z)), (a, c))
+        end
+
+        ($f)(a::Measurement, b::Real, c::Real) =
+            result(($f)(a.val, b, c), b, a)
+
+        # Secon argument is always Measurement
+        function ($f)(a::Real, b::Measurement, c::Measurement)
+            y = b.val
+            z = c.val
+            return result(($f)(a, y, z), (a, one(z)), (b, c))
+        end
+
+        ($f)(a::Real, b::Measurement, c::Real) =
+            result(($f)(a, b.val, c), a, b)
+
+        # Third argument is Measurement
+        function ($f)(a::Real, b::Real, c::Measurement)
+            z = c.val
+            return result(($f)(a, b, z), one(z), c)
+        end
+    end
+end
 
 # Division: /, div, fld, cld
 function /(a::Measurement, b::Measurement)

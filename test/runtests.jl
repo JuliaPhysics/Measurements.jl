@@ -100,6 +100,15 @@ test_approx_eq(y*false, measurement(0))
 for a in (w, x, y); test_approx_eq(a*(0 ± 1), measurement(0, abs(a.val))); end
 # Test correlation
 for a in (x, y); test_approx_eq(a*a*a, a^3); end
+for f in (muladd, fma)
+    test_approx_eq(f(w, x, y), w*x + y)
+    test_approx_eq(f(w, x, 1), w*x + 1)
+    test_approx_eq(f(w, 2, y), w*2 + y)
+    test_approx_eq(f(w, 2, 1), w*2 + 1)
+    test_approx_eq(f(3, x, y), 3*x + y)
+    test_approx_eq(f(3, x, 1), 3*x + 1)
+    test_approx_eq(f(3, 2, y), 3*2 + y)
+end
 
 # Division
 test_approx_eq(x/y, measurement(0.75, 0.04506939094329987))

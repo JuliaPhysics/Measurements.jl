@@ -6,7 +6,7 @@ v0.2.1 (2016-??-??)
 
 ### New Features ###
 
-* New mathematical operations supported: `log2`, `abs2`.
+* New mathematical operations supported: `log2`, `abs2`, `fma`, `muladd`.
 
 v0.2.0 (2016-07-13)
 -------------------
