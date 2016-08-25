@@ -778,7 +778,8 @@ function airy(k::Integer, a::Measurement)
 end
 
 # Bessel functions
-import Base: besselj0, besselj1, besselj, bessely0, bessely1, bessely, besselh
+import Base: besselj0, besselj1, besselj, bessely0, bessely1, bessely, besselh,
+besseli, besselix, besselk, besselkx
 
 function besselj0(a::Measurement)
     x = a.val
@@ -841,6 +842,32 @@ function besselh(nu::Real, k::Integer, a::Measurement)
     x = a.val
     return result(besselh(nu, k, x),
                   0.5*(besselh(nu - 1, k, x) - besselh(nu + 1, k, x)),
+                  a)
+end
+
+function besseli(nu::Real, a::Measurement)
+    x = a.val
+    return result(besseli(nu, x), 0.5*(besseli(nu - 1, x) + besseli(nu + 1, x)), a)
+end
+
+function besselix(nu::Real, a::Measurement)
+    x = a.val
+    return result(besselix(nu, x),
+                  0.5*(besseli(nu - 1, x) + besseli(nu + 1, x))*exp(-abs(x)) -
+                  besseli(nu, x)*sign(x)*exp(-abs(x)),
+                  a)
+end
+
+function besselk(nu::Real, a::Measurement)
+    x = a.val
+    return result(besselk(nu, x), -0.5*(besselk(nu - 1, x) + besselk(nu + 1, x)), a)
+end
+
+function besselkx(nu::Real, a::Measurement)
+    x = a.val
+    return result(besselkx(nu, x),
+                  -0.5*(besselk(nu - 1, x) + besselk(nu + 1, x))*exp(x) +
+                  besselk(nu, x)*exp(x),
                   a)
 end
 

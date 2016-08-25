@@ -341,6 +341,10 @@ for a in (x, y), k in (1, 2), nu in -1:1
     test_approx_eq(besselh(nu, k, a),
                    besselj(nu, a) + sgn*im*bessely(nu, a))
 end
+test_approx_eq(besseli(5//2, y), 4.757626874823528 ± 1.0398232869843944)
+for a in (x, y); test_approx_eq(besselix(3, a), besseli(3, a)*exp(-abs(a))); end
+test_approx_eq(besselk(7//3, x), 0.07521953258226349 ± 0.010340691203742959)
+for a in (x, y); test_approx_eq(besselkx(3//4, a), besselk(3//4, a)*exp(a)); end
 
 # Modulo
 let
