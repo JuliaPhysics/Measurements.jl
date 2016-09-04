@@ -389,10 +389,12 @@ show(DevNull, x)
 
 ##### Some functions not defined in Measurements.jl that work out-of-the-box.
 # Sum
-test_approx_eq(sum((w, x, y)), w+x+y)
+test_approx_eq(sum((x, w, x, y, -w)), 2x + y)
+test_approx_eq(sum([x, w, x, y, -w]), 2x + y)
 
 # Mean
-test_approx_eq(mean((w, x, y)), (w + x + y)/3)
+test_approx_eq(mean((x, w, x, y, -w)), (2x + y)/5)
+test_approx_eq(mean([x, w, x, y, -w]), (2x + y)/5)
 
 # min, max, extrema
 @test min(w, x, y) === w
