@@ -25,8 +25,8 @@ easily get the uncertainty of the result according to
   zero(x)`, `x/x == one(x)`, `tan(x) == sin(x)/cos(x)`, etc...
 * Support for
   [arbitrary precision](http://docs.julialang.org/en/stable/manual/integers-and-floating-point-numbers/#arbitrary-precision-arithmetic)
-  numbers with uncertainties (though this may not be very useful for quantities
-  that are intrinsically imprecise)
+  numbers with uncertainties (useful for measurements with very low relative
+  error)
 * Define arrays of measurements and perform calculations with them
 * Propagate uncertainty for any function of real arguments (including functions
   based on
@@ -176,9 +176,9 @@ sin(x)/cos(x) - tan(x)
 
 ### `@uncertain` Macro ###
 
-Macro `@uncertain` can be used to propagate uncertainty in arbitrary real
-functions of one or two real arguments, even in functions not natively supported
-by this package.
+Macro `@uncertain` can be used to propagate uncertainty in arbitrary real- or
+complex-valued functions of any number of real arguments, even in functions not
+natively supported by this package.
 
 ``` julia
 @uncertain zeta(2 ± 0.13)

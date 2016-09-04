@@ -129,11 +129,27 @@ in ``Measurements.jl`` package
 Also here you can use an anonymous function instead of defining the ``cubaerf``
 function, do it as an exercise.
 
-.. Warning::
+.. Tip::
 
-   The type of all the arguments provided must be ``Measurement``. If one of the
-   arguments is actually an exact number (so without uncertainty), convert it to
-   ``Measurement`` type:
+   Note that the argument of ``@uncertain`` macro must be a function call whose
+   arguments are ``Measurement`` objects.  Thus,
+
+   .. code-block:: julia
+
+      @uncertain zeta(13.4 ± 0.8) + eta(8.51 ± 0.67)
+
+   will not work because here the outermost function is ``+``, whose arguments
+   are ``zeta(13.4 ± 0.8)`` and ``eta(8.51 ± 0.67)``, that however cannot be
+   calculated.  Once more, wrap this expression in an (anonymous) function:
+
+   .. code-block:: julia
+
+      @uncertain ((x, y) -> zeta(x) + eta(y))(13.4 ± 0.8, 8.51 ± 0.67)
+      # => 1.9974303172187315 ± 0.0012169293212062773
+
+   The type of *all* the arguments provided must be ``Measurement``.  If one of
+   the arguments is actually an exact number (so without uncertainty), convert
+   it to ``Measurement`` type:
 
    .. code-block:: julia
 
@@ -185,21 +201,47 @@ You can also verify the `Euler’s formula
 Arbitrary Precision Calculations
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-`Arbitrary precision calculations
-<http://docs.julialang.org/en/stable/manual/integers-and-floating-point-numbers/#arbitrary-precision-arithmetic>`__
-involving quantities that are intrinsically imprecise may not be very useful,
-but Julia natively supports this type of arithmetic and so ``Measurements.jl``
-does.  You only have to create ``Measurement`` objects with nominal value and/or
-uncertainty of type ``BigFloat`` (or ``BigInt`` as well, actually):
+If you performed an exceptionally good experiment that gave you extremely high
+precise results (that is, with very low relative error), you may want to use
+`arbitrary precision calculations
+<http://docs.julialang.org/en/stable/manual/integers-and-floating-point-numbers/#arbitrary-precision-arithmetic>`__,
+in order not to loose significance of the results.  Luckily, Julia natively
+supports this type of arithmetic and so ``Measurements.jl`` does.  You only have
+to create ``Measurement`` objects with nominal value and/or uncertainty of type
+``BigFloat``.
+
+For example, you want to measure a quantity whose expected value is :math:`3`.
+Your measurement differs from the expected value by :math:`28.7 \times
+10^{-18}`, with uncertanity :math:`5.1 \times 10^{-18}`.  By measuring the
+standard score with :func:`stdscore` you discover that:
+
+.. code-block::
+
+   stdscore((big"3" + big"28.7e-18") ± big"5.1e-18", big"3")
+   # => 5.627450980392156862745098039215686274509803921568627450980391037501663923589521
+
+the measurements significantly differs from the expected value and you made a
+great discovery.  Instead, if you used double precision accuracy, you would have
+wrongly found that your measurement is consistent with the expected value:
+
+.. code-block::
+
+   stdscore((3 + 28.7e-18) ± 5.1e-18, 3)
+   # => 0.0
+
+and you miss an important prize due to the use of an incorrect arithmetic.
+
+Of course, you can perform any mathematical operation supported in
+``Measurements.jl`` using arbitrary precision arithmetic:
 
 .. code-block:: julia
 
-    a = BigInt(3) ± 0.01
-    b = 4 ± 0.03
+    a = big"3.000000000000001" ± big"1e-16"
+    b = big"4.000000000000001" ± big"3e-16"
     hypot(a, b)
-    # => 5.000000000000000000000000000000000000000000000000000000000000000000000000000000 ± 2.473863375370596246756154793364399326509001412701084709723336101627452857843757e-02
+    # => 5.000000000000001400000000000000003999999999999998880000000000000312000000000024 ± 2.473863375370596267803725904283220875671216632212376107626862877723616853695226e-16
     log(2a)^b
-    # => 1.030668097314957384421465902631648727333270687596715387736946157489404400228445e+01 ± 1.959580475953079233643030915452927748488408893913287402297342303952280925878254e-01
+    # => 1.030668097314958752474212259074478032907094909953743794575921028702492233784189e+01 ± 1.959580475953082338319846933378840856858691596105252004882325917953232378212662e-15
 
 Arrays of Measurements
 ~~~~~~~~~~~~~~~~~~~~~~

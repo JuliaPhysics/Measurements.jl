@@ -19,8 +19,8 @@ These are the main fetures of the package:
   = 0 \pm 0`, :math:`x/x = 1 \pm 0`, :math:`\tan(x) = \sin(x)/\cos(x)`, etc...
 - Support for `arbitrary precision
   <http://docs.julialang.org/en/stable/manual/integers-and-floating-point-numbers/#arbitrary-precision-arithmetic>`__
-  numbers with uncertainties (though this may not be very useful for quantities
-  that are intrinsically imprecise)
+  numbers with uncertainties (useful for measurements with very low relative
+  error)
 - Define arrays of measurements and perform calculations with them
 - Propagate uncertainty for any function of real arguments (including functions
   based on `C/Fortran calls
