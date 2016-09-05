@@ -201,47 +201,58 @@ You can also verify the `Euler’s formula
 Arbitrary Precision Calculations
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If you performed an exceptionally good experiment that gave you extremely high
+If you performed an exceptionally good experiment that gave you extremely
 precise results (that is, with very low relative error), you may want to use
 `arbitrary precision calculations
 <http://docs.julialang.org/en/stable/manual/integers-and-floating-point-numbers/#arbitrary-precision-arithmetic>`__,
 in order not to loose significance of the results.  Luckily, Julia natively
 supports this type of arithmetic and so ``Measurements.jl`` does.  You only have
-to create ``Measurement`` objects with nominal value and/or uncertainty of type
+to create ``Measurement`` objects with nominal value and uncertainty of type
 ``BigFloat``.
 
-For example, you want to measure a quantity whose expected value is :math:`3`.
-Your measurement differs from the expected value by :math:`28.7 \times
-10^{-18}`, with uncertanity :math:`5.1 \times 10^{-18}`.  By measuring the
-standard score with :func:`stdscore` you discover that:
+.. Tip::
 
-.. code-block::
+   As explained in the `Julia documentation
+   <http://docs.julialang.org/en/stable/stdlib/numbers/#Base.BigFloat>`__, it is
+   better to use the ``big`` string literal to initalize an arbitrary precision
+   floating point constant, instead of the ``BigFloat`` and ``big`` functions.
+   See examples below.
 
-   stdscore((big"3" + big"28.7e-18") ± big"5.1e-18", big"3")
-   # => 5.627450980392156862745098039215686274509803921568627450980391037501663923589521
+For example, you want to measure a quantity that is the product of two
+observables :math:`a` and :math:`b`, and the expected value of the product is
+:math:`12.00000007`.  You measure :math:`a = 3.00000001 \pm 1\times 10^{-17}`
+and :math:`b = 4.00000001 \pm 1\times 10^{-17}` and want to compute the standard
+score of the product.  Using the ability of ``Measurements.jl`` to perform
+arbitrary precision calculations you discover that
 
-the measurements significantly differs from the expected value and you made a
+.. code-block:: julia
+
+   a = big"3.00000001" ± big"1e-17"
+   g = big"4.00000001" ± big"1e-17"
+   stdscore(a*b, 12.00000007)
+   # => -7.25510901439718980095468884170649047384323406887854411581099003148365616351548
+
+the measurement significantly differs from the expected value and you make a
 great discovery.  Instead, if you used double precision accuracy, you would have
 wrongly found that your measurement is consistent with the expected value:
 
-.. code-block::
+.. code-block:: julia
 
-   stdscore((3 + 28.7e-18) ± 5.1e-18, 3)
+   stdscore((3.00000001 ± 1e-17)*(4.00000001 ± 1e-17), 12.00000007)
    # => 0.0
 
-and you miss an important prize due to the use of an incorrect arithmetic.
+and you would have missed an important prize due to the use of an incorrect
+arithmetic.
 
 Of course, you can perform any mathematical operation supported in
 ``Measurements.jl`` using arbitrary precision arithmetic:
 
 .. code-block:: julia
 
-    a = big"3.000000000000001" ± big"1e-16"
-    b = big"4.000000000000001" ± big"3e-16"
     hypot(a, b)
-    # => 5.000000000000001400000000000000003999999999999998880000000000000312000000000024 ± 2.473863375370596267803725904283220875671216632212376107626862877723616853695226e-16
+    # => 5.000000014000000000399999998880000003119999991353600023834879934652928178154746 ± 9.999999999999999999999999999999999999999999999999999999999999999999999999999967e-18
     log(2a)^b
-    # => 1.030668097314958752474212259074478032907094909953743794575921028702492233784189e+01 ± 1.959580475953082338319846933378840856858691596105252004882325917953232378212662e-15
+    # => 1.030668110995484938037006520012324656386442805506891265153048683619922226691323e+01 ± 9.744450581349821315555305038012032439062183433587962363526314884889736017119502e-17
 
 Arrays of Measurements
 ~~~~~~~~~~~~~~~~~~~~~~
