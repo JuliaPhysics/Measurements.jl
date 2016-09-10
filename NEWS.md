@@ -9,6 +9,9 @@ v0.2.2 (201?-??-??)
 * It is now possible to perform calculations involving numbers that have `NaN`
   as nominal value and/or uncertainty.  In previous versions it was possible
   only to define such numbers, but not to perform calculations with them.
+* Performance of `sum` and `prod` with arrays of `Measurement`s has been
+  slightly improved.  Now they are quadratic in the number of input arguments,
+  instead of cubic.
 
 v0.2.1 (2016-09-11)
 -------------------

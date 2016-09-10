@@ -393,11 +393,17 @@ test_approx_eq(widemul(x, y), big(x)*big(y))
 # Dummy call to show
 show(DevNull, x)
 
-##### Some functions not defined in Measurements.jl that work out-of-the-box.
 # Sum
 test_approx_eq(sum((x, w, x, y, -w)), 2x + y)
 test_approx_eq(sum([x, w, x, y, -w]), 2x + y)
 
+# Prod
+test_approx_eq(prod((w, x, y, -w)), -w^2 * x * y)
+test_approx_eq(prod([w, x, y, -w]), -w^2 * x * y)
+test_approx_eq(prod((w, x, y, -w, 0)), 0 ± 0)
+test_approx_eq(prod([w, x, y, -w, 0]), 0 ± 0)
+
+##### Some functions not defined in Measurements.jl that work out-of-the-box.
 # Mean
 test_approx_eq(mean((x, w, x, y, -w)), (2x + y)/5)
 test_approx_eq(mean([x, w, x, y, -w]), (2x + y)/5)

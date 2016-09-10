@@ -923,3 +923,25 @@ widen{T<:AbstractFloat}(::Type{Measurement{T}}) = Measurement{widen(T)}
 import Base: big
 
 big{T<:AbstractFloat}(x::Measurement{T}) = convert(Measurement{BigFloat}, x)
+
+# Sum and prod
+import Base: sum, prod
+
+# This definition is not strictly needed, because `sum' works out-of-the-box
+# with Measurement type, but this makes the function linear instead of quadratic
+# in the number of arguments, but `result' is quadratic in the number of
+# arguments, so in the end the function goes from cubic to quadratic.  Still not
+# ideal, but this is an improvement.
+sum{T<:Measurement}(a::AbstractArray{T}) =
+    result(sum(value(a)), (ones(length(a))...), (a...))
+
+# Same as above.  I'm not particularly proud of how the derivatives are
+# computed, but something like this is needed in order to avoid errors with null
+# nominal values: you may think to x ./ prod(x), but that would fail if one or
+# more elements are zero.
+function prod{T<:Measurement}(a::AbstractArray{T})
+    x = value(a)
+    return result(prod(x),
+                  ntuple(i -> prod(deleteat!(copy(x), i)), length(x)),
+                  (a...))
+end
