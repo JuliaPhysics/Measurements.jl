@@ -913,3 +913,13 @@ ceil(a::Measurement) = ceil(a.val)
 ceil{T<:Integer}(::Type{T}, a::Measurement) = ceil(Integer, a.val)
 trunc(a::Measurement) = trunc(a.val)
 trunc{T<:Integer}(::Type{T}, a::Measurement) = trunc(T, a.val)
+
+# Widening
+import Base: widen
+
+widen{T<:AbstractFloat}(::Type{Measurement{T}}) = Measurement{widen(T)}
+
+# To big float
+import Base: big
+
+big{T<:AbstractFloat}(x::Measurement{T}) = convert(Measurement{BigFloat}, x)

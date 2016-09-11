@@ -384,6 +384,12 @@ test_approx_eq(mod2pi(pi*x), measurement(pi, 0.1*pi))
 @test_approx_eq trunc(w) trunc(w.val)
 @test_approx_eq trunc(Int, w) trunc(Int, w.val)
 
+# Widening
+@test widen(Measurement{Float32}) == Measurement{Float64}
+
+# To big float and widemul
+test_approx_eq(widemul(x, y), big(x)*big(y))
+
 # Dummy call to show
 show(DevNull, x)
 

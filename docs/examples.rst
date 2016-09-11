@@ -214,16 +214,17 @@ to create ``Measurement`` objects with nominal value and uncertainty of type
 
    As explained in the `Julia documentation
    <http://docs.julialang.org/en/stable/stdlib/numbers/#Base.BigFloat>`__, it is
-   better to use the ``big`` string literal to initalize an arbitrary precision
+   better to use the ``big`` string literal to initialize an arbitrary precision
    floating point constant, instead of the ``BigFloat`` and ``big`` functions.
    See examples below.
 
 For example, you want to measure a quantity that is the product of two
 observables :math:`a` and :math:`b`, and the expected value of the product is
-:math:`12.00000007`.  You measure :math:`a = 3.00000001 \pm 1\times 10^{-17}`
-and :math:`b = 4.00000001 \pm 1\times 10^{-17}` and want to compute the standard
-score of the product.  Using the ability of ``Measurements.jl`` to perform
-arbitrary precision calculations you discover that
+:math:`12.00000007`.  You measure :math:`a = 3.00000001 \pm (1\times 10^{-17})`
+and :math:`b = 4.00000001 \pm (1\times 10^{-17})` and want to compute the
+standard score of the product with :func:`stdscore`.  Using the ability of
+``Measurements.jl`` to perform arbitrary precision calculations you discover
+that
 
 .. code-block:: julia
 
