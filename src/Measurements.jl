@@ -31,13 +31,8 @@ import Base: show
 export Measurement, measurement, ±
 
 # Define the "Derivatives" type, used inside "Measurement" type.  This should be
-# a lightweight and immutable dictionary.  When "ImmutableDict" is available use
-# it, otherwise define a type just like it.
-if isdefined(Base, :ImmutableDict)
-    const Derivatives = Base.ImmutableDict
-else
-    include("derivatives-type.jl")
-end
+# a lightweight and immutable dictionary.
+include("derivatives-type.jl")
 
 ##### New Type: Measurement
 # Definition.  The Measurement type is composed by the following fields:

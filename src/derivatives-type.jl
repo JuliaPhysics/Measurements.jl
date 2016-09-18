@@ -17,7 +17,7 @@
 #
 ### Code:
 
-import Base: getindex, get, start, next, done, similar
+import Base: getindex, get, start, next, done, similar, length
 
 immutable Derivatives{K, V} <: Associative{K,V}
     parent::Derivatives{K, V}
@@ -33,14 +33,14 @@ Derivatives{K,V}(t::Derivatives{K,V}, KV::Pair) = Derivatives{K,V}(t, KV[1], KV[
 
 function getindex(dict::Derivatives, key)
     while isdefined(dict, :parent)
-        dict.key == key && return dict.value
+        isequal(dict.key, key) && return dict.value
         dict = dict.parent
     end
     throw(KeyError(key))
 end
 function get(dict::Derivatives, key, default)
     while isdefined(dict, :parent)
-        dict.key == key && return dict.value
+        isequal(dict.key, key) && return dict.value
         dict = dict.parent
     end
     return default
@@ -56,3 +56,4 @@ function similar(t::Derivatives)
     end
     return t
 end
+length(t::Derivatives) = count(x->true, t)

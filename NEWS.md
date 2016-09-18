@@ -1,6 +1,15 @@
 History of Measurements.jl
 ==========================
 
+v0.2.2 (201?-??-??)
+-------------------
+
+### New Features ###
+
+* It is now possible to perform calculations involving numbers that have `NaN`
+  as nominal value and/or uncertainty.  In previous versions it was possible
+  only to define such numbers, but not to perform calculations with them.
+
 v0.2.1 (2016-09-11)
 -------------------
 

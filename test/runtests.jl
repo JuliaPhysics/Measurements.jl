@@ -410,6 +410,14 @@ test_approx_eq(mean([x, w, x, y, -w]), (2x + y)/5)
 # sort
 @test sort([y, w, x]) == [w, x, y]
 
+##### Calculations with NaNs
+# NaN as nominal value
+@test isequal(2*(NaN ± 3), NaN ± 6)
+# NaN as uncertainty
+@test isequal(value(2*(3 ± NaN)), 6) && isequal(uncertainty(2*(3 ± NaN)), NaN)
+# Both
+@test isequal(value(2*(NaN ± NaN)), NaN) && isequal(uncertainty(2*(NaN ± NaN)), NaN)
+
 ##### Test @uncertain macro
 test_approx_eq_eps(@uncertain(tan(x)), tan(x), 2e-11)
 test_approx_eq_eps(@uncertain((a -> a + a + a)(x)), 3x, 3e-12)
@@ -435,5 +443,8 @@ end
 @test value([complex(w, x)]) == [complex(-0.5, 3.0)]
 @test uncertainty([w, x, y]) == [0.03, 0.1, 0.2]
 @test uncertainty([complex(w, x)]) == [complex(0.03, 0.1)]
+
+##### Test `length' method
+@test length((w + w + 2x + y).der) == 3
 
 include("complex.jl")
