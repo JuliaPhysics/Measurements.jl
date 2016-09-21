@@ -394,3 +394,29 @@ measurements.  They work with real and complex measurements, scalars or arrays:
     # => 2-element Array{Complex{Float64},1}:
     #     2.9+3.0im
     #     2.8+4.6im
+
+Use with ``SIUnits.jl`` and ``Unitful.jl``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+You can use ``Measurements.jl`` in combination with external package in order to
+perform calculation of unitful numbers with uncertainties.  The details depend
+on the specific package adopted, here are a few examples with ``SIUnits.jl`` and
+``Unitful.jl``
+
+.. code-block:: julia
+
+   using Measurements, SIUnits, SIUnits.ShortUnits
+   hypot((3 ± 1)*m, (4 ± 2)*m) # Pythagorean theorem
+   # => 5.0 ± 1.7088007490635064 m
+   (50 ± 1)Ω * (13 ± 2.4)*1e-2*A # Ohm's Law
+   # => 6.5 ± 1.20702112657567 kg m²s⁻³A⁻¹
+   2pi*sqrt((5.4 ± 0.3)*m / ((9.81 ± 0.01)*m/s^2)) # Pendulum's  period
+   # => 4.661677707464357 ± 0.1295128435999655 s
+
+   using Measurements, Unitful
+   hypot((3 ± 1)*u"m", (4 ± 2)*u"m") # Pythagorean theorem
+   # => 5.0 ± 1.7088007490635064 m
+   (50 ± 1)*u"Ω" * (13 ± 2.4)*1e-2*u"A" # Ohm's Law
+   # => 6.5 ± 1.20702112657567 A Ω
+   2pi*sqrt((5.4 ± 0.3)*u"m" / ((9.81 ± 0.01)*u"m/s^2")) # Pendulum's period
+   # => 4.661677707464357 ± 0.12951284359996548 s

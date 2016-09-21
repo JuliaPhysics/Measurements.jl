@@ -155,3 +155,14 @@ Functions ``value`` and ``uncertainty`` allows you to get the nominal value and
 the uncertainty of ``x``, be it a single measurement or an array of
 measurements.  They are particularly useful in the case of complex measurements
 or arrays of measurements.
+
+Error Propagation of Numbers with Units
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+``Measurements.jl`` does not know about physical units, but can be easily
+employed in combination with other packages providing this feature.  Such
+packages are, for example, `SIUnits.jl <https://github.com/Keno/SIUnits.jl>`__
+and `Unitful.jl <https://github.com/ajkeller34/Unitful.jl>`__.  You only have to
+use the ``Measurement`` object as the value of the ``SIQuantity`` object (for
+``SIUnits.jl``) or of the ``Quantity`` object (for ``Unitful.jl``).  See the
+Examples section.

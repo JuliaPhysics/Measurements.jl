@@ -33,6 +33,8 @@ These are the main fetures of the package:
   <https://en.wikipedia.org/wiki/Standard_score>`__ and `weighted mean
   <https://en.wikipedia.org/wiki/Weighted_arithmetic_mean>`__
 - Easy way to attach the uncertainty to a number using ``±`` sign
+- Combined with external packages allows for error propagation of measurements
+  with their physical units
 
 Further features are expected to come in the future, see the "How Can I Help?"
 section and the TODO list.

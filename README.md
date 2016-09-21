@@ -39,6 +39,8 @@ easily get the uncertainty of the result according to
   [standard score](https://en.wikipedia.org/wiki/Standard_score) and
   [weighted mean](https://en.wikipedia.org/wiki/Weighted_arithmetic_mean)
 * Easy way to attach the uncertainty to a number using `±` sign
+* Combined with external packages allows for error propagation of measurements
+  with their physical units
 
 Further features are expected to come in the future, see the section "How Can I
 Help?" and the TODO list below.
@@ -277,6 +279,31 @@ weightedmean((3.1±0.32, 3.2±0.38, 3.5±0.61, 3.8±0.25))
 # => 3.4665384454054498 ± 0.16812474090663868
 mean((3.1±0.32, 3.2±0.38, 3.5±0.61, 3.8±0.25))
 # => 3.4000000000000004 ± 0.2063673908348894
+```
+
+### Use with ``SIUnits.jl`` and ``Unitful.jl`` ###
+
+Used together with external packages, ``Measurements.jl`` enables you to perform
+calculations of numbers with both uncertainty and physical units.  For example,
+you can use [`SIUnits.jl`](https://github.com/Keno/SIUnits.jl) or
+[`Unitful.jl`](https://github.com/ajkeller34/Unitful.jl).
+
+``` julia
+using Measurements, SIUnits, SIUnits.ShortUnits
+hypot((3 ± 1)*m, (4 ± 2)*m) # Pythagorean theorem
+# => 5.0 ± 1.7088007490635064 m
+(50 ± 1)Ω * (13 ± 2.4)*1e-2*A # Ohm's Law
+# => 6.5 ± 1.20702112657567 kg m²s⁻³A⁻¹
+2pi*sqrt((5.4 ± 0.3)*m / ((9.81 ± 0.01)*m/s^2)) # Pendulum's  period
+# => 4.661677707464357 ± 0.1295128435999655 s
+
+using Measurements, Unitful
+hypot((3 ± 1)*u"m", (4 ± 2)*u"m") # Pythagorean theorem
+# => 5.0 ± 1.7088007490635064 m
+(50 ± 1)*u"Ω" * (13 ± 2.4)*1e-2*u"A" # Ohm's Law
+# => 6.5 ± 1.20702112657567 A Ω
+2pi*sqrt((5.4 ± 0.3)*u"m" / ((9.81 ± 0.01)*u"m/s^2")) # Pendulum's period
+# => 4.661677707464357 ± 0.12951284359996548 s
 ```
 
 Development
