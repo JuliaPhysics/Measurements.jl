@@ -203,12 +203,12 @@ Arbitrary Precision Calculations
 
 If you performed an exceptionally good experiment that gave you extremely
 precise results (that is, with very low relative error), you may want to use
-`arbitrary precision calculations
-<http://docs.julialang.org/en/stable/manual/integers-and-floating-point-numbers/#arbitrary-precision-arithmetic>`__,
-in order not to loose significance of the results.  Luckily, Julia natively
-supports this type of arithmetic and so ``Measurements.jl`` does.  You only have
-to create ``Measurement`` objects with nominal value and uncertainty of type
-``BigFloat``.
+`arbitrary precision
+<http://docs.julialang.org/en/stable/manual/integers-and-floating-point-numbers/#arbitrary-precision-arithmetic>`__
+(or multiple precision) calculations, in order not to loose significance of the
+experimental results.  Luckily, Julia natively supports this type of arithmetic
+and so ``Measurements.jl`` does.  You only have to create ``Measurement``
+objects with nominal value and uncertainty of type ``BigFloat``.
 
 .. Tip::
 
@@ -398,10 +398,15 @@ measurements.  They work with real and complex measurements, scalars or arrays:
 Use with ``SIUnits.jl`` and ``Unitful.jl``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You can use ``Measurements.jl`` in combination with external package in order to
-perform calculation of unitful numbers with uncertainties.  The details depend
-on the specific package adopted, here are a few examples with ``SIUnits.jl`` and
-``Unitful.jl``
+You can use ``Measurements.jl`` in combination with a third-party package in
+order to perform calculations involving physical measurements, i.e. unitful
+numbers with uncertainties.  The details depend on the specific package adopted.
+Such packages are, for instance, `SIUnits.jl
+<https://github.com/Keno/SIUnits.jl>`__ and `Unitful.jl
+<https://github.com/ajkeller34/Unitful.jl>`__.  You only have to use the
+``Measurement`` object as the value of the ``SIQuantity`` object (for
+``SIUnits.jl``) or of the ``Quantity`` object (for ``Unitful.jl``).  Here are a
+few examples.
 
 .. code-block:: julia
 

@@ -160,9 +160,12 @@ Error Propagation of Numbers with Units
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ``Measurements.jl`` does not know about physical units, but can be easily
-employed in combination with other packages providing this feature.  Such
-packages are, for example, `SIUnits.jl <https://github.com/Keno/SIUnits.jl>`__
-and `Unitful.jl <https://github.com/ajkeller34/Unitful.jl>`__.  You only have to
-use the ``Measurement`` object as the value of the ``SIQuantity`` object (for
-``SIUnits.jl``) or of the ``Quantity`` object (for ``Unitful.jl``).  See the
-Examples section.
+employed in combination with other Julia packages providing this feature.
+Thanks to the `type system
+<http://docs.julialang.org/en/stable/manual/types/>`__ of Julia programming
+language this integration is seamless and comes for free, no specific work has
+been done by the developer of the present package nor by the developers of the
+above mentioned packages in order to support their interplay.  They all work
+equally good with ``Measurements.jl``, you can choose the library you prefer and
+go for it.  In the Examples section you will find how this feature works with a
+couple of packages.

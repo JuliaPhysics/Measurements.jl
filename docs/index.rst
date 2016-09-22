@@ -1,26 +1,30 @@
 Measurements
 ============
 
-`Measurements.jl <https://github.com/giordano/Measurements.jl>`__ is a `Julia
-<http://julialang.org/>`__ package that allows you to define numbers with
-uncertainties, perform calculations involving them, and easily get the
-uncertainty of the result according to `linear error propagation theory
-<https://en.wikipedia.org/wiki/Propagation_of_uncertainty>`__.
+`Measurements.jl <https://github.com/giordano/Measurements.jl>`__ is a package
+that allows you to define numbers with `uncertainties
+<https://en.wikipedia.org/wiki/Measurement_uncertainty>`__, perform calculations
+involving them, and easily get the uncertainty of the result according to
+`linear error propagation theory
+<https://en.wikipedia.org/wiki/Propagation_of_uncertainty>`__.  This library is
+written in the `Julia <http://julialang.org/>`__, a modern high-level,
+high-performance dynamic programming language designed for technical computing.
 
 These are the main fetures of the package:
 
-- Support for most mathematical operations available in Julia involving real and
-  complex numbers. All existing functions that accept ``AbstractFloat`` (and
-  ``Complex{AbstractFloat}``) arguments and internally use already supported
-  functions can in turn perform calculations involving numbers with
-  uncertainties without being redefined. This greatly enhances the power of
-  ``Measurements.jl`` without effort for the users
+- Support for most mathematical operations available in Julia standard library
+  involving real and complex numbers. All existing functions that accept
+  ``AbstractFloat`` (and ``Complex{AbstractFloat}``) arguments and internally
+  use already supported functions can in turn perform calculations involving
+  numbers with uncertainties without being redefined. This greatly enhances the
+  power of ``Measurements.jl`` without effort for the users
 - Functional correlation between variables is correctly handled, so :math:`x - x
-  = 0 \pm 0`, :math:`x/x = 1 \pm 0`, :math:`\tan(x) = \sin(x)/\cos(x)`, etc...
+  \approx 0 \pm 0`, :math:`x/x \approx 1 \pm 0`, :math:`\tan(x) \approx
+  \sin(x)/\cos(x)`, :math:`\mathrm{cis}(x) \approx \exp(ix)`, etc...
 - Support for `arbitrary precision
   <http://docs.julialang.org/en/stable/manual/integers-and-floating-point-numbers/#arbitrary-precision-arithmetic>`__
-  numbers with uncertainties (useful for measurements with very low relative
-  error)
+  (also called multiple precision) numbers with uncertainties.  This is useful
+  for measurements with very low relative error
 - Define arrays of measurements and perform calculations with them
 - Propagate uncertainty for any function of real arguments (including functions
   based on `C/Fortran calls
