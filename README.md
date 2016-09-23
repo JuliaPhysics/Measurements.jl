@@ -42,7 +42,8 @@ high-performance dynamic programming language designed for technical computing.
 * Functions to calculate
   [standard score](https://en.wikipedia.org/wiki/Standard_score) and
   [weighted mean](https://en.wikipedia.org/wiki/Weighted_arithmetic_mean)
-* Easy way to attach the uncertainty to a number using `±` sign
+* Easy way to attach the uncertainty to a number using the `±` sign as infix
+  operator
 * Combined with external packages allows for error propagation of measurements
   with their physical units
 
@@ -64,14 +65,12 @@ Installation
 `Measurements.jl` is available for Julia 0.4 and later versions, and can be
 installed with
 [Julia built-in package manager](http://docs.julialang.org/en/stable/manual/packages/).
-In a Julia session run the command
+In a Julia session run the commands
 
 ```julia
+julia> Pkg.update()
 julia> Pkg.add("Measurements")
 ```
-
-You may need to update your package list with `Pkg.update()` in order to get the
-latest version of `Measurements.jl`.
 
 Usage
 -----
@@ -102,8 +101,8 @@ REPL with `\pm` followed by `TAB` key.  You can provide `value` and
 `uncertainty` of any subtype of `Real` that can be converted to `AbstractFloat`.
 Thus, `measurement(42, 33//12)` and `pi ± 0.1` are valid.
 
-`measurement(value)` creates a `Measurement` object that doesn’t have
-uncertainty, like mathematical constants.  See below for further examples.
+`measurement(value)` creates a `Measurement` object with zero uncertainty, like
+mathematical constants.  See below for further examples.
 
 Every time you use one of the constructors above, you define a *new independent*
 measurement.  Instead, when you perform mathematical operations involving
@@ -120,10 +119,10 @@ In addition, it is possible to create a `Complex` measurement with
 
 ### Caveat about `±` Sign ###
 
-The `±` sign is a convenient symbol to define quantities with uncertainty, but
-can lead to unexpected results if used in elaborate expressions involving many
-`±`s.  Use parantheses where appropriate to avoid confusion.  See for example
-the following cases:
+The `±` infix operator is a convenient symbol to define quantities with
+uncertainty, but can lead to unexpected results if used in elaborate expressions
+involving many `±`s.  Use parantheses where appropriate to avoid confusion.  See
+for example the following cases:
 
 ``` julia
 7.5±1.2 + 3.9±0.9 # This is wrong!

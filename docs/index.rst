@@ -1,5 +1,5 @@
-Measurements
-============
+Measurements.jl
+===============
 
 `Measurements.jl <https://github.com/giordano/Measurements.jl>`__ is a package
 that allows you to define numbers with `uncertainties
@@ -7,10 +7,10 @@ that allows you to define numbers with `uncertainties
 involving them, and easily get the uncertainty of the result according to
 `linear error propagation theory
 <https://en.wikipedia.org/wiki/Propagation_of_uncertainty>`__.  This library is
-written in the `Julia <http://julialang.org/>`__, a modern high-level,
+written in `Julia <http://julialang.org/>`__, a modern high-level,
 high-performance dynamic programming language designed for technical computing.
 
-These are the main fetures of the package:
+The main features of the package are:
 
 - Support for most mathematical operations available in Julia standard library
   involving real and complex numbers. All existing functions that accept
@@ -36,9 +36,11 @@ These are the main fetures of the package:
 - Functions to calculate `standard score
   <https://en.wikipedia.org/wiki/Standard_score>`__ and `weighted mean
   <https://en.wikipedia.org/wiki/Weighted_arithmetic_mean>`__
-- Easy way to attach the uncertainty to a number using ``±`` sign
+- Easy way to attach the uncertainty to a number using the ``±`` sign as infix
+  operator
 - Combined with external packages allows for error propagation of measurements
-  with their physical units
+  with their `physical units
+  <https://en.wikipedia.org/wiki/Units_of_measurement>`__
 
 Further features are expected to come in the future, see the "How Can I Help?"
 section and the TODO list.

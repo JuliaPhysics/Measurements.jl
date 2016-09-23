@@ -399,9 +399,9 @@ Use with ``SIUnits.jl`` and ``Unitful.jl``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 You can use ``Measurements.jl`` in combination with a third-party package in
-order to perform calculations involving physical measurements, i.e. unitful
-numbers with uncertainties.  The details depend on the specific package adopted.
-Such packages are, for instance, `SIUnits.jl
+order to perform calculations involving physical measurements, i.e.  numbers
+with uncertainty and physical unit.  The details depend on the specific package
+adopted.  Such packages are, for instance, `SIUnits.jl
 <https://github.com/Keno/SIUnits.jl>`__ and `Unitful.jl
 <https://github.com/ajkeller34/Unitful.jl>`__.  You only have to use the
 ``Measurement`` object as the value of the ``SIQuantity`` object (for

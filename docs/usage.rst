@@ -26,8 +26,8 @@ Julia REPL with ``\pm`` followed by ``TAB`` key.  You can provide ``value`` and
 ``AbstractFloat``.  Thus, ``measurement(42, 33//12)`` and ``pi ± 0.1`` are
 valid.
 
-``measurement(value)`` creates a ``Measurement`` object that doesn’t have
-uncertainty, like mathematical constants. See below for further examples.
+``measurement(value)`` creates a ``Measurement`` object with zero uncertainty,
+like mathematical constants. See below for further examples.
 
 .. Note::
 
@@ -49,10 +49,10 @@ package in their workflow, can have a look at the technical appendix.
 
 .. Caution::
 
-   The ``±`` sign is a convenient symbol to define quantities with uncertainty,
-   but can lead to unexpected results if used in elaborate expressions involving
-   many ``±``\ s. Use parantheses where appropriate to avoid confusion. See for
-   example the following cases:
+   The ``±`` infix operator is a convenient symbol to define quantities with
+   uncertainty, but can lead to unexpected results if used in elaborate
+   expressions involving many ``±``\ s. Use parantheses where appropriate to
+   avoid confusion. See for example the following cases:
 
    .. code-block:: julia
 
@@ -151,7 +151,7 @@ Access Nominal Value and Uncertainty
 As explained in the technical appendix, the nominal value and the uncertainty of
 ``Measurement`` objects are stored in ``val`` and ``err`` fields respectively,
 but you do not need to use those field directly to access this information.
-Functions ``value`` and ``uncertainty`` allows you to get the nominal value and
+Functions ``value`` and ``uncertainty`` allow you to get the nominal value and
 the uncertainty of ``x``, be it a single measurement or an array of
 measurements.  They are particularly useful in the case of complex measurements
 or arrays of measurements.
@@ -159,7 +159,8 @@ or arrays of measurements.
 Error Propagation of Numbers with Units
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-``Measurements.jl`` does not know about physical units, but can be easily
+``Measurements.jl`` does not know about `units of measurements
+<https://en.wikipedia.org/wiki/Units_of_measurement>`__, but can be easily
 employed in combination with other Julia packages providing this feature.
 Thanks to the `type system
 <http://docs.julialang.org/en/stable/manual/types/>`__ of Julia programming
@@ -167,5 +168,10 @@ language this integration is seamless and comes for free, no specific work has
 been done by the developer of the present package nor by the developers of the
 above mentioned packages in order to support their interplay.  They all work
 equally good with ``Measurements.jl``, you can choose the library you prefer and
-go for it.  In the Examples section you will find how this feature works with a
-couple of packages.
+use it.  Note that only `algebraic functions
+<https://en.wikipedia.org/wiki/Algebraic_operation>`__ are allowed to operate
+with numbers with units of measurement, because `transcendental functions
+<https://en.wikipedia.org/wiki/Transcendental_function>`__ operate on
+`dimensionless quantities
+<https://en.wikipedia.org/wiki/Dimensionless_quantity>`__.  In the Examples
+section you will find how this feature works with a couple of packages.
