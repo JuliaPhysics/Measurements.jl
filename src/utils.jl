@@ -97,22 +97,6 @@ for (f, field) in ((:value, :val), (:uncertainty, :err))
         ($f)(a::Measurement) = a.$field
         ($f){T<:AbstractFloat}(a::Complex{Measurement{T}}) =
             complex(($f)(a.re), ($f)(a.im))
-
-        function ($f){T<:AbstractFloat}(A::AbstractArray{Measurement{T}})
-            out = similar(A, T)
-            for i in eachindex(A)
-                out[i] = ($f)(A[i])
-            end
-            return out
-        end
-
-        function ($f){T<:AbstractFloat}(A::AbstractArray{Complex{Measurement{T}}})
-            out = similar(A, Complex{T})
-            for i in eachindex(A)
-                out[i] = ($f)(A[i])
-            end
-            return out
-        end
     end
 end
 

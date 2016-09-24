@@ -933,14 +933,14 @@ import Base: sum, prod
 # arguments, so in the end the function goes from cubic to quadratic.  Still not
 # ideal, but this is an improvement.
 sum{T<:Measurement}(a::AbstractArray{T}) =
-    result(sum(value(a)), (ones(length(a))...), (a...))
+    result(sum(value.(a)), (ones(length(a))...), (a...))
 
 # Same as above.  I'm not particularly proud of how the derivatives are
 # computed, but something like this is needed in order to avoid errors with null
 # nominal values: you may think to x ./ prod(x), but that would fail if one or
 # more elements are zero.
 function prod{T<:Measurement}(a::AbstractArray{T})
-    x = value(a)
+    x = value.(a)
     return result(prod(x),
                   ntuple(i -> prod(deleteat!(copy(x), i)), length(x)),
                   (a...))
