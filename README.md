@@ -4,6 +4,7 @@
 |:---------------------------------------:|:-------------------------------------:|:-----------------------------------------:|:-------------------------------:|
 | [![][docs-stable-img]][docs-stable-url] | [![][pkg-0.4-img]][pkg-0.4-url]       | [![Build Status][travis-img]][travis-url] | [![][coveral-img]][coveral-url] |
 | [![][docs-latest-img]][docs-latest-url] | [![][pkg-0.5-img]][pkg-0.5-url]       | [![Build Status][appvey-img]][appvey-url] | [![][codecov-img]][codecov-url] |
+|                                         | [![][pkg-0.6-img]][pkg-0.6-url]       |                                           |                                 |
 
 Introduction
 ------------
@@ -359,6 +360,8 @@ original author is Mosè Giordano.
 [pkg-0.4-url]: http://pkg.julialang.org/detail/Measurements.html
 [pkg-0.5-img]: http://pkg.julialang.org/badges/Measurements_0.5.svg
 [pkg-0.5-url]: http://pkg.julialang.org/detail/Measurements.html
+[pkg-0.6-img]: http://pkg.julialang.org/badges/Measurements_0.6.svg
+[pkg-0.6-url]: http://pkg.julialang.org/detail/Measurements.html
 
 [travis-img]: https://travis-ci.org/giordano/Measurements.jl.svg?branch=master
 [travis-url]: https://travis-ci.org/giordano/Measurements.jl
