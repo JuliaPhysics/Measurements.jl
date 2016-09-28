@@ -12,6 +12,8 @@ v0.2.2 (201?-??-??)
 * Performance of `sum` and `prod` with arrays of `Measurement`s has been
   slightly improved.  Now they are quadratic in the number of input arguments,
   instead of cubic.
+* Improve printing of complex measurements.  Now each part, real and imaginary,
+  is wrapped in parentheses in order to make it easier to distinguish them.
 
 v0.2.1 (2016-09-11)
 -------------------

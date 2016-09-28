@@ -390,8 +390,10 @@ test_approx_eq(mod2pi(pi*x), measurement(pi, 0.1*pi))
 # To big float and widemul
 test_approx_eq(widemul(x, y), big(x)*big(y))
 
-# Dummy call to show
+# Dummy calls to show
 show(DevNull, x)
+show(DevNull, complex(w, y))
+show(DevNull, complex(x, y))
 
 # Sum
 test_approx_eq(sum((x, w, x, y, -w)), 2x + y)

@@ -71,6 +71,24 @@ const ± = measurement
 function show(io::IO, measure::Measurement)
     print(io, measure.val, " ± ", measure.err)
 end
+# Representation of complex measurements.  Print something that is easy to
+# understand and that can be meaningfully copy-pasted into the REPL, at least
+# for standard numeric types.
+function show{T<:Measurement}(io::IO, measure::Complex{T})
+    r, i = reim(measure)
+    print(io, "(", value(r), " ± ", uncertainty(r), ")")
+    # TODO: uncomment the following and use `pm' when support for Julia 0.4 will
+    # be dropped.
+    # compact = get(io, :compact, false)
+    # pm = compact ? "±" : " ± "
+    if signbit(i) && !isnan(i)
+        i = -i
+        print(io, " - ")
+    else
+        print(io, " + ")
+    end
+    print(io, "(", value(i), " ± ", uncertainty(i), ")im")
+end
 
 include("conversions.jl")
 include("comparisons-tests.jl")
