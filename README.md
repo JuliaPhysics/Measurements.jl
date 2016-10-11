@@ -17,14 +17,18 @@ according to
 This library is written in [Julia](http://julialang.org/), a modern high-level,
 high-performance dynamic programming language designed for technical computing.
 
+When used in the
+[Julia interactive session](http://docs.julialang.org/en/stable/manual/getting-started/),
+it can serve also as an easy-to-use calculator.
+
 ### Features List ###
 
 * Support for most mathematical operations available in Julia standard library
   involving real and complex numbers.  All existing functions that accept
-  `AbstractFloat` (and `Complex{AbstractFloat}`) arguments and internally use
-  already supported functions can in turn perform calculations involving numbers
-  with uncertainties without being redefined.  This greatly enhances the power
-  of `Measurements.jl` without effort for the users
+  `AbstractFloat` (and `Complex{AbstractFloat}` as well) arguments and
+  internally use already supported functions can in turn perform calculations
+  involving numbers with uncertainties without being redefined.  This greatly
+  enhances the power of `Measurements.jl` without effort for the users
 * Functional correlation between variables is correctly handled, so `x-x ≈
   zero(x)`, `x/x ≈ one(x)`, `tan(x) ≈ sin(x)/cos(x)`, `cis(x) ≈ exp(im*x)`,
   etc...

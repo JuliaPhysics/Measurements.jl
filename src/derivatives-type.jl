@@ -13,7 +13,9 @@
 #
 # This file containes the definition of Derivatives type.  This is borrowed from
 # Base.ImmutableDict type (see base/dict.jl in Julia source code), introduced in
-# Julia 0.5.
+# Julia 0.5.  `get' and `getindex' have methods different from those of the
+# standard Base.ImmutabileDict, otherwise Derivatives and Base.ImmutableDict
+# would be identical.
 #
 ### Code:
 
@@ -33,6 +35,9 @@ Derivatives{K,V}(t::Derivatives{K,V}, KV::Pair) = Derivatives{K,V}(t, KV[1], KV[
 
 function getindex(dict::Derivatives, key)
     while isdefined(dict, :parent)
+        # Here we use `isequal' in place of `==' in order to allow for
+        # calculations involving NaNs.  This is the only difference with the
+        # plain Base.ImmutableDict type.  The same in `get'.
         isequal(dict.key, key) && return dict.value
         dict = dict.parent
     end
@@ -40,6 +45,7 @@ function getindex(dict::Derivatives, key)
 end
 function get(dict::Derivatives, key, default)
     while isdefined(dict, :parent)
+        # See comment in `getindex'.
         isequal(dict.key, key) && return dict.value
         dict = dict.parent
     end

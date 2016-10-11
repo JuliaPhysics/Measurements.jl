@@ -10,14 +10,18 @@ involving them, and easily get the uncertainty of the result according to
 written in `Julia <http://julialang.org/>`__, a modern high-level,
 high-performance dynamic programming language designed for technical computing.
 
+When used in the `Julia interactive session
+<http://docs.julialang.org/en/stable/manual/getting-started/>`__, it can serve
+also as an easy-to-use calculator.
+
 The main features of the package are:
 
 - Support for most mathematical operations available in Julia standard library
   involving real and complex numbers. All existing functions that accept
-  ``AbstractFloat`` (and ``Complex{AbstractFloat}``) arguments and internally
-  use already supported functions can in turn perform calculations involving
-  numbers with uncertainties without being redefined. This greatly enhances the
-  power of ``Measurements.jl`` without effort for the users
+  ``AbstractFloat`` (and ``Complex{AbstractFloat}`` as well) arguments and
+  internally use already supported functions can in turn perform calculations
+  involving numbers with uncertainties without being redefined. This greatly
+  enhances the power of ``Measurements.jl`` without effort for the users
 - Functional correlation between variables is correctly handled, so :math:`x - x
   \approx 0 \pm 0`, :math:`x/x \approx 1 \pm 0`, :math:`\tan(x) \approx
   \sin(x)/\cos(x)`, :math:`\mathrm{cis}(x) \approx \exp(ix)`, etc...

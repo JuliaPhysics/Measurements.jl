@@ -392,7 +392,7 @@ test_approx_eq(widemul(x, y), big(x)*big(y))
 
 # Dummy calls to show
 show(DevNull, x)
-show(DevNull, complex(w, y))
+show(DevNull, complex(x, w))
 show(DevNull, complex(x, y))
 
 # Sum

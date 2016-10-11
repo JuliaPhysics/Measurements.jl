@@ -344,7 +344,7 @@ measurements.
 
    .. code-block:: julia
 
-       vecnorm(Measurements.gradient(w, [x, y]).*[a.err for a in (x,y)])
+       vecnorm(Measurements.gradient(w, [x, y]) .* uncertainty([x, y]))
        # => 52.41813324207829
 
 ``stdscore`` Function
