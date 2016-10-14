@@ -36,7 +36,8 @@ it can serve also as an easy-to-use calculator.
   [arbitrary precision](http://docs.julialang.org/en/stable/manual/integers-and-floating-point-numbers/#arbitrary-precision-arithmetic)
   (also called multiple precision) numbers with uncertainties.  This is useful
   for measurements with very low relative error
-* Define arrays of measurements and perform calculations with them
+* Define arrays of measurements and perform calculations with them.  Some linear
+  algebra functions work out-of-the-box
 * Propagate uncertainty for any function of real arguments (including functions
   based on
   [C/Fortran calls](http://docs.julialang.org/en/stable/manual/calling-c-and-fortran-code/)),

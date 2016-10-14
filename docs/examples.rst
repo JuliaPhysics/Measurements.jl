@@ -35,7 +35,7 @@ Measurements from Strings
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 You can construct ``Measurement`` objects from strings.  Within parentheses
-there is the uncertainty on the last digits.
+there is the uncertainty referred to the corresponding last digits.
 
 .. code-block:: julia
 
@@ -141,7 +141,7 @@ in ``Measurements.jl`` package
 
     using Cuba
     cubaerf(x::Real) =
-        2x/sqrt(pi)*Cuhre((t, f) -> f[1] = exp(-abs2(t[1]*x)), 1, 1)[1][1]
+        2x/sqrt(pi)*cuhre((t, f) -> f[1] = exp(-abs2(t[1]*x)), 1, 1)[1][1]
     @uncertain cubaerf(0.5 ± 0.01)
     # => 0.5204998778130466 ± 0.008787825789336267
     erf(0.5 ± 0.01)
@@ -276,8 +276,8 @@ Of course, you can perform any mathematical operation supported in
     log(2a)^b
     # => 1.030668110995484938037006520012324656386442805506891265153048683619922226691323e+01 ± 9.744450581349821315555305038012032439062183433587962363526314884889736017119502e-17
 
-Arrays of Measurements
-~~~~~~~~~~~~~~~~~~~~~~
+Operations with Arrays and Linear Algebra
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 You can create arrays of ``Measurement`` objects and perform mathematical
 operations on them in the most natural way possible:
@@ -312,6 +312,47 @@ those arrays:
     # => 1054.8000000000002 ± 44.80457565918909
     mean(C)
     # => 351.6000000000001 ± 14.93485855306303
+
+.. Tip::
+
+   ``prod`` and ``sum`` (and ``mean``, which relies on ``sum``) functions work
+   out-of-the-box with any iterable of ``Measurement`` objects, like arrays or
+   tuples.  However, these functions have faster methods (quadratic in the
+   number of elements) when operating on an array of ``Measurement``s than on a
+   tuple (in this case the computational complexity is cubic in the number of
+   elements), so you should use an array if performance is crucial for you, in
+   particular for large collections of measurements.
+
+Some `linear algebra <http://docs.julialang.org/en/stable/stdlib/linalg/>`__
+functions work out-of-the-box, without defining specific methods for them.  For
+example, you can solve linear systems, do matrix multiplication and dot product
+between vectors, find inverse, determinant, and trace of a matrix, do QR
+factorization, etc.
+
+.. code-block:: julia
+
+   A = [(14 ± 0.1) (23 ± 0.2); (-12 ± 0.3) (24 ± 0.4)]
+   b = [(7 ± 0.5), (-13 ± 0.6)]
+   # Solve the linear system Ax = b
+   x = A \ b
+   # => 2-element Array{Measurements.Measurement{Float64},1}:
+   #      0.763072 ± 0.0313571
+   #     -0.160131 ± 0.0177963
+   # Verify this is the correct solution of the system
+   A * x # This should be equal to `b`
+   # => 2-element Array{Measurements.Measurement{Float64},1}:
+   #       7.0 ± 0.5
+   #     -13.0 ± 0.6
+   dot(x, b)
+   # 7.423202614379084 ± 0.5981875954418516
+   det(A)
+   # => 611.9999999999999 ± 9.51262319236918
+   trace(A)
+   # => 38.0 ± 0.4123105625617661
+   A * inv(A) ≈ eye(A)
+   # => true
+   qrfact(A)
+   # => Base.LinAlg.QR{Measurements.Measurement{Float64},Array{Measurements.Measurement{Float64},2}}(Measurements.Measurement{Float64}[-18.4391 ± 0.209481 -1.84391 ± 0.522154; -0.369924 ± 0.00730266 33.1904 ± 0.331267],Measurements.Measurement{Float64}[1.75926 ± 0.00836088,0.0 ± 0.0])
 
 Derivative and Gradient
 ~~~~~~~~~~~~~~~~~~~~~~~
