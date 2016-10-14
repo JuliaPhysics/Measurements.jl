@@ -47,6 +47,11 @@ In addition, it is possible to create a ``Complex`` measurement with
 Those interested in the technical details of the package, in order integrate the
 package in their workflow, can have a look at the technical appendix.
 
+.. function:: measurement(string)
+
+``measurement`` function has also a method that enables you to create a
+``Measurement`` object from a string.  See the `Examples`_ section for details.
+
 .. Caution::
 
    The ``±`` infix operator is a convenient symbol to define quantities with

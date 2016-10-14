@@ -467,4 +467,13 @@ test_approx_eq(a/x + w/b,
                big"8.750000036458332770409319189914605364095140370607375793457032012939451217651416e-01" ±
                big"3.416666677095189699499391052146002403356891669706809079678073000173723744722607e-02")
 
+##### Parsing of strings
+test_approx_eq(measurement("-123.4(56)"),         -123.4 ± 5.6)
+test_approx_eq(measurement("+1234(56)e-1"),        123.4 ± 5.6)
+test_approx_eq(measurement("(+1.234 ± 0.056)e2"),  123.4 ± 5.6)
+test_approx_eq(measurement("-12.34e1 +- 0.56e1"), -123.4 ± 5.6)
+test_approx_eq(measurement("1234e-1 +/- 5.6e0"),   123.4 ± 5.6)
+test_approx_eq(measurement("-1234e-1"), measurement(-1234e-1))
+@test_throws ErrorException measurement("abc")
+
 include("complex.jl")

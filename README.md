@@ -47,6 +47,7 @@ it can serve also as an easy-to-use calculator.
 * Functions to calculate
   [standard score](https://en.wikipedia.org/wiki/Standard_score) and
   [weighted mean](https://en.wikipedia.org/wiki/Weighted_arithmetic_mean)
+* Parse strings to create measurement objects
 * Easy way to attach the uncertainty to a number using the `±` sign as infix
   operator
 * Combined with external packages allows for error propagation of measurements
@@ -122,6 +123,13 @@ expressions of functions’ derivatives.
 In addition, it is possible to create a `Complex` measurement with
 `complex(measurement(a, b), measurement(c, d))`.
 
+``` julia
+measurement(string)
+```
+
+`measurement` function has also a method that enables you to create a
+`Measurement` object from a string.
+
 ### Caveat about `±` Sign ###
 
 The `±` infix operator is a convenient symbol to define quantities with
@@ -165,6 +173,26 @@ log(2x^2 - 3.4y)
 # =>  3.3406260917568824 ± 0.5344198747546611
 atan2(y, x)
 # => 1.0411291003154137 ± 0.07141014208254456
+```
+
+### Measurements from Strings ###
+
+You can construct `Measurement` objects from strings.  Within parentheses there
+is the uncertainty on the last digits.
+
+```julia
+measurement("-123.4(56)")
+# => -123.4 ± 5.6
+measurement("+1234(56)e-1")
+# => ->  123.4 ± 5.6
+measurement("12.34e-1 +- 0.56e1")
+# => 123.4 ± 5.6
+measurement("(-1.234 ± 0.056)e2")
+# => -123.4 ± 5.6
+measurement("1234e-1 +/- 5.6e0")
+# => 123.4 ± 5.6
+measurement("-1234e-1")
+# => -123.4 ± 0.0
 ```
 
 ### Correlation Between Variables ###

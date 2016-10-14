@@ -59,6 +59,17 @@ end
 # The constructor that users are going to use.  As a Julia convention, the
 # lowercase version of a type constructor does something more than the
 # constructor itself.
+
+"""
+    measurement(val::Real, [err::Real]) -> Measurement
+    val ± err -> Measurement
+
+Return a `Measurement` object with `val` as nominal value and `err` as
+uncertainty.  `err` defaults to 0 if omitted.
+
+The binary operator `±` is equivalent to `measurement`, so you can construct a
+`Measurement` object by explicitely writing `123 ± 4`.
+"""
 function measurement(val::Real, err::Real=zero(float(val)))
     val, err, der = promote(float(val), float(err), one(float(val)))
     tag = rand()
@@ -94,5 +105,6 @@ include("conversions.jl")
 include("comparisons-tests.jl")
 include("utils.jl")
 include("math.jl")
+include("parsing.jl")
 
 end # module

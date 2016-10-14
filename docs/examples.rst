@@ -31,6 +31,27 @@ These are some basic examples of use of the package:
     atan2(y, x)
     # => 1.0411291003154137 ± 0.07141014208254456
 
+Measurements from Strings
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+You can construct ``Measurement`` objects from strings.  Within parentheses
+there is the uncertainty on the last digits.
+
+.. code-block:: julia
+
+   measurement("-123.4(56)")
+   # => -123.4 ± 5.6
+   measurement("+1234(56)e-1")
+   # => ->  123.4 ± 5.6
+   measurement("12.34e-1 +- 0.56e1")
+   # => 123.4 ± 5.6
+   measurement("(-1.234 ± 0.056)e2")
+   # => -123.4 ± 5.6
+   measurement("1234e-1 +/- 5.6e0")
+   # => 123.4 ± 5.6
+   measurement("-1234e-1")
+   # => -123.4 ± 0.0
+
 Correlation Between Variables
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

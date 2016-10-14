@@ -40,6 +40,7 @@ The main features of the package are:
 - Functions to calculate `standard score
   <https://en.wikipedia.org/wiki/Standard_score>`__ and `weighted mean
   <https://en.wikipedia.org/wiki/Weighted_arithmetic_mean>`__
+- Parse strings to create measurement objects
 - Easy way to attach the uncertainty to a number using the ``±`` sign as infix
   operator
 - Combined with external packages allows for error propagation of measurements
