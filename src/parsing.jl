@@ -16,6 +16,26 @@
 #
 ### Code:
 
+# Regxep matching the exponent part: "e-4"
+const rxp_expn = "e[+-]?[0-9]+"
+# Regexp matching the complete number: "5.6e-7"  or "48"
+const rxp_full_numb = "[0-9.]+" * "(?:" * rxp_expn * ")?"
+# Regexp matching the complete number, including the sign: "-12.3e4"
+const rxp_full_numb_sign = "[+-]?" * rxp_full_numb
+# Regexp matching a measurement, with error expressed within parentheses:
+# "123(45)e6"
+const rxp_error_with_parentheses =
+    Regex("^([+-]?[0-9]+(\\.[0-9]+)?)\\(([0-9]+)\\)(" * rxp_expn * ")?\$")
+# Regexp matching a global exponent: "(...)e-1"
+const rxp_global_exponent = Regex("^\\((.*)\\)(" * rxp_expn * ")\$")
+# Regexp matching a measurement, with error expressed within plus-minus sign:
+# "12.3e-4 ± 5.6e-7"
+const rxp_error_with_pm =
+    Regex("^(" * rxp_full_numb_sign * ")[ \\t]*(?:\\+/?-|±)[ \\t]*(" *
+          rxp_full_numb * ")\$")
+# Regexp matching number without uncertainty "123.4e5"
+const rxp_no_error = Regex("^(" * rxp_full_numb_sign * ")\$")
+
 """
     measurement(string) -> Measurement
 
@@ -34,7 +54,7 @@ measurement("-1234e-1")           -> -123.4 ± 0.0
 """
 function measurement{T<:AbstractString}(s::T)
     str = strip(s)
-    m = match(r"^([+-]?[0-9]+(\.[0-9]+)?)\(([0-9]+)\)(e[+-]?[0-9]+)?$", str)
+    m = match(rxp_error_with_parentheses, str)
     # Captures:
     #  1: the whole nominal value
     #  2: the decimal part of the nominal value (optional)
@@ -43,16 +63,25 @@ function measurement{T<:AbstractString}(s::T)
     if m != nothing
         val_str, val_dec, err_str, expn = m.captures
     else
-        m = match(r"^\(?([+-]?[0-9.]+(?:e[+-]?[0-9]+)?)[ \t]*(?:\+/?-|±)[ \t]*([0-9.]+(?:e[+-]?[0-9]+)?)\)?(e[+-]?[0-9]+)?$", str)
+        m = match(rxp_global_exponent, str)
+        # Captures:
+        #  1: the rest of the string
+        #  2: the global exponent
+        if m == nothing
+            expn = nothing
+        else
+            str, expn = m.captures
+        end
+        m = match(rxp_error_with_pm, str)
         # Captures:
         #  1: the nominal value
         #  2: the uncertainty
         #  3: global exponent factor (optional)
         if m != nothing
-            val_str, err_str, expn, val_dec = m.captures..., nothing
+            val_str, err_str, val_dec = m.captures..., nothing
         else
-            m = match(r"^([+-]?[0-9.]+(?:e[+-]?[0-9]+)?)$", str)
-            if m != nothing
+            m = match(rxp_no_error, str)
+            if m != nothing == expn # Exclude the case "(123e4)e5"
                 # measurement(val) returns val ± 0.  For consistency,
                 # measurement("val") should give the same result.
                 val_str, err_str, val_dec, expn = m.captures[1], "0", nothing, nothing
