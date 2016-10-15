@@ -22,17 +22,30 @@ const rxp_expn = "e[+-]?[0-9]+"
 const rxp_full_numb = "[0-9.]+" * "(?:" * rxp_expn * ")?"
 # Regexp matching the complete number, including the sign: "-12.3e4"
 const rxp_full_numb_sign = "[+-]?" * rxp_full_numb
+
 # Regexp matching a measurement, with error expressed within parentheses:
-# "123(45)e6"
+# "123(45)e6".  Captures:
+#  1: the whole nominal value
+#  2: the decimal part of the nominal value (optional)
+#  3: the uncertainty on the last digits
+#  4: a global exponent factor (optional)
 const rxp_error_with_parentheses =
     Regex("^([+-]?[0-9]+(\\.[0-9]+)?)\\(([0-9]+)\\)(" * rxp_expn * ")?\$")
-# Regexp matching a global exponent: "(...)e-1"
+
+# Regexp matching a global exponent: "(...)e-1".  Captures:
+#  1: the rest of the string
+#  2: the global exponent
 const rxp_global_exponent = Regex("^\\((.*)\\)(" * rxp_expn * ")\$")
+
 # Regexp matching a measurement, with error expressed within plus-minus sign:
-# "12.3e-4 ± 5.6e-7"
+# "12.3e-4 ± 5.6e-7".  Captures:
+#  1: the nominal value
+#  2: the uncertainty
+#  3: global exponent factor (optional)
 const rxp_error_with_pm =
     Regex("^(" * rxp_full_numb_sign * ")[ \\t]*(?:\\+/?-|±)[ \\t]*(" *
           rxp_full_numb * ")\$")
+
 # Regexp matching number without uncertainty "123.4e5"
 const rxp_no_error = Regex("^(" * rxp_full_numb_sign * ")\$")
 
@@ -53,54 +66,41 @@ measurement("-1234e-1")           -> -123.4 ± 0.0
 ```
 """
 function measurement{T<:AbstractString}(s::T)
-    str = strip(s)
+    str::T = strip(s)
     m = match(rxp_error_with_parentheses, str)
-    # Captures:
-    #  1: the whole nominal value
-    #  2: the decimal part of the nominal value (optional)
-    #  3: the uncertainty on the last digits
-    #  4: a global exponent factor (optional)
-    if m != nothing
-        val_str, val_dec, err_str, expn = m.captures
+    if m !== nothing # "123(45)e6"
+        val_str::T, val_dec, err_str::T, expn = m.captures
     else
         m = match(rxp_global_exponent, str)
-        # Captures:
-        #  1: the rest of the string
-        #  2: the global exponent
-        if m == nothing
+        if m === nothing # There is no global exponent
             expn = nothing
-        else
+        else # "(...)e5"
             str, expn = m.captures
         end
         m = match(rxp_error_with_pm, str)
-        # Captures:
-        #  1: the nominal value
-        #  2: the uncertainty
-        #  3: global exponent factor (optional)
-        if m != nothing
+        if m !== nothing # "12.3e-4 ± 5.6e-7"
             val_str, err_str, val_dec = m.captures..., nothing
         else
-            m = match(rxp_no_error, str)
-            if m != nothing == expn # Exclude the case "(123e4)e5"
+            m = match(rxp_no_error, str) # Match "123.4e5"
+            if m !== nothing === expn # Exclude the case "(123.4e5)e6"
                 # measurement(val) returns val ± 0.  For consistency,
                 # measurement("val") should give the same result.
-                val_str, err_str, val_dec, expn = m.captures[1], "0", nothing, nothing
+                val_str, err_str, val_dec, expn =
+                    m.captures[1], "0", nothing, nothing
             else
-                error("Cannot parse \"", s, "\" string")
+                error("Cannot parse the string \"", s, "\"")
             end
         end
     end
-    val = parse(val_str)
-    err = parse(err_str)
-    # The nominal value has a decimal part
-    if val_dec != nothing
+    val::Float64 = parse(Float64, val_str)
+    err::Float64 = parse(Float64, err_str)
+    if val_dec !== nothing # The nominal value has a decimal part
         # Multiply the uncertainty by 10^(-number_of_decimal_digits)
-        err *= exp10(1 - length(val_dec))
+        err *= exp10(1.0 - length(val_dec))
     end
-    # There is a global exponent factor
-    if expn != nothing
+    if expn !== nothing # There is a global exponent factor
         # Parse to a number
-        fact = parse("1" * expn)
+        fact = parse(Float64, "1" * expn)
         val *= fact
         err *= fact
     end
