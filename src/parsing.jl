@@ -30,12 +30,14 @@ const rxp_full_numb_sign = "[+-]?" * rxp_full_numb
 #  3: the uncertainty on the last digits
 #  4: a global exponent factor (optional)
 const rxp_error_with_parentheses =
-    Regex("^([+-]?[0-9]+(\\.[0-9]+)?)\\(([0-9]+)\\)(" * rxp_expn * ")?\$")
+    Regex("^[ \\t]*([+-]?[0-9]+(\\.[0-9]+)?)\\(([0-9]+)\\)(" *
+          rxp_expn * ")?[ \\t]*\$")
 
 # Regexp matching a global exponent: "(...)e-1".  Captures:
 #  1: the rest of the string
 #  2: the global exponent
-const rxp_global_exponent = Regex("^\\((.*)\\)(" * rxp_expn * ")\$")
+const rxp_global_exponent = Regex("^[ \\t]*\\((.*)\\)(" *
+                                  rxp_expn * ")[ \\t]*\$")
 
 # Regexp matching a measurement, with error expressed within plus-minus sign:
 # "12.3e-4 ± 5.6e-7".  Captures:
@@ -43,11 +45,11 @@ const rxp_global_exponent = Regex("^\\((.*)\\)(" * rxp_expn * ")\$")
 #  2: the uncertainty
 #  3: global exponent factor (optional)
 const rxp_error_with_pm =
-    Regex("^(" * rxp_full_numb_sign * ")[ \\t]*(?:\\+/?-|±)[ \\t]*(" *
-          rxp_full_numb * ")\$")
+    Regex("^[ \\t]*(" * rxp_full_numb_sign * ")[ \\t]*(?:\\+/?-|±)[ \\t]*(" *
+          rxp_full_numb * ")[ \\t]*\$")
 
 # Regexp matching number without uncertainty "123.4e5"
-const rxp_no_error = Regex("^(" * rxp_full_numb_sign * ")\$")
+const rxp_no_error = Regex("^[ \\t]*(" * rxp_full_numb_sign * ")[ \\t]*\$")
 
 """
     measurement(string) -> Measurement
@@ -65,8 +67,7 @@ measurement("1234e-1 +/- 5.6e0")  ->  123.4 ± 5.6
 measurement("-1234e-1")           -> -123.4 ± 0.0
 ```
 """
-function measurement{T<:AbstractString}(s::T)
-    str::T = strip(s)
+function measurement{T<:AbstractString}(str::T)
     m = match(rxp_error_with_parentheses, str)
     if m !== nothing # "123(45)e6"
         val_str::T, val_dec, err_str::T, expn = m.captures
@@ -88,7 +89,7 @@ function measurement{T<:AbstractString}(s::T)
                 val_str, err_str, val_dec, expn =
                     m.captures[1], "0", nothing, nothing
             else
-                error("Cannot parse the string \"", s, "\"")
+                error("Cannot parse the string \"", str, "\"")
             end
         end
     end
