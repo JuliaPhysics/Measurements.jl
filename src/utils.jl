@@ -22,11 +22,22 @@ export stdscore, weightedmean, value, uncertainty
     stdscore(measure::Measurement, expected_value::Real) -> standard_score
 
 Gives the standard score between a measure, with uncertainty, and its expected
-value (that may or may not have the uncertainty):
+value:
 
     (measure.val - expected_value)/measure.err
 """
-stdscore(a::Measurement, b::Real) = (a.val - b)/(a.err)
+stdscore(a::Measurement, b) = (a.val - b)/(a.err)
+
+"""
+    stdscore(measure_1::Measurement, measure_2::Measurement) -> standard_score
+
+Gives the standard score between two measurements (both with uncertainty)
+computed as the standard score between their difference and 0:
+
+    stdscore(measure_1 - measure_2, 0)
+"""
+stdscore{S<:AbstractFloat,T<:AbstractFloat}(a::Measurement{S}, b::Measurement{T}) =
+    stdscore(a - b, zero(promote_type(S, T)))
 
 # Weighted Average with Inverse-Variance Weighting
 """

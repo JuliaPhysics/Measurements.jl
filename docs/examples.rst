@@ -413,15 +413,23 @@ measurements.
 ~~~~~~~~~~~~~~~~~~~~~
 
 You can get the distance in number of standard deviations between a measurement
-and its expected value (this can be with or without uncertainty) using
-``stdscore``:
+and its expected value (not a ``Measurement``) using ``stdscore``:
 
 .. code-block:: julia
 
     stdscore(1.3 ± 0.12, 1)
     # => 2.5000000000000004
-    stdscore(4.7 ± 0.58, 5 ± 0.01)
-    # => -0.5172413793103445 ± 0.017241379310344827
+
+You can use the same function also to test the consistency of two measurements
+by computing the standard score between their difference and zero.  This is what
+``stdscore`` does when both arguments are ``Measurement`` objects:
+
+.. code-block:: julia
+
+   stdscore((4.7 ± 0.58) - (5 ± 0.01), 0)
+   # => -0.5171645175253433
+   stdscore(4.7 ± 0.58, 5 ± 0.01)
+   # => -0.5171645175253433
 
 ``weightedmean`` Function
 ~~~~~~~~~~~~~~~~~~~~~~~~~

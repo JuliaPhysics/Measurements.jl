@@ -130,11 +130,14 @@ independent measurements.
 Standard Score
 ~~~~~~~~~~~~~~
 
-.. function:: stdscore(measure::Measurement, expected_value::Real) -> standard_score
+.. function:: stdscore(measure::Measurement, expected_value) -> standard_score
+.. function:: stdscore(measure_1::Measurement, measure_2::Measurement) -> standard_score
 
 The ``stdscore`` function is available to calculate the `standard score
 <https://en.wikipedia.org/wiki/Standard_score>`__ between a measurement and its
-expected value.
+expected value (not a ``Measurement``).  When both arguments are ``Measurement``
+objects, the standard score between their difference and zero is computed, in
+order to test their compatibility.
 
 Weighted Average
 ~~~~~~~~~~~~~~~~

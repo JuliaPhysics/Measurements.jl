@@ -20,8 +20,10 @@ y = 4 ± 0.2
 z = complex(x)
 
 # Standard Score
-test_approx_eq(stdscore(x, y), -10 ± 2)
 @test_approx_eq stdscore(w, x.val) -350/3
+@test_approx_eq stdscore(x, y) -4.472135954999579
+@test_approx_eq stdscore(w, y) stdscore(w - y, 0)
+@test_approx_eq stdscore(y, 4.1) stdscore(y, 4.1 ± 0)
 
 # Vectorial version of Measurement
 @test measurement(1:2:5, 2:2:6) == [1±2, 3±4, 5±6]

@@ -295,15 +295,23 @@ Measurements.gradient(log1p(x) + y^2 - cos(x/y), [x, y, z])
 
 ### `stdscore` Function ###
 
-You can get the distance in number of standard deviations between a measurement
-and its expected value (this can be with or without uncertainty) using
-`stdscore`:
+You can get the distance in number of standard deviations between a real
+measurement and its expected value (not a `Measurement`) using `stdscore`:
 
 ``` julia
 stdscore(1.3 ± 0.12, 1)
 # => 2.5000000000000004
+```
+
+You can also test the consistency of two real measurements by measuring the
+standard score of their difference and zero.  This is what `stdscore` does if
+both arguments are `Measurement` objects:
+
+```julia
+stdscore((4.7 ± 0.58) - (5 ± 0.01), 0)
+# => -0.5171645175253433
 stdscore(4.7 ± 0.58, 5 ± 0.01)
-# => -0.5172413793103445 ± 0.017241379310344827
+# => -0.5171645175253433
 ```
 
 ### `weightedmean` Function ###
