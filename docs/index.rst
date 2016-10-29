@@ -43,12 +43,21 @@ The main features of the package are:
   <https://en.wikipedia.org/wiki/Weighted_arithmetic_mean>`__
 - Parse strings to create measurement objects
 - Easy way to attach the uncertainty to a number using the ``±`` sign as infix
-  operator
+  operator.  This makes the code more readable and visually appealing
 - Combined with external packages allows for error propagation of measurements
   with their `physical units
   <https://en.wikipedia.org/wiki/Units_of_measurement>`__
 
-Further features are expected to come in the future, see the "How Can I Help?"
+The method used to handle functional correlation is described in this paper:
+
+.. [GIO16] M. Giordano, 2016, "Uncertainty propagation with functionally
+	   correlated quantities", `arXiv:1610.08716
+	   <http://arxiv.org/abs/1610.08716>`__ (Bibcode: `2016arXiv161008716G
+	   <http://adsabs.harvard.edu/abs/2016arXiv161008716G>`__)
+
+If you use use this package for your research, please cite it.
+
+Other features are expected to come in the future, see the "How Can I Help?"
 section and the TODO list.
 
 The ``Measurements.jl`` package is licensed under the MIT "Expat" License. The
@@ -60,5 +69,6 @@ original author is Mosè Giordano.
    installation.rst
    usage.rst
    examples.rst
+   performance.rst
    todo.rst
    appendix.rst

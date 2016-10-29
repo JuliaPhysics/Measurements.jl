@@ -161,15 +161,16 @@ function, do it as an exercise.
 
    will not work because here the outermost function is ``+``, whose arguments
    are ``zeta(13.4 ± 0.8)`` and ``eta(8.51 ± 0.67)``, that however cannot be
-   calculated.  Once more, wrap this expression in an (anonymous) function:
+   calculated.  You can use the ``@uncertaint`` macro on each function
+   separately:
 
    .. code-block:: julia
 
-      @uncertain ((x, y) -> zeta(x) + eta(y))(13.4 ± 0.8, 8.51 ± 0.67)
+      @uncertain(zeta(13.4 ± 0.8)) +  @uncertain(eta(8.51 ± 0.67))
       # => 1.9974303172187315 ± 0.0012169293212062773
 
    The type of *all* the arguments provided must be ``Measurement``.  If one of
-   the arguments is actually an exact number (so without uncertainty), convert
+   the arguments is actually an exact number (so without uncertainty), promote
    it to ``Measurement`` type:
 
    .. code-block:: julia

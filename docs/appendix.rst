@@ -107,10 +107,9 @@ Dealing with functional correlation between ``Measurement`` objects, when using
 functions with `arity <https://en.wikipedia.org/wiki/Arity>`__ larger than one,
 is an important feature of this package.  This is accomplished by keeping inside
 each ``Measurement`` object the list of its derivatives with respect to the
-independent variables from which the quantity comes, and this list is updated
-every time a new mathematical operation is performed.  This role is played by
-the ``der`` field.  This dictionary is useful in order to trace the contribution
-of each measurement and propagate the uncertainty in the case of functions with
+independent variables from which the quantity comes.  This role is played by the
+``der`` field.  This dictionary is useful in order to trace the contribution of
+each measurement and propagate the uncertainty in the case of functions with
 more than one argument.
 
 The use of the list of derivatives has been inspired by Python package
@@ -211,6 +210,8 @@ G/\partial a)(\partial a/\partial x) + (\partial G/\partial b)(\partial
 b/\partial x)`, and store them in the ``der`` field of :math:`a` and :math:`G`
 respectively in order to be able to perform further operations involving these
 quantities.
+
+This method is also described in [GIO16]_.
 
 Defining Methods for Mathematical Operations
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
