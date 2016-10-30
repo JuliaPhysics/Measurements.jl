@@ -40,10 +40,10 @@ export @uncertain
 #   ∂G/∂a · previous_derivatives
 function result{T<:AbstractFloat}(val::Real, der::Real, a::Measurement{T})
     val, der = promote(val, der)
-    newder = similar(a.der)
-    @inbounds for tag in keys(a.der)
+    newder = Derivatives{Tuple{T,T,Float64},T}()
+    @inbounds for tag in keys(getder(a))
         if tag[2] != 0.0 # Skip values with 0 uncertainty
-            newder = Derivatives(newder, tag=>der*a.der[tag])
+            newder = Derivatives(newder, tag=>der*derivative(a, tag))
         end
     end
     # If uncertainty of "a" is null, the uncertainty of result is null as well,
@@ -52,7 +52,7 @@ function result{T<:AbstractFloat}(val::Real, der::Real, a::Measurement{T})
     σ = (a.err == 0.0) ? 0.0 : abs(der*a.err)
     # The tag is NaN because we don't care about tags of derived quantities, we
     # are only interested in independent ones.
-    Measurement(val,  σ, NaN, newder)
+    DependentMeasurement(val,  σ, newder)
 end
 
 # This function is similar to the previous one, but applies to mathematical
@@ -76,14 +76,14 @@ function result(val::Real, der::Tuple{Vararg{Real}},
     @assert length(der) == length(a)
     a = promote(a...)
     T = typeof(a[1].val)
-    newder = similar(a[1].der)
+    newder = Derivatives{Tuple{T,T,Float64},T}()
     err::T = zero(T)
     # Iterate over all independent variables.  We first iterate over all
     # variables listed in `a' in order to get all independent variables upon
     # which those variables depend, then we get the `tag' of each independent
     # variable, skipping variables that have been already taken into account.
     @inbounds for y in a
-        for tag in keys(y.der)
+        for tag in keys(getder(y))
             if tag ∉ keys(newder) # Skip independent variables already considered
                 σ_x = tag[2]
                 if σ_x != 0.0 # Skip values with 0 uncertainty
@@ -107,7 +107,7 @@ function result(val::Real, der::Tuple{Vararg{Real}},
             end
         end
     end
-    return Measurement(T(val), sqrt(err), NaN, newder)
+    return DependentMeasurement(T(val), sqrt(err), newder)
 end
 
 # "result" function for complex-valued functions (like "besselh").  This takes
@@ -893,6 +893,8 @@ mod2pi(a::Measurement) = result(mod2pi(a.val), 1, a)
 
 import Base: eps, nextfloat, maxintfloat, typemax
 
+eps{T<:AbstractFloat}(::Type{IndependentMeasurement{T}}) = eps(T)
+eps{T<:AbstractFloat}(::Type{DependentMeasurement{T}}) = eps(T)
 eps{T<:AbstractFloat}(::Type{Measurement{T}}) = eps(T)
 eps{T<:AbstractFloat}(a::Measurement{T}) = eps(a.val)
 
@@ -917,6 +919,10 @@ trunc{T<:Integer}(::Type{T}, a::Measurement) = trunc(T, a.val)
 # Widening
 import Base: widen
 
+widen{T<:AbstractFloat}(::Type{IndependentMeasurement{T}}) =
+    IndependentMeasurement{widen(T)}
+widen{T<:AbstractFloat}(::Type{DependentMeasurement{T}}) =
+    DependentMeasurement{widen(T)}
 widen{T<:AbstractFloat}(::Type{Measurement{T}}) = Measurement{widen(T)}
 
 # To big float

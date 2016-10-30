@@ -17,6 +17,10 @@
 
 export stdscore, weightedmean, value, uncertainty
 
+getder(a::DependentMeasurement) = getfield(a, :der)
+getder{T<:AbstractFloat}(a::IndependentMeasurement{T}) =
+    Derivatives((a.val, a.err, a.tag) => one(T))
+
 # Standard Score
 """
     stdscore(measure::Measurement, expected_value::Real) -> standard_score
@@ -56,7 +60,7 @@ end
 # Derivative and Gradient
 derivative{F<:AbstractFloat, T<:AbstractFloat}(a::Measurement{F},
                                                tag::Tuple{T, T, Float64}) =
-                                                   get(a.der, tag, zero(F))
+                                                   get(getder(a), tag, zero(F))
 
 """
     derivative(x::Measurement, y::Measurement)
@@ -68,8 +72,12 @@ independent measurement `y`, calculated on the nominal value of `y`.  Return
 Use `Measurements.gradient` to calculate the gradient of `x` with respect to an
 arrays of independent measurements.
 """
-derivative(a::Measurement, b::Measurement) =
+derivative(a::DependentMeasurement, b::IndependentMeasurement) =
     derivative(a, (b.val, b.err, b.tag))
+
+derivative{S<:AbstractFloat,T<:AbstractFloat}(a::IndependentMeasurement{S},
+                                              b::IndependentMeasurement{T}) =
+                                                  zero(promote_type(S, T))
 
 """
     gradient(x::Measurement, [y::AbstractArray{Measurement}])
@@ -94,6 +102,8 @@ end
 # value and uncertainty
 for (f, field) in ((:value, :val), (:uncertainty, :err))
     @eval begin
+        ($f)(a::IndependentMeasurement) = a.$field
+        ($f)(a::DependentMeasurement) = a.$field
         ($f)(a::Measurement) = a.$field
         ($f){T<:AbstractFloat}(a::Complex{Measurement{T}}) =
             complex(($f)(a.re), ($f)(a.im))

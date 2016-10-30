@@ -3,6 +3,8 @@ imu = 6 ± 0.4
 u = complex(5 ± 0.3, imu)
 v = complex(imu, 8 ± 0.9)
 
+k = complex(3*imu, imu/4)
+
 # Addition and subtraction
 test_approx_eq(2u - u - 3v + 2v + pi, u - v + pi)
 

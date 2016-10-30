@@ -49,10 +49,17 @@ include("derivatives-type.jl")
 #     measurement and propagate the uncertainty in the case of functions with
 #     more than one argument (in order to deal with correlation between
 #     arguments).
-immutable Measurement{T<:AbstractFloat} <: AbstractFloat
+abstract Measurement{T<:AbstractFloat} <: AbstractFloat
+
+immutable IndependentMeasurement{T<:AbstractFloat} <: Measurement{T}
     val::T
     err::T
     tag::Float64
+end
+
+immutable DependentMeasurement{T<:AbstractFloat} <: Measurement{T}
+    val::T
+    err::T
     der::Derivatives{Tuple{T, T, Float64}, T}
 end
 
@@ -70,11 +77,8 @@ uncertainty.  `err` defaults to 0 if omitted.
 The binary operator `±` is equivalent to `measurement`, so you can construct a
 `Measurement` object by explicitely writing `123 ± 4`.
 """
-function measurement(val::Real, err::Real=zero(float(val)))
-    val, err, der = promote(float(val), float(err), one(float(val)))
-    tag = rand()
-    return Measurement(val, err, tag, Derivatives((val, err, tag)=>der))
-end
+measurement(val::Real, err::Real=zero(float(val))) =
+    IndependentMeasurement(promote(float(val), float(err))..., rand())
 const ± = measurement
 
 # Type representation
@@ -97,8 +101,8 @@ function show{T<:Measurement}(io::IO, measure::Complex{T})
 end
 
 include("conversions.jl")
-include("comparisons-tests.jl")
 include("utils.jl")
+include("comparisons-tests.jl")
 include("math.jl")
 include("parsing.jl")
 
