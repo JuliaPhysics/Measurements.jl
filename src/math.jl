@@ -50,9 +50,14 @@ function result{T<:AbstractFloat}(val::Real, der::Real, a::Measurement{T})
     # even if the derivative is NaN or infinite.  In any other case, use
     # σ_G = |σ_a·∂G/∂a|.
     σ = (a.err == 0.0) ? 0.0 : abs(der*a.err)
-    # The tag is NaN because we don't care about tags of derived quantities, we
-    # are only interested in independent ones.
     DependentMeasurement(val,  σ, newder)
+end
+
+function result{T<:AbstractFloat}(val::Real, der::Real,
+                                  a::IndependentMeasurement{T})
+    val, der = promote(val, der)
+    σ = (a.err == 0.0) ? 0.0 : abs(der*a.err)
+    return DependentMeasurement(val,  σ, Derivatives((a.val,a.err,a.tag)=>der))
 end
 
 # This function is similar to the previous one, but applies to mathematical
@@ -105,6 +110,35 @@ function result(val::Real, der::Tuple{Vararg{Real}},
                     err = err + abs2(σ_x*∂G_∂x)
                 end
             end
+        end
+    end
+    return DependentMeasurement(T(val), sqrt(err), newder)
+end
+
+function result(val::Real, der::Tuple{Vararg{Real}},
+                a::Tuple{Vararg{IndependentMeasurement}})
+    @assert length(der) == length(a)
+    a = promote(a...)
+    T = typeof(a[1].val)
+    newder = Derivatives{Tuple{T,T,Float64},T}()
+    err::T = zero(T)
+    # Iterate over all independent variables.
+    @inbounds for y in a
+        tag = (y.val,y.err,y.tag)
+        if tag ∉ keys(newder) # Skip independent variables already considered
+            σ_x = tag[2]
+            if σ_x != 0.0 # Skip values with 0 uncertainty
+                ∂G_∂x::T = 0.0
+                # Iteratate over all the arguments of the function
+                for (i, x) in enumerate(a)
+                    if tag == (x.val,x.err,x.tag)
+                        ∂G_∂x = ∂G_∂x + der[i]
+                    end
+                end
+                newder = Derivatives(newder, tag=>∂G_∂x)
+                # Add (σ_x·∂G/∂x)^2 to the total uncertainty (squared)
+                err = err + abs2(σ_x*∂G_∂x)
+                end
         end
     end
     return DependentMeasurement(T(val), sqrt(err), newder)
