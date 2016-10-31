@@ -791,20 +791,6 @@ function besselj1(a::Measurement)
     return result(besselj1(x), 0.5*(besselj0(x) - besselj(2, x)), a)
 end
 
-# XXX: this is necessary to fix a method ambiguity in Julia 0.4.  Remove this
-# definition when that version will not be supported anymore
-function besselj(nu::Integer, a::Measurement)
-    x = a.val
-    return result(besselj(nu, x), 0.5*(besselj(nu - 1, x) - besselj(nu + 1, x)), a)
-end
-
-# XXX: this is necessary to fix a method ambiguity in Julia 0.4.  Remove this
-# definition when that version will not be supported anymore
-function besselj(nu::AbstractFloat, a::Measurement)
-    x = a.val
-    return result(besselj(nu, x), 0.5*(besselj(nu - 1, x) - besselj(nu + 1, x)), a)
-end
-
 # XXX: I don't know a closed form expression for the derivative with respect to
 # first argument of J_n.  Arguably, there will be more cases where the
 # measurement is the second argument, than the first one.  In any case, you can
@@ -822,13 +808,6 @@ end
 function bessely1(a::Measurement)
     x = a.val
     return result(bessely1(x), 0.5*(bessely0(x) - bessely(2, x)), a)
-end
-
-# XXX: this is necessary to fix a method ambiguity in Julia 0.4.  Remove this
-# definition when that version will not be supported anymore
-function bessely(nu::Integer, a::Measurement)
-    x = a.val
-    return result(bessely(nu, x), 0.5*(bessely(nu - 1, x) - bessely(nu + 1, x)), a)
 end
 
 # XXX: I don't know a closed form expression for the derivative with respect to
