@@ -129,3 +129,15 @@ promote_rule{T<:AbstractFloat, S<:Real}(::Type{IndependentMeasurement{T}}, ::Typ
 # DependentMeasurement + Real = DependentMeasurement
 promote_rule{T<:AbstractFloat, S<:Real}(::Type{DependentMeasurement{T}}, ::Type{S}) =
     DependentMeasurement{promote_type(T, S)}
+
+### Complex numbers.
+import Base: complex
+
+# The implementation of log for complex numbers, does not accept a type
+# T<:AbstractFloat for which typeof(log(::Complex{T}))!=Complex{T}, thus we have
+# to promote any IndependentMeasurement to DependentMeasurement before creating
+# a complex number.
+complex{S<:AbstractFloat,T<:AbstractFloat}(a::Measurement{S}, b::Measurement{T}) =
+    Complex{DependentMeasurement{promote_type(S, T)}}(a, b)
+complex{T<:AbstractFloat}(a::IndependentMeasurement{T}) =
+    Complex{DependentMeasurement{T}}(a)

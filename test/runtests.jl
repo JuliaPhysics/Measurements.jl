@@ -17,7 +17,7 @@ test_approx_eq{T1<:AbstractFloat,T2<:AbstractFloat}(a::Measurement{T1}, b::Compl
     test_approx_eq(complex(a), b)
 test_approx_eq_eps(a::Measurement, b::Measurement, tol::Real) =
     (@test_approx_eq_eps(a.val, b.val, tol) ; @test_approx_eq_eps(a.err, b.err, tol))
-test_approx_eq_eps{T1<:AbstractFloat,T2<:AbstractFloat}(a::Complex{Measurement{T1}}, b::Complex{Measurement{T2}}, tol::Real) =
+test_approx_eq_eps{T1<:AbstractFloat,T2<:AbstractFloat}(a::Complex{DependentMeasurement{T1}}, b::Complex{DependentMeasurement{T2}}, tol::Real) =
     (@test_approx_eq_eps(real(a), real(b), tol) ; @test_approx_eq_eps(imag(a), imag(b), tol))
 
 w = -0.5 ± 0.03
@@ -161,8 +161,8 @@ for a in (w, x, y); test_approx_eq(2^a, 2.0^a); end
 test_approx_eq(pi^x, measurement(31.006276680299816, 3.5493811564854525))
 for val in (w, x, y); test_approx_eq(e^val, exp(val)); end
 for val in (w, x, y); test_approx_eq(exp2(val), 2^val); end
-# test_approx_eq(z^2.5, x^2.5)
-# test_approx_eq(z^3, x^3)
+test_approx_eq(z^2.5, x^2.5)
+ test_approx_eq(z^3, x^3)
 # Make sure "p ± 0" behaves like "p", in particular with regard to the
 # uncertainty.
 for p in (-3, 0, 3); test_approx_eq((0 ± 0.1)^(p ± 0), (0 ± 0.1)^p); end
@@ -344,11 +344,11 @@ for a in (x, y); test_approx_eq(bessely1(a), -bessely(-1, a)); end
 for a in (x, y); test_approx_eq(bessely(5/2, a),
                                 (besselj(5/2, a)*cos(2.5pi) -
                                  besselj(-5/2, a))/sin(2.5pi)); end
-# for a in (x, y), k in (1, 2), nu in -1:1
-#     sgn = k == 1 ? +1 : -1
-#     test_approx_eq(besselh(nu, k, a),
-#                    besselj(nu, a) + sgn*im*bessely(nu, a))
-# end
+for a in (x, y), k in (1, 2), nu in -1:1
+    sgn = k == 1 ? +1 : -1
+    test_approx_eq(besselh(nu, k, a),
+                   besselj(nu, a) + sgn*im*bessely(nu, a))
+end
 test_approx_eq(besseli(5//2, y), 4.757626874823528 ± 1.0398232869843944)
 for a in (x, y); test_approx_eq(besselix(3, a), besseli(3, a)*exp(-abs(a))); end
 test_approx_eq(besselk(7//3, x), 0.07521953258226349 ± 0.010340691203742959)
@@ -487,4 +487,4 @@ test_approx_eq(measurement("  -1234e-1  "), measurement(-1234e-1))
 @test_throws ErrorException measurement("(2)")
 @test_throws ErrorException measurement("(2)e-2")
 
-# include("complex.jl")
+include("complex.jl")

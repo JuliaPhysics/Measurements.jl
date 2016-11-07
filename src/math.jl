@@ -936,7 +936,9 @@ nextfloat(a::Measurement) = nextfloat(a.val)
 
 maxintfloat{T<:AbstractFloat}(::Type{Measurement{T}}) = maxintfloat(T)
 
-typemax{T<:AbstractFloat}(::Type{Measurement{T}}) = typemax(T)
+typemax{T<:AbstractFloat}(::Union{Type{IndependentMeasurement{T}},
+                                  Type{DependentMeasurement{T}}}) =
+    typemax(T)
 
 ### Rounding
 import Base: round, floor, ceil, trunc
