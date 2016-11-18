@@ -37,6 +37,9 @@ test_approx_eq(weightedmean((w, x, y)),
 @test_approx_eq(Measurements.derivative(3*x^2, x), 18)
 @test_approx_eq(Measurements.gradient(2x + y - w, [x, y, w]), [2, 1, -1])
 
+# Contributions to uncertainty
+@test_approx_eq sort(collect(values(Measurements.uncertainty_components(w * x * y)))) [0.2, 0.3, 0.36]
+
 # Conversion and Promotion
 @test convert(Measurement{Float64}, pi) == pi ± 0
 @test convert(Measurement{Float64}, 1//2) == 0.5 ± 0

@@ -4,6 +4,11 @@ History of Measurements.jl
 v0.2.3 (201?-??-??)
 -------------------
 
+### New Features ###
+
+* New function ``Measurements.uncertainty_components`` to compute the components
+  of the total uncertainty of a derived quantity.
+
 ### Breaking Changes ###
 
 * When both arguments of `stdscore` are `Measurement`, the standard score

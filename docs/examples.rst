@@ -355,8 +355,8 @@ factorization, etc.
    qrfact(A)
    # => Base.LinAlg.QR{Measurements.Measurement{Float64},Array{Measurements.Measurement{Float64},2}}(Measurements.Measurement{Float64}[-18.4391 ± 0.209481 -1.84391 ± 0.522154; -0.369924 ± 0.00730266 33.1904 ± 0.331267],Measurements.Measurement{Float64}[1.75926 ± 0.00836088,0.0 ± 0.0])
 
-Derivative and Gradient
-~~~~~~~~~~~~~~~~~~~~~~~
+Derivative, Gradient and Uncertainty Components
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 In order to propagate the uncertainties, ``Measurements.jl`` keeps track of the
 partial derivative of an expression with respect to all independent measurements
@@ -395,10 +395,10 @@ measurements.
 
        w = y^(3//4)*log(y) + 3x - cos(y/x)
        # => 447.0410543780643 ± 52.41813324207829
-       (Measurements.gradient(w, [x, y]) .* uncertainty([x, y])).^2
-       # => 2-element Array{Any,1}:
-       #     1442.31
-       #     1305.36
+       abs.(Measurements.gradient(w, [x, y]) .* uncertainty([x, y]))
+       # => 2-element Array{Float64,1}:
+       #     37.9777
+       #     36.1297
 
    In this case, the ``x`` variable contributes most to the uncertainty of
    ``w``.  In addition, note that the `Euclidean norm
@@ -408,6 +408,18 @@ measurements.
    .. code-block:: julia
 
        vecnorm(Measurements.gradient(w, [x, y]) .* uncertainty([x, y]))
+       # => 52.41813324207829
+
+   The ``Measurements.uncertainty_components`` function simplifies calculation
+   of all uncertainty components of a derived quantity:
+
+   .. code-block:: julia
+
+       Measurements.uncertainty_components(w)
+       # => Dict{Tuple{Float64,Float64,Float64},Float64} with 2 entries:
+       #      (98.1,12.7,0.549176)  => 37.9777
+       #      (105.4,25.6,0.293309) => 36.1297
+       vecnorm(collect(values(Measurements.uncertainty_components(w))))
        # => 52.41813324207829
 
 ``stdscore`` Function

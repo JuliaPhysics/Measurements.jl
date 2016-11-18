@@ -127,6 +127,16 @@ convenient functions, ``Measurements.derivative`` and ``Measurements.gradient``,
 to get the partial derivative and the gradient of an expression with respect to
 independent measurements.
 
+Uncertainty Contribution
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. function:: Measurements.uncertainty_components(x::Measurement)
+
+You may want to inspect which measurement contributes most to the total
+uncertainty of a derived quantity, in order to minimize it, if possible.  The
+function ``Measurements.uncertainty_components`` gives you a dictonary whose
+values are the components of the uncertainty of ``x``.
+
 Standard Score
 ~~~~~~~~~~~~~~
 

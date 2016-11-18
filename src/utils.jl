@@ -137,3 +137,17 @@ Return the uncertainty of measurement `x`.  If `x` is an array, return an array
 of the same length as `x` with the uncertainty of each elements of `x`.
 """
 uncertainty
+
+"""
+    Measurements.uncertainty_components(x::Measurement)
+
+Return the components to the uncertainty of the dependent quantity `x` in the
+form of a `Dict`.
+"""
+function uncertainty_components{T<:AbstractFloat}(x::Measurement{T})
+    out = Dict{Tuple{T, T, Float64}, T}()
+    for var in keys(x.der)
+        out[var] = abs(var[2] * Measurements.derivative(x, var))
+    end
+    return out
+end
