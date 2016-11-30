@@ -74,9 +74,8 @@ end
 function result(val::Real, der::Tuple{Vararg{Real}},
                 a::Tuple{Vararg{Measurement}})
     @assert length(der) == length(a)
-    a = promote(a...)
-    T = typeof(a[1].val)
-    newder = similar(a[1].der)
+    T = promote_type(_eltype.(a)...)
+    newder = Derivatives{Tuple{T,T,Float64},T}()
     err::T = zero(T)
     # Iterate over all independent variables.  We first iterate over all
     # variables listed in `a' in order to get all independent variables upon
@@ -113,9 +112,8 @@ end
 # "result" function for complex-valued functions (like "besselh").  This takes
 # the same argument as the first implementation of "result", but with complex
 # "val" and "der".
-function result(val::Complex, der::Complex, a::Measurement)
+result(val::Complex, der::Complex, a::Measurement) =
     return complex(result(real(val), real(der), a), result(imag(val), imag(der), a))
-end
 
 ### @uncertain macro.
 """
