@@ -40,7 +40,8 @@ include("derivatives-type.jl")
 #   * err: the uncertainty, assumed to be standard deviation
 #   * tag: a (hopefully) unique identifier, it is used to identify a specific
 #     measurement in the list of derivatives.  This is usually created with
-#     `rand'.
+#     `rand'.  NOTE: only independent measurements have a finite tag.  For
+#     dependent quantities the tag is NaN.
 #   * der: the list of derivates.  It is a lightweight dictionary, whose keys
 #     are the tuples (nominal value, uncertainty, tag) of all independent
 #     variables from which the object has been derived, the corresponding value
