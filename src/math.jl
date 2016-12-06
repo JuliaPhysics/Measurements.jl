@@ -905,7 +905,10 @@ typemax{T<:AbstractFloat}(::Type{Measurement{T}}) = typemax(T)
 ### Rounding
 import Base: round, floor, ceil, trunc
 
-round(a::Measurement) = round(a.val)
+round(a::Measurement) = measurement(round(value(a)), round(uncertainty(a)))
+round(a::Measurement, digits::Integer, base::Integer=10) =
+    measurement(round(value(a), digits, base),
+                round(uncertainty(a), digits, base))
 round{T<:Integer}(::Type{T}, a::Measurement) = round(T, a.val)
 floor(a::Measurement) = floor(a.val)
 floor{T<:Integer}(::Type{T}, a::Measurement) = floor(T, a.val)

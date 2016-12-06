@@ -380,7 +380,8 @@ test_approx_eq(mod2pi(pi*x), measurement(pi, 0.1*pi))
 @test_approx_eq maxintfloat(Measurement{Float64}) maxintfloat(Float64)
 
 # Rounding
-@test_approx_eq round(w) round(w.val)
+@test_approx_eq round(w) measurement(round(w.val), round(w.err))
+@test_approx_eq round(w, 1) measurement(round(w.val, 1), round(w.err, 1))
 @test_approx_eq round(Int, w) round(Int, w.val)
 @test_approx_eq floor(w) floor(w.val)
 @test_approx_eq floor(Int, w) floor(Int, w.val)
