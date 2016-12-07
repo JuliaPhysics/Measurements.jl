@@ -1,7 +1,7 @@
 History of Measurements.jl
 ==========================
 
-v0.2.3 (201?-??-??)
+v0.3.0 (2016-12-07)
 -------------------
 
 ### New Features ###
@@ -13,10 +13,8 @@ v0.2.3 (201?-??-??)
 
 * When both arguments of `stdscore` are `Measurement`, the standard score
   between their difference and zero is now computed, in order to test their
-  consistency.  This is most probably what users will expect and makes
-  `stdscore(measure, exp_value)` consistent with `stdscore(measure, exp_value ±
-  0)`.  As a consequence of this change, the returned value is never a
-  `Measurement`.
+  consistency.  This is most probably what users will expect.  As a consequence
+  of this change, the returned value is never a `Measurement`.
 
 v0.2.2 (2016-10-17)
 -------------------
