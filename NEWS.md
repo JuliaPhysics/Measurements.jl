@@ -1,15 +1,22 @@
 History of Measurements.jl
 ==========================
 
+v0.4.0 (201?-??-??)
+-------------------
+
+### Breaking Changes
+
+* Support for Julia 0.4 was dropped.
+
 v0.3.0 (2016-12-07)
 -------------------
 
-### New Features ###
+### New Features
 
 * New function ``Measurements.uncertainty_components`` to compute the components
   of the total uncertainty of a derived quantity.
 
-### Breaking Changes ###
+### Breaking Changes
 
 * When both arguments of `stdscore` are `Measurement`, the standard score
   between their difference and zero is now computed, in order to test their
@@ -19,7 +26,7 @@ v0.3.0 (2016-12-07)
 v0.2.2 (2016-10-17)
 -------------------
 
-### New Features ###
+### New Features
 
 * New method for `measurement`: you can parse a string in order to create a
   `Measurement` object.
@@ -35,7 +42,7 @@ v0.2.2 (2016-10-17)
 v0.2.1 (2016-09-11)
 -------------------
 
-### New Features ###
+### New Features
 
 * New mathematical operations supported: `log2`, `abs2`, `fma`, `muladd`,
   `besseli`, `besselix`, `besselk`, `besselkx`, `widen`, `big`.
@@ -43,7 +50,7 @@ v0.2.1 (2016-09-11)
 v0.2.0 (2016-07-13)
 -------------------
 
-### Breaking Changes ###
+### Breaking Changes
 
 * The constructor of `Measurement` objects that you should directly use has been
   renamed to `measurement`.  What you have to do in your programs is to replace
@@ -53,7 +60,7 @@ v0.2.0 (2016-07-13)
   do not need change anything if you used this sign in place of the
   `Measurement` function.
 
-### New Features ###
+### New Features
 
 * `measurement` function is made vectorial, so you can create an array of
   `Measurement` objects by feeding it with the array of nominal values and
@@ -64,7 +71,7 @@ v0.2.0 (2016-07-13)
 v0.1.2 (2016-07-09)
 -------------------
 
-### Bug Fixes ###
+### Bug Fixes
 
 * Fix derivatives of `div`, `fld`, `cld`.
 * Fix `frexp` with arguments whose absolute value is less than 0.5.
@@ -72,7 +79,7 @@ v0.1.2 (2016-07-09)
 v0.1.1 (2016-06-23)
 -------------------
 
-### New Features ###
+### New Features
 
 * `@uncertain` macro works with functions with any number of arguments.
 * New mathematical operations supported: `erfi`, `dawson`, `digamma`,
@@ -84,7 +91,7 @@ v0.1.1 (2016-06-23)
 v0.1.0 (2016-06-18)
 -------------------
 
-### New Features ###
+### New Features
 
 * Support for correlated variables has been added
   ([#3](https://github.com/giordano/Measurements.jl/issues/3)).
@@ -101,7 +108,7 @@ v0.1.0 (2016-06-18)
 v0.0.2 (2016-06-13)
 -------------------
 
-### New Features ###
+### New Features
 
 * `Measurement` is now subtype of `AbstractFloat`
   ([#1](https://github.com/giordano/Measurements.jl/issues/1)), but you can feed
@@ -114,7 +121,7 @@ v0.0.2 (2016-06-13)
   `isinf`, `isinteger`, `copysign`, `frexp`, `ldexp`, `div`, `cld`, `fld`,
   `mod`, `rem`, `mod2pi`, `eps`, `flipsign`, `erfinv`, `erfcinv`, `erfcx`.
 
-### Breaking Changes ###
+### Breaking Changes
 
 * Function `Constant` has been removed as it was mostly redundant and badly
   capitalized ([#2](https://github.com/giordano/Measurements.jl/issues/2)).
@@ -122,7 +129,7 @@ v0.0.2 (2016-06-13)
   `complex(Measurement(a, b), Measurement(c, d))` so real and imaginary parts of
   the number have each their uncertainty.
 
-### Bug Fixes ###
+### Bug Fixes
 
 * Fix multiplication by and division of 0.  Previously, those operations would
   return `NaN` as uncertainty, now they give 0.
@@ -132,7 +139,7 @@ v0.0.1 (2016-05-20)
 
 Initial release.
 
-### New Features ###
+### New Features
 
 * `Measurement` type is a parametric type, subtype of `Number`.
 * You can define `Measurement` objects with `Measurement(a, b)`, being `a` the
