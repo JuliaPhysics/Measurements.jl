@@ -17,9 +17,6 @@
 
 export stdscore, weightedmean, value, uncertainty
 
-# Get the floating type of the Measurement object.
-_eltype{T<:AbstractFloat}(::Measurement{T}) = T
-
 # Standard Score
 """
     stdscore(measure::Measurement, expected_value::Real) -> standard_score
