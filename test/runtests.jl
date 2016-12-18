@@ -58,6 +58,10 @@ test_approx_eq(weightedmean((w, x, y)),
                                   complex(measurement(7.0)))
 @test promote(complex(0, 1 ± 0), 2.1 ± 0.2) ==
     (complex(0, 1.0 ± 0), complex(2.1 ± 0.2))
+@test promote_type(Measurement{Float32}, Float64) ==
+    Measurement{Float64}
+@test promote_type(Measurement{BigFloat}, Measurement{Float64}) ==
+    Measurement{BigFloat}
 
 ##### Comparisons and Tests
 @test z == x != y
