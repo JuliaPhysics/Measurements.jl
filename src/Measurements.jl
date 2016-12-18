@@ -25,7 +25,7 @@ module Measurements
 using Calculus
 
 # Function to handle new type
-import Base: show
+import Base: alignment, show
 
 # Functions provided by this package and exposed to users
 export Measurement, measurement, ±
@@ -95,6 +95,12 @@ function show{T<:Measurement}(io::IO, measure::Complex{T})
         print(io, compact ? "+" : " + ")
     end
     print(io, "(", i, ")im")
+end
+# This is adapted from base/show.jl for Complex type.
+function alignment(io::IO, measure::Measurement)
+    m = match(r"^(.*[\±])(.*)$", sprint(0, show, measure, env=io))
+    m === nothing ? (length(sprint(0, show, x, env=io)), 0) :
+        (length(m.captures[1]), length(m.captures[2]))
 end
 
 include("conversions.jl")
