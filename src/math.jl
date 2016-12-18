@@ -910,11 +910,11 @@ round(a::Measurement, digits::Integer, base::Integer=10) =
     measurement(round(value(a), digits, base),
                 round(uncertainty(a), digits, base))
 round{T<:Integer}(::Type{T}, a::Measurement) = round(T, a.val)
-floor(a::Measurement) = floor(a.val)
+floor(a::Measurement) = measurement(floor(a.val))
 floor{T<:Integer}(::Type{T}, a::Measurement) = floor(T, a.val)
-ceil(a::Measurement) = ceil(a.val)
+ceil(a::Measurement) = measurement(ceil(a.val))
 ceil{T<:Integer}(::Type{T}, a::Measurement) = ceil(Integer, a.val)
-trunc(a::Measurement) = trunc(a.val)
+trunc(a::Measurement) = measurement(trunc(a.val))
 trunc{T<:Integer}(::Type{T}, a::Measurement) = trunc(T, a.val)
 
 # Widening
