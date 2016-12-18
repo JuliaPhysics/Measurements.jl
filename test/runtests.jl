@@ -401,6 +401,9 @@ show(DevNull, [w, x, y])
 show(DevNull, complex(x, w))
 show(DevNull, complex(x, y))
 
+# Test alignment
+@test Base.alignment(DevNull, x) == (5,4)
+
 # Sum
 test_approx_eq(sum((x, w, x, y, -w)), 2x + y)
 test_approx_eq(sum([x, w, x, y, -w]), 2x + y)
