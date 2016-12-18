@@ -26,7 +26,7 @@ z = complex(x)
 @test_approx_eq stdscore(y, 4.1) stdscore(y, 4.1 ± 0)
 
 # Vectorial version of Measurement
-@test measurement(1:2:5, 2:2:6) == [1±2, 3±4, 5±6]
+@test measurement.(1:2:5, 2:2:6) == [1±2, 3±4, 5±6]
 
 # Weighted Average with Inverse-Variance Weighting
 test_approx_eq(weightedmean((w, x, y)),
@@ -424,6 +424,15 @@ test_approx_eq(mean([x, w, x, y, -w]), (2x + y)/5)
 # sort
 @test sort([y, w, x]) == [w, x, y]
 
+# Linear algebra
+A = [(14 ± 0.1) (23 ± 0.2); (-12 ± 0.3) (24 ± 0.4)]
+c = [(7 ± 0.5), (-13 ± 0.6)]
+b = A \ c
+test_approx_eq.(A * b, c)
+test_approx_eq(b ⋅ c, 7.423202614379084 ± 0.5981875954418516)
+test_approx_eq(det(A), 612 ± 9.51262319236918)
+test_approx_eq_eps.(A * inv(A), eye(A), 3e-18)
+
 ##### Calculations with NaNs
 # NaN as nominal value
 @test isequal(2*(NaN ± 3), NaN ± 6)
@@ -453,10 +462,10 @@ end
 @test_throws KeyError getindex(x.der, 0)
 
 ##### value, uncertainty
-@test value([w, x, y]) == [-0.5, 3.0, 4.0]
-@test value([complex(w, x)]) == [complex(-0.5, 3.0)]
-@test uncertainty([w, x, y]) == [0.03, 0.1, 0.2]
-@test uncertainty([complex(w, x)]) == [complex(0.03, 0.1)]
+@test value.([w, x, y]) == [-0.5, 3.0, 4.0]
+@test value.([complex(w, x)]) == [complex(-0.5, 3.0)]
+@test uncertainty.([w, x, y]) == [0.03, 0.1, 0.2]
+@test uncertainty.([complex(w, x)]) == [complex(0.03, 0.1)]
 
 ##### Test `length' method
 @test length((w + w + 2x + y).der) == 3

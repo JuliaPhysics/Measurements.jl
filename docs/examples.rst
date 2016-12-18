@@ -287,28 +287,30 @@ operations on them in the most natural way possible:
 
     A = [1.03 ± 0.14, 2.88 ± 0.35, 5.46 ± 0.97]
     B = [0.92 ± 0.11, 3.14 ± 0.42, 4.67 ± 0.58]
-    exp(sqrt(B)) - log(A)
+    exp.(sqrt.(B)) - log.(A)
     # => 3-element Array{Measurements.Measurement{Float64},1}:
-    #     2.5799612193837493 ± 0.20215123893809778
-    #     4.824843081566397 ± 0.7076631767039828
-    #     6.982522998771525 ± 1.178287422979362
-    cos(A).^2 + sin(A).^2
+    #      2.57996±0.202151
+    #      4.82484±0.707663
+    #      6.98252±1.17829
+    cos.(A).^2 + sin.(A).^2
     # 3-element Array{Measurements.Measurement{Float64},1}:
-    #     1.0 ± 0.0
-    #     1.0 ± 0.0
-    #     1.0 ± 0.0
+    #     1.0±0.0
+    #     1.0±0.0
+    #     1.0±0.0
 
 If you originally have separate arrays of values and uncertainties, you can
 create an array of ``Measurement`` objects by providing ``measurement`` with
-those arrays:
+those arrays (remember to use the `dot syntax
+<http://docs.julialang.org/en/stable/manual/functions/#man-dot-vectorizing>`__
+for vectorizing functions):
 
 .. code-block:: julia
 
-    C = measurement([174.9, 253.8, 626.1], [12.2, 19.4, 38.5])
+    C = measurement.([174.9, 253.8, 626.1], [12.2, 19.4, 38.5])
     # => 3-element Array{Measurements.Measurement{Float64},1}:
-    #     174.9 ± 12.2
-    #     253.8 ± 19.4
-    #     626.1 ± 38.5
+    #     174.9±12.2
+    #     253.8±19.4
+    #     626.1±38.5
     sum(C)
     # => 1054.8000000000002 ± 44.80457565918909
     mean(C)
@@ -337,13 +339,13 @@ factorization, etc.
    # Solve the linear system Ax = b
    x = A \ b
    # => 2-element Array{Measurements.Measurement{Float64},1}:
-   #      0.763072 ± 0.0313571
-   #     -0.160131 ± 0.0177963
+   #      0.763072±0.0313571
+   #     -0.160131±0.0177963
    # Verify this is the correct solution of the system
    A * x # This should be equal to `b`
    # => 2-element Array{Measurements.Measurement{Float64},1}:
-   #       7.0 ± 0.5
-   #     -13.0 ± 0.6
+   #       7.0±0.5
+   #     -13.0±0.6
    dot(x, b)
    # 7.423202614379084 ± 0.5981875954418516
    det(A)
@@ -353,7 +355,7 @@ factorization, etc.
    A * inv(A) ≈ eye(A)
    # => true
    qrfact(A)
-   # => Base.LinAlg.QR{Measurements.Measurement{Float64},Array{Measurements.Measurement{Float64},2}}(Measurements.Measurement{Float64}[-18.4391 ± 0.209481 -1.84391 ± 0.522154; -0.369924 ± 0.00730266 33.1904 ± 0.331267],Measurements.Measurement{Float64}[1.75926 ± 0.00836088,0.0 ± 0.0])
+   # => Base.LinAlg.QR{Measurements.Measurement{Float64},Array{Measurements.Measurement{Float64},2}}(Measurements.Measurement{Float64}[-18.4391±0.209481 -1.84391±0.522154; -0.369924±0.00730266 33.1904±0.331267],Measurements.Measurement{Float64}[1.75926±0.00836088,0.0±0.0])
 
 Derivative, Gradient and Uncertainty Components
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -469,11 +471,11 @@ measurements.  They work with real and complex measurements, scalars or arrays:
     # => 94.5
     uncertainty(94.5 ± 1.6)
     # => 1.6
-    value([complex(87.3 ± 2.9, 64.3 ± 3.0), complex(55.1 ± 2.8, -19.1 ± 4.6)])
+    value.([complex(87.3 ± 2.9, 64.3 ± 3.0), complex(55.1 ± 2.8, -19.1 ± 4.6)])
     # => 2-element Array{Complex{Float64},1}:
     #     87.3+64.3im
     #     55.1-19.1im
-    uncertainty([complex(87.3 ± 2.9, 64.3 ± 3.0), complex(55.1 ± 2.8, -19.1 ± 4.6)])
+    uncertainty.([complex(87.3 ± 2.9, 64.3 ± 3.0), complex(55.1 ± 2.8, -19.1 ± 4.6)])
     # => 2-element Array{Complex{Float64},1}:
     #     2.9+3.0im
     #     2.8+4.6im

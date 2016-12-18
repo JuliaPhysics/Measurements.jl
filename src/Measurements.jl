@@ -76,30 +76,25 @@ function measurement(val::Real, err::Real=zero(float(val)))
     tag = rand()
     return Measurement(val, err, tag, Derivatives((val, err, tag)=>der))
 end
-@vectorize_2arg Real measurement
 const ± = measurement
 
 # Type representation
-function show(io::IO, measure::Measurement)
-    print(io, measure.val, " ± ", measure.err)
-end
+show(io::IO, measure::Measurement) =
+    print(io, measure.val, get(io, :compact, false) ? "±" : " ± ", measure.err)
 # Representation of complex measurements.  Print something that is easy to
 # understand and that can be meaningfully copy-pasted into the REPL, at least
 # for standard numeric types.
 function show{T<:Measurement}(io::IO, measure::Complex{T})
     r, i = reim(measure)
-    print(io, "(", value(r), " ± ", uncertainty(r), ")")
-    # TODO: uncomment the following and use `pm' when support for Julia 0.4 will
-    # be dropped.
-    # compact = get(io, :compact, false)
-    # pm = compact ? "±" : " ± "
+    compact = get(io, :compact, false)
+    print(io, "(", r, ")")
     if signbit(i) && !isnan(i)
         i = -i
-        print(io, " - ")
+        print(io, compact ? "-" : " - ")
     else
-        print(io, " + ")
+        print(io, compact ? "+" : " + ")
     end
-    print(io, "(", value(i), " ± ", uncertainty(i), ")im")
+    print(io, "(", i, ")im")
 end
 
 include("conversions.jl")

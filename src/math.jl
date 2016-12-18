@@ -74,9 +74,8 @@ end
 function result(val::Real, der::Tuple{Vararg{Real}},
                 a::Tuple{Vararg{Measurement}})
     @assert length(der) == length(a)
-    a = promote(a...)
-    T = typeof(a[1].val)
-    newder = similar(a[1].der)
+    T = promote_type(_eltype.(a)...)
+    newder = Derivatives{Tuple{T,T,Float64},T}()
     err::T = zero(T)
     # Iterate over all independent variables.  We first iterate over all
     # variables listed in `a' in order to get all independent variables upon
@@ -113,9 +112,8 @@ end
 # "result" function for complex-valued functions (like "besselh").  This takes
 # the same argument as the first implementation of "result", but with complex
 # "val" and "der".
-function result(val::Complex, der::Complex, a::Measurement)
+result(val::Complex, der::Complex, a::Measurement) =
     return complex(result(real(val), real(der), a), result(imag(val), imag(der), a))
-end
 
 ### @uncertain macro.
 """
@@ -791,20 +789,6 @@ function besselj1(a::Measurement)
     return result(besselj1(x), 0.5*(besselj0(x) - besselj(2, x)), a)
 end
 
-# XXX: this is necessary to fix a method ambiguity in Julia 0.4.  Remove this
-# definition when that version will not be supported anymore
-function besselj(nu::Integer, a::Measurement)
-    x = a.val
-    return result(besselj(nu, x), 0.5*(besselj(nu - 1, x) - besselj(nu + 1, x)), a)
-end
-
-# XXX: this is necessary to fix a method ambiguity in Julia 0.4.  Remove this
-# definition when that version will not be supported anymore
-function besselj(nu::AbstractFloat, a::Measurement)
-    x = a.val
-    return result(besselj(nu, x), 0.5*(besselj(nu - 1, x) - besselj(nu + 1, x)), a)
-end
-
 # XXX: I don't know a closed form expression for the derivative with respect to
 # first argument of J_n.  Arguably, there will be more cases where the
 # measurement is the second argument, than the first one.  In any case, you can
@@ -822,13 +806,6 @@ end
 function bessely1(a::Measurement)
     x = a.val
     return result(bessely1(x), 0.5*(bessely0(x) - bessely(2, x)), a)
-end
-
-# XXX: this is necessary to fix a method ambiguity in Julia 0.4.  Remove this
-# definition when that version will not be supported anymore
-function bessely(nu::Integer, a::Measurement)
-    x = a.val
-    return result(bessely(nu, x), 0.5*(bessely(nu - 1, x) - bessely(nu + 1, x)), a)
 end
 
 # XXX: I don't know a closed form expression for the derivative with respect to
@@ -936,14 +913,14 @@ import Base: sum, prod
 # arguments, so in the end the function goes from cubic to quadratic.  Still not
 # ideal, but this is an improvement.
 sum{T<:Measurement}(a::AbstractArray{T}) =
-    result(sum(value(a)), (ones(length(a))...), (a...))
+    result(sum(value.(a)), (ones(length(a))...), (a...))
 
 # Same as above.  I'm not particularly proud of how the derivatives are
 # computed, but something like this is needed in order to avoid errors with null
 # nominal values: you may think to x ./ prod(x), but that would fail if one or
 # more elements are zero.
 function prod{T<:Measurement}(a::AbstractArray{T})
-    x = value(a)
+    x = value.(a)
     return result(prod(x),
                   ntuple(i -> prod(deleteat!(copy(x), i)), length(x)),
                   (a...))
