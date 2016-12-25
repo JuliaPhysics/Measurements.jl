@@ -38,7 +38,10 @@ export @uncertain
 #   σ_G = |σ_a·∂G/∂a|
 # The list of derivatives with respect to each measurement is updated with
 #   ∂G/∂a · previous_derivatives
-function result{T<:AbstractFloat}(val::Real, der::Real, a::Measurement{T})
+# There are two methods: one for dependent quantities (with tag == NaN), and the
+# other for independent quantities (this is considerably simpler).
+function _result{T<:AbstractFloat}(val::Real, der::Real, a::Measurement{T},
+                                   tagval::Type{Val{NaN}})
     val, der = promote(val, der)
     newder = similar(a.der)
     @inbounds for tag in keys(a.der)
@@ -52,8 +55,18 @@ function result{T<:AbstractFloat}(val::Real, der::Real, a::Measurement{T})
     σ = (a.err == 0.0) ? 0.0 : abs(der*a.err)
     # The tag is NaN because we don't care about tags of derived quantities, we
     # are only interested in independent ones.
-    Measurement(val,  σ, NaN, newder)
+    return Measurement(val,  σ, NaN, newder)
 end
+
+function _result{T<:AbstractFloat}(val::Real, der::Real, a::Measurement{T},
+                                   tagval)
+    val, der = promote(val, der)
+    σ = (a.err == 0.0) ? 0.0 : abs(der*a.err)
+    return Measurement(val,  σ, NaN, Derivatives((a.val,a.err,a.tag)=>der))
+end
+
+result{T<:AbstractFloat}(val::Real, der::Real, a::Measurement{T}) =
+    _result(val, der, a, Val{a.tag})
 
 # This function is similar to the previous one, but applies to mathematical
 # operations with more than one argument, so the formula to propagate
