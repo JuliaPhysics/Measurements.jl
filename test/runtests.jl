@@ -381,6 +381,7 @@ test_approx_eq(mod2pi(pi*x), measurement(pi, 0.1*pi))
 @test_approx_eq eps(Measurement{Float64}) eps(Float64)
 @test_approx_eq eps(x) eps(x.val)
 @test_approx_eq nextfloat(x) nextfloat(x.val)
+@test_approx_eq nextfloat(x, 3) nextfloat(x.val, 3)
 @test_approx_eq maxintfloat(Measurement{Float64}) maxintfloat(Float64)
 
 # Rounding

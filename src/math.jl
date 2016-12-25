@@ -876,6 +876,7 @@ eps{T<:AbstractFloat}(::Type{Measurement{T}}) = eps(T)
 eps{T<:AbstractFloat}(a::Measurement{T}) = eps(a.val)
 
 nextfloat(a::Measurement) = nextfloat(a.val)
+nextfloat(a::Measurement, n::Integer) = nextfloat(a.val, n)
 
 maxintfloat{T<:AbstractFloat}(::Type{Measurement{T}}) = maxintfloat(T)
 
