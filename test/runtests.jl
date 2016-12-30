@@ -325,10 +325,10 @@ for a in (x, y); test_approx_eq(lbeta(a, pi), log(beta(a, pi))); end
 for a in (x, y); test_approx_eq(lbeta(e, a), log(beta(e, a))); end
 
 # Airy functions
-test_approx_eq(airy(0, x), 0.006591139357460721 ± 0.0011912976705951322)
-test_approx_eq(airy(1, x), -0.01191297670595132 ± 0.0019773418072382165)
-test_approx_eq(airy(2, x), 14.037328963730136 ± 2.2922214966382017)
-test_approx_eq(airy(3, x), 22.922214966382015 ± 4.211198689119041)
+test_approx_eq(airyai(x), 0.006591139357460721 ± 0.0011912976705951322)
+test_approx_eq(airyaiprime(x), -0.01191297670595132 ± 0.0019773418072382165)
+test_approx_eq(airybi(x), 14.037328963730136 ± 2.2922214966382017)
+test_approx_eq(airybiprime(x), 22.922214966382015 ± 4.211198689119041)
 for a in (w, x, y); test_approx_eq(airy(a), airy(0, a)); end
 for a in (w, x, y); test_approx_eq(airyai(a), airy(0, a)); end
 for a in (w, x, y); test_approx_eq(airyprime(a), airy(1, a)); end
