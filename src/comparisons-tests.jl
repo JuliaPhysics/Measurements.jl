@@ -37,7 +37,6 @@ import Base: ==, isless, <, <=, isnan, isfinite, isinf, isinteger
 # Order relation is based on the value of measurements, uncertainties are ignored
 <(a::Measurement, b::Measurement) = <(a.val, b.val)
 <=(a::Measurement, b::Measurement) = <=(a.val, b.val)
-isless(a::Measurement, b::Measurement) = isless(a.val, b.val)
 
 isnan(a::Measurement) = isnan(a.val)
 isfinite(a::Measurement) = isfinite(a.val)
