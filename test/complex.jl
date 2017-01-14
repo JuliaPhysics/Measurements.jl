@@ -10,7 +10,7 @@ v = complex(imu, 8 ± 0.9)
 @test v*v*u + u*u*v ≈ u^2*v + v^2*u
 
 # Division
-test_approx_eq_eps(v/v + u/u, complex(2 ± 0), 5e-18)
+@test v/v + u/u ≈ complex(2 ± 0) atol = 5e-18
 
 # Inverse
 @test inv(v) + inv(u) ≈ (v + u)/(v*u)
@@ -24,9 +24,9 @@ for a in (u, v); @test sin(asin(a)) ≈ a; end
 for a in (u, v); @test sinh(asinh(a)) ≈ a; end
 
 # Tangent
-for a in (v, u); test_approx_eq_eps(tan(a), sin(a)/cos(a), 3e-16); end
+for a in (v, u); @test tan(a) ≈ sin(a)/cos(a); end
 for a in (u, v); @test tan(atan(a)) ≈ a; end
-for a in (u, v); test_approx_eq_eps(tanh(a), sinh(a)/cosh(a), 3e-16); end
+for a in (u, v); @test tanh(a) ≈ sinh(a)/cosh(a); end
 for a in (u, v); @test tanh(atanh(a)) ≈ a; end
 
 # Exponential

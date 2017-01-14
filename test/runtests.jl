@@ -10,19 +10,13 @@ function isapprox{T<:AbstractFloat,S<:AbstractFloat}(x::T, y::S;
     # base replacing "==" with "isequal".
     isequal(x, y) || (isfinite(x) && isfinite(y) && abs(x-y) <= atol + rtol*max(abs(x), abs(y)))
 end
-function isapprox(x::Measurement, y::Measurement; rest...)
-    return isapprox(x.val, y.val, rest...) && isapprox(x.err, y.err, rest...)
-end
+isapprox(x::Measurement, y::Measurement; rest...) =
+    isapprox(x.val, y.val; rest...) && isapprox(x.err, y.err; rest...)
 function isapprox{T<:AbstractFloat,S<:AbstractFloat}(x::Complex{Measurement{T}},
                                                      y::Complex{Measurement{S}};
                                                      rest...)
-    return isapprox(real(x), real(y), rest...) && isapprox(imag(x), imag(y), rest...)
+    return isapprox(real(x), real(y); rest...) && isapprox(imag(x), imag(y); rest...)
 end
-
-test_approx_eq_eps(a::Measurement, b::Measurement, tol::Real) =
-    (@test_approx_eq_eps(a.val, b.val, tol) ; @test_approx_eq_eps(a.err, b.err, tol))
-test_approx_eq_eps{T1<:AbstractFloat,T2<:AbstractFloat}(a::Complex{Measurement{T1}}, b::Complex{Measurement{T2}}, tol::Real) =
-    (@test_approx_eq_eps(real(a), real(b), tol) ; @test_approx_eq_eps(imag(a), imag(b), tol))
 
 w = -0.5 ± 0.03
 x = 3 ± 0.1
@@ -447,7 +441,7 @@ b = A \ c
 @test A * b ≈ c
 @test b ⋅ c ≈ 7.423202614379084 ± 0.5981875954418516
 @test det(A) ≈ 612 ± 9.51262319236918
-test_approx_eq_eps.(A * inv(A), eye(A), 3e-18)
+@test A * inv(A) ≈ eye(A)
 
 ##### Calculations with NaNs
 # NaN as nominal value
@@ -458,19 +452,19 @@ test_approx_eq_eps.(A * inv(A), eye(A), 3e-18)
 @test isequal(value(2*(NaN ± NaN)), NaN) && isequal(uncertainty(2*(NaN ± NaN)), NaN)
 
 ##### Test @uncertain macro
-test_approx_eq_eps(@uncertain(tan(x)), tan(x), 2e-11)
-test_approx_eq_eps(@uncertain((a -> a + a + a)(x)), 3x, 3e-12)
+@test @uncertain(tan(x)) ≈ tan(x)
+@test @uncertain((a -> a + a + a)(x)) ≈ 3x
 @test @uncertain(zeta(x)) ≈ measurement(1.2020569031595951, 0.019812624290876782)
-for f in (log, hypot, atan2); test_approx_eq_eps(@uncertain(f(x, y)), f(x, y), 2e-12); end
-test_approx_eq_eps(@uncertain(((a,b,c,d,e,f) -> a+b+c+d+e+f)(x, 2x, y, log(y), -w, w^2)),
-                   3x + y + log(y) - w + w^2, 7e-12)
+for f in (log, hypot, atan2); @test @uncertain(f(x, y)) ≈ f(x, y); end
+@test @uncertain(((a,b,c,d,e,f) -> a+b+c+d+e+f)(x, 2x, y, log(y), -w, w^2)) ≈
+    3x + y + log(y) - w + w^2
 
 let
     # Test with a "ccall"
     f(x) = x*x
     ptr = cfunction(f, Cdouble, (Cdouble,))
     g(x) = ccall(ptr, Cdouble, (Cdouble,), x)*x
-    test_approx_eq_eps(@uncertain(g(x)), x^3, 4e-11)
+    @test @uncertain(g(x)) ≈ x^3
 end
 
 # Test getindex with Derivatives type
