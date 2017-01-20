@@ -6,7 +6,7 @@ v0.4.0 (201?-??-??)
 
 ### Breaking Changes
 
-* Support for Julia 0.4 was dropped.
+* Support for Julia 0.4 and 0.5 was dropped.
 
 v0.3.0 (2016-12-07)
 -------------------

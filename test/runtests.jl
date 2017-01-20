@@ -326,12 +326,6 @@ for a in (x, y); @test lbeta(e, a) ≈ log(beta(e, a)); end
 @test airyaiprime(x) ≈ -0.01191297670595132 ± 0.0019773418072382165
 @test airybi(x) ≈ 14.037328963730136 ± 2.2922214966382017
 @test airybiprime(x) ≈ 22.922214966382015 ± 4.211198689119041
-for a in (w, x, y); @test airy(a) ≈ airy(0, a); end
-for a in (w, x, y); @test airyai(a) ≈ airy(0, a); end
-for a in (w, x, y); @test airyprime(a) ≈ airy(1, a); end
-for a in (w, x, y); @test airyaiprime(a) ≈ airy(1, a); end
-for a in (w, x, y); @test airybi(a) ≈ airy(2, a); end
-for a in (w, x, y); @test airybiprime(a) ≈ airy(3, a); end
 
 # Bessel functions
 for a in (x, y); @test 2*besselj1(a)/a ≈ besselj0(a) + besselj(2, a); end

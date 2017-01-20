@@ -765,19 +765,6 @@ end
 lbeta(a::Real, b::Measurement) = lbeta(b, a)
 
 # Airy functions
-# TOOD: Remove method for `airy' when support for Julia 0.5 will be dropped.
-import Base: airy
-
-function airy(k::Integer, a::Measurement)
-    aval = a.val
-    if k == 0 || k == 2
-        return result(airy(k, aval), airy(k + 1, aval), a)
-    else
-        # Use Airy equation: y'' - xy = 0 => y'' = xy
-        return result(airy(k, aval), aval*airy(k - 1, aval), a)
-    end
-end
-
 import Base: airyai, airyaiprime, airybi, airybiprime
 
 for f in (:airyai, :airybi)
