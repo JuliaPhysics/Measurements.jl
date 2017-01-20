@@ -3,20 +3,14 @@ using Base.Test
 
 import Base: isapprox
 
-function isapprox{T<:AbstractFloat,S<:AbstractFloat}(x::T, y::S;
-                                                     rtol::Real=Base.rtoldefault(x,y),
-                                                     atol::Real=0)
-    # I want to treat NaNs as equal to each other.  Copy the definition of `isapprox' from
-    # base replacing "==" with "isequal".
-    isequal(x, y) || (isfinite(x) && isfinite(y) && abs(x-y) <= atol + rtol*max(abs(x), abs(y)))
-end
 isapprox(x::Measurement, y::Measurement; rest...) =
-    isapprox(x.val, y.val; rest...) && isapprox(x.err, y.err; rest...)
-function isapprox{T<:AbstractFloat,S<:AbstractFloat}(x::Complex{Measurement{T}},
-                                                     y::Complex{Measurement{S}};
-                                                     rest...)
-    return isapprox(real(x), real(y); rest...) && isapprox(imag(x), imag(y); rest...)
-end
+    isapprox(x.val, y.val; nans = true, rest...) &&
+    isapprox(x.err, y.err; nans = true, rest...)
+isapprox{T<:AbstractFloat,S<:AbstractFloat}(x::Complex{Measurement{T}},
+                                            y::Complex{Measurement{S}};
+                                            rest...) =
+                                                isapprox(real(x), real(y); nans = true, rest...) &&
+                                                isapprox(imag(x), imag(y); nans = true, rest...)
 
 w = -0.5 ± 0.03
 x = 3 ± 0.1
