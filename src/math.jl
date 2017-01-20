@@ -49,7 +49,7 @@ function result{T<:AbstractFloat}(val::Real, der::Real, a::Measurement{T})
     # If uncertainty of "a" is null, the uncertainty of result is null as well,
     # even if the derivative is NaN or infinite.  In any other case, use
     # σ_G = |σ_a·∂G/∂a|.
-    σ = (a.err == 0.0) ? 0.0 : abs(der*a.err)
+    σ = (a.err == 0.0) ? zero(T) : abs(der*a.err)
     # The tag is NaN because we don't care about tags of derived quantities, we
     # are only interested in independent ones.
     Measurement(val,  σ, NaN, newder)
@@ -87,7 +87,7 @@ function result(val::Real, der::Tuple{Vararg{Real}},
             if tag ∉ keys(newder) # Skip independent variables already considered
                 σ_x = tag[2]
                 if σ_x != 0.0 # Skip values with 0 uncertainty
-                    ∂G_∂x::T = 0.0
+                    ∂G_∂x::T = zero(T)
                     # Iteratate over all the arguments of the function
                     for (i, x) in enumerate(a)
                         # Calculate the derivative of G with respect to the

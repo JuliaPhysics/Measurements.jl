@@ -492,4 +492,8 @@ for X in (a, b, c); @test sin(X*X + X*X)/cos(X*X + X*X) ≈ tan(2X^2); end
 @test_throws ErrorException measurement("(2)")
 @test_throws ErrorException measurement("(2)e-2")
 
+@testset "Fixed bugs" begin
+    @test 1 * (big(3) ± 0) ≈ 3 ± 0
+end
+
 include("complex.jl")
