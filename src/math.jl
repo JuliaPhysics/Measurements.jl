@@ -1,6 +1,6 @@
 ### math.jl
 #
-# Copyright (C) 2016 Mosè Giordano.
+# Copyright (C) 2016, 2017 Mosè Giordano.
 #
 # Maintainer: Mosè Giordano <mose AT gnu DOT org>
 # Keywords: uncertainty, error propagation, physics
@@ -55,6 +55,14 @@ function result{T<:AbstractFloat}(val::Real, der::Real, a::Measurement{T})
     Measurement(val,  σ, NaN, newder)
 end
 
+# Get the common type parameter of a collection of Measurement objects.  The first two
+# methods are for the trivial cases of homogeneous tuples and arrays, the last, inefficient,
+# method is for inhomogeneous collections (probably the least common case).
+gettype{T<:AbstractFloat}(::Tuple{Vararg{Measurement{T}}}) = T
+gettype{T<:AbstractFloat}(::AbstractArray{Measurement{T}}) = T
+_eltype{T<:AbstractFloat}(::Measurement{T}) = T
+gettype(collection) = promote_type(_eltype.(collection)...)
+
 # This function is similar to the previous one, but applies to mathematical
 # operations with more than one argument, so the formula to propagate
 # uncertainty is more complicated because we have to take into account
@@ -71,12 +79,10 @@ end
 # can expand the previous formula to:
 #   σ_G = sqrt((σ_x·(∂G/∂a1·∂a1/∂x + ∂G/∂a2·∂a2/∂x))^2 + (σ_y·∂G/∂a1·∂a1/∂y)^2 +
 #               + (σ_z·∂G/∂a2·∂a2/∂z)^2)
-function result(val::Real, der::Tuple{Vararg{Real}},
-                a::Tuple{Vararg{Measurement}})
+function result(val, der, a)
     @assert length(der) == length(a)
-    a = promote(a...)
-    T = typeof(a[1].val)
-    newder = similar(a[1].der)
+    T = gettype(a)
+    newder = Derivatives{Tuple{T,T,Float64},T}()
     err::T = zero(T)
     # Iterate over all independent variables.  We first iterate over all
     # variables listed in `a' in order to get all independent variables upon
@@ -921,7 +927,7 @@ import Base: sum, prod
 # arguments, so in the end the function goes from cubic to quadratic.  Still not
 # ideal, but this is an improvement.
 sum{T<:Measurement}(a::AbstractArray{T}) =
-    result(sum(value.(a)), (ones(length(a))...), (a...))
+    result(sum(value.(a)), ones(length(a)), a)
 
 # Same as above.  I'm not particularly proud of how the derivatives are
 # computed, but something like this is needed in order to avoid errors with null
@@ -930,6 +936,6 @@ sum{T<:Measurement}(a::AbstractArray{T}) =
 function prod{T<:Measurement}(a::AbstractArray{T})
     x = value.(a)
     return result(prod(x),
-                  ntuple(i -> prod(deleteat!(copy(x), i)), length(x)),
-                  (a...))
+                  [prod(deleteat!(copy(x), i)) for i in eachindex(x)],
+                  a)
 end
