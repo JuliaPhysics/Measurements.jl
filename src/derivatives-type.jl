@@ -21,13 +21,13 @@
 
 import Base: getindex, get, start, next, done, similar, length
 
-immutable Derivatives{K, V} <: Associative{K,V}
+struct Derivatives{K, V} <: Associative{K,V}
     parent::Derivatives{K, V}
     key::K
     value::V
-    Derivatives() = new() # represents an empty dictionary
-    Derivatives(key, value) = (empty = new(); new(empty, key, value))
-    Derivatives(parent::Derivatives, key, value) = new(parent, key, value)
+    Derivatives{K,V}() where {K,V} = new() # represents an empty dictionary
+    Derivatives{K,V}(key, value) where {K,V} = (empty = new(); new(empty, key, value))
+    Derivatives{K,V}(parent::Derivatives, key, value) where {K,V} = new(parent, key, value)
 end
 
 Derivatives{K,V}(KV::Pair{K,V}) = Derivatives{K,V}(KV[1], KV[2])

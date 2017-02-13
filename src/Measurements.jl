@@ -50,7 +50,7 @@ include("derivatives-type.jl")
 #     measurement and propagate the uncertainty in the case of functions with
 #     more than one argument (in order to deal with correlation between
 #     arguments).
-immutable Measurement{T<:AbstractFloat} <: AbstractFloat
+struct Measurement{T<:AbstractFloat} <: AbstractFloat
     val::T
     err::T
     tag::Float64
