@@ -22,7 +22,7 @@ __precompile__()
 module Measurements
 
 # This is used to calculate numerical derivatives in "@uncertain" macro.
-using Calculus
+using Calculus, SpecialFunctions
 
 # Function to handle new type
 import Base: alignment, show
