@@ -459,29 +459,33 @@ Calculate the weighted and arithmetic means of your set of measurements with
     mean((3.1±0.32, 3.2±0.38, 3.5±0.61, 3.8±0.25))
     # => 3.4000000000000004 ± 0.2063673908348894
 
-``value`` and ``uncertainty`` Functions
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+``Measurements.value`` and ``Measurements.uncertainty`` Functions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use ``value`` and ``uncertainty`` to get the values and uncertainties of
-measurements.  They work with real and complex measurements, scalars or arrays:
+Use ``Measurements.value`` and ``Measurements.uncertainty`` to get the values
+and uncertainties of measurements.  They work with real and complex
+measurements, scalars or arrays:
 
 .. code-block:: julia
 
-    value(94.5 ± 1.6)
-    # => 94.5
-    uncertainty(94.5 ± 1.6)
-    # => 1.6
-    value.([complex(87.3 ± 2.9, 64.3 ± 3.0), complex(55.1 ± 2.8, -19.1 ± 4.6)])
-    # => 2-element Array{Complex{Float64},1}:
-    #     87.3+64.3im
-    #     55.1-19.1im
-    uncertainty.([complex(87.3 ± 2.9, 64.3 ± 3.0), complex(55.1 ± 2.8, -19.1 ± 4.6)])
-    # => 2-element Array{Complex{Float64},1}:
-    #     2.9+3.0im
-    #     2.8+4.6im
+   julia> Measurements.value(94.5 ± 1.6)
+   94.5
 
-Integrate with ``QuadGK.jl``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   julia> Measurements.uncertainty(94.5 ± 1.6)
+   1.6
+
+   julia> Measurements.value.([complex(87.3 ± 2.9, 64.3 ± 3.0), complex(55.1 ± 2.8, -19.1 ± 4.6)])
+   2-element Array{Complex{Float64},1}:
+    87.3+64.3im
+    55.1-19.1im
+
+   julia> Measurements.uncertainty.([complex(87.3 ± 2.9, 64.3 ± 3.0), complex(55.1 ± 2.8, -19.1 ± 4.6)])
+   2-element Array{Complex{Float64},1}:
+    2.9+3.0im
+    2.8+4.6im
+
+Integration with ``QuadGK.jl``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The powerful integration routine ``quadgk`` from ``QuadGK.jl`` package is smart
 enough to support out-of-the-box integrand functions that return arbitrary
@@ -519,6 +523,8 @@ Also with ``quadgk`` correlation is properly taken into account:
 
 If instead the two endpoints have, by chance, the same nominal value and
 uncertainty but are not correlated:
+
+.. code-block:: julia
 
    julia> QuadGK.quadgk(sin, -6.42 ± 0.03, 6.42 ± 0.03)
    (2.484178227707412e-17 ± 0.005786464233000303, 0.0)

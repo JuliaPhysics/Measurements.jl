@@ -436,9 +436,11 @@ b = A \ c
 # NaN as nominal value
 @test isequal(2*(NaN ± 3), NaN ± 6)
 # NaN as uncertainty
-@test isequal(value(2*(3 ± NaN)), 6) && isequal(uncertainty(2*(3 ± NaN)), NaN)
+@test isequal(Measurements.value(2*(3 ± NaN)), 6) &&
+    isequal(Measurements.uncertainty(2*(3 ± NaN)), NaN)
 # Both
-@test isequal(value(2*(NaN ± NaN)), NaN) && isequal(uncertainty(2*(NaN ± NaN)), NaN)
+@test isequal(Measurements.value(2*(NaN ± NaN)), NaN) &&
+    isequal(Measurements.uncertainty(2*(NaN ± NaN)), NaN)
 
 ##### Test @uncertain macro
 @test @uncertain(tan(x)) ≈ tan(x)
@@ -460,10 +462,10 @@ end
 @test_throws KeyError getindex(x.der, 0)
 
 ##### value, uncertainty
-@test value.([w, x, y]) == [-0.5, 3.0, 4.0]
-@test value.([complex(w, x)]) == [complex(-0.5, 3.0)]
-@test uncertainty.([w, x, y]) == [0.03, 0.1, 0.2]
-@test uncertainty.([complex(w, x)]) == [complex(0.03, 0.1)]
+@test Measurements.value.([w, x, y]) == [-0.5, 3.0, 4.0]
+@test Measurements.value.([complex(w, x)]) == [complex(-0.5, 3.0)]
+@test Measurements.uncertainty.([w, x, y]) == [0.03, 0.1, 0.2]
+@test Measurements.uncertainty.([complex(w, x)]) == [complex(0.03, 0.1)]
 
 ##### Test `length' method
 @test length((w + w + 2x + y).der) == 3

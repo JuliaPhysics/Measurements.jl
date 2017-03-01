@@ -7,6 +7,7 @@ v0.4.0 (201?-??-??)
 ### Breaking Changes
 
 * Support for Julia 0.4 and 0.5 was dropped.
+* `value` and `uncertainty` functions are no more exported.
 
 ### New Features
 

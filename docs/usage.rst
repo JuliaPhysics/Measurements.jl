@@ -170,16 +170,16 @@ the simple arithmetic mean.
 Access Nominal Value and Uncertainty
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. function:: value(x)
-.. function:: uncertainty(x)
+.. function:: Measurements.value(x)
+.. function:: Measurements.uncertainty(x)
 
 As explained in the technical appendix, the nominal value and the uncertainty of
 ``Measurement`` objects are stored in ``val`` and ``err`` fields respectively,
 but you do not need to use those field directly to access this information.
-Functions ``value`` and ``uncertainty`` allow you to get the nominal value and
-the uncertainty of ``x``, be it a single measurement or an array of
-measurements.  They are particularly useful in the case of complex measurements
-or arrays of measurements.
+Functions ``Measurements.value`` and ``Measurements.uncertainty`` allow you to
+get the nominal value and the uncertainty of ``x``, be it a single measurement
+or an array of measurements.  They are particularly useful in the case of
+complex measurements or arrays of measurements.
 
 Error Propagation of Numbers with Units
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

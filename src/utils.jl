@@ -15,7 +15,7 @@
 #
 ### Code:
 
-export stdscore, weightedmean, value, uncertainty
+export stdscore, weightedmean
 
 # Standard Score
 """
@@ -101,10 +101,8 @@ for (f, field) in ((:value, :val), (:uncertainty, :err))
 end
 
 """
-    value(x::Measurement)
-    value(x::Complex{Measurement})
-    value(x::AbstractArray{Measurement})
-    value(x::AbstractArray{Complex{Measurement}})
+    Measurements.value(x::Measurement)
+    Measurements.value(x::Complex{Measurement})
 
 Return the nominal value of measurement `x`.  If `x` is an array, return an
 array of the same length as `x` with the nominal values of each elements of `x`.
@@ -112,10 +110,8 @@ array of the same length as `x` with the nominal values of each elements of `x`.
 value
 
 """
-    uncertainty(x::Measurement)
-    uncertainty(x::Complex{Measurement})
-    uncertainty(x::AbstractArray{Measurement})
-    uncertainty(x::AbstractArray{Complex{Measurement}})
+    Measurements.uncertainty(x::Measurement)
+    Measurements.uncertainty(x::Complex{Measurement})
 
 Return the uncertainty of measurement `x`.  If `x` is an array, return an array
 of the same length as `x` with the uncertainty of each elements of `x`.
