@@ -3,49 +3,57 @@ imu = 6 ± 0.4
 u = complex(5 ± 0.3, imu)
 v = complex(imu, 8 ± 0.9)
 
-# Addition and subtraction
-@test 2u - u - 3v + 2v + pi ≈ u - v + pi
+@testset "Addition and subtraction" begin
+    @test 2u - u - 3v + 2v + pi ≈ u - v + pi
+end
 
-# Multiplication and power
-@test v*v*u + u*u*v ≈ u^2*v + v^2*u
+@testset "Multiplication and power" begin
+    @test v*v*u + u*u*v ≈ u^2*v + v^2*u
+end
 
-# Division
-@test v/v + u/u ≈ complex(2 ± 0) atol = 5e-18
+@testset "Division" begin
+    @test v/v + u/u ≈ complex(2 ± 0) atol = 5e-18
+end
 
-# Inverse
-@test inv(v) + inv(u) ≈ (v + u)/(v*u)
+@testset "Inverse" begin
+    @test inv(v) + inv(u) ≈ (v + u)/(v*u)
+end
 
-# Cosine
-for a in (u, v); @test cos(acos(a)) ≈ a; end
-for a in (u, v); @test cosh(acosh(a)) ≈ a; end
+@testset "Trig functions" begin
+    for a in (u, v)
+        @test cos(acos(a)) ≈ a
+        @test cosh(acosh(a)) ≈ a
+        @test sin(asin(a)) ≈ a
+        @test sinh(asinh(a)) ≈ a
+        @test tan(a) ≈ sin(a)/cos(a)
+        @test tan(atan(a)) ≈ a
+        @test tanh(a) ≈ sinh(a)/cosh(a)
+        @test tanh(atanh(a)) ≈ a
+    end
+end
 
-# Sine
-for a in (u, v); @test sin(asin(a)) ≈ a; end
-for a in (u, v); @test sinh(asinh(a)) ≈ a; end
+@testset "Exponential and logarithm" begin
+    for a in (u, v)
+        @test exp(a) ≈ e^a
+        @test expm1(a) ≈ exp(a) - 1
+        @test exp10(a) ≈ 10^a
+        @test exp(log(a)) ≈ a
+        @test log(e, a) ≈ log(a)
+        @test log(10, a) ≈ log10(a)
+        @test log1p(a) ≈ log(1 + a)
+    end
+end
 
-# Tangent
-for a in (v, u); @test tan(a) ≈ sin(a)/cos(a); end
-for a in (u, v); @test tan(atan(a)) ≈ a; end
-for a in (u, v); @test tanh(a) ≈ sinh(a)/cosh(a); end
-for a in (u, v); @test tanh(atanh(a)) ≈ a; end
+@testset "Square root" begin
+    for a in (u, v)
+        @test sqrt(a) ≈ a^0.5
+        @test sqrt(a)*sqrt(a) ≈ a
+    end
+end
 
-# Exponential
-for a in (u, v); @test exp(a) ≈ e^a; end
-for a in (u, v); @test expm1(a) ≈ exp(a) - 1; end
-for a in (u, v); @test exp10(a) ≈ 10^a; end
-
-# Logarithm
-for a in (u, v); @test exp(log(a)) ≈ a; end
-for a in (u, v); @test log(e, a) ≈ log(a); end
-for a in (u, v); @test log(10, a) ≈ log10(a); end
-for a in (u, v); @test log1p(a) ≈ log(1 + a); end
-
-# Square root
-for a in (u, v); @test sqrt(a) ≈ a^0.5; end
-for a in (u, v); @test sqrt(a)*sqrt(a) ≈ a; end
-
-# Absolute value
-for a in (u, v); @test abs(a) ≈ sqrt(abs2(a)); end
+@testset "Absolute value" begin
+    for a in (u, v); @test abs(a) ≈ sqrt(abs2(a)); end
+end
 
 # TODO: Define a method for lgamma with complex argument.
 # # Factorial and gamma
