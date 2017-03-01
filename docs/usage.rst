@@ -44,6 +44,13 @@ expressions of functions’ derivatives.
 In addition, it is possible to create a ``Complex`` measurement with
 ``complex(measurement(a, b), measurement(c, d))``.
 
+This module extends many methods defined in Julia’s mathematical standard
+library, and some methods from widespread third-party packages as well.  This is
+the case for most special functions in `SpecialFunctions.jl
+<https://github.com/JuliaMath/SpecialFunctions.jl>`__ package, and the
+``quadgk`` integration routine from `QuadGK.jl
+<https://github.com/JuliaMath/QuadGK.jl>`__ package.
+
 Those interested in the technical details of the package, in order integrate the
 package in their workflow, can have a look at the technical appendix.
 

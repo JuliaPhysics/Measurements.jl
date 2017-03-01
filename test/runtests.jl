@@ -480,6 +480,18 @@ for X in (a, b, c); @test sin(X*X + X*X)/cos(X*X + X*X) ≈ tan(2X^2); end
     big"8.750000036458332770409319189914605364095140370607375793457032012939451217651416e-01" ±
     big"3.416666677095189699499391052146002403356891669706809079678073000173723744722607e-02"
 
+@testset "QuadGK" begin
+    @test QuadGK.quadgk(cos, x, y)[1] ≈ sin(y) - sin(x)
+    @test QuadGK.quadgk(sin, -y, y)[1] ≈ cos(-y) - cos(y) atol = eps(Float64)
+    @test QuadGK.quadgk(exp, 0.4, x)[1] ≈ exp(x) - exp(0.4)
+    @test QuadGK.quadgk(sin, w, 2.7)[1] ≈ cos(w) - cos(2.7)
+    @test QuadGK.quadgk(x -> cos(x - w), -w, w)[1] ≈ sin(2w)
+    @test QuadGK.quadgk(t -> exp(t / x), w, y)[1] ≈ x * (exp(y / x) - exp(w / x))
+    @test QuadGK.quadgk(t -> sin(t - w), 0, y)[1] ≈ cos(w) - cos(y - w)
+    @test QuadGK.quadgk(t -> log(y - t), w, -pi)[1] ≈
+        (y - w)*log(y - w) - (y + pi)*log(y + pi) + w + pi
+end
+
 ##### Parsing of strings
 @test measurement("  -123.4(56)  ") ≈         -123.4 ± 5.6
 @test measurement("  +1234(56)e-1  ") ≈        123.4 ± 5.6
