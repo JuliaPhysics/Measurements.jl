@@ -45,14 +45,14 @@ function result{T<:AbstractFloat}(val::Real, der::Real, a::Measurement{T})
     val, der = promote(val, der)
     newder = similar(a.der)
     @inbounds for tag in keys(a.der)
-        if tag[2] != 0.0 # Skip values with 0 uncertainty
+        if ! iszero(tag[2]) # Skip values with 0 uncertainty
             newder = Derivatives(newder, tag=>der*a.der[tag])
         end
     end
     # If uncertainty of "a" is null, the uncertainty of result is null as well,
     # even if the derivative is NaN or infinite.  In any other case, use
     # σ_G = |σ_a·∂G/∂a|.
-    σ = (a.err == 0.0) ? zero(T) : abs(der*a.err)
+    σ = iszero(a.err) ? zero(T) : abs(der*a.err)
     # The tag is NaN because we don't care about tags of derived quantities, we
     # are only interested in independent ones.
     Measurement(val,  σ, NaN, newder)
@@ -95,7 +95,7 @@ function result(val, der, a)
         for tag in keys(y.der)
             if tag ∉ keys(newder) # Skip independent variables already considered
                 σ_x = tag[2]
-                if σ_x != 0.0 # Skip values with 0 uncertainty
+                if ! iszero(σ_x)  # Skip values with 0 uncertainty
                     ∂G_∂x::T = zero(T)
                     # Iteratate over all the arguments of the function
                     for (i, x) in enumerate(a)
@@ -104,7 +104,7 @@ function result(val, der, a)
                         # independent variable of the example above, we should
                         # get   ∂G/∂x = ∂G/∂a1·∂a1/∂x + ∂G/∂a2·∂a2/∂x
                         ∂a_∂x = derivative(x, tag) # ∂a_i/∂x
-                        if ∂a_∂x != 0.0 # Skip values with 0 partial derivative
+                        if ! iszero(∂a_∂x) # Skip values with 0 partial derivative
                             # der[i] = ∂G/∂a_i
                             ∂G_∂x = ∂G_∂x + der[i]*∂a_∂x
                         end
