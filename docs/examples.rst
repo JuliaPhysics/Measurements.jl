@@ -115,12 +115,14 @@ by this package.
 
 .. code-block:: julia
 
-    @uncertain (x -> complex(zeta(x), exp(eta(x)^2)))(2 ± 0.13)
-    # => (1.6449340668482273 ± 0.12188127308075564) + (1.9668868646839253 ± 0.042613944993428333)im
-    @uncertain log(9.4 ± 1.3, 58.8 ± 3.7)
-    # => 1.8182372640255153 ± 0.11568300475873611
-    log(9.4 ± 1.3, 58.8 ± 3.7)
-    # => 1.8182372640255153 ± 0.11568300475593848
+    julia> @uncertain (x -> complex(zeta(x), exp(eta(x)^2)))(2 ± 0.13)
+    (1.6449340668482273 ± 0.12188127308075564) + (1.9668868646839253 ± 0.042613944993428333)im
+
+    julia> @uncertain log(9.4 ± 1.3, 58.8 ± 3.7)
+    1.8182372640255153 ± 0.11568300475873611
+
+    julia> log(9.4 ± 1.3, 58.8 ± 3.7)
+    1.8182372640255153 ± 0.11568300475593848
 
 You usually do not need to define a wrapping function before using it.  In the
 case where you have to define a function, like in the first line of previous
@@ -164,7 +166,7 @@ you to set ``Measurement`` objects as endpoints, see below.
 
    .. code-block:: julia
 
-      @uncertain zeta(13.4 ± 0.8) + eta(8.51 ± 0.67)
+      julia> @uncertain zeta(13.4 ± 0.8) + eta(8.51 ± 0.67)
 
    will not work because here the outermost function is ``+``, whose arguments
    are ``zeta(13.4 ± 0.8)`` and ``eta(8.51 ± 0.67)``, that however cannot be
@@ -173,8 +175,8 @@ you to set ``Measurement`` objects as endpoints, see below.
 
    .. code-block:: julia
 
-      @uncertain(zeta(13.4 ± 0.8)) +  @uncertain(eta(8.51 ± 0.67))
-      # => 1.9974303172187315 ± 0.0012169293212062773
+      julia> @uncertain(zeta(13.4 ± 0.8)) +  @uncertain(eta(8.51 ± 0.67))
+      1.9974303172187315 ± 0.0012169293212062773
 
    The type of *all* the arguments provided must be ``Measurement``.  If one of
    the arguments is actually an exact number (so without uncertainty), promote
@@ -182,23 +184,27 @@ you to set ``Measurement`` objects as endpoints, see below.
 
    .. code-block:: julia
 
-       atan2(10, 13.5 ± 0.8)
-       # => 0.6375487981386927 ± 0.028343666961913202
-       @uncertain atan2(10 ± 0, 13.5 ± 0.8)
-       # => 0.6375487981386927 ± 0.028343666962347438
+      julia> atan2(10, 13.5 ± 0.8)
+      0.6375487981386927 ± 0.028343666961913202
+
+      julia> @uncertain atan2(10 ± 0, 13.5 ± 0.8)
+      0.6375487981386927 ± 0.028343666962347438
 
    In addition, the function must be differentiable in all its arguments.  For
-   example, the scaled first derivative of the Airy Ai function
-   :math:`\text{airyx}(1, z) = \exp((2/3) z \sqrt{z})\text{Ai}'(z)` is not
-   differentiable in the first argument, not even the trick of passing an exact
-   measurement would work because the first argument must be an integer.  You
+   example, the polygamma function of order :math:`m`, ``polygamma(m, x)``, is
+   the :math:`m+1`-th derivative of the logarithm of gamma function, and is not
+   differentiable in the first argument.  Not even the trick of passing an exact
+   measurement would work, because the first argument must be an integer.  You
    can easily work around this limitation by wrapping the function in a
-   single-argument function
+   single-argument function:
 
    .. code-block:: julia
 
-       @uncertain (x -> airyx(1, x))(4.8 ± 0.2)
-       # => -0.42300740589773583 ± 0.004083414330362105
+      julia> @uncertain (x -> polygamma(0, x))(4.8 ± 0.2)
+      1.4608477407291167 ± 0.046305812845734776
+
+      julia> digamma(4.8 ± 0.2)   # Exact result
+      1.4608477407291167 ± 0.04630581284451362
 
 Complex Measurements
 ~~~~~~~~~~~~~~~~~~~~
@@ -292,18 +298,21 @@ operations on them in the most natural way possible:
 
 .. code-block:: julia
 
-    A = [1.03 ± 0.14, 2.88 ± 0.35, 5.46 ± 0.97]
-    B = [0.92 ± 0.11, 3.14 ± 0.42, 4.67 ± 0.58]
-    exp.(sqrt.(B)) - log.(A)
-    # => 3-element Array{Measurements.Measurement{Float64},1}:
-    #      2.57996±0.202151
-    #      4.82484±0.707663
-    #      6.98252±1.17829
-    cos.(A).^2 + sin.(A).^2
-    # 3-element Array{Measurements.Measurement{Float64},1}:
-    #     1.0±0.0
-    #     1.0±0.0
-    #     1.0±0.0
+   julia> A = [1.03 ± 0.14, 2.88 ± 0.35, 5.46 ± 0.97]
+
+   julia> B = [0.92 ± 0.11, 3.14 ± 0.42, 4.67 ± 0.58]
+
+   julia> exp.(sqrt.(B)) .- log.(A)
+   3-element Array{Measurements.Measurement{Float64},1}:
+     2.57996±0.202151
+     4.82484±0.707663
+     6.98252±1.17829
+
+   julia> cos.(A).^2 .+ sin.(A).^2
+   3-element Array{Measurements.Measurement{Float64},1}:
+       1.0±0.0
+       1.0±0.0
+       1.0±0.0
 
 If you originally have separate arrays of values and uncertainties, you can
 create an array of ``Measurement`` objects by providing ``measurement`` with
@@ -313,22 +322,24 @@ for vectorizing functions):
 
 .. code-block:: julia
 
-    C = measurement.([174.9, 253.8, 626.1], [12.2, 19.4, 38.5])
-    # => 3-element Array{Measurements.Measurement{Float64},1}:
-    #     174.9±12.2
-    #     253.8±19.4
-    #     626.1±38.5
-    sum(C)
-    # => 1054.8000000000002 ± 44.80457565918909
-    mean(C)
-    # => 351.6000000000001 ± 14.93485855306303
+   julia> C = measurement.([174.9, 253.8, 626.1], [12.2, 19.4, 38.5])
+   3-element Array{Measurements.Measurement{Float64},1}:
+    174.9±12.2
+    253.8±19.4
+    626.1±38.5
+
+   julia> sum(C)
+   1054.8000000000002 ± 44.80457565918909
+
+   julia> mean(C)
+   351.6000000000001 ± 14.93485855306303
 
 .. Tip::
 
    ``prod`` and ``sum`` (and ``mean``, which relies on ``sum``) functions work
    out-of-the-box with any iterable of ``Measurement`` objects, like arrays or
    tuples.  However, these functions have faster methods (quadratic in the
-   number of elements) when operating on an array of ``Measurement``s than on a
+   number of elements) when operating on an array of ``Measurement`` s than on a
    tuple (in this case the computational complexity is cubic in the number of
    elements), so you should use an array if performance is crucial for you, in
    particular for large collections of measurements.
@@ -341,28 +352,34 @@ factorization, etc.
 
 .. code-block:: julia
 
-   A = [(14 ± 0.1) (23 ± 0.2); (-12 ± 0.3) (24 ± 0.4)]
-   b = [(7 ± 0.5), (-13 ± 0.6)]
+   julia> A = [(14 ± 0.1) (23 ± 0.2); (-12 ± 0.3) (24 ± 0.4)]
+
+   julia> b = [(7 ± 0.5), (-13 ± 0.6)]
+
    # Solve the linear system Ax = b
-   x = A \ b
-   # => 2-element Array{Measurements.Measurement{Float64},1}:
-   #      0.763072±0.0313571
-   #     -0.160131±0.0177963
+   julia> x = A \ b
+   2-element Array{Measurements.Measurement{Float64},1}:
+     0.763072±0.0313571
+    -0.160131±0.0177963
+
    # Verify this is the correct solution of the system
-   A * x # This should be equal to `b`
-   # => 2-element Array{Measurements.Measurement{Float64},1}:
-   #       7.0±0.5
-   #     -13.0±0.6
-   dot(x, b)
-   # 7.423202614379084 ± 0.5981875954418516
-   det(A)
-   # => 611.9999999999999 ± 9.51262319236918
-   trace(A)
-   # => 38.0 ± 0.4123105625617661
-   A * inv(A) ≈ eye(A)
-   # => true
-   qrfact(A)
-   # => Base.LinAlg.QR{Measurements.Measurement{Float64},Array{Measurements.Measurement{Float64},2}}(Measurements.Measurement{Float64}[-18.4391±0.209481 -1.84391±0.522154; -0.369924±0.00730266 33.1904±0.331267],Measurements.Measurement{Float64}[1.75926±0.00836088,0.0±0.0])
+   julia> A * x ≈ b
+   true
+
+   julia> dot(x, b)
+   7.423202614379084 ± 0.5981875954418516
+
+   julia> det(A)
+   611.9999999999999 ± 9.51262319236918
+
+   julia> trace(A)
+   38.0 ± 0.4123105625617661
+
+   julia> A * inv(A) ≈ eye(A)
+   true
+
+   julia> qrfact(A)
+   Base.LinAlg.QR{Measurements.Measurement{Float64},Array{Measurements.Measurement{Float64},2}}(Measurements.Measurement{Float64}[-18.4391±0.209481 -1.84391±0.522154; -0.369924±0.00730266 33.1904±0.331267],Measurements.Measurement{Float64}[1.75926±0.00836088,0.0±0.0])
 
 Derivative, Gradient and Uncertainty Components
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
