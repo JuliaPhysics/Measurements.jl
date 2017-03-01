@@ -44,7 +44,7 @@ stdscore{S<:AbstractFloat,T<:AbstractFloat}(a::Measurement{S}, b::Measurement{T}
     weightedmean(iterable) -> measurement(weighted_mean, standard_deviation)
 
 Return the weighted mean of measurements listed in `iterable`, using
-inverse-variance weighting.
+inverse-variance weighting.  NOTA BENE: correlation is not taken into account.
 """
 function weightedmean(iterable)
     v = [el.val for el in iterable]
@@ -65,31 +65,11 @@ Return the value of the partial derivative of `x` with respect to the
 independent measurement `y`, calculated on the nominal value of `y`.  Return
 `0.0` if `x` does not depend on `y`.
 
-Use `Measurements.gradient` to calculate the gradient of `x` with respect to an
+Use `Measurements.derivative.(x, array)` to calculate the gradient of `x` with respect to an
 arrays of independent measurements.
 """
 derivative(a::Measurement, b::Measurement) =
     derivative(a, (b.val, b.err, b.tag))
-
-"""
-    gradient(x::Measurement, [y::AbstractArray{Measurement}])
-
-Return the gradient of `x` with respect to the independent measurements
-contained in `y` array, each calculated on the nominal value of the
-corresponding measurement.  Return `0.0` for the variables on which `x` does not
-depend.
-
-Use `Measurements.derivative` to calculate the partial derivative of `x` with
-respect to a single independent measurement.
-"""
-function gradient{F<:AbstractFloat, T<:Measurement}(a::Measurement{F},
-                                                    b::AbstractArray{T})
-    out = similar(b, F)
-    for i in eachindex(b)
-        out[i] = derivative(a, b[i])
-    end
-    return out
-end
 
 # value and uncertainty
 for (f, field) in ((:value, :val), (:uncertainty, :err))

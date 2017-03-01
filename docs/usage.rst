@@ -125,14 +125,12 @@ Derivative and Gradient
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 .. function:: Measurements.derivative(y::Measurement, x::Measurement)
-.. function:: Measurements.gradient(y::Measurement, x::AbstractArray{Measurement})
 
 In order to propagate the uncertainties, ``Measurements.jl`` keeps track of the
 partial derivative of an expression with respect to all independent measurements
-from which the expression comes. For this reason, the package provides two
-convenient functions, ``Measurements.derivative`` and ``Measurements.gradient``,
-to get the partial derivative and the gradient of an expression with respect to
-independent measurements.
+from which the expression comes.  For this reason, the package provides a
+convenient function, ``Measurements.derivative``, to get the partial derivative
+and the gradient of an expression with respect to independent measurements.
 
 Uncertainty Contribution
 ~~~~~~~~~~~~~~~~~~~~~~~~

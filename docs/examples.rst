@@ -362,32 +362,39 @@ Derivative, Gradient and Uncertainty Components
 
 In order to propagate the uncertainties, ``Measurements.jl`` keeps track of the
 partial derivative of an expression with respect to all independent measurements
-from which the expression comes. The package provides two convenient functions,
-``Measurements.derivative`` and ``Measurements.gradient``, that return the
-partial derivative and the gradient of an expression with respect to independent
-measurements.
+from which the expression comes.  The package provides two convenient functions,
+``Measurements.derivative``, that returns the partial derivative and the
+gradient of an expression with respect to independent measurements.
 
 .. code-block:: julia
 
-    x = 98.1 ± 12.7
-    y = 105.4 ± 25.6
-    z = 78.3 ± 14.1
-    Measurements.derivative(2x - 4y, x)
-    # => 2.0
-    Measurements.derivative(2x - 4y, y)
-    # => -4.0
-    Measurements.gradient(2x - 4y, [x, y, z])
-    # => 3-element Array{Float64,1}:
-    #      2.0
-    #     -4.0
-    #      0.0  # The expression does not depend on z
+   julia> x = 98.1 ± 12.7
+   98.1 ± 12.7
+
+   julia> y = 105.4 ± 25.6
+   105.4 ± 25.6
+
+   julia> z = 78.3 ± 14.1
+   78.3 ± 14.1
+
+   julia> Measurements.derivative(2x - 4y, x)
+   2.0
+
+   julia> Measurements.derivative(2x - 4y, y)
+   -4.0
+
+   julia> Measurements.derivative.(log1p(x) + y^2 - cos(x/y), [x, y, z])
+   3-element Array{Float64,1}:
+      0.0177005
+    210.793
+      0.0       # The expression does not depend on z
 
 .. Tip::
 
-   The ``Measurements.gradient`` function is useful in order to discover which
-   variable contributes most to the total uncertainty of a given expression, if
-   you want to minimize it.  This can be calculated as the `Hadamard
-   (element-wise) product
+   The vectorized version of :func:`Measurements.derivative` is useful in order
+   to discover which variable contributes most to the total uncertainty of a
+   given expression, if you want to minimize it.  This can be calculated as the
+   `Hadamard (element-wise) product
    <https://en.wikipedia.org/wiki/Hadamard_product_%28matrices%29>`__ between
    the gradient of the expression with respect to the set of variables and the
    vector of uncertainties of the same variables in the same order.  For
@@ -395,12 +402,13 @@ measurements.
 
    .. code-block:: julia
 
-       w = y^(3//4)*log(y) + 3x - cos(y/x)
-       # => 447.0410543780643 ± 52.41813324207829
-       abs.(Measurements.gradient(w, [x, y]) .* uncertainty([x, y]))
-       # => 2-element Array{Float64,1}:
-       #     37.9777
-       #     36.1297
+      julia> w = y^(3//4)*log(y) + 3x - cos(y/x)
+      447.0410543780643 ± 52.41813324207829
+
+      julia> abs.(Measurements.derivative.(w, [x, y]) .* Measurements.uncertainty.([x, y]))
+      2-element Array{Float64,1}:
+       37.9777
+       36.1297
 
    In this case, the ``x`` variable contributes most to the uncertainty of
    ``w``.  In addition, note that the `Euclidean norm
@@ -409,20 +417,21 @@ measurements.
 
    .. code-block:: julia
 
-       vecnorm(Measurements.gradient(w, [x, y]) .* uncertainty([x, y]))
-       # => 52.41813324207829
+      julia> vecnorm(Measurements.derivative.(w, [x, y]) .* Measurements.uncertainty.([x, y]))
+      52.41813324207829
 
    The ``Measurements.uncertainty_components`` function simplifies calculation
    of all uncertainty components of a derived quantity:
 
    .. code-block:: julia
 
-       Measurements.uncertainty_components(w)
-       # => Dict{Tuple{Float64,Float64,Float64},Float64} with 2 entries:
-       #      (98.1,12.7,0.549176)  => 37.9777
-       #      (105.4,25.6,0.293309) => 36.1297
-       vecnorm(collect(values(Measurements.uncertainty_components(w))))
-       # => 52.41813324207829
+      julia> Measurements.uncertainty_components(w)
+      Dict{Tuple{Float64,Float64,Float64},Float64} with 2 entries:
+        (98.1, 12.7, 0.303638)  => 37.9777
+        (105.4, 25.6, 0.465695) => 36.1297
+
+      julia> vecnorm(collect(values(Measurements.uncertainty_components(w))))
+      52.41813324207829
 
 ``stdscore`` Function
 ~~~~~~~~~~~~~~~~~~~~~

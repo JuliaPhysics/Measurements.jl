@@ -8,6 +8,8 @@ v0.4.0 (201?-??-??)
 
 * Support for Julia 0.4 and 0.5 was dropped.
 * `value` and `uncertainty` functions are no more exported.
+* `Measurements.gradient` function has been removed.  Use the vectorized
+  function `Measurements.derivative.(x, array)` instead.
 
 ### New Features
 

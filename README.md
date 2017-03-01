@@ -294,23 +294,31 @@ mean(B)
 
 ### Derivative and Gradient ###
 
-The package provides two convenient functions, `Measurements.derivative` and
-`Measurements.gradient`, that return the total derivative and the gradient of an
-expression with respect to independent measurements.
+The package provides a convenient function, `Measurements.derivative`, that
+returns the total derivative and the gradient of an expression with respect to
+independent measurements.
 
 ``` julia
-x = 98.1 ± 12.7
-y = 105.4 ± 25.6
-z = 78.3 ± 14.1
-Measurements.derivative(2x - 4y, x)
-# => 2.0
-Measurements.derivative(2x - 4y, y)
-# => -4.0
-Measurements.gradient(log1p(x) + y^2 - cos(x/y), [x, y, z])
-# => 3-element Array{Float64,1}:
-#       0.0177005
-#     210.793
-#       0.0       # The expression does not depend on z
+julia> x = 98.1 ± 12.7
+98.1 ± 12.7
+
+julia> y = 105.4 ± 25.6
+105.4 ± 25.6
+
+julia> z = 78.3 ± 14.1
+78.3 ± 14.1
+
+julia> Measurements.derivative(2x - 4y, x)
+2.0
+
+julia> Measurements.derivative(2x - 4y, y)
+-4.0
+
+julia> Measurements.derivative.(log1p(x) + y^2 - cos(x/y), [x, y, z])
+3-element Array{Float64,1}:
+   0.0177005
+ 210.793
+   0.0       # The expression does not depend on z
 ```
 
 ### `stdscore` Function ###
