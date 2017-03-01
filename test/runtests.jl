@@ -562,7 +562,7 @@ end
     @test QuadGK.quadgk(cos, x, y)[1] ≈
         @uncertain(((x,y) -> QuadGK.quadgk(cos, x, y)[1])(x, y))
     @test QuadGK.quadgk(sin, -y, y)[1] ≈
-        @uncertain((x -> QuadGK.quadgk(sin, -x, x)[1])(y)) atol = 2e-11
+        @uncertain((x -> QuadGK.quadgk(sin, -x, x)[1])(y)) atol = 1e-10
     @test QuadGK.quadgk(exp, 0.4, x)[1] ≈
         @uncertain((x -> QuadGK.quadgk(exp, 0.4, x)[1])(x))
 end
