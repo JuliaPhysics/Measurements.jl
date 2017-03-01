@@ -480,6 +480,49 @@ measurements.  They work with real and complex measurements, scalars or arrays:
     #     2.9+3.0im
     #     2.8+4.6im
 
+Integrate with ``QuadGK.jl``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The powerful integration routine ``quadgk`` from ``QuadGK.jl`` package is smart
+enough to support out-of-the-box integrand functions that return arbitrary
+types, including ``Measurement``:
+
+.. code-block:: julia
+
+   julia> QuadGK.quadgk(x -> exp(x / (4.73 ± 0.01)), 1, 7)
+   (14.933307243306032 ± 0.009999988180463411, 0.0 ± 0.010017961523508253)
+
+``Measurements.jl`` pushes the capabilities of ``quadgk`` further by supporting
+also ``Measurement`` objects as endpoints:
+
+.. code-block:: julia
+
+   julia> QuadGK.quadgk(cos, 1.19 ± 0.02, 8.37 ± 0.05)
+   (-0.05857827689796702 ± 0.02576650561689427, 2.547162480937004e-11)
+
+Compare this with the expected result:
+
+.. code-block:: julia
+
+   julia> sin(8.37 ± 0.05) - sin(1.19 ± 0.02)
+   -0.058578276897966686 ± 0.02576650561689427
+
+Also with ``quadgk`` correlation is properly taken into account:
+
+.. code-block:: julia
+
+   julia> a = 6.42 ± 0.03
+   6.42 ± 0.03
+
+   julia> QuadGK.quadgk(sin, -a, a)
+   (2.484178227707412e-17 ± 0.0, 0.0)
+
+If instead the two endpoints have, by chance, the same nominal value and
+uncertainty but are not correlated:
+
+   julia> QuadGK.quadgk(sin, -6.42 ± 0.03, 6.42 ± 0.03)
+   (2.484178227707412e-17 ± 0.005786464233000303, 0.0)
+
 Use with ``SIUnits.jl`` and ``Unitful.jl``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

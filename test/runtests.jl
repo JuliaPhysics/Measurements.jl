@@ -482,6 +482,7 @@ for X in (a, b, c); @test sin(X*X + X*X)/cos(X*X + X*X) ≈ tan(2X^2); end
 
 @testset "QuadGK" begin
     @test QuadGK.quadgk(cos, x, y)[1] ≈ sin(y) - sin(x)
+    @test QuadGK.quadgk(sin, -y, y)[1] ≈ cos(-y) - cos(y) atol = eps(Float64)
     @test QuadGK.quadgk(exp, 0.4, x)[1] ≈ exp(x) - exp(0.4)
     @test QuadGK.quadgk(sin, w, 2.7)[1] ≈ cos(w) - cos(2.7)
     @test QuadGK.quadgk(x -> cos(x - w), -w, w)[1] ≈ sin(2w)
