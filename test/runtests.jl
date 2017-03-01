@@ -391,10 +391,11 @@ end
 # To big float and widemul
 @test widemul(x, y) ≈ big(x)*big(y)
 
-# Dummy calls to show
-show(DevNull, [w, x, y])
-show(DevNull, complex(x, w))
-show(DevNull, complex(x, y))
+# show
+@test reprmime("text/plain", [w, 10x, 100y]) ==
+    "3-element Array{Measurements.Measurement{Float64},1}:\n  -0.5±0.03\n  30.0±1.0 \n 400.0±20.0"
+@test reprmime("text/plain", complex(x, w)) == "(3.0 ± 0.1) - (0.5 ± 0.03)im"
+@test reprmime("text/x-tex", y) == reprmime("text/x-latex", y) == "4.0 \\pm 0.2"
 
 # Test alignment
 @test Base.alignment(DevNull, x) == (5,4)

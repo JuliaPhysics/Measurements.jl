@@ -8,6 +8,11 @@ v0.4.0 (201?-??-??)
 
 * Support for Julia 0.4 and 0.5 was dropped.
 
+### New Features
+
+* Real `Measurement` objects can be printed with `"text/x-tex"` and `"text/x-latex"`
+  MIME types.  `\pm` TeX macro is used to render the `±` sign.
+
 v0.3.0 (2016-12-07)
 -------------------
 

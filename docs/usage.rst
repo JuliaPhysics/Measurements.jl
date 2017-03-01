@@ -193,3 +193,17 @@ with numbers with units of measurement, because `transcendental functions
 `dimensionless quantities
 <https://en.wikipedia.org/wiki/Dimensionless_quantity>`__.  In the Examples
 section you will find how this feature works with a couple of packages.
+
+Printing to TeX and LaTeX MIMEs
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+You can print ``Measurement`` objects to TeX and LaTeX MIMES (``"text/x-tex"``
+and ``"text/x-latex"``), the ``±`` sign will be rendered with ``\pm`` command:
+
+.. code-block:: julia
+
+   julia> display("text/x-tex", 5±1)
+   5.0 \pm 1.0
+
+   julia> display("text/x-latex", pi ± 1e-3)
+   3.141592653589793 \pm 0.001

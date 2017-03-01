@@ -81,6 +81,10 @@ const ± = measurement
 # Type representation
 show(io::IO, measure::Measurement) =
     print(io, measure.val, get(io, :compact, false) ? "±" : " ± ", measure.err)
+for mime in (MIME"text/x-tex", MIME"text/x-latex")
+    @eval show(io::IO, ::$mime, measure::Measurement) =
+        print(io, measure.val, " \\pm ", measure.err)
+end
 # Representation of complex measurements.  Print something that is easy to
 # understand and that can be meaningfully copy-pasted into the REPL, at least
 # for standard numeric types.
