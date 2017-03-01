@@ -8,117 +8,133 @@ with an Intel(R) Core(TM) i7-4700MQ CPU.
 
 .. code-block:: julia
 
-   using BenchmarkTools
+   julia> using BenchmarkTools
 
    # Creation of a `Measurement` object
    julia> @benchmark 4.7 ± 0.3
    BenchmarkTools.Trial:
+     memory estimate:  144 bytes
+     allocs estimate:  3
+     --------------
+     minimum time:     29.683 ns (0.00% GC)
+     median time:      35.740 ns (0.00% GC)
+     mean time:        57.519 ns (32.17% GC)
+     maximum time:     3.325 μs (96.81% GC)
+     --------------
      samples:          10000
      evals/sample:     996
      time tolerance:   5.00%
      memory tolerance: 1.00%
-     memory estimate:  144.00 bytes
-     allocs estimate:  3
-     minimum time:     24.00 ns (0.00% GC)
-     median time:      30.00 ns (0.00% GC)
-     mean time:        36.13 ns (16.00% GC)
-     maximum time:     1.53 μs (96.21% GC)
 
-   # Sum of two `Measurement` objects
    julia> a = 12.3 ± 4.5; b = 67.8 ± 9.0;
 
-   julia> @benchmark a + b
+   # Sum of two `Measurement` objects
+   julia> @benchmark $a + $b
    BenchmarkTools.Trial:
+     memory estimate:  352 bytes
+     allocs estimate:  9
+     --------------
+     minimum time:     122.596 ns (0.00% GC)
+     median time:      141.071 ns (0.00% GC)
+     mean time:        218.027 ns (33.15% GC)
+     maximum time:     6.378 μs (96.10% GC)
+     --------------
      samples:          10000
-     evals/sample:     199
+     evals/sample:     916
      time tolerance:   5.00%
      memory tolerance: 1.00%
-     memory estimate:  624.00 bytes
-     allocs estimate:  15
-     minimum time:     424.00 ns (0.00% GC)
-     median time:      433.00 ns (0.00% GC)
-     mean time:        504.87 ns (12.33% GC)
-     maximum time:     14.03 μs (95.58% GC)
 
    # One-argument functions, where functional
    # correlation is not a concern, are even faster
-   julia> @benchmark sqrt(b)
+   julia> @benchmark sqrt($b)
    BenchmarkTools.Trial:
+     memory estimate:  96 bytes
+     allocs estimate:  2
+     --------------
+     minimum time:     40.742 ns (0.00% GC)
+     median time:      43.448 ns (0.00% GC)
+     mean time:        60.819 ns (22.36% GC)
+     maximum time:     3.559 μs (96.73% GC)
+     --------------
      samples:          10000
-     evals/sample:     947
+     evals/sample:     990
      time tolerance:   5.00%
      memory tolerance: 1.00%
-     memory estimate:  96.00 bytes
-     allocs estimate:  2
-     minimum time:     97.00 ns (0.00% GC)
-     median time:      99.00 ns (0.00% GC)
-     mean time:        106.15 ns (5.12% GC)
-     maximum time:     1.79 μs (93.36% GC)
 
-   julia> @benchmark sin(a)
+   julia> @benchmark sin($a)
    BenchmarkTools.Trial:
+     memory estimate:  96 bytes
+     allocs estimate:  2
+     --------------
+     minimum time:     66.120 ns (0.00% GC)
+     median time:      70.562 ns (0.00% GC)
+     mean time:        86.508 ns (15.23% GC)
+     maximum time:     4.165 μs (95.53% GC)
+     --------------
      samples:          10000
-     evals/sample:     891
+     evals/sample:     979
      time tolerance:   5.00%
      memory tolerance: 1.00%
-     memory estimate:  96.00 bytes
-     allocs estimate:  2
-     minimum time:     127.00 ns (0.00% GC)
-     median time:      129.00 ns (0.00% GC)
-     mean time:        135.90 ns (4.06% GC)
-     maximum time:     2.00 μs (91.82% GC)
 
-   julia> @benchmark gamma(a)
+   julia> @benchmark gamma($a)
    BenchmarkTools.Trial:
+     memory estimate:  96 bytes
+     allocs estimate:  2
+     --------------
+     minimum time:     158.325 ns (0.00% GC)
+     median time:      161.586 ns (0.00% GC)
+     mean time:        179.843 ns (7.82% GC)
+     maximum time:     4.416 μs (94.57% GC)
+     --------------
      samples:          10000
-     evals/sample:     570
+     evals/sample:     839
      time tolerance:   5.00%
      memory tolerance: 1.00%
-     memory estimate:  96.00 bytes
-     allocs estimate:  2
-     minimum time:     205.00 ns (0.00% GC)
-     median time:      206.00 ns (0.00% GC)
-     mean time:        219.57 ns (4.57% GC)
-     maximum time:     5.31 μs (95.05% GC)
 
    # Vectorial functions take an almost linear time
    julia> vector = [rand() ± 0.1rand() for _ in 1:10000];
 
-   julia> @benchmark sqrt.(vector)
+   julia> @benchmark sqrt.($vector)
    BenchmarkTools.Trial:
-     samples:          2322
+     memory estimate:  2.37 MiB
+     allocs estimate:  50002
+     --------------
+     minimum time:     910.006 μs (0.00% GC)
+     median time:      1.006 ms (0.00% GC)
+     mean time:        1.558 ms (28.96% GC)
+     maximum time:     7.266 ms (73.62% GC)
+     --------------
+     samples:          3175
      evals/sample:     1
      time tolerance:   5.00%
      memory tolerance: 1.00%
-     memory estimate:  2.37 mb
-     allocs estimate:  50027
-     minimum time:     1.76 ms (0.00% GC)
-     median time:      1.84 ms (0.00% GC)
-     mean time:        2.15 ms (13.57% GC)
-     maximum time:     5.47 ms (58.76% GC)
 
-   julia> @benchmark sin.(vector)
+   julia> @benchmark sin.($vector)
    BenchmarkTools.Trial:
-     samples:          2238
+     memory estimate:  2.37 MiB
+     allocs estimate:  50002
+     --------------
+     minimum time:     1.059 ms (0.00% GC)
+     median time:      1.117 ms (0.00% GC)
+     mean time:        1.674 ms (27.24% GC)
+     maximum time:     7.702 ms (78.61% GC)
+     --------------
+     samples:          2960
      evals/sample:     1
      time tolerance:   5.00%
      memory tolerance: 1.00%
-     memory estimate:  2.37 mb
-     allocs estimate:  50027
-     minimum time:     1.80 ms (0.00% GC)
-     median time:      1.89 ms (0.00% GC)
-     mean time:        2.23 ms (14.65% GC)
-     maximum time:     5.59 ms (64.94% GC)
 
-   julia> @benchmark gamma.(vector)
+   julia> @benchmark gamma.($vector)
    BenchmarkTools.Trial:
-     samples:          1656
+     memory estimate:  2.37 MiB
+     allocs estimate:  50002
+     --------------
+     minimum time:     1.724 ms (0.00% GC)
+     median time:      1.803 ms (0.00% GC)
+     mean time:        2.342 ms (19.51% GC)
+     maximum time:     8.647 ms (62.75% GC)
+     --------------
+     samples:          2117
      evals/sample:     1
      time tolerance:   5.00%
      memory tolerance: 1.00%
-     memory estimate:  2.37 mb
-     allocs estimate:  50027
-     minimum time:     2.64 ms (0.00% GC)
-     median time:      2.71 ms (0.00% GC)
-     mean time:        3.02 ms (9.44% GC)
-     maximum time:     6.58 ms (43.25% GC)
