@@ -547,11 +547,20 @@ end
     @test QuadGK.quadgk(sin, -y, y)[1] ≈ cos(-y) - cos(y) atol = eps(Float64)
     @test QuadGK.quadgk(exp, 0.4, x)[1] ≈ exp(x) - exp(0.4)
     @test QuadGK.quadgk(sin, w, 2.7)[1] ≈ cos(w) - cos(2.7)
-    @test QuadGK.quadgk(x -> cos(x - w), -w, w)[1] ≈ sin(2w)
+    @test QuadGK.quadgk(t -> cos(x - t), 0, 2pi)[1] ≈ measurement(0) atol = 7e-16
+    @test QuadGK.quadgk(t -> exp(t / w), 0, 1)[1] ≈ w * (exp(1 / w) - 1)
+    @test QuadGK.quadgk(t -> cos(t - w), -w, w)[1] ≈ sin(2w)
     @test QuadGK.quadgk(t -> exp(t / x), w, y)[1] ≈ x * (exp(y / x) - exp(w / x))
     @test QuadGK.quadgk(t -> sin(t - w), 0, y)[1] ≈ cos(w) - cos(y - w)
     @test QuadGK.quadgk(t -> log(y - t), w, -pi)[1] ≈
         (y - w)*log(y - w) - (y + pi)*log(y + pi) + w + pi
+    # Compare some of the above integrals with results with "@uncertain" macro.
+    @test QuadGK.quadgk(cos, x, y)[1] ≈
+        @uncertain(((x,y) -> QuadGK.quadgk(cos, x, y)[1])(x, y))
+    @test QuadGK.quadgk(sin, -y, y)[1] ≈
+        @uncertain((x -> QuadGK.quadgk(sin, -x, x)[1])(y)) atol = 2e-11
+    @test QuadGK.quadgk(exp, 0.4, x)[1] ≈
+        @uncertain((x -> QuadGK.quadgk(exp, 0.4, x)[1])(x))
 end
 
 @testset "String parsing" begin
