@@ -139,16 +139,23 @@ in ``Measurements.jl`` package
 
 .. code-block:: julia
 
-    using Cuba
-    cubaerf(x::Real) =
-        2x/sqrt(pi)*cuhre((t, f) -> f[1] = exp(-abs2(t[1]*x)), 1, 1)[1][1]
-    @uncertain cubaerf(0.5 ± 0.01)
-    # => 0.5204998778130466 ± 0.008787825789336267
-    erf(0.5 ± 0.01)
-    # => 0.5204998778130465 ± 0.008787825789354449
+    julia> using Cuba
+
+    julia> cubaerf(x::Real) =
+               2x/sqrt(pi)*cuhre((t, f) -> f[1] = exp(-abs2(t[1]*x)))[1][1]
+    cubaerf (generic function with 1 method)
+
+    julia> @uncertain cubaerf(0.5 ± 0.01)
+    0.5204998778130466 ± 0.008787825789336267
+
+    julia> erf(0.5 ± 0.01)
+    0.5204998778130465 ± 0.008787825789354449
 
 Also here you can use an anonymous function instead of defining the ``cubaerf``
-function, do it as an exercise.
+function, do it as an exercise.  Remember that if you want to numerically
+integrate a function that returns a ``Measurement`` object you can use
+``QuadGK.jl`` package, which is written purely in Julia and in addition allows
+you to set ``Measurement`` objects as endpoints, see below.
 
 .. Tip::
 
@@ -161,7 +168,7 @@ function, do it as an exercise.
 
    will not work because here the outermost function is ``+``, whose arguments
    are ``zeta(13.4 ± 0.8)`` and ``eta(8.51 ± 0.67)``, that however cannot be
-   calculated.  You can use the ``@uncertaint`` macro on each function
+   calculated.  You can use the ``@uncertain`` macro on each function
    separately:
 
    .. code-block:: julia
@@ -362,9 +369,11 @@ Derivative, Gradient and Uncertainty Components
 
 In order to propagate the uncertainties, ``Measurements.jl`` keeps track of the
 partial derivative of an expression with respect to all independent measurements
-from which the expression comes.  The package provides two convenient functions,
-``Measurements.derivative``, that returns the partial derivative and the
-gradient of an expression with respect to independent measurements.
+from which the expression comes.  The package provides a convenient function,
+:func:`Measurements.derivative`, that returns the partial derivative of an
+expression with respect to independent measurements.  Its vectorized version can
+be used to compute the gradient of an expression with respect to multiple
+independent measurements.
 
 .. code-block:: julia
 
@@ -420,8 +429,8 @@ gradient of an expression with respect to independent measurements.
       julia> vecnorm(Measurements.derivative.(w, [x, y]) .* Measurements.uncertainty.([x, y]))
       52.41813324207829
 
-   The ``Measurements.uncertainty_components`` function simplifies calculation
-   of all uncertainty components of a derived quantity:
+   The :func:`Measurements.uncertainty_components` function simplifies
+   calculation of all uncertainty components of a derived quantity:
 
    .. code-block:: julia
 
@@ -437,42 +446,44 @@ gradient of an expression with respect to independent measurements.
 ~~~~~~~~~~~~~~~~~~~~~
 
 You can get the distance in number of standard deviations between a measurement
-and its expected value (not a ``Measurement``) using ``stdscore``:
+and its expected value (not a ``Measurement``) using :func:`stdscore`:
 
 .. code-block:: julia
 
-    stdscore(1.3 ± 0.12, 1)
-    # => 2.5000000000000004
+    julia> stdscore(1.3 ± 0.12, 1)
+    2.5000000000000004
 
 You can use the same function also to test the consistency of two measurements
 by computing the standard score between their difference and zero.  This is what
-``stdscore`` does when both arguments are ``Measurement`` objects:
+:func:`stdscore` does when both arguments are ``Measurement`` objects:
 
 .. code-block:: julia
 
-   stdscore((4.7 ± 0.58) - (5 ± 0.01), 0)
-   # => -0.5171645175253433
-   stdscore(4.7 ± 0.58, 5 ± 0.01)
-   # => -0.5171645175253433
+   julia> stdscore((4.7 ± 0.58) - (5 ± 0.01), 0)
+   -0.5171645175253433
+
+   julia> stdscore(4.7 ± 0.58, 5 ± 0.01)
+   -0.5171645175253433
 
 ``weightedmean`` Function
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Calculate the weighted and arithmetic means of your set of measurements with
-``weightedmean`` and ``mean`` respectively:
+:func:`weightedmean` and ``mean`` respectively:
 
 .. code-block:: julia
 
-    weightedmean((3.1±0.32, 3.2±0.38, 3.5±0.61, 3.8±0.25))
-    # => 3.4665384454054498 ± 0.16812474090663868
-    mean((3.1±0.32, 3.2±0.38, 3.5±0.61, 3.8±0.25))
-    # => 3.4000000000000004 ± 0.2063673908348894
+    julia> weightedmean((3.1±0.32, 3.2±0.38, 3.5±0.61, 3.8±0.25))
+    3.4665384454054498 ± 0.16812474090663868
+
+    julia> mean((3.1±0.32, 3.2±0.38, 3.5±0.61, 3.8±0.25))
+    3.4000000000000004 ± 0.2063673908348894
 
 ``Measurements.value`` and ``Measurements.uncertainty`` Functions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use ``Measurements.value`` and ``Measurements.uncertainty`` to get the values
-and uncertainties of measurements.  They work with real and complex
+Use :func:`Measurements.value` and :func:`Measurements.uncertainty` to get the
+values and uncertainties of measurements.  They work with real and complex
 measurements, scalars or arrays:
 
 .. code-block:: julia
@@ -553,18 +564,25 @@ few examples.
 
 .. code-block:: julia
 
-   using Measurements, SIUnits, SIUnits.ShortUnits
-   hypot((3 ± 1)*m, (4 ± 2)*m) # Pythagorean theorem
-   # => 5.0 ± 1.7088007490635064 m
-   (50 ± 1)Ω * (13 ± 2.4)*1e-2*A # Ohm's Law
-   # => 6.5 ± 1.20702112657567 kg m²s⁻³A⁻¹
-   2pi*sqrt((5.4 ± 0.3)*m / ((9.81 ± 0.01)*m/s^2)) # Pendulum's  period
-   # => 4.661677707464357 ± 0.1295128435999655 s
+   julia> using Measurements, SIUnits, SIUnits.ShortUnits
 
-   using Measurements, Unitful
-   hypot((3 ± 1)*u"m", (4 ± 2)*u"m") # Pythagorean theorem
-   # => 5.0 ± 1.7088007490635064 m
-   (50 ± 1)*u"Ω" * (13 ± 2.4)*1e-2*u"A" # Ohm's Law
-   # => 6.5 ± 1.20702112657567 A Ω
-   2pi*sqrt((5.4 ± 0.3)*u"m" / ((9.81 ± 0.01)*u"m/s^2")) # Pendulum's period
-   # => 4.661677707464357 ± 0.12951284359996548 s
+   julia> hypot((3 ± 1)*m, (4 ± 2)*m) # Pythagorean theorem
+   5.0 ± 1.7088007490635064 m
+
+   julia> (50 ± 1)Ω * (13 ± 2.4)*1e-2*A # Ohm's Law
+   6.5 ± 1.20702112657567 kg m²s⁻³A⁻¹
+
+   julia> 2pi*sqrt((5.4 ± 0.3)*m / ((9.81 ± 0.01)*m/s^2)) # Pendulum's  period
+   4.661677707464357 ± 0.1295128435999655 s
+
+
+   julia> using Measurements, Unitful
+
+   julia> hypot((3 ± 1)*u"m", (4 ± 2)*u"m") # Pythagorean theorem
+   5.0 ± 1.7088007490635064 m
+
+   julia> (50 ± 1)*u"Ω" * (13 ± 2.4)*1e-2*u"A" # Ohm's Law
+   6.5 ± 1.20702112657567 A Ω
+
+   julia> 2pi*sqrt((5.4 ± 0.3)*u"m" / ((9.81 ± 0.01)*u"m/s^2")) # Pendulum's period
+   4.661677707464357 ± 0.12951284359996548 s
