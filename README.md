@@ -23,8 +23,10 @@ it can serve also as an easy-to-use calculator.
 ### Features List ###
 
 * Support for most mathematical operations available in Julia standard library
-  involving real and complex numbers.  All existing functions that accept
-  `AbstractFloat` (and `Complex{AbstractFloat}` as well) arguments and
+  and special functions
+  from [`SpecialFunctions.jl`](https://github.com/JuliaMath/SpecialFunctions.jl)
+  package, involving real and complex numbers.  All existing functions that
+  accept `AbstractFloat` (and `Complex{AbstractFloat}` as well) arguments and
   internally use already supported functions can in turn perform calculations
   involving numbers with uncertainties without being redefined.  This greatly
   enhances the power of `Measurements.jl` without effort for the users

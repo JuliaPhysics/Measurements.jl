@@ -17,11 +17,13 @@ also as an easy-to-use calculator.
 The main features of the package are:
 
 - Support for most mathematical operations available in Julia standard library
-  involving real and complex numbers. All existing functions that accept
-  ``AbstractFloat`` (and ``Complex{AbstractFloat}`` as well) arguments and
-  internally use already supported functions can in turn perform calculations
-  involving numbers with uncertainties without being redefined. This greatly
-  enhances the power of ``Measurements.jl`` without effort for the users
+  and special functions from `SpecialFunctions.jl
+  <https://github.com/JuliaMath/SpecialFunctions.jl>`__ package, involving real
+  and complex numbers.  All existing functions that accept ``AbstractFloat``
+  (and ``Complex{AbstractFloat}`` as well) arguments and internally use already
+  supported functions can in turn perform calculations involving numbers with
+  uncertainties without being redefined.  This greatly enhances the power of
+  ``Measurements.jl`` without effort for the users
 - Functional correlation between variables is correctly handled, so :math:`x - x
   \approx 0 \pm 0`, :math:`x/x \approx 1 \pm 0`, :math:`\tan(x) \approx
   \sin(x)/\cos(x)`, :math:`\mathrm{cis}(x) \approx \exp(ix)`, etc...

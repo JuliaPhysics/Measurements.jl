@@ -15,7 +15,8 @@ v0.4.0 (201?-??-??)
 
 * `quadgk` function from [`QuadGK.jl`](https://github.com/JuliaMath/QuadGK.jl)
   package is extended to support `Measurement` objects as endpoints of
-  integration.  Note that only the case of two real endpoints is supported.
+  integration ([#8](https://github.com/giordano/Measurements.jl/pull/8)).  Note
+  that only the case of two real endpoints is supported.
 * Real `Measurement` objects can be printed with `"text/x-tex"` and `"text/x-latex"`
   MIME types.  `\pm` TeX macro is used to render the `±` sign.
 
