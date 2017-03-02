@@ -494,13 +494,14 @@ end
 
 @testset "NaNs" begin
     # NaN as nominal value
-    @test isequal(2*(NaN ± 3), NaN ± 6)
+    @test 2*(NaN ± 3) ≈ NaN ± 6
     # NaN as uncertainty
-    @test isequal(Measurements.value(2*(3 ± NaN)), 6) &&
-        isequal(Measurements.uncertainty(2*(3 ± NaN)), NaN)
+    @test 2*(3 ± NaN) ≈ 6 ± NaN
     # Both
-    @test isequal(Measurements.value(2*(NaN ± NaN)), NaN) &&
-        isequal(Measurements.uncertainty(2*(NaN ± NaN)), NaN)
+    @test 2*(NaN ± NaN) ≈ NaN ± NaN
+    # Make sure isapprox is working well here
+    @test ! (2*(3 ± NaN) ≈ 6 ± 0)
+    @test ! (2*(NaN ± NaN) ≈ NaN ± 0)
 end
 
 @testset "@uncertain" begin
@@ -508,8 +509,7 @@ end
     @test @uncertain((a -> a + a + a)(x)) ≈ 3x
     @test @uncertain(zeta(x)) ≈ measurement(1.2020569031595951, 0.019812624290876782)
     for f in (log, hypot, atan2); @test @uncertain(f(x, y)) ≈ f(x, y); end
-    @test @uncertain(((a,b,c,d,e,f) -> a+b+c+d+e+f)(x, 2x, y, log(y), -w, w^2)) ≈
-        3x + y + log(y) - w + w^2
+    @test @uncertain(+(x, -x, y, log(y), -w, w^2)) ≈ + y + log(y) - w * (1 - w)
     # Test with a "ccall"
     f(x) = x*x
     ptr = cfunction(f, Cdouble, (Cdouble,))
