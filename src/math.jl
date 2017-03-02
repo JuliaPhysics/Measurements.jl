@@ -274,26 +274,18 @@ function ^(a::Measurement, b::Measurement)
 end
 
 function ^{T<:Integer}(a::Measurement, b::T)
-    aval = a.val
-    return result(aval^b, aval^(b-1)*b, a)
+    x = a.val
+    return result(x ^ b, b * x ^ (b - 1), a)
 end
 
-function ^{T<:Rational}(a::Measurement,  b::T)
-    if isinteger(b)
-        return a^trunc(Integer, b)
-    else
-        aval = a.val
-        return result(aval^b, b*aval^(b - 1.0), a)
-    end
+function ^{F<:AbstractFloat,T<:Rational}(a::Measurement{F},  b::T)
+    x = a.val
+    return result(x ^ b, b * x ^ (b - one(F)), a)
 end
 
 function ^{T<:Real}(a::Measurement,  b::T)
-    if isinteger(float(b))
-        return a^trunc(Integer, b)
-    else
-        aval = a.val
-        return result(aval^b, b*aval^(b - 1.0), a)
-    end
+    x = a.val
+    return result(x ^ b, b * x ^ (b - 1), a)
 end
 
 ^(::Irrational{:e}, b::Measurement) = exp(b)

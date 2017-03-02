@@ -63,7 +63,7 @@ derivative{F<:AbstractFloat, T<:AbstractFloat}(a::Measurement{F},
 
 Return the value of the partial derivative of `x` with respect to the
 independent measurement `y`, calculated on the nominal value of `y`.  Return
-`0.0` if `x` does not depend on `y`.
+zero if `x` does not depend on `y`.
 
 Use `Measurements.derivative.(x, array)` to calculate the gradient of `x` with respect to an
 arrays of independent measurements.
@@ -84,8 +84,7 @@ end
     Measurements.value(x::Measurement)
     Measurements.value(x::Complex{Measurement})
 
-Return the nominal value of measurement `x`.  If `x` is an array, return an
-array of the same length as `x` with the nominal values of each elements of `x`.
+Return the nominal value of measurement `x`.
 """
 value
 
@@ -93,8 +92,7 @@ value
     Measurements.uncertainty(x::Measurement)
     Measurements.uncertainty(x::Complex{Measurement})
 
-Return the uncertainty of measurement `x`.  If `x` is an array, return an array
-of the same length as `x` with the uncertainty of each elements of `x`.
+Return the uncertainty of measurement `x`.
 """
 uncertainty
 
