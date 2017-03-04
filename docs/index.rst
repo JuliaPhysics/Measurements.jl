@@ -38,14 +38,15 @@ The main features of the package are:
   <http://docs.julialang.org/en/stable/manual/calling-c-and-fortran-code/>`__),
   using ``@uncertain`` `macro
   <http://docs.julialang.org/en/stable/manual/metaprogramming/>`__
-- Functions to get the derivative and the gradient of an expression with respect
+- Function to get the derivative and the gradient of an expression with respect
   to one or more independent measurements
 - Functions to calculate `standard score
   <https://en.wikipedia.org/wiki/Standard_score>`__ and `weighted mean
   <https://en.wikipedia.org/wiki/Weighted_arithmetic_mean>`__
 - Parse strings to create measurement objects
 - Easy way to attach the uncertainty to a number using the ``±`` sign as infix
-  operator.  This makes the code more readable and visually appealing
+  operator.  This syntactic sugar makes the code more readable and visually
+  appealing
 - Combined with external packages allows for error propagation of measurements
   with their `physical units
   <https://en.wikipedia.org/wiki/Units_of_measurement>`__

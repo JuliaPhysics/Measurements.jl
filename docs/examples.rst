@@ -347,7 +347,7 @@ for vectorizing functions):
 Some `linear algebra <http://docs.julialang.org/en/stable/stdlib/linalg/>`__
 functions work out-of-the-box, without defining specific methods for them.  For
 example, you can solve linear systems, do matrix multiplication and dot product
-between vectors, find inverse, determinant, and trace of a matrix, do QR
+between vectors, find inverse, determinant, and trace of a matrix, do LU and QR
 factorization, etc.
 
 .. code-block:: julia
@@ -377,6 +377,11 @@ factorization, etc.
 
    julia> A * inv(A) ≈ eye(A)
    true
+
+   julia> lufact(A)
+   Base.LinAlg.LU{Measurements.Measurement{Float64},Array{Measurements.Measurement{Float64},2}} with factors L and U:
+   Measurements.Measurement{Float64}[1.0±0.0 0.0±0.0; -0.857143±0.0222861 1.0±0.0]
+   Measurements.Measurement{Float64}[14.0±0.1 23.0±0.2; 0.0±0.0 43.7143±0.672403]
 
    julia> qrfact(A)
    Base.LinAlg.QR{Measurements.Measurement{Float64},Array{Measurements.Measurement{Float64},2}}(Measurements.Measurement{Float64}[-18.4391±0.209481 -1.84391±0.522154; -0.369924±0.00730266 33.1904±0.331267],Measurements.Measurement{Float64}[1.75926±0.00836088,0.0±0.0])
