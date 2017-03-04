@@ -578,6 +578,7 @@ end
     @test @inferred(measurement(" -12.34e1  +-  0.56e1 ")) ≈ -123.4 ± 5.6
     @test @inferred(measurement(" 1234e-1  +/-  5.6e0 ")) ≈   123.4 ± 5.6
     @test @inferred(measurement("  -1234e-1  ")) ≈ measurement(-1234e-1)
+    for a in (w, x, y); @test @inferred(measurement(repr(a))) == a; end
     @test_throws ErrorException measurement("abc")
     @test_throws ErrorException measurement("(2±1")
     @test_throws ErrorException measurement("2±1)e2")
