@@ -68,10 +68,11 @@ package in their workflow, can have a look at the technical appendix.
 
    .. code-block:: julia
 
-       7.5±1.2 + 3.9±0.9 # This is wrong!
-       # => 11.4 ± 1.2 ± 0.9 ± 0.0
-       (7.5±1.2) + (3.9±0.9) # This is correct
-       # => 11.4 ± 1.5
+       julia> 7.5±1.2 + 3.9±0.9 # This is wrong!
+       11.4 ± 1.2 ± 0.9 ± 0.0
+
+       julia> (7.5±1.2) + (3.9±0.9) # This is correct
+       11.4 ± 1.5
 
 Correlation Between Variables
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

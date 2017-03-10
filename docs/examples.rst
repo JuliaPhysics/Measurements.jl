@@ -5,31 +5,45 @@ These are some basic examples of use of the package:
 
 .. code-block:: julia
 
-    using Measurements
-    a = measurement(4.5, 0.1)
-    # => 4.5 ± 0.1
-    b = 3.8 ± 0.4
-    # => 3.8 ± 0.4
-    2a + b
-    # => 12.8 ± 0.4472135954999579
-    a - 1.2b
-    # => -0.05999999999999961 ± 0.49030602688525043
-    l = measurement(0.936, 1e-3);
-    T = 1.942 ± 4e-3;
-    g = 4pi^2*l/T^2
-    # => 9.797993213510699 ± 0.041697817535336676
-    c = measurement(4)
-    # => 4.0 ± 0.0
-    a*c
-    # => 18.0 ± 0.4
-    sind(94 ± 1.2)
-    # => 0.9975640502598242 ± 0.0014609761696991563
-    x = 5.48 ± 0.67;
-    y = 9.36 ± 1.02;
-    log(2x^2 - 3.4y)
-    # =>  3.3406260917568824 ± 0.5344198747546611
-    atan2(y, x)
-    # => 1.0411291003154137 ± 0.07141014208254456
+   julia> using Measurements
+
+   julia> a = measurement(4.5, 0.1)
+   4.5 ± 0.1
+
+   julia> b = 3.8 ± 0.4
+   3.8 ± 0.4
+
+   julia> 2a + b
+   12.8 ± 0.4472135954999579
+
+   julia> a - 1.2b
+   -0.05999999999999961 ± 0.49030602688525043
+
+   julia> l = measurement(0.936, 1e-3);
+
+   julia> T = 1.942 ± 4e-3;
+
+   julia> g = 4pi^2*l/T^2
+   9.797993213510699 ± 0.041697817535336676
+
+   julia> c = measurement(4)
+   4.0 ± 0.0
+
+   julia> a*c
+   18.0 ± 0.4
+
+   julia> sind(94 ± 1.2)
+   0.9975640502598242 ± 0.0014609761696991563
+
+   julia> x = 5.48 ± 0.67;
+
+   julia> y = 9.36 ± 1.02;
+
+   julia> log(2x^2 - 3.4y)
+   3.3406260917568824 ± 0.5344198747546611
+
+   julia> atan2(y, x)
+   1.0411291003154137 ± 0.07141014208254456
 
 Measurements from Strings
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -39,18 +53,23 @@ there is the uncertainty referred to the corresponding last digits.
 
 .. code-block:: julia
 
-   measurement("-123.4(56)")
-   # => -123.4 ± 5.6
-   measurement("+1234(56)e-1")
-   # => ->  123.4 ± 5.6
-   measurement("12.34e-1 +- 0.56e1")
-   # => 123.4 ± 5.6
-   measurement("(-1.234 ± 0.056)e2")
-   # => -123.4 ± 5.6
-   measurement("1234e-1 +/- 5.6e0")
-   # => 123.4 ± 5.6
-   measurement("-1234e-1")
-   # => -123.4 ± 0.0
+   julia> measurement("-12.34(56)")
+   -12.34 ± 0.56
+
+   julia> measurement("+1234(56)e-2")
+   12.34 ± 0.56
+
+   julia> measurement("123.4e-1 +- 0.056e1")
+   12.34 ± 0.56
+
+   julia> measurement("(-1.234 ± 0.056)e1")
+   -12.34 ± 0.56
+
+   julia> measurement("1234e-2 +/- 0.56e0")
+   12.34 ± 0.56
+
+   julia> measurement("-1234e-2")
+   -12.34 ± 0.0
 
 Correlation Between Variables
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -60,51 +79,64 @@ within the package:
 
 .. code-block:: julia
 
-    x = 8.4 ± 0.7
-    x - x
-    # => 0.0 ± 0.0
-    x/x
-    # => 1.0 ± 0.0
-    x*x*x - x^3
-    # => 0.0 ± 0.0
-    sin(x)/cos(x) - tan(x)
-    # => -2.220446049250313e-16 ± 0.0
-    # They are equal within numerical accuracy
-    y = -5.9 ± 0.2
-    beta(x, y) - gamma(x)*gamma(y)/gamma(x + y)
-    # => 0.0 ± 3.979039320256561e-14
+   julia> x = 8.4 ± 0.7
+   8.4 ± 0.7
+
+   julia> x - x
+   0.0 ± 0.0
+   julia> x/x
+   1.0 ± 0.0
+
+   julia> x*x*x - x^3
+   0.0 ± 0.0
+
+   julia> sin(x)/cos(x) - tan(x)
+   -2.220446049250313e-16 ± 0.0
+   # They are equal within numerical accuracy
+
+   julia> y = -5.9 ± 0.2
+
+   julia> beta(x, y) - gamma(x)*gamma(y)/gamma(x + y)
+   0.0 ± 3.979039320256561e-14
 
 You will get similar results for a variable that is a function of an already
 existing ``Measurement`` object:
 
 .. code-block:: julia
 
-    u = 2x
-    (x + x) - u
-    # => 0.0 ± 0.0
-    u/2x
-    # => 1.0 ± 0.0
-    u^3 - 8x^3
-    # => 0.0 ± 0.0
-    cos(x)^2 - (1 + cos(u))/2
-    # => 0.0 ± 0.0
+   julia> u = 2x
+
+   julia> (x + x) - u
+   0.0 ± 0.0
+
+   julia> u/2x
+   1.0 ± 0.0
+
+   julia> u^3 - 8x^3
+   0.0 ± 0.0
+
+   julia> cos(x)^2 - (1 + cos(u))/2
+   0.0 ± 0.0
 
 A variable that has the same nominal value and uncertainty as ``u`` above but is
 not functionally correlated with ``x`` will give different outcomes:
 
 .. code-block:: julia
 
-    # Define a new measurement but with same nominal value
-    # and uncertainty as u, so v is not correlated with x
-    v = 16.8 ± 1.4
-    (x + x) - v
-    # => 0.0 ± 1.979898987322333
-    v/2x
-    # => 1.0 ± 0.11785113019775792
-    v^3 - 8x^3
-    # => 0.0 ± 1676.4200705455657
-    cos(x)^2 - (1 + cos(v))/2
-    # => 0.0 ± 0.8786465354843539
+   # Define a new measurement but with same nominal value
+   # and uncertainty as u, so v is not correlated with x
+   julia> v = 16.8 ± 1.4
+
+   julia> (x + x) - v
+   0.0 ± 1.979898987322333
+
+   julia> v / 2x
+   1.0 ± 0.11785113019775792
+   julia> v^3 - 8x^3
+   0.0 ± 1676.4200705455657
+
+   julia> cos(x)^2 - (1 + cos(v))/2
+   0.0 ± 0.8786465354843539
 
 ``@uncertain`` Macro
 ~~~~~~~~~~~~~~~~~~~~
@@ -115,14 +147,14 @@ by this package.
 
 .. code-block:: julia
 
-    julia> @uncertain (x -> complex(zeta(x), exp(eta(x)^2)))(2 ± 0.13)
-    (1.6449340668482273 ± 0.12188127308075564) + (1.9668868646839253 ± 0.042613944993428333)im
+   julia> @uncertain (x -> complex(zeta(x), exp(eta(x)^2)))(2 ± 0.13)
+   (1.6449340668482273 ± 0.12188127308075564) + (1.9668868646839253 ± 0.042613944993428333)im
 
-    julia> @uncertain log(9.4 ± 1.3, 58.8 ± 3.7)
-    1.8182372640255153 ± 0.11568300475873611
+   julia> @uncertain log(9.4 ± 1.3, 58.8 ± 3.7)
+   1.8182372640255153 ± 0.11568300475873611
 
-    julia> log(9.4 ± 1.3, 58.8 ± 3.7)
-    1.8182372640255153 ± 0.11568300475593848
+   julia> log(9.4 ± 1.3, 58.8 ± 3.7)
+   1.8182372640255153 ± 0.11568300475593848
 
 You usually do not need to define a wrapping function before using it.  In the
 case where you have to define a function, like in the first line of previous
@@ -214,24 +246,26 @@ measurements.
 
 .. code-block:: julia
 
-    u = complex(32.7 ± 1.1, -3.1 ± 0.2)
-    v = complex(7.6 ± 0.9, 53.2 ± 3.4)
-    2u+v
-    # => (73.0 ± 2.3769728648009427) + (47.0 ± 3.4234485537247377)im
-    sqrt(u*v)
-    # => (33.004702573592 ± 1.0831254428098636) + (25.997507418428984 ± 1.1082833691607152)im
-    gamma(u/v)
-    # => (-0.25050193836584694 ± 0.011473098558745594) + (1.2079738483289788 ± 0.133606565257322)im
+   julia> u = complex(32.7 ± 1.1, -3.1 ± 0.2)
+
+   julia> v = complex(7.6 ± 0.9, 53.2 ± 3.4)
+
+   julia> 2u + v
+   (73.0 ± 2.3769728648009427) + (47.0 ± 3.4234485537247377)im
+
+   julia> sqrt(u * v)
+   (33.004702573592 ± 1.0831254428098636) + (25.997507418428984 ± 1.1082833691607152)im
 
 You can also verify the `Euler’s formula
 <https://en.wikipedia.org/wiki/Euler%27s_formula>`__
 
 .. code-block:: julia
 
-    cis(u)
-    # => (6.27781144696534 ± 23.454542573739754) + (21.291738410228678 ± 8.112997844397572)im
-    cos(u) + sin(u)*im
-    # => (6.277811446965339 ± 23.454542573739754) + (21.291738410228678 ± 8.112997844397572)im
+   julia> cis(u)
+   (6.27781144696534 ± 23.454542573739754) + (21.291738410228678 ± 8.112997844397572)im
+
+   julia> cos(u) + sin(u)*im
+   (6.277811446965339 ± 23.454542573739754) + (21.291738410228678 ± 8.112997844397572)im
 
 Arbitrary Precision Calculations
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -263,10 +297,12 @@ that
 
 .. code-block:: julia
 
-   a = big"3.00000001" ± big"1e-17"
-   b = big"4.00000001" ± big"1e-17"
-   stdscore(a*b, 12.00000007)
-   # => -7.25510901439718980095468884170649047384323406887854411581099003148365616351548
+   julia> a = big"3.00000001" ± big"1e-17"
+
+   julia> b = big"4.00000001" ± big"1e-17"
+
+   julia> stdscore(a*b, 12.00000007)
+   -7.25510901439718980095468884170649047384323406887854411581099003148365616351548
 
 the measurement significantly differs from the expected value and you make a
 great discovery.  Instead, if you used double precision accuracy, you would have
@@ -274,8 +310,8 @@ wrongly found that your measurement is consistent with the expected value:
 
 .. code-block:: julia
 
-   stdscore((3.00000001 ± 1e-17)*(4.00000001 ± 1e-17), 12.00000007)
-   # => 0.0
+   julia> stdscore((3.00000001 ± 1e-17)*(4.00000001 ± 1e-17), 12.00000007)
+   0.0
 
 and you would have missed an important prize due to the use of an incorrect
 arithmetic.
@@ -285,10 +321,11 @@ Of course, you can perform any mathematical operation supported in
 
 .. code-block:: julia
 
-    hypot(a, b)
-    # => 5.000000014000000000399999998880000003119999991353600023834879934652928178154746 ± 9.999999999999999999999999999999999999999999999999999999999999999999999999999967e-18
-    log(2a)^b
-    # => 1.030668110995484938037006520012324656386442805506891265153048683619922226691323e+01 ± 9.744450581349821315555305038012032439062183433587962363526314884889736017119502e-17
+   julia> hypot(a, b)
+   5.000000014000000000399999998880000003119999991353600023834879934652928178154746 ± 9.999999999999999999999999999999999999999999999999999999999999999999999999999967e-18
+
+   julia> log(2a)^b
+   1.030668110995484938037006520012324656386442805506891265153048683619922226691323e+01 ± 9.744450581349821315555305038012032439062183433587962363526314884889736017119502e-17
 
 Operations with Arrays and Linear Algebra
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -315,24 +352,30 @@ operations on them in the most natural way possible:
        1.0±0.0
 
 If you originally have separate arrays of values and uncertainties, you can
-create an array of ``Measurement`` objects by providing ``measurement`` with
-those arrays (remember to use the `dot syntax
+create an array of ``Measurement`` objects using ``measurement`` or ``±`` with
+the `dot syntax
 <http://docs.julialang.org/en/stable/manual/functions/#man-dot-vectorizing>`__
-for vectorizing functions):
+for vectorizing functions:
 
 .. code-block:: julia
 
-   julia> C = measurement.([174.9, 253.8, 626.1], [12.2, 19.4, 38.5])
+   julia> C = measurement.([174.9, 253.8, 626.3], [12.2, 19.4, 38.5])
    3-element Array{Measurements.Measurement{Float64},1}:
     174.9±12.2
     253.8±19.4
-    626.1±38.5
+    626.3±38.5
 
    julia> sum(C)
-   1054.8000000000002 ± 44.80457565918909
+   1055.0 ± 44.80457565918909
 
-   julia> mean(C)
-   351.6000000000001 ± 14.93485855306303
+   julia> D = [549.4, 672.3, 528.5] .± [7.4, 9.6, 5.2]
+   3-element Array{Measurements.Measurement{Float64},1}:
+    549.4±7.4
+    672.3±9.6
+    528.5±5.2
+
+   julia> mean(D)
+   583.4 ± 4.396463225012679
 
 .. Tip::
 

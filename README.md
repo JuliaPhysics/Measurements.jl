@@ -162,41 +162,55 @@ involving many `±`s.  Use parantheses where appropriate to avoid confusion.  Se
 for example the following cases:
 
 ``` julia
-7.5±1.2 + 3.9±0.9 # This is wrong!
-# => 11.4 ± 1.2 ± 0.9 ± 0.0
-(7.5±1.2) + (3.9±0.9) # This is correct
-# => 11.4 ± 1.5
+julia> 7.5±1.2 + 3.9±0.9 # This is wrong!
+11.4 ± 1.2 ± 0.9 ± 0.0
+
+julia> (7.5±1.2) + (3.9±0.9) # This is correct
+11.4 ± 1.5
 ```
 
 Examples
 --------
 
 ``` julia
-using Measurements
-a = measurement(4.5, 0.1)
-# => 4.5 ± 0.1
-b = 3.8 ± 0.4
-# => 3.8 ± 0.4
-2a + b
-# => 12.8 ± 0.4472135954999579
-a - 1.2b
-# => -0.05999999999999961 ± 0.49030602688525043
-l = measurement(0.936, 1e-3);
-T = 1.942 ± 4e-3;
-P = 4pi^2*l/T^2
-# => 9.797993213510699 ± 0.041697817535336676
-c = measurement(4)
-# => 4.0 ± 0.0
-a*c
-# => 18.0 ± 0.4
-sind(94 ± 1.2)
-# => 0.9975640502598242 ± 0.0014609761696991563
-x = 5.48 ± 0.67;
-y = 9.36 ± 1.02;
-log(2x^2 - 3.4y)
-# =>  3.3406260917568824 ± 0.5344198747546611
-atan2(y, x)
-# => 1.0411291003154137 ± 0.07141014208254456
+julia> using Measurements
+
+julia> a = measurement(4.5, 0.1)
+4.5 ± 0.1
+
+julia> b = 3.8 ± 0.4
+3.8 ± 0.4
+julia> 2a + b
+12.8 ± 0.4472135954999579
+
+julia> a - 1.2b
+-0.05999999999999961 ± 0.49030602688525043
+
+julia> l = measurement(0.936, 1e-3);
+
+julia> T = 1.942 ± 4e-3;
+
+julia> P = 4pi^2*l/T^2
+9.797993213510699 ± 0.041697817535336676
+
+julia> c = measurement(4)
+4.0 ± 0.0
+
+julia> a*c
+18.0 ± 0.4
+
+julia> sind(94 ± 1.2)
+0.9975640502598242 ± 0.0014609761696991563
+
+julia> x = 5.48 ± 0.67;
+
+julia> y = 9.36 ± 1.02;
+
+julia> log(2x^2 - 3.4y)
+3.3406260917568824 ± 0.5344198747546611
+
+julia> atan2(y, x)
+1.0411291003154137 ± 0.07141014208254456
 ```
 
 ### Measurements from Strings ###
@@ -205,18 +219,23 @@ You can construct `Measurement` objects from strings.  Within parentheses there
 is the uncertainty on the last digits.
 
 ```julia
-measurement("-123.4(56)")
-# => -123.4 ± 5.6
-measurement("+1234(56)e-1")
-# => ->  123.4 ± 5.6
-measurement("12.34e-1 +- 0.56e1")
-# => 123.4 ± 5.6
-measurement("(-1.234 ± 0.056)e2")
-# => -123.4 ± 5.6
-measurement("1234e-1 +/- 5.6e0")
-# => 123.4 ± 5.6
-measurement("-1234e-1")
-# => -123.4 ± 0.0
+julia> measurement("-12.34(56)")
+-12.34 ± 0.56
+
+julia> measurement("+1234(56)e-2")
+12.34 ± 0.56
+
+julia> measurement("123.4e-1 +- 0.056e1")
+12.34 ± 0.56
+
+julia> measurement("(-1.234 ± 0.056)e1")
+-12.34 ± 0.56
+
+julia> measurement("1234e-2 +/- 0.56e0")
+12.34 ± 0.56
+
+julia> measurement("-1234e-2")
+-12.34 ± 0.0
 ```
 
 ### Correlation Between Variables ###
@@ -225,15 +244,19 @@ Here you can see examples of how functionally correlated variables are treated
 within the package:
 
 ``` julia
-x = 8.4 ± 0.7
-x - x
-# => 0.0 ± 0.0
-x/x
-# => 1.0 ± 0.0
-x*x*x - x^3
-# => 0.0 ± 0.0
-sin(x)/cos(x) - tan(x)
-# => -2.220446049250313e-16 ± 0.0 # They are equal within numerical accuracy
+julia> x = 8.4 ± 0.7
+
+julia> x - x
+0.0 ± 0.0
+
+julia> x/x
+1.0 ± 0.0
+
+julia> x*x*x - x^3
+0.0 ± 0.0
+
+julia> sin(x)/cos(x) - tan(x)
+-2.220446049250313e-16 ± 0.0 # They are equal within numerical accuracy
 ```
 
 ### `@uncertain` Macro ###
@@ -243,12 +266,14 @@ complex-valued functions of any number of real arguments, even in functions not
 natively supported by this package.
 
 ``` julia
-@uncertain zeta(2 ± 0.13)
-# => 1.6449340668482273 ± 0.12188127308075564
-@uncertain log(9.4 ± 1.3, 58.8 ± 3.7)
-# => 1.8182372640255153 ± 0.11568300475873611
-log(9.4 ± 1.3, 58.8 ± 3.7)
-# => 1.8182372640255153 ± 0.11568300475593848
+julia> @uncertain zeta(2 ± 0.13)
+1.6449340668482273 ± 0.12188127308075564
+
+julia> @uncertain log(9.4 ± 1.3, 58.8 ± 3.7)
+1.8182372640255153 ± 0.11568300475873611
+
+julia> log(9.4 ± 1.3, 58.8 ± 3.7)
+1.8182372640255153 ± 0.11568300475593848
 ```
 
 ### Complex Measurements ###
@@ -257,14 +282,15 @@ Here are a few examples about uncertainty propagation of complex-valued
 measurements.
 
 ``` julia
-u = complex(32.7 ± 1.1, -3.1 ± 0.2)
-v = complex(7.6 ± 0.9, 53.2 ± 3.4)
-2u+v
-# => (73.0 ± 2.3769728648009427) + (47.0 ± 3.4234485537247377)im
-sqrt(u*v)
-# => (33.004702573592 ± 1.0831254428098636) + (25.997507418428984 ± 1.1082833691607152)im
-gamma(u/v)
-# => (-0.25050193836584694 ± 0.011473098558745594) + (1.2079738483289788 ± 0.133606565257322)im
+julia> u = complex(32.7 ± 1.1, -3.1 ± 0.2)
+
+julia> v = complex(7.6 ± 0.9, 53.2 ± 3.4)
+
+julia> 2u + v
+(73.0 ± 2.3769728648009427) + (47.0 ± 3.4234485537247377)im
+
+julia> sqrt(u * v)
+(33.004702573592 ± 1.0831254428098636) + (25.997507418428984 ± 1.1082833691607152)im
 ```
 
 ### Arrays of Measurements ###
@@ -273,26 +299,35 @@ You can create arrays of `Measurement` objects and perform mathematical
 operations on them:
 
 ``` julia
-A = [1.03 ± 0.14, 2.88 ± 0.35, 5.46 ± 0.97]
-log(A)
-# => 3-element Array{Measurements.Measurement{Float64},1}:
-#     0.02955880224154443 ± 0.1359223300970874
-#     1.0577902941478545 ± 0.12152777777777776
-#     1.6974487897568138 ± 0.17765567765567764
-cos(A).^2 + sin(A).^2
-# 3-element Array{Measurements.Measurement{Float64},1}:
-#     1.0 ± 0.0
-#     1.0 ± 0.0
-#     1.0 ± 0.0
-B = measurement([174.9, 253.8, 626.1], [12.2, 19.4, 38.5])
-# => 3-element Array{Measurements.Measurement{Float64},1}:
-#     174.9 ± 12.2
-#     253.8 ± 19.4
-#     626.1 ± 38.5
-sum(B)
-# => 1054.8000000000002 ± 44.80457565918909
-mean(B)
-# => 351.6000000000001 ± 14.93485855306303
+julia> A = [1.03 ± 0.14, 2.88 ± 0.35, 5.46 ± 0.97]
+3-element Array{Measurements.Measurement{Float64},1}:
+ 1.03±0.14
+ 2.88±0.35
+ 5.46±0.97
+
+julia> log.(A)
+3-element Array{Measurements.Measurement{Float64},1}:
+ 0.0295588±0.135922
+   1.05779±0.121528
+   1.69745±0.177656
+
+julia> cos.(A) .^ 2 .+ sin.(A) .^ 2
+3-element Array{Measurements.Measurement{Float64},1}:
+ 1.0±0.0
+ 1.0±0.0
+ 1.0±0.0
+
+julia> B = measurement.([174.8, 253.7, 626.6], [12.2, 19.4, 38.5])
+3-element Array{Measurements.Measurement{Float64},1}:
+ 174.8±12.2
+ 253.7±19.4
+ 626.6±38.5
+
+julia> sum(B)
+1055.1 ± 44.80457565918909
+
+julia> mean(B)
+351.7 ± 14.93485855306303
 ```
 
 ### Derivative and Gradient ###
@@ -330,8 +365,8 @@ You can get the distance in number of standard deviations between a real
 measurement and its expected value (not a `Measurement`) using `stdscore`:
 
 ``` julia
-stdscore(1.3 ± 0.12, 1)
-# => 2.5000000000000004
+julia> stdscore(1.3 ± 0.12, 1)
+2.5000000000000004
 ```
 
 You can also test the consistency of two real measurements by measuring the
@@ -339,10 +374,11 @@ standard score of their difference and zero.  This is what `stdscore` does if
 both arguments are `Measurement` objects:
 
 ```julia
-stdscore((4.7 ± 0.58) - (5 ± 0.01), 0)
-# => -0.5171645175253433
-stdscore(4.7 ± 0.58, 5 ± 0.01)
-# => -0.5171645175253433
+julia> stdscore((4.7 ± 0.58) - (5 ± 0.01), 0)
+-0.5171645175253433
+
+julia> stdscore(4.7 ± 0.58, 5 ± 0.01)
+-0.5171645175253433
 ```
 
 ### `weightedmean` Function ###
@@ -351,10 +387,11 @@ Calculate the weighted and arithmetic means of your set of measurements with
 `weightedmean` and `mean` respectively:
 
 ``` julia
-weightedmean((3.1±0.32, 3.2±0.38, 3.5±0.61, 3.8±0.25))
-# => 3.4665384454054498 ± 0.16812474090663868
-mean((3.1±0.32, 3.2±0.38, 3.5±0.61, 3.8±0.25))
-# => 3.4000000000000004 ± 0.2063673908348894
+julia> weightedmean((3.1±0.32, 3.2±0.38, 3.5±0.61, 3.8±0.25))
+3.4665384454054498 ± 0.16812474090663868
+
+julia> mean((3.1±0.32, 3.2±0.38, 3.5±0.61, 3.8±0.25))
+3.4000000000000004 ± 0.2063673908348894
 ```
 
 ### Use with ``SIUnits.jl`` and ``Unitful.jl`` ###
@@ -365,21 +402,27 @@ For example, you can use [`SIUnits.jl`](https://github.com/Keno/SIUnits.jl) or
 [`Unitful.jl`](https://github.com/ajkeller34/Unitful.jl).
 
 ``` julia
-using Measurements, SIUnits, SIUnits.ShortUnits
-hypot((3 ± 1)*m, (4 ± 2)*m) # Pythagorean theorem
-# => 5.0 ± 1.7088007490635064 m
-(50 ± 1)Ω * (13 ± 2.4)*1e-2*A # Ohm's Law
-# => 6.5 ± 1.20702112657567 kg m²s⁻³A⁻¹
-2pi*sqrt((5.4 ± 0.3)*m / ((9.81 ± 0.01)*m/s^2)) # Pendulum's  period
-# => 4.661677707464357 ± 0.1295128435999655 s
+julia> using Measurements, SIUnits, SIUnits.ShortUnits
 
-using Measurements, Unitful
-hypot((3 ± 1)*u"m", (4 ± 2)*u"m") # Pythagorean theorem
-# => 5.0 ± 1.7088007490635064 m
-(50 ± 1)*u"Ω" * (13 ± 2.4)*1e-2*u"A" # Ohm's Law
-# => 6.5 ± 1.20702112657567 A Ω
-2pi*sqrt((5.4 ± 0.3)*u"m" / ((9.81 ± 0.01)*u"m/s^2")) # Pendulum's period
-# => 4.661677707464357 ± 0.12951284359996548 s
+julia> hypot((3 ± 1)*m, (4 ± 2)*m) # Pythagorean theorem
+5.0 ± 1.7088007490635064 m
+
+julia> (50 ± 1)Ω * (13 ± 2.4)*1e-2*A # Ohm's Law
+6.5 ± 1.20702112657567 kg m²s⁻³A⁻¹
+
+julia> 2pi*sqrt((5.4 ± 0.3)*m / ((9.81 ± 0.01)*m/s^2)) # Pendulum's  period
+4.661677707464357 ± 0.1295128435999655 s
+
+julia> using Measurements, Unitful
+
+julia> hypot((3 ± 1)*u"m", (4 ± 2)*u"m") # Pythagorean theorem
+5.0 ± 1.7088007490635064 m
+
+julia> (50 ± 1)*u"Ω" * (13 ± 2.4)*1e-2*u"A" # Ohm's Law
+6.5 ± 1.20702112657567 A Ω
+
+julia> 2pi*sqrt((5.4 ± 0.3)*u"m" / ((9.81 ± 0.01)*u"m/s^2")) # Pendulum's period
+4.661677707464357 ± 0.12951284359996548 s
 ```
 
 Development
