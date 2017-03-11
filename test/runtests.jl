@@ -454,12 +454,15 @@ end
 end
 
 @testset "Type representation" begin
-    @test reprmime("text/plain", [w, 10x, 100y]) ==
+    @test repr([w, 10x, 100y]) ==
         "3-element Array{Measurements.Measurement{Float64},1}:\n  -0.5±0.03\n  30.0±1.0 \n 400.0±20.0"
-    @test reprmime("text/plain", complex(x, w)) == "(3.0 ± 0.1) - (0.5 ± 0.03)im"
-    @test reprmime("text/plain", complex(w, y)) == "(-0.5 ± 0.03) + (4.0 ± 0.2)im"
+    @test repr(complex(x, w)) == "(3.0 ± 0.1) - (0.5 ± 0.03)im"
+    @test repr(complex(w, y)) == "(-0.5 ± 0.03) + (4.0 ± 0.2)im"
     @test reprmime("text/x-tex", y) == reprmime("text/x-latex", y) == "4.0 \\pm 0.2"
     @test Base.alignment(DevNull, x) == (5,4)
+    # Make sure the printed representation of a Measurement object is correctly parsed as
+    # the same object (well, the tag will be different, but that's not important here).
+    for a in (w, x, y); @test eval(parse(repr(a))) == a; end
 end
 
 @testset "sum" begin

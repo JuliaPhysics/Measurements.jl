@@ -26,6 +26,13 @@ Julia REPL with ``\pm`` followed by ``TAB`` key.  You can provide ``value`` and
 ``AbstractFloat``.  Thus, ``measurement(42, 33//12)`` and ``pi ± 0.1`` are
 valid.
 
+In addition to making the code prettier, the fact that the ``±`` sign can be
+used as infix operator to define new independent ``Measurement`` s makes the
+printed representation of these objects valid Julia syntax, so you can quickly
+copy the output of an operation in the Julia REPL to perform other calculations.
+Note however that the copied number will not be the *same* object as the
+original one, because it will be a *new independent* measurement.
+
 ``measurement(value)`` creates a ``Measurement`` object with zero uncertainty,
 like mathematical constants. See below for further examples.
 
