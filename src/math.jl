@@ -230,10 +230,10 @@ end
 
 # Division: /, div, fld, cld
 function /(a::Measurement, b::Measurement)
-    aval = a.val
-    oneoverbval = inv(b.val)
-    return result(aval*oneoverbval, (oneoverbval, -aval*abs2(oneoverbval)),
-                  (a, b))
+    x = a.val
+    y = b.val
+    oneovery = 1 / y
+    return result(x / y, (oneovery, -x * abs2(oneovery)), (a, b))
 end
 /(a::Real, b::Measurement) = result(a/b.val, -a/abs2(b.val), b)
 /(a::Measurement, b::Real) = result(a.val/b, 1/b, a)
@@ -366,57 +366,57 @@ end
 # atan2, atanh
 import Base: acos, acosd, acosh, asin, asind, asinh, atan, atand, atan2, atanh
 
-function acos(a::Measurement)
+function acos{T<:AbstractFloat}(a::Measurement{T})
     aval = a.val
-    return result(acos(aval), -inv(sqrt(1.0 - abs2(aval))), a)
+    return result(acos(aval), -one(T) / (sqrt(one(T) - abs2(aval))), a)
 end
 
-function acosd(a::Measurement)
+function acosd{T<:AbstractFloat}(a::Measurement{T})
     aval = a.val
-    return result(acosd(aval), -rad2deg(inv(sqrt(1.0 - abs2(aval)))), a)
+    return result(acosd(aval), -rad2deg(one(T) / (sqrt(one(T) - abs2(aval)))), a)
 end
 
-function acosh(a::Measurement)
+function acosh{T<:AbstractFloat}(a::Measurement{T})
     aval = a.val
-    return result(acosh(aval), inv(sqrt(abs2(aval) - 1.0)), a)
+    return result(acosh(aval), one(T) / (sqrt(abs2(aval) - one(T))), a)
 end
 
-function asin(a::Measurement)
+function asin{T<:AbstractFloat}(a::Measurement{T})
     aval = a.val
-    return result(asin(aval), inv(sqrt(1.0 - abs2(aval))), a)
+    return result(asin(aval), one(T) / (sqrt(one(T) - abs2(aval))), a)
 end
 
-function asind(a::Measurement)
+function asind{T<:AbstractFloat}(a::Measurement{T})
     aval = a.val
-    return result(asind(aval), rad2deg(inv(sqrt(1.0 - abs2(aval)))), a)
+    return result(asind(aval), rad2deg(one(T) / (sqrt(one(T) - abs2(aval)))), a)
 end
 
-function asinh(a::Measurement)
+function asinh{T<:AbstractFloat}(a::Measurement{T})
     aval = a.val
-    return result(asinh(aval), inv(hypot(aval, 1.0)), a)
+    return result(asinh(aval), one(T) / (hypot(aval, one(T))), a)
 end
 
-function atan(a::Measurement)
+function atan{T<:AbstractFloat}(a::Measurement{T})
     aval = a.val
-    return result(atan(aval), inv(abs2(aval) + 1.0), a)
+    return result(atan(aval), one(T) / (abs2(aval) + one(T)), a)
 end
 
-function atand(a::Measurement)
+function atand{T<:AbstractFloat}(a::Measurement{T})
     aval = a.val
-    return result(atand(aval), rad2deg(inv(abs2(aval) + 1.0)), a)
+    return result(atand(aval), rad2deg(one(T) / (abs2(aval) + one(T))), a)
 end
 
-function atanh(a::Measurement)
+function atanh{T<:AbstractFloat}(a::Measurement{T})
     aval = a.val
-    return result(atanh(aval), inv(1.0 - abs2(aval)), a)
+    return result(atanh(aval), one(T) / (one(T) - abs2(aval)), a)
 end
 
 function atan2(a::Measurement, b::Measurement)
     aval = a.val
     bval = b.val
-    invdenom = inv(abs2(aval) + abs2(bval))
+    denom = abs2(aval) + abs2(bval)
     return result(atan2(aval, bval),
-                  (bval*invdenom, -aval*invdenom),
+                  (bval / denom, -aval / denom),
                   (a, b))
 end
 
@@ -504,9 +504,9 @@ function exp10{T<:AbstractFloat}(a::Measurement{T})
     return result(val, log(T(10))*val, a)
 end
 
-function frexp(a::Measurement)
+function frexp{T<:AbstractFloat}(a::Measurement{T})
     x, y = frexp(a.val)
-    return (result(x, inv(exp2(y)), a), y)
+    return (result(x, one(T) / exp2(y), a), y)
 end
 
 ldexp(a::Measurement, e::Integer) = result(ldexp(a.val, e), ldexp(1.0, e), a)
@@ -519,34 +519,34 @@ function log(a::Measurement, b::Measurement)
     bval = b.val
     val = log(aval, bval)
     loga = log(aval)
-    return result(val, (-val/(aval*loga), inv(loga*bval)), (a, b))
+    return result(val, (-val / (aval * loga), 1 / (loga * bval)), (a, b))
 end
 
-function log(a::Measurement) # Special case
+function log{T<:AbstractFloat}(a::Measurement{T}) # Special case
     aval = a.val
-    return result(log(aval), inv(aval), a)
+    return result(log(aval), one(T) / aval, a)
 end
 
 function log2{T<:AbstractFloat}(a::Measurement{T}) # Special case
     x = a.val
-    return result(log2(x), inv(log(T(2))*x), a)
+    return result(log2(x), one(T) / (log(T(2)) * x), a)
 end
 
 function log10{T<:AbstractFloat}(a::Measurement{T}) # Special case
     aval = a.val
-    return result(log10(aval), inv(log(T(10))*aval), a)
+    return result(log10(aval), one(T) / (log(T(10)) * aval), a)
 end
 
-function log1p(a::Measurement) # Special case
+function log1p{T<:AbstractFloat}(a::Measurement{T}) # Special case
     aval = a.val
-    return result(log1p(aval), inv(aval + one(aval)), a)
+    return result(log1p(aval), one(T) / (aval + one(T)), a)
 end
 
 log(::Irrational{:e}, a::Measurement) = log(a)
 
-function log(a::Real, b::Measurement)
+function log{T<:AbstractFloat}(a::Real, b::Measurement{T})
     bval = b.val
-    return result(log(a, bval), inv(log(a)*bval), b)
+    return result(log(a, bval), one(T) / (log(a) * bval), b)
 end
 
 function log(a::Measurement, b::Real)
@@ -562,30 +562,29 @@ function hypot(a::Measurement, b::Measurement)
     aval = a.val
     bval = b.val
     val = hypot(aval, bval)
-    invval = inv(val)
     return result(val,
-                  (aval*invval, bval*invval),
+                  (aval / val, bval / val),
                   (a, b))
 end
 
 function hypot(a::Real, b::Measurement)
     bval = b.val
     res = hypot(a, bval)
-    return result(res, bval*inv(res), b)
+    return result(res, bval / res, b)
 end
 
 function hypot(a::Measurement, b::Real)
     aval = a.val
     res = hypot(aval, b)
-    return result(res, aval*inv(res), a)
+    return result(res, aval / res, a)
 end
 
 # Square root: sqrt
 import Base: sqrt
 
-function sqrt(a::Measurement)
+function sqrt{T<:AbstractFloat}(a::Measurement{T})
     val = sqrt(a.val)
-    return result(val, 0.5*inv(val), a)
+    return result(val, one(T) / (2 * val), a)
 end
 
 # Cube root: cbrt
@@ -594,7 +593,7 @@ import Base: cbrt
 function cbrt(a::Measurement)
     aval = a.val
     val = cbrt(aval)
-    return result(val, val*inv(3.0*aval), a)
+    return result(val, val / (3 * aval), a)
 end
 
 ### Absolute value, sign and the likes
@@ -673,7 +672,7 @@ end
 function erfcx{T<:AbstractFloat}(a::Measurement{T})
     aval = a.val
     res = erfcx(aval)
-    return result(res, 2*(aval*res - inv(sqrt(T(pi)))), a)
+    return result(res, 2 * (aval * res - one(T) / (sqrt(T(pi)))), a)
 end
 
 function erfi{T<:AbstractFloat}(a::Measurement{T})
@@ -712,10 +711,10 @@ function digamma(a::Measurement)
     return result(digamma(aval), trigamma(aval), a)
 end
 
-function invdigamma(a::Measurement)
+function invdigamma{T<:AbstractFloat}(a::Measurement{T})
     aval = a.val
     res = invdigamma(aval)
-    return result(res, inv(trigamma(res)), a)
+    return result(res, one(T) / trigamma(res), a)
 end
 
 function trigamma(a::Measurement)
