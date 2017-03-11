@@ -42,8 +42,10 @@ Most mathematical operations are instructed, by `operator overloading
 expressions of functions’ derivatives.
 
 It is also possible to create a ``Complex`` measurement with
-``complex(measurement(real_part_value, real_part_uncertainty),
-measurement(imaginary_part_value, imaginary_part_uncertainty))``.
+
+.. code-block:: julia
+
+   complex(measurement(real_part_value, real_part_uncertainty), measurement(imaginary_part_value, imaginary_part_uncertainty))
 
 In addition to making the code prettier, the fact that the ``±`` sign can be
 used as infix operator to define new independent ``Measurement`` s makes the
