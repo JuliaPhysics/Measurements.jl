@@ -290,8 +290,8 @@ objects with nominal value and uncertainty of type ``BigFloat``.
 For example, you want to measure a quantity that is the product of two
 observables :math:`a` and :math:`b`, and the expected value of the product is
 :math:`12.00000007`.  You measure :math:`a = 3.00000001 \pm (1\times 10^{-17})`
-and :math:`b = 4.00000001 \pm (1\times 10^{-17})` and want to compute the
-standard score of the product with :func:`stdscore`.  Using the ability of
+and :math:`b = 4.0000000100000001 \pm (1\times 10^{-17})` and want to compute
+the standard score of the product with :func:`stdscore`.  Using the ability of
 ``Measurements.jl`` to perform arbitrary precision calculations you discover
 that
 
@@ -299,10 +299,10 @@ that
 
    julia> a = big"3.00000001" ± big"1e-17"
 
-   julia> b = big"4.00000001" ± big"1e-17"
+   julia> b = big"4.0000000100000001" ± big"1e-17"
 
-   julia> stdscore(a*b, 12.00000007)
-   -7.25510901439718980095468884170649047384323406887854411581099003148365616351548
+   julia> stdscore(a * b, big"12.00000007")
+   7.999999997599999878080000420160000093695993825308195353920411656927305928530607
 
 the measurement significantly differs from the expected value and you make a
 great discovery.  Instead, if you used double precision accuracy, you would have
@@ -310,7 +310,7 @@ wrongly found that your measurement is consistent with the expected value:
 
 .. code-block:: julia
 
-   julia> stdscore((3.00000001 ± 1e-17)*(4.00000001 ± 1e-17), 12.00000007)
+   julia> stdscore((3.00000001 ± 1e-17)*(4.0000000100000001 ± 1e-17), 12.00000007)
    0.0
 
 and you would have missed an important prize due to the use of an incorrect
@@ -322,10 +322,10 @@ Of course, you can perform any mathematical operation supported in
 .. code-block:: julia
 
    julia> hypot(a, b)
-   5.000000014000000000399999998880000003119999991353600023834879934652928178154746 ± 9.999999999999999999999999999999999999999999999999999999999999999999999999999967e-18
+   5.000000014000000080399999974880000423919999216953595312794907845334503498479533 ± 1.000000000000000000000000000000000000000000000000000000000000000000000000000009e-17
 
-   julia> log(2a)^b
-   1.030668110995484938037006520012324656386442805506891265153048683619922226691323e+01 ± 9.744450581349821315555305038012032439062183433587962363526314884889736017119502e-17
+   julia> log(2a) ^ b
+   1.030668110995484998145373137400169442058573718746529435800255440973153647087416e+01 ± 9.744450581349822034766870718391736028419817951565653507621645979913795265663606e-17
 
 Operations with Arrays and Linear Algebra
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

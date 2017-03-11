@@ -535,7 +535,8 @@ end
     a = big"3.00000001" ± big"1e-17"
     b = big"4.00000001" ± big"1e-17"
     c = big"5.00000001" ± big"1e-15"
-    for X in (a, b, c)
+    d = big"4.0000000100000001" ± big"1e-17"
+    for X in (a, b, c, d)
         @test @inferred(sin(X*X + X*X)/cos(X*X + X*X)) ≈ @inferred(tan(2X^2))
     end
     @test @inferred(a * b) ≈
@@ -544,6 +545,8 @@ end
     @test @inferred(a / x + w / b) ≈
         big"8.750000036458332770409319189914605364095140370607375793457032012939451217651416e-01" ±
         big"3.416666677095189699499391052146002403356891669706809079678073000173723744722607e-02"
+    # The following test is present also in the examples in the manual.
+    @test stdscore(a * d, big"12.00000007") > 7.9
 end
 
 @testset "QuadGK" begin
