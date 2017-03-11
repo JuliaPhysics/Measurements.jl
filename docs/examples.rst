@@ -336,8 +336,16 @@ operations on them in the most natural way possible:
 .. code-block:: julia
 
    julia> A = [1.03 ± 0.14, 2.88 ± 0.35, 5.46 ± 0.97]
+   3-element Array{Measurements.Measurement{Float64},1}:
+    1.03±0.14
+    2.88±0.35
+    5.46±0.97
 
    julia> B = [0.92 ± 0.11, 3.14 ± 0.42, 4.67 ± 0.58]
+   3-element Array{Measurements.Measurement{Float64},1}:
+    0.92±0.11
+    3.14±0.42
+    4.67±0.58
 
    julia> exp.(sqrt.(B)) .- log.(A)
    3-element Array{Measurements.Measurement{Float64},1}:
@@ -345,7 +353,7 @@ operations on them in the most natural way possible:
      4.82484±0.707663
      6.98252±1.17829
 
-   julia> cos.(A).^2 .+ sin.(A).^2
+   julia> @. cos(A) ^ 2 + sin(A) ^ 2
    3-element Array{Measurements.Measurement{Float64},1}:
        1.0±0.0
        1.0±0.0
@@ -396,8 +404,14 @@ factorization, etc.
 .. code-block:: julia
 
    julia> A = [(14 ± 0.1) (23 ± 0.2); (-12 ± 0.3) (24 ± 0.4)]
+   2×2 Array{Measurements.Measurement{Float64},2}:
+     14.0±0.1  23.0±0.2
+    -12.0±0.3  24.0±0.4
 
    julia> b = [(7 ± 0.5), (-13 ± 0.6)]
+   2-element Array{Measurements.Measurement{Float64},1}:
+      7.0±0.5
+    -13.0±0.6
 
    # Solve the linear system Ax = b
    julia> x = A \ b
