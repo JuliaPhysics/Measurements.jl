@@ -26,13 +26,6 @@ Julia REPL with ``\pm`` followed by ``TAB`` key.  You can provide ``value`` and
 ``AbstractFloat``.  Thus, ``measurement(42, 33//12)`` and ``pi ± 0.1`` are
 valid.
 
-In addition to making the code prettier, the fact that the ``±`` sign can be
-used as infix operator to define new independent ``Measurement`` s makes the
-printed representation of these objects valid Julia syntax, so you can quickly
-copy the output of an operation in the Julia REPL to perform other calculations.
-Note however that the copied number will not be the *same* object as the
-original one, because it will be a *new independent* measurement.
-
 ``measurement(value)`` creates a ``Measurement`` object with zero uncertainty,
 like mathematical constants. See below for further examples.
 
@@ -48,8 +41,17 @@ Most mathematical operations are instructed, by `operator overloading
 ``Measurement`` type, and uncertainty is calculated exactly using analityc
 expressions of functions’ derivatives.
 
-In addition, it is possible to create a ``Complex`` measurement with
-``complex(measurement(a, b), measurement(c, d))``.
+It is also possible to create a ``Complex`` measurement with
+``complex(measurement(real_part_value, real_part_uncertainty),
+measurement(imaginary_part_value, imaginary_part_uncertainty))``.
+
+In addition to making the code prettier, the fact that the ``±`` sign can be
+used as infix operator to define new independent ``Measurement`` s makes the
+printed representation of these objects valid Julia syntax, so you can quickly
+copy the output of an operation in the Julia REPL to perform other calculations.
+Note however that the copied number will not be the *same* object as the
+original one, because it will be a *new independent* measurement, without memory
+of the correlations of the original object.
 
 This module extends many methods defined in Julia’s mathematical standard
 library, and some methods from widespread third-party packages as well.  This is
