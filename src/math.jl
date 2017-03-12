@@ -159,16 +159,16 @@ import Base: +, -, *, /, div, inv, fld, cld
 
 # Addition: +
 +(a::Measurement) = a
-+(a::Measurement, b::Measurement) = result(a.val + b.val, (1.0, 1.0), (a, b))
-+(a::Real, b::Measurement) = result(a + b.val, 1.0, b)
-+(a::Measurement, b::Bool) = result(a.val +b, 1.0, a)
-+(a::Measurement, b::Real) = result(a.val + b, 1.0, a)
++(a::Measurement, b::Measurement) = result(a.val + b.val, (1, 1), (a, b))
++(a::Real, b::Measurement) = result(a + b.val, 1, b)
++(a::Measurement, b::Bool) = result(a.val +b, 1, a)
++(a::Measurement, b::Real) = result(a.val + b, 1, a)
 
 # Subtraction: -
--(a::Measurement) = result(-a.val, -1.0, a)
--(a::Measurement, b::Measurement) = result(a.val - b.val, (1.0, -1.0), (a, b))
--(a::Real, b::Measurement) = result(a - b.val, -1.0, b)
--(a::Measurement, b::Real) = result(a.val - b, 1.0, a)
+-(a::Measurement) = result(-a.val, -1, a)
+-(a::Measurement, b::Measurement) = result(a.val - b.val, (1, -1), (a, b))
+-(a::Real, b::Measurement) = result(a - b.val, -1, b)
+-(a::Measurement, b::Real) = result(a.val - b, 1, a)
 
 # Multiplication: *
 function *(a::Measurement, b::Measurement)
@@ -240,17 +240,17 @@ end
 
 # 0.0 as partial derivative for both arguments of "div", "fld", "cld" should be
 # correct for most cases.  This has been tested against "@uncertain" macro.
-div(a::Measurement, b::Measurement) = result(div(a.val, b.val), (0.0, 0.0), (a, b))
-div(a::Measurement, b::Real) = result(div(a.val, b), 0.0, a)
-div(a::Real, b::Measurement) = result(div(a, b.val), 0.0, b)
+div(a::Measurement, b::Measurement) = result(div(a.val, b.val), (0, 0), (a, b))
+div(a::Measurement, b::Real) = result(div(a.val, b), 0, a)
+div(a::Real, b::Measurement) = result(div(a, b.val), 0, b)
 
-fld(a::Measurement, b::Measurement) = result(fld(a.val, b.val), (0.0, 0.0), (a, b))
-fld(a::Measurement, b::Real) = result(fld(a.val, b), 0.0, a)
-fld(a::Real, b::Measurement) = result(fld(a, b.val), 0.0, b)
+fld(a::Measurement, b::Measurement) = result(fld(a.val, b.val), (0, 0), (a, b))
+fld(a::Measurement, b::Real) = result(fld(a.val, b), 0, a)
+fld(a::Real, b::Measurement) = result(fld(a, b.val), 0, b)
 
-cld(a::Measurement, b::Measurement) = result(cld(a.val, b.val), (0.0, 0.0), (a, b))
-cld(a::Measurement, b::Real) = result(cld(a.val, b), 0.0, a)
-cld(a::Real, b::Measurement) = result(cld(a, b.val), 0.0, b)
+cld(a::Measurement, b::Measurement) = result(cld(a.val, b.val), (0, 0), (a, b))
+cld(a::Measurement, b::Real) = result(cld(a.val, b), 0, a)
+cld(a::Real, b::Measurement) = result(cld(a, b.val), 0, b)
 
 # Inverse: inv
 function inv(a::Measurement)
@@ -270,7 +270,7 @@ function ^(a::Measurement, b::Measurement)
     aval = a.val
     bval = b.val
     pow = aval^bval
-    return result(pow, (aval^(bval - 1.0)*bval, pow*log(aval)), (a, b))
+    return result(pow, (aval^(bval - 1)*bval, pow*log(aval)), (a, b))
 end
 
 function ^{T<:Integer}(a::Measurement, b::T)
@@ -509,7 +509,7 @@ function frexp{T<:AbstractFloat}(a::Measurement{T})
     return (result(x, one(T) / exp2(y), a), y)
 end
 
-ldexp(a::Measurement, e::Integer) = result(ldexp(a.val, e), ldexp(1.0, e), a)
+ldexp{T}(a::Measurement{T}, e::Integer) = result(ldexp(a.val, e), ldexp(one(T), e), a)
 
 # Logarithms
 import Base: log, log2, log10, log1p
@@ -614,13 +614,13 @@ end
 # Sign: sign, copysign, flipsign
 import Base: sign, copysign, flipsign
 
-sign(a::Measurement) = result(sign(a.val), 0.0, a)
+sign(a::Measurement) = result(sign(a.val), 0, a)
 
 function copysign(a::Measurement, b::Measurement)
     aval = a.val
     bval = b.val
     result(copysign(aval, bval),
-           (copysign(1, aval)/copysign(1, bval), 0.0),
+           (copysign(1, aval)/copysign(1, bval), 0),
            (a, b))
 end
 
@@ -633,7 +633,7 @@ copysign(a::Real, b::Measurement) = copysign(measurement(a), b)
 
 function flipsign(a::Measurement, b::Measurement)
     flip = flipsign(a.val, b.val)
-    return result(flip, (copysign(1.0, flip), 0.0), (a, b))
+    return result(flip, (copysign(1, flip), 0), (a, b))
 end
 
 flipsign(a::Measurement, b::Real) = flipsign(a, measurement(b))
@@ -655,7 +655,7 @@ end
 function erfinv{T<:AbstractFloat}(a::Measurement{T})
     res = erfinv(a.val)
     # For the derivative, see http://mathworld.wolfram.com/InverseErf.html
-    return result(res, 0.5*sqrt(T(pi))*exp(abs2(res)), a)
+    return result(res, sqrt(T(pi)) * exp(abs2(res)) / 2, a)
 end
 
 function erfc{T<:AbstractFloat}(a::Measurement{T})
@@ -666,7 +666,7 @@ end
 function erfcinv{T<:AbstractFloat}(a::Measurement{T})
     res = erfcinv(a.val)
     # For the derivative, see http://mathworld.wolfram.com/InverseErfc.html
-    return result(res, -0.5*sqrt(T(pi))*exp(abs2(res)), a)
+    return result(res, -sqrt(T(pi)) * exp(abs2(res)) / 2, a)
 end
 
 function erfcx{T<:AbstractFloat}(a::Measurement{T})
@@ -683,7 +683,7 @@ end
 function dawson{T<:AbstractFloat}(a::Measurement{T})
     aval = a.val
     res = dawson(aval)
-    return result(res, 1.0 - 2.0*aval*res, a)
+    return result(res, one(T) - 2 * aval * res, a)
 end
 
 # Factorial and gamma
@@ -793,7 +793,7 @@ end
 
 function besselj1(a::Measurement)
     x = a.val
-    return result(besselj1(x), 0.5*(besselj0(x) - besselj(2, x)), a)
+    return result(besselj1(x), (besselj0(x) - besselj(2, x)) / 2, a)
 end
 
 # XXX: I don't know a closed form expression for the derivative with respect to
@@ -802,7 +802,7 @@ end
 # use "@uncertain" macro when both arguments are of Measurement type.
 function besselj(nu::Real, a::Measurement)
     x = a.val
-    return result(besselj(nu, x), 0.5*(besselj(nu - 1, x) - besselj(nu + 1, x)), a)
+    return result(besselj(nu, x), (besselj(nu - 1, x) - besselj(nu + 1, x)) / 2, a)
 end
 
 function bessely0(a::Measurement)
@@ -812,45 +812,45 @@ end
 
 function bessely1(a::Measurement)
     x = a.val
-    return result(bessely1(x), 0.5*(bessely0(x) - bessely(2, x)), a)
+    return result(bessely1(x), (bessely0(x) - bessely(2, x)) / 2, a)
 end
 
 # XXX: I don't know a closed form expression for the derivative with respect to
 # first argument of y_n, see comments about "besselj".
 function bessely(nu::Real, a::Measurement)
     x = a.val
-    return result(bessely(nu, x), 0.5*(bessely(nu - 1, x) - bessely(nu + 1, x)), a)
+    return result(bessely(nu, x), (bessely(nu - 1, x) - bessely(nu + 1, x)) / 2, a)
 end
 
 function besselh(nu::Real, k::Integer, a::Measurement)
     x = a.val
     return result(besselh(nu, k, x),
-                  0.5*(besselh(nu - 1, k, x) - besselh(nu + 1, k, x)),
+                  (besselh(nu - 1, k, x) - besselh(nu + 1, k, x)) / 2,
                   a)
 end
 
 function besseli(nu::Real, a::Measurement)
     x = a.val
-    return result(besseli(nu, x), 0.5*(besseli(nu - 1, x) + besseli(nu + 1, x)), a)
+    return result(besseli(nu, x), (besseli(nu - 1, x) + besseli(nu + 1, x)) / 2, a)
 end
 
 function besselix(nu::Real, a::Measurement)
     x = a.val
     return result(besselix(nu, x),
-                  0.5*(besseli(nu - 1, x) + besseli(nu + 1, x))*exp(-abs(x)) -
+                  (besseli(nu - 1, x) + besseli(nu + 1, x)) * exp(-abs(x)) / 2 -
                   besseli(nu, x)*sign(x)*exp(-abs(x)),
                   a)
 end
 
 function besselk(nu::Real, a::Measurement)
     x = a.val
-    return result(besselk(nu, x), -0.5*(besselk(nu - 1, x) + besselk(nu + 1, x)), a)
+    return result(besselk(nu, x), -(besselk(nu - 1, x) + besselk(nu + 1, x)) / 2, a)
 end
 
 function besselkx(nu::Real, a::Measurement)
     x = a.val
     return result(besselkx(nu, x),
-                  -0.5*(besselk(nu - 1, x) + besselk(nu + 1, x))*exp(x) +
+                  -(besselk(nu - 1, x) + besselk(nu + 1, x)) * exp(x) / 2 +
                   besselk(nu, x)*exp(x),
                   a)
 end
