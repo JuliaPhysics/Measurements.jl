@@ -109,9 +109,12 @@ function result(val, der, a)
                             ∂G_∂x = ∂G_∂x + der[i]*∂a_∂x
                         end
                     end
-                    newder = Derivatives(newder, tag=>∂G_∂x)
-                    # Add (σ_x·∂G/∂x)^2 to the total uncertainty (squared)
-                    err = err + abs2(σ_x*∂G_∂x)
+                    if ! iszero(∂G_∂x)
+                        # Add (σ_x·∂G/∂x)^2 to the total uncertainty (squared), but only if
+                        # the derivative is not zero.
+                        newder = Derivatives(newder, tag=>∂G_∂x)
+                        err = err + abs2(σ_x*∂G_∂x)
+                    end
                 end
             end
         end

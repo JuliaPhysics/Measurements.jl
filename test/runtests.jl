@@ -33,9 +33,12 @@ end
 end
 
 @testset "Derivative" begin
+    c = 1 ± 0
     @test Measurements.derivative(3*x^2, (x.val, x.err, x.tag)) ≈ 18
     @test Measurements.derivative(3*x^2, x) ≈ 18
     @test Measurements.derivative.(2x + y - w, [x, y, w]) ≈ [2, 1, -1]
+    @test Measurements.derivative.(x - x + y - y + w - w + c, [x, y, w, c]) ≈ [0, 0, 0, 0]
+    @test length((x - x + y - y + w - w + c).der) == 0
 end
 
 @testset "Contributions to uncertainty" begin
@@ -461,7 +464,7 @@ end
     @test reprmime("text/x-tex", y) == reprmime("text/x-latex", y) == "4.0 \\pm 0.2"
     @test Base.alignment(DevNull, x) == (5,4)
     # Make sure the printed representation of a Measurement object is correctly parsed as
-    # the same object (well, the tag will be different, but that's not important here).
+    # the same number (note that the tag will be different, but that's not important here).
     for a in (w, x, y); @test eval(parse(repr(a))) == a; end
 end
 
