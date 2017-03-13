@@ -201,23 +201,18 @@ end
     for a in (w, x, y); @inferred(rad2deg(deg2rad(a))) ≈ a; end
 end
 
-@testset "Cosine" begin
-@test @inferred(cos(x)) ≈ measurement(-0.9899924966004454, 0.014112000805986721)
-@test @inferred(cosd(x)) ≈ measurement(0.9986295347545738, 9.134347536190512e-5)
-@test @inferred(cosh(x)) ≈ measurement(10.067661995777765, 1.0017874927409902)
-end
-
-@testset "Sine" begin
+@testset "Trig functions" begin
+    @test @inferred(cos(x)) ≈ measurement(-0.9899924966004454, 0.014112000805986721)
+    @test @inferred(cosd(x)) ≈ measurement(0.9986295347545738, 9.134347536190512e-5)
+    @test @inferred(cosh(x)) ≈ measurement(10.067661995777765, 1.0017874927409902)
     @test @inferred(sin(y)) ≈ measurement(-0.7568024953079282, 0.13072872417272238)
     @test @inferred(sind(y)) ≈ measurement(0.0697564737441253, 0.0034821554353128255)
     @test @inferred(sinh(y)) ≈ measurement(27.28991719712775, 5.461646567203298)
-end
-
-@testset "Tangent" begin
-    for val in (w, x, y)
-        @test @inferred(tan(val)) ≈ sin(val)/cos(val)
-        @test @inferred(tand(val)) ≈ sind(val)/cosd(val)
-        @test @inferred(tanh(val)) ≈ sinh(val)/cosh(val)
+    for a in (w, x, y)
+        @test @inferred(cos(a) ^ 2 + sin(a) ^ 2) ≈ one(a)
+        @test @inferred(tan(a))  ≈ sin(a)  / cos(a)
+        @test @inferred(tand(a)) ≈ sind(a) / cosd(a)
+        @test @inferred(tanh(a)) ≈ sinh(a) / cosh(a)
     end
 end
 
@@ -282,13 +277,13 @@ end
     @test @inferred(log(y)) ≈ measurement(1.3862943611198906, 0.05)
     @test @inferred(log(y, 4)) ≈ measurement(1, 0.03606737602222409)
     @test @inferred(log(pi, x)) ≈ measurement(0.9597131185693899, 0.029118950894341064)
-    for a in (w, x, y)
-        @test @inferred(log(e, abs(a))) ≈ log(abs(a))
-        @test @inferred(log(2, abs(a))) ≈ log2(abs(a))
-        @test @inferred(log(10, abs(a))) ≈ log10(abs(a))
-        @test @inferred(log1p(abs(a))) ≈ log(1 + abs(a))
-        @test @inferred(log(exp(a))) ≈ a
-        @test @inferred(exp(log(abs(a)))) ≈ abs(a)
+    for a in (abs(w), x, y)
+        @test @inferred(log(e, a)) ≈ log(a)
+        @test @inferred(log(2, a)) ≈ log2(a)
+        @test @inferred(log(10, a)) ≈ log10(a)
+        @test @inferred(log1p(a)) ≈ log(1 + a)
+        @test @inferred(log(exp(-a))) ≈ -a
+        @test @inferred(exp(log(a))) ≈ a
     end
 end
 
@@ -301,9 +296,9 @@ end
 
 @testset "Square root" begin
     @test @inferred(sqrt(y)) ≈ measurement(2, 0.05)
-    for a in (w, x, y)
-        @test @inferred(sqrt(abs(a))) ≈ abs(a)^0.5
-        @test @inferred(sqrt(abs(a))*sqrt(abs(a))) ≈ abs(a)
+    for a in (abs(w), x, y)
+        @test @inferred(sqrt(a)) ≈ a ^ 0.5
+        @test @inferred(sqrt(a) * sqrt(a)) ≈ a
         # Derivative of sqrt diverges in 0, but if the measurement is exact (like "a-a" is)
         # also the resulting quantity must have 0 uncertainty.
         @test @inferred(sqrt(a - a)) ≈ zero(a)
