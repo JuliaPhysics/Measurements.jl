@@ -58,8 +58,11 @@ chance share the same nominal value and uncertainty.  For these reasons,
 
 .. code-block:: julia
 
-    x = 24.3 ± 2.7
-    y = 24.3 ± 2.7
+   julia> x = 24.3 ± 2.7
+   24.3 ± 2.7
+
+   julia> y = 24.3 ± 2.7
+   24.3 ± 2.7
 
 will produce two independent measurements and they will be treated as such when
 performing mathematical operations.  In particular, you can also notice that
@@ -67,17 +70,19 @@ they are not `egal <http://docs.julialang.org/en/stable/stdlib/base/#Base.is>`__
 
 .. code-block:: julia
 
-    x === y
-    # => false
+   julia> x === y
+   false
 
 If you instead intend to make ``y`` really the same thing as ``x`` you have to
 use assignment:
 
 .. code-block:: julia
 
-    x = y = 24.3 ± 2.7
-    x === y
-    # => true
+   julia> x = y = 24.3 ± 2.7
+   24.3 ± 2.7
+
+   julia> x === y
+   true
 
 Thanks to how the Julia language is designed, support for complex measurements,
 arbitrary precision calculations and array operations came with practically no
@@ -226,16 +231,16 @@ arity equal to one, and the other for any other case.  This is its syntax:
 
 .. code-block:: julia
 
-    result(val::Real, der::Real, a::Measurement)
+   result(val::Real, der::Real, a::Measurement)
 
 for functions of one argument, and
 
 .. code-block:: julia
 
-    result(val::Real, der::Tuple{Vararg{Real}},
-           a::Tuple{Vararg{Measurement}})
+    result(val, der, a)
 
-for functions of two or more arguments.  The arguments are:
+for functions of two or more arguments, in which ``der`` and ``a`` are the
+collections (tuples, arrays, etc...) of the same length.  The arguments are:
 
 - ``val``: the nominal result of the operation :math:`G(a, \dots)`;
 - ``der``: the partial derivative :math:`\partial G/\partial a` of a function
@@ -252,14 +257,14 @@ For example, for a one-argument function like :math:`\cos` we have
 
 .. code-block:: julia
 
-    cos(a::Measurement) = result(cos(a.val), -sin(a.val), a)
+   cos(a::Measurement) = result(cos(a.val), -sin(a.val), a)
 
 Instead, the method for subtraction operation is defined as follows:
 
 .. code-block:: julia
 
-    -(a::Measurement, b::Measurement) =
-        result(a.val - b.val, (1.0, -1.0), (a, b))
+   -(a::Measurement, b::Measurement) =
+       result(a.val - b.val, (1, -1), (a, b))
 
 Thus, in order to support ``Measurement`` argument(s) for a new mathematical
 operation you have to calculate the result of the operation, the partial

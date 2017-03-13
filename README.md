@@ -55,7 +55,7 @@ it can serve also as an easy-to-use calculator.
   appealing
 * Combined with external packages allows for error propagation of measurements
   with their physical units
-* Support numerical integration
+* Support for numerical integration
   with [`QuadGK.jl`](https://github.com/JuliaMath/QuadGK.jl).
 
 Further features are expected to come in the future, see the section "How Can I
@@ -180,6 +180,7 @@ julia> a = measurement(4.5, 0.1)
 
 julia> b = 3.8 ± 0.4
 3.8 ± 0.4
+
 julia> 2a + b
 12.8 ± 0.4472135954999579
 
