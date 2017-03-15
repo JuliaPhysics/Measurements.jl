@@ -74,6 +74,7 @@ end
     @test z == x ≠ y
     @test x == x
     @test -2 < w <= x < y < 5
+    @test -5//3 < w <= -1//2 <= x < 11//3 < y <= 24//6
     @test 3 == x
     @test y == 4 ≠ w
     @test measurement(0.8, 0.01) == 4//5

@@ -37,6 +37,8 @@ import Base: ==, isless, <, <=, isnan, isfinite, isinf, isinteger
 # Order relation is based on the value of measurements, uncertainties are ignored
 <(a::Measurement, b::Measurement) = <(a.val, b.val)
 <=(a::Measurement, b::Measurement) = <=(a.val, b.val)
+# This is used for comparisons with Rational
+Base.decompose(a::Measurement) = Base.decompose(a.val)
 
 isnan(a::Measurement) = isnan(a.val)
 isfinite(a::Measurement) = isfinite(a.val)
