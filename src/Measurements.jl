@@ -71,8 +71,8 @@ uncertainty.  `err` defaults to 0 if omitted.
 The binary operator `±` is equivalent to `measurement`, so you can construct a
 `Measurement` object by explicitely writing `123 ± 4`.
 """
-function measurement(val::Real, err::Real=zero(float(val)))
-    val, err, der = promote(float(val), float(err), one(float(val)))
+function measurement(_val::Real, _err::Real=zero(float(_val)))
+    val, err, der = promote(float(_val), float(_err), one(float(_val)))
     tag = rand()
     return Measurement(val, err, tag, Derivatives((val, err, tag)=>der))
 end
