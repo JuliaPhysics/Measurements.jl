@@ -289,10 +289,14 @@ end
 end
 
 @testset "Hypotenuse" begin
-    @test @inferred(hypot(x, y)) ≈ measurement(5, 0.17088007490635065)
-    @test @inferred(hypot(x, y)) ≈ hypot(y, x) # Commutativity
-    @test @inferred(hypot(x, 4)) ≈ measurement(5, 0.06)
-    @test @inferred(hypot(3, y)) ≈ measurement(5, 0.16)
+    for a in (w, x, y)
+        @test @inferred(hypot(a, 3)) ≈ @inferred(sqrt(abs2(a) + 9))
+        @test @inferred(hypot(4, a)) ≈ @inferred(sqrt(16 + a * a))
+        for b in (w, x, y)
+            @test @inferred(hypot(a, b)) ≈ @inferred(sqrt(abs2(a) + b * b)) ≈
+                @inferred(hypot(b, a)) # Commutativity
+        end
+    end
 end
 
 @testset "Square root" begin
