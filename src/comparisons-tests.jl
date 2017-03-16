@@ -26,12 +26,14 @@ import Base: ==, isless, <, <=, isnan, isfinite, isinf, isinteger
 
 # Comparison with Real: they are equal if the value of Measurement is equal to
 # the number.  If you want to treat the Real like a measurement convert it with
-# `Measurement'.
-==(a::Measurement, b::Irrational) = a.val==float(b)
-==(a::Measurement, b::Rational) = a.val==float(b)
+# `Measurement'.  Note on Irrational: the value of a Measurement is always
+# T<:AbstractFloat, so it can never be equal to an Irrational, we give a chance
+# to the equality to be try by converting the Irrational to T.
+=={T<:AbstractFloat}(a::Measurement{T}, b::Irrational) = a.val==T(b)
+==(a::Measurement, b::Rational) = a.val==b
 ==(a::Measurement, b::Real) = a.val==b
-==(a::Irrational, b::Measurement) = float(a)==b.val
-==(a::Rational, b::Measurement) = float(a)==b.val
+=={T<:AbstractFloat}(a::Irrational, b::Measurement{T}) = T(a)==b.val
+==(a::Rational, b::Measurement) = a==b.val
 ==(a::Real, b::Measurement) = a==b.val
 
 # Order relation is based on the value of measurements, uncertainties are ignored
@@ -40,7 +42,6 @@ import Base: ==, isless, <, <=, isnan, isfinite, isinf, isinteger
 # This is used for comparisons with Rational
 Base.decompose(a::Measurement) = Base.decompose(a.val)
 
-isnan(a::Measurement) = isnan(a.val)
-isfinite(a::Measurement) = isfinite(a.val)
-isinf(a::Measurement) = isinf(a.val)
-isinteger(a::Measurement) = isinteger(a.val)
+for f in (isnan, isfinite, isinf, isinteger)
+    f(a::Measurement) = f(a.val)
+end
