@@ -42,7 +42,6 @@ export @uncertain
 # The list of derivatives with respect to each measurement is updated with
 #   ∂G/∂a · previous_derivatives
 function result{T<:AbstractFloat}(val::Real, der::Real, a::Measurement{T})
-    val, der = promote(val, der)
     newder = similar(a.der)
     @inbounds for tag in keys(a.der)
         if ! iszero(tag[2]) # Skip values with 0 uncertainty
