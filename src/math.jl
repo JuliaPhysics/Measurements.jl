@@ -41,7 +41,7 @@ export @uncertain
 #   σ_G = |σ_a·∂G/∂a|
 # The list of derivatives with respect to each measurement is updated with
 #   ∂G/∂a · previous_derivatives
-function result{T<:AbstractFloat}(val::Real, der::Real, a::Measurement{T})
+@inline function result{T<:AbstractFloat}(val::Real, der::Real, a::Measurement{T})
     newder = similar(a.der)
     @inbounds for tag in keys(a.der)
         if ! iszero(tag[2]) # Skip values with 0 uncertainty
@@ -81,7 +81,7 @@ gettype(collection) = promote_type(_eltype.(collection)...)
 # can expand the previous formula to:
 #   σ_G = sqrt((σ_x·(∂G/∂a1·∂a1/∂x + ∂G/∂a2·∂a2/∂x))^2 + (σ_y·∂G/∂a1·∂a1/∂y)^2 +
 #               + (σ_z·∂G/∂a2·∂a2/∂z)^2)
-function result(val, der, a)
+@inline function result(val, der, a)
     @assert length(der) == length(a)
     T = gettype(a)
     newder = Derivatives{Tuple{T,T,Float64},T}()
