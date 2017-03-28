@@ -1,6 +1,6 @@
 ### parsing.jl
 #
-# Copyright (C) 2016 Mosè Giordano.
+# Copyright (C) 2016, 2017 Mosè Giordano.
 #
 # Maintainer: Mosè Giordano <mose AT gnu DOT org>
 # Keywords: uncertainty, error propagation, physics
@@ -89,7 +89,7 @@ function measurement{T<:AbstractString}(str::T)
                 val_str, err_str, val_dec, expn =
                     m.captures[1], "0", nothing, nothing
             else
-                error("Cannot parse the string \"", str, "\"")
+                throw(ArgumentError("cannot parse $(repr(str)) as Measurement{$T}"))
             end
         end
     end
@@ -107,3 +107,5 @@ function measurement{T<:AbstractString}(str::T)
     end
     return measurement(val, err)
 end
+
+Base.parse(::Type{Measurement{Float64}}, str::AbstractString) = measurement(str)

@@ -19,6 +19,9 @@ v0.4.0 (201?-??-??)
   that only the case of two real endpoints is supported.
 * Real `Measurement` objects can be printed with `"text/x-tex"` and `"text/x-latex"`
   MIME types.  `\pm` TeX macro is used to render the `±` sign.
+* A new `parse` method is provided, to parse a string to
+  `Measurement{Float64}`.  This is the same as calling `measurement` with a
+  string argument.
 
 v0.3.0 (2016-12-07)
 -------------------
