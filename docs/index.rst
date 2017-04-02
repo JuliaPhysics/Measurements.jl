@@ -50,8 +50,10 @@ The main features of the package are:
 - Combined with external packages allows for error propagation of measurements
   with their `physical units
   <https://en.wikipedia.org/wiki/Units_of_measurement>`__
-- Support for numerical integration with `QuadGK.jl
-  <https://github.com/JuliaMath/QuadGK.jl>`__.
+- Extensible in combination with external packages: you can propagate errors of
+  measurements with their physical units, perform numerical integration with
+  `QuadGK.jl <https://github.com/JuliaMath/QuadGK.jl>`__, numerical and
+  automatic differentiation, and much more.
 
 The method used to handle functional correlation is described in this paper:
 

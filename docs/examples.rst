@@ -583,8 +583,21 @@ measurements, scalars or arrays:
     2.9+3.0im
     2.8+4.6im
 
-Integration with ``QuadGK.jl``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Interplay with Third-Party Packages
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+``Measurements.jl`` works out-of-the-box with any function taking arguments no
+more specific than ``AbstractFloat``.  This makes this library particularly
+suitable for cooperating with well-designed third-party packages in order to
+perform complicated calculations always accurately taking care of uncertainties
+and their correlations, with no effort for the developers nor users.
+
+The following sections present a sample of packages that are known to work with
+``Measurements.jl``, but many others will interplay with this package as well as
+them.
+
+Numerical Integration with ``QuadGK.jl``
+****************************************
 
 The powerful integration routine ``quadgk`` from ``QuadGK.jl`` package is smart
 enough to support out-of-the-box integrand functions that return arbitrary
@@ -628,8 +641,56 @@ uncertainty but are not correlated:
    julia> QuadGK.quadgk(sin, -6.42 ± 0.03, 6.42 ± 0.03)
    (2.484178227707412e-17 ± 0.005786464233000303, 0.0)
 
+Numerical and Automatic Differentiation
+***************************************
+
+With `Calculus.jl <https://github.com/johnmyleswhite/Calculus.jl>`__ package it
+is possible to perform numerical differentiation using finite differencing.  You
+can pass in to the ``Calculus.derivative`` function both functions returning
+``Measurement`` objects and a ``Measurement`` as the point in which to calculate
+the derivative.
+
+.. code-block:: julia
+
+   julia> using Measurements, Calculus
+
+   julia> a = -45.7 ± 1.6
+   -45.7 ± 1.6
+
+   julia> b = 36.5 ± 6.0
+   36.5 ± 6.0
+
+   julia> Calculus.derivative(exp, a) ≈ exp(a)
+   true
+
+   julia> Calculus.derivative(cos, b) ≈ -sin(b)
+   true
+
+   julia> Calculus.derivative(t -> log(-t * b)^2, a) ≈ 2log(-a * b)/a
+   true
+
+Other packages provide `automatic differentiation
+<https://en.wikipedia.org/wiki/Automatic_differentiation>`__ methods.  Here is
+an example with `AutoGrad.jl <https://github.com/denizyuret/AutoGrad.jl>`__,
+just one of the packages available:
+
+   julia> using AutoGrad
+
+   julia> grad(exp)(a) ≈ exp(a)
+   true
+
+   julia> grad(cos)(b) ≈ -sin(b)
+   true
+
+   julia> grad(t -> log(-t * b)^2)(a) ≈ 2log(-a * b)/a
+   true
+
+However remember that you can always use :func:`Measurements.derivative` to
+compute the value (without uncertainty) of the derivative of a ``Measurement``
+object.
+
 Use with ``SIUnits.jl`` and ``Unitful.jl``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+******************************************
 
 You can use ``Measurements.jl`` in combination with a third-party package in
 order to perform calculations involving physical measurements, i.e.  numbers

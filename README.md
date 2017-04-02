@@ -53,10 +53,10 @@ it can serve also as an easy-to-use calculator.
 * Easy way to attach the uncertainty to a number using the `±` sign as infix
   operator.  This syntactic sugar makes the code more readable and visually
   appealing
-* Combined with external packages allows for error propagation of measurements
-  with their physical units
-* Support for numerical integration
-  with [`QuadGK.jl`](https://github.com/JuliaMath/QuadGK.jl).
+* Extensible in combination with external packages: you can propagate errors of
+  measurements with their physical units, perform numerical integration
+  with [`QuadGK.jl`](https://github.com/JuliaMath/QuadGK.jl), numerical and
+  automatic differentiation, and much more.
 
 Further features are expected to come in the future, see the section "How Can I
 Help?" and the TODO list below.
