@@ -16,7 +16,7 @@
 #
 ### Code:
 
-import Base: ==, isless, <, <=, isnan, isfinite, isinf, isinteger
+import Base: ==, isless, <, <=, isnan, isfinite, isinf, isinteger, iszero
 
 # Two measurements are equal if they have same value and same uncertainty.
 # NB: Two measurements are egal (===) if they are exactly the same thing,
@@ -42,6 +42,6 @@ import Base: ==, isless, <, <=, isnan, isfinite, isinf, isinteger
 # This is used for comparisons with Rational
 Base.decompose(a::Measurement) = Base.decompose(a.val)
 
-for f in (isnan, isfinite, isinf, isinteger)
-    f(a::Measurement) = f(a.val)
+for f in (:isnan, :isfinite, :isinf, :isinteger, :iszero)
+    @eval ($f)(a::Measurement) = ($f)(a.val)
 end

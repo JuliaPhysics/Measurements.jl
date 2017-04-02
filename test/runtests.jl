@@ -85,6 +85,8 @@ end
     @test isfinite(y) == true && isfinite(measurement(Inf)) == false
     @test isinf(measurement(Inf)) == true && isinf(x) == false
     @test (isinteger(x) == true && isinteger(w) == false)
+    @test iszero(x) == false
+    @test iszero(y * 0) == true
 end
 
 ##### Mathematical Operations
