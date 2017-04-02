@@ -674,6 +674,8 @@ Other packages provide `automatic differentiation
 an example with `AutoGrad.jl <https://github.com/denizyuret/AutoGrad.jl>`__,
 just one of the packages available:
 
+.. code-block:: julia
+
    julia> using AutoGrad
 
    julia> grad(exp)(a) ≈ exp(a)
