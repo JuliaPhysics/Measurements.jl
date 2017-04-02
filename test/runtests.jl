@@ -580,6 +580,14 @@ end
         @uncertain((x -> QuadGK.quadgk(exp, 0.4, x)[1])(x))
 end
 
+@testset "Calculus" begin
+    for a in (w, x, y)
+        @test Calculus.derivative(exp, a + w) ≈ exp(a + w)
+        @test Calculus.derivative(t -> sin(t * x), a) ≈  x * cos(a * x)
+        @test Calculus.derivative(t -> y * cos(t), a) ≈ -y * sin(a)
+    end
+end
+
 @testset "String parsing" begin
     @test @inferred(measurement("  -123.4(56)  ")) ≈         -123.4 ± 5.6
     @test @inferred(measurement("  +1234(56)e-1  ")) ≈        123.4 ± 5.6
