@@ -16,7 +16,7 @@
 #
 ### Code:
 
-import Base: convert, float, promote_rule
+import Base: convert, promote_rule
 
 convert{T<:AbstractFloat}(::Type{Measurement{T}}, a::Irrational) =
     measurement(T(a), zero(T))
@@ -37,8 +37,6 @@ convert(::Type{Measurement}, a::Measurement) = a
 convert{S}(::Type{Measurement}, a::Rational{S}) = measurement(a)
 convert(::Type{Measurement}, a::Real) = measurement(a)
 convert(::Type{Signed}, a::Measurement) = convert(Signed, a.val)
-
-float{T<:AbstractFloat}(a::Measurement{T}) = a
 
 promote_rule{T<:AbstractFloat, S<:Real}(::Type{Measurement{T}}, ::Type{S}) =
     Measurement{promote_type(T, S)}
