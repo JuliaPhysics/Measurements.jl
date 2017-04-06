@@ -3,14 +3,20 @@ using Base.Test
 
 import Base: isapprox
 
+# A few tests before overloading `isapprox`.
+@testset "isapprox" begin
+    @test (5 ± 1) ≈ (5 ± 2)
+    @test (nextfloat(5.0) ± 1) ≈ 5 ± 1
+    @test 5.1 ± 1 ≉ 5 ± 1
+end
+
 isapprox(x::Measurement, y::Measurement; rest...) =
     isapprox(x.val, y.val; nans = true, rest...) &&
     isapprox(x.err, y.err; nans = true, rest...)
-isapprox{T<:AbstractFloat,S<:AbstractFloat}(x::Complex{Measurement{T}},
-                                            y::Complex{Measurement{S}};
-                                            rest...) =
-                                                isapprox(real(x), real(y); nans = true, rest...) &&
-                                                isapprox(imag(x), imag(y); nans = true, rest...)
+isapprox(x::Complex{Measurement{<:AbstractFloat}},
+         y::Complex{Measurement{<:AbstractFloat}}; rest...) =
+             isapprox(real(x), real(y); nans = true, rest...) &&
+             isapprox(imag(x), imag(y); nans = true, rest...)
 
 w = -0.5 ± 0.03
 x = 3 ± 0.1
@@ -71,6 +77,10 @@ end
 end
 
 @testset "Comparisons and Tests" begin
+    # isapprox is overloaded only for tests.  Make sure it works as expected.
+    @test 5 ± 1 ≉ 5 ± 2
+    @test (nextfloat(5.0) ± nextfloat(1.0)) ≈ 5 ± 1
+    @test 5.1 ± 1 ≉ 5 ± 1
     @test z == x ≠ y
     @test x == x
     @test -2 < w <= x < y < 5
@@ -87,6 +97,8 @@ end
     @test (isinteger(x) == true && isinteger(w) == false)
     @test iszero(x) == false
     @test iszero(y * 0) == true
+    @test iszero(0 ± 1) == true
+    @test iszero(1 ± 0) == false
 end
 
 ##### Mathematical Operations
