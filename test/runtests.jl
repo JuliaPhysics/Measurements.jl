@@ -565,8 +565,8 @@ end
     @test QuadGK.quadgk(t -> cos(x - t), 0, 2pi)[1] ≈ measurement(0) atol = 7e-16
     @test QuadGK.quadgk(t -> exp(t / w), 0, 1)[1] ≈ w * (exp(1 / w) - 1)
     for a in (w, x, y)
-        @test 2a / sqrt(pi) * QuadGK.quadgk(t -> exp(-abs2(t * a)), 0, 1)[1] ≈
-            erf(a)
+        @test QuadGK.quadgk(t -> 1 / abs2(t / a), 1, Inf)[1] ≈ a ^ 2
+        @test QuadGK.quadgk(t -> exp(-abs2(t * a)), -Inf, Inf)[1] ≈ sqrt(pi) / abs(a)
     end
     @test QuadGK.quadgk(t -> cos(t - w), -w, 0)[1] + QuadGK.quadgk(t -> cos(t - w), 0, w)[1] ≈ sin(2w)
     @test QuadGK.quadgk(t -> exp(t / x), w, y)[1] ≈ x * (exp(y / x) - exp(w / x))
