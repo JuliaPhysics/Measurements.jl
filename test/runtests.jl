@@ -375,6 +375,10 @@ end
     end
 end
 
+@testset "Cis" begin
+    for a in (w, x, y); @test @inferred(cis(a)) ≈ @inferred(exp(im * a)); end
+end
+
 @testset "Factorial and gamma" begin
     @test @inferred(factorial(x)) ≈ measurement(6, 0.7536706010590813)
     @test @inferred(digamma(y)) ≈ 1.256117668431802 ± 0.056764591147422994
