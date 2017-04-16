@@ -57,13 +57,16 @@ end
     @test convert(Measurement{Float64}, 1//2) == 0.5 ± 0
     @test convert(Measurement{Float64}, 3) == 3.0 ± 0.0
     @test convert(Measurement{Float64}, 3 ± 1) == 3.0 ± 1.0
-    @test convert(Measurement, x) === x
+    for a in (w, x, y)
+        @test convert(typeof(a), a) === a
+        @test convert(Measurement, a) === a
+        @test float(a) === a
+    end
     @test convert(Measurement, pi) == pi ± 0
     @test convert(Measurement, 1//2) == 0.5 ± 0
     @test convert(Measurement, 3) == 3 ± 0
     @test convert(Signed, x) == 3
     @test float(3 ± 1) == 3.0 ± 1.0
-    @test float(x) === x
     @test promote(Measurement{Float32}(3 ± 0.5), Measurement{Float64}(4 ± 0)) ==
         (Measurement{Float64}(3 ± 0.5), Measurement{Float64}(4 ± 0))
     @test promote(x, complex(7)) == (complex(3.0 ± 0.1),

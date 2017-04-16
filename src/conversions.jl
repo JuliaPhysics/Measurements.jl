@@ -25,7 +25,9 @@ convert{T<:AbstractFloat, S}(::Type{Measurement{T}}, a::Rational{S}) =
 convert{T<:AbstractFloat}(::Type{Measurement{T}}, a::Real) =
     measurement(T(a), zero(T))
 
-function convert{T<:AbstractFloat}(::Type{Measurement{T}}, a::Measurement)
+convert(::Type{Measurement{T}}, a::Measurement{T}) where {T<:AbstractFloat} = a
+function convert(::Type{Measurement{T}},
+                 a::Measurement{S}) where {T<:AbstractFloat,S<:AbstractFloat}
     newder = Derivatives{Tuple{T, T, Float64}, T}()
     for tag in keys(a.der)
         newder = Derivatives(newder, (T(tag[1]), T(tag[2]), tag[3])=>T(a.der[tag]))
