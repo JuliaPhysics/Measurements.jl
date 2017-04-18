@@ -23,6 +23,11 @@ v0.4.0 (201?-??-??)
   `Measurement{Float64}`.  This is the same as calling `measurement` with a
   string argument.
 
+### Improvements
+
+* Performance of arrays of `Measurement`s and complex `Measurement`s was
+  improved.
+
 v0.3.0 (2016-12-07)
 -------------------
 
