@@ -13,10 +13,11 @@ v0.4.0 (201?-??-??)
 
 ### Improvements
 
-* There was several performance improvements, more evident for simple operations
-  like addition and subtraction (these are now 2-3 times faster than in v0.3.0).
-  In addition, the overhead of operations with arrays of `Measurement`s and
-  complex `Measurement`s was reduced by avoiding useless conversions.
+* There were several performance improvements, more evident for simple
+  operations like addition and subtraction (now these are 2-3 times faster than
+  in v0.3.0).  In addition, the overhead of operations with arrays of
+  `Measurement`s and complex `Measurement`s was reduced by avoiding useless
+  conversions.
 
 ### New Features
 
