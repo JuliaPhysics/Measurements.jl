@@ -77,17 +77,22 @@ measurement
 ## https://github.com/JuliaLang/julia/pull/21219 to be merged.
 # function measurement(val::T) where {T<:Real}
 #     F = float(T)
-#     Measurement(F(val), zero(F), NaN, Derivatives{Tuple{F,F,Float64},F}())
+#     Measurement{F}(F(val), zero(F), NaN, Derivatives{Tuple{F,F,Float64},F}())
 # end
 function measurement(_val::Real)
     val = float(_val)
     F = typeof(val)
-    Measurement(val, zero(F), NaN, Derivatives{Tuple{F,F,Float64},F}())
+    Measurement{F}(val, zero(F), NaN, Derivatives{Tuple{F,F,Float64},F}())
 end
 function measurement(_val::Real, _err::Real)
-    val, err, der = promote(float(_val), float(_err), one(float(_val)))
-    tag = rand()
-    return Measurement(val, err, tag, Derivatives((val, err, tag)=>der))
+    val, err = promote(float(_val), float(_err))
+    F = typeof(val)
+    if iszero(err)
+        Measurement{F}(val, zero(F), NaN, Derivatives{Tuple{F,F,Float64},F}())
+    else
+        tag = rand()
+        return Measurement{F}(val, err, tag, Derivatives((val, err, tag)=>one(F)))
+    end
 end
 const ± = measurement
 

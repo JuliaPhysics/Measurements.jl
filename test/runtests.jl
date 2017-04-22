@@ -35,6 +35,9 @@ end
     @test iszero(measurement(1).err)
     @test measurement(pi).tag === NaN
     @test length(measurement(4//5).der) == 0
+    @test measurement(catalan, 0).tag === NaN
+    @test length(measurement(7//3, 0).der) == 0
+    @test length(measurement(4.7, 0.3).der) == 1
 end
 
 @testset "Weighted Average" begin
