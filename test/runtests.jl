@@ -560,7 +560,7 @@ end
 end
 
 @testset "Derivatives type" begin
-    @test_throws KeyError getindex(x.der, 0)
+    @test_throws KeyError getindex(x.der, (0, 0, -1))
     @test length((w + w + 2x + y).der) == 3
 end
 

@@ -35,10 +35,13 @@ Derivatives{K,V}(t::Derivatives{K,V}, KV::Pair) = Derivatives{K,V}(t, KV[1], KV[
 
 function getindex(dict::Derivatives, key)
     while isdefined(dict, :parent)
-        # Here we use `isequal' in place of `==' in order to allow for
-        # calculations involving NaNs.  This is the only difference with the
-        # plain Base.ImmutableDict type.  The same in `get'.
-        isequal(dict.key, key) && return dict.value
+        # We want to compare the three elements of the key tuples.  In order to allow for
+        # calculations involving NaNs we need to use `isequal` for comparing the first two
+        # elements, then we can use `==` to compare the tag.  Since `==` is faster than
+        # `isequal`, we first compare the last element and then the other two.  This is the
+        # only difference with the plain Base.ImmutableDict type.  The same in `get'.
+        dict.key[3] == key[3] && isequal(dict.key[1], key[1]) &&
+            isequal(dict.key[2], key[2]) && return dict.value
         dict = dict.parent
     end
     throw(KeyError(key))
@@ -46,7 +49,8 @@ end
 function get(dict::Derivatives, key, default)
     while isdefined(dict, :parent)
         # See comment in `getindex'.
-        isequal(dict.key, key) && return dict.value
+        dict.key[3] == key[3] && isequal(dict.key[1], key[1]) &&
+            isequal(dict.key[2], key[2]) && return dict.value
         dict = dict.parent
     end
     return default

@@ -11,6 +11,13 @@ v0.4.0 (201?-??-??)
 * `Measurements.gradient` function has been removed.  Use the vectorized
   function `Measurements.derivative.(x, array)` instead.
 
+### Improvements
+
+* There was several performance improvements, more evident for simple operations
+  like addition and subtraction (these are now 2-3 times faster than in v0.3.0).
+  In addition, the overhead of operations with arrays of `Measurement`s and
+  complex `Measurement`s was reduced by avoiding useless conversions.
+
 ### New Features
 
 * `quadgk` function from [`QuadGK.jl`](https://github.com/JuliaMath/QuadGK.jl)
@@ -22,11 +29,6 @@ v0.4.0 (201?-??-??)
 * A new `parse` method is provided, to parse a string to
   `Measurement{Float64}`.  This is the same as calling `measurement` with a
   string argument.
-
-### Improvements
-
-* Performance of arrays of `Measurement`s and complex `Measurement`s was
-  improved.
 
 v0.3.0 (2016-12-07)
 -------------------
