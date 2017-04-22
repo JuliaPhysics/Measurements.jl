@@ -32,6 +32,9 @@ end
 
 @testset "measurement" begin
     @test measurement.(1:2:5, 2:2:6) == [1±2, 3±4, 5±6]
+    @test iszero(measurement(1).err)
+    @test measurement(pi).tag === NaN
+    @test length(measurement(4//5).der) == 0
 end
 
 @testset "Weighted Average" begin
@@ -147,11 +150,11 @@ end
     end
     for f in (muladd, fma)
         @test @inferred(f(w, x, y)) ≈ w*x + y
-        @test @inferred(f(w, x, 1)) ≈ w*x + 1
+        @test @inferred(f(w, x, 1)) ≈ w*x + one(y)
         @test @inferred(f(w, 2, y)) ≈ w*2 + y
-        @test @inferred(f(w, 2, 1)) ≈ w*2 + 1
+        @test @inferred(f(w, 2, 1)) ≈ w*2 + one(x)
         @test @inferred(f(3, x, y)) ≈ 3*x + y
-        @test @inferred(f(3, x, 1)) ≈ 3*x + 1
+        @test @inferred(f(3, x, 1)) ≈ 3*x + one(w)
         @test @inferred(f(3, 2, y)) ≈ 3*2 + y
     end
 end
@@ -284,7 +287,7 @@ end
 @testset "Exponentials" begin
     @test @inferred(exp(x)) ≈ measurement(20.085536923187668, 2.008553692318767)
     for a in (w, 3//5*w, x/10, x, y/50, y)
-        @test @inferred(expm1(a)) ≈ exp(a) - 1
+        @test @inferred(expm1(a)) ≈ exp(a) - one(a)
         @test @inferred(exp10(a)) ≈ 10^a
         @test @inferred(ldexp(frexp(a)...)) ≈ a
     end
@@ -387,11 +390,11 @@ end
     @test @inferred(digamma(y)) ≈ 1.256117668431802 ± 0.056764591147422994
     @test @inferred(polygamma(3, w)) ≈ 193.40909103400242 ± 0.10422749480000776
     for a in (w, x, y)
-        @test @inferred(gamma(a)) ≈ factorial(a - 1)
-        @test @inferred(gamma(a + 1)) ≈ factorial(a)
+        @test @inferred(gamma(a)) ≈ factorial(a - one(a))
+        @test @inferred(gamma(a + one(a))) ≈ factorial(a)
         @test @inferred(lgamma(abs(a))) ≈ log(gamma(abs(a)))
         @test @inferred(digamma(a)) ≈ polygamma(0, a)
-        @test @inferred(digamma(invdigamma(a))) ≈ a
+        @test @inferred(digamma(invdigamma(a))) ≈ a + zero(a)
         @test @inferred(trigamma(a)) ≈ polygamma(1, a)
     end
 end
@@ -582,7 +585,7 @@ end
     @test QuadGK.quadgk(exp, 0.4, x)[1] ≈ exp(x) - exp(0.4)
     @test QuadGK.quadgk(sin, w, 2.7)[1] ≈ cos(w) - cos(2.7)
     @test QuadGK.quadgk(t -> cos(x - t), 0, 2pi)[1] ≈ measurement(0) atol = 7e-16
-    @test QuadGK.quadgk(t -> exp(t / w), 0, 1)[1] ≈ w * (exp(1 / w) - 1)
+    @test QuadGK.quadgk(t -> exp(t / w), 0, 1)[1] ≈ w * (exp(1 / w) - one(x))
     for a in (w, x, y)
         @test QuadGK.quadgk(t -> 1 / abs2(t / a), 1, Inf)[1] ≈ a ^ 2
         @test QuadGK.quadgk(t -> exp(-abs2(t * a)), -Inf, Inf)[1] ≈ sqrt(pi) / abs(a)

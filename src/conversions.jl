@@ -18,12 +18,10 @@
 
 import Base: convert, promote_rule
 
-convert{T<:AbstractFloat}(::Type{Measurement{T}}, a::Irrational) =
-    measurement(T(a), zero(T))
-convert{T<:AbstractFloat, S}(::Type{Measurement{T}}, a::Rational{S}) =
-    measurement(T(a), zero(T))
-convert{T<:AbstractFloat}(::Type{Measurement{T}}, a::Real) =
-    measurement(T(a), zero(T))
+convert(::Type{Measurement{T}}, a::Irrational) where {T<:AbstractFloat} = measurement(T(a))
+convert(::Type{Measurement{T}}, a::Rational{S}) where {T<:AbstractFloat,S} =
+    measurement(T(a))
+convert(::Type{Measurement{T}}, a::Real) where {T<:AbstractFloat} = measurement(T(a))
 
 convert(::Type{Measurement{T}}, a::Measurement{T}) where {T<:AbstractFloat} = a
 function convert(::Type{Measurement{T}},

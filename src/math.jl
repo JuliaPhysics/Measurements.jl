@@ -51,7 +51,7 @@ export @uncertain
     # If uncertainty of "a" is null, the uncertainty of result is null as well,
     # even if the derivative is NaN or infinite.  In any other case, use
     # σ_G = |σ_a·∂G/∂a|.
-    σ = iszero(a.err) ? zero(T) : abs(der*a.err)
+    σ = iszero(a.err) ? a.err : abs(der*a.err)
     # The tag is NaN because we don't care about tags of derived quantities, we
     # are only interested in independent ones.
     Measurement(val,  σ, NaN, newder)

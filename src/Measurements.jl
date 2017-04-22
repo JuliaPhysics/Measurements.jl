@@ -71,7 +71,20 @@ uncertainty.  `err` defaults to 0 if omitted.
 The binary operator `±` is equivalent to `measurement`, so you can construct a
 `Measurement` object by explicitely writing `123 ± 4`.
 """
-function measurement(_val::Real, _err::Real=zero(float(_val)))
+measurement
+
+## Simpler definition for one-arg method, but requires
+## https://github.com/JuliaLang/julia/pull/21219 to be merged.
+# function measurement(val::T) where {T<:Real}
+#     F = float(T)
+#     Measurement(F(val), zero(F), NaN, Derivatives{Tuple{F,F,Float64},F}())
+# end
+function measurement(_val::Real)
+    val = float(_val)
+    F = typeof(val)
+    Measurement(val, zero(F), NaN, Derivatives{Tuple{F,F,Float64},F}())
+end
+function measurement(_val::Real, _err::Real)
     val, err, der = promote(float(_val), float(_err), one(float(_val)))
     tag = rand()
     return Measurement(val, err, tag, Derivatives((val, err, tag)=>der))
