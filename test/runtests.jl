@@ -32,12 +32,12 @@ end
 
 @testset "measurement" begin
     @test measurement.(1:2:5, 2:2:6) == [1±2, 3±4, 5±6]
-    @test iszero(measurement(1).err)
-    @test measurement(pi).tag === NaN
-    @test length(measurement(4//5).der) == 0
-    @test measurement(catalan, 0).tag === NaN
-    @test length(measurement(7//3, 0).der) == 0
-    @test length(measurement(4.7, 0.3).der) == 1
+    @test iszero(@inferred(measurement(1)).err)
+    @test @inferred(measurement(pi)).tag === NaN
+    @test length(@inferred(measurement(4//5)).der) == 0
+    @test @inferred(measurement(catalan, big(0))).tag === NaN
+    @test length(@inferred(measurement(7//3, 0)).der) == 0
+    @test length(@inferred(measurement(4.7f0, 0.3)).der) == 1
 end
 
 @testset "Weighted Average" begin
@@ -125,6 +125,8 @@ end
             @test @inferred(a + b) ≈ @inferred(b + a) # Commutativity
         end
     end
+    # Test a weird operation just to be sure it doesn't throw an error.
+    @test @inferred((x ± y) + (w ± x)) ≈ @inferred((x + w) ± hypot(y, x))
 end
 
 @testset "Subtraction" begin
