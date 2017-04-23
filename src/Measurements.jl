@@ -57,6 +57,14 @@ struct Measurement{T<:AbstractFloat} <: AbstractFloat
     der::Derivatives{Tuple{T, T, Float64}, T}
 end
 
+# Functions to quickly create an empty Derivatives object.
+_eltype(::Type{Measurement{T}}) where {T<:AbstractFloat} = T
+@generated function empty_der1(x::Measurement)
+    T = _eltype(x)
+    Derivatives{Tuple{T,T,Float64},T}()
+end
+@generated empty_der2(x) = Derivatives{Tuple{x,x,Float64},x}()
+
 # The constructor that users are going to use.  As a Julia convention, the
 # lowercase version of a type constructor does something more than the
 # constructor itself.
@@ -77,18 +85,18 @@ measurement
 ## https://github.com/JuliaLang/julia/pull/21219 to be merged.
 # function measurement(val::T) where {T<:Real}
 #     F = float(T)
-#     Measurement{F}(F(val), zero(F), NaN, Derivatives{Tuple{F,F,Float64},F}())
+#     Measurement{F}(F(val), zero(F), NaN, empty_der2(zero(F)))
 # end
 function measurement(_val::Real)
     val = float(_val)
     F = typeof(val)
-    Measurement{F}(val, zero(F), NaN, Derivatives{Tuple{F,F,Float64},F}())
+    Measurement{F}(val, zero(F), NaN, empty_der2(zero(F)))
 end
 function measurement(_val::Real, _err::Real)
     val, err = promote(float(_val), float(_err))
     F = typeof(val)
     if iszero(err)
-        Measurement{F}(val, zero(F), NaN, Derivatives{Tuple{F,F,Float64},F}())
+        Measurement{F}(val, zero(F), NaN, empty_der2(zero(F)))
     else
         tag = rand()
         return Measurement{F}(val, err, tag, Derivatives((val, err, tag)=>one(F)))

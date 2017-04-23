@@ -30,14 +30,6 @@ using SpecialFunctions, QuadGK
 
 export @uncertain
 
-# Functions to quickly create an empty Derivatives object.
-_eltype(::Type{Measurement{T}}) where {T<:AbstractFloat} = T
-@generated function empty_der1(x::Measurement)
-    T = _eltype(x)
-    Derivatives{Tuple{T,T,Float64},T}()
-end
-@generated empty_der2(x) = Derivatives{Tuple{x,x,Float64},x}()
-
 # This function is to be used by methods of mathematical operations to produce a
 # `Measurement' object in output.  Arguments are:
 #   * val: the nominal result of operation G(a)
