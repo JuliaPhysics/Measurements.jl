@@ -30,6 +30,14 @@ using SpecialFunctions, QuadGK
 
 export @uncertain
 
+# Functions to quickly create an empty Derivatives object.
+_eltype(::Type{Measurement{T}}) where {T<:AbstractFloat} = T
+@generated function empty_der1(x::Measurement)
+    T = _eltype(x)
+    Derivatives{Tuple{T,T,Float64},T}()
+end
+@generated empty_der2(x) = Derivatives{Tuple{x,x,Float64},x}()
+
 # This function is to be used by methods of mathematical operations to produce a
 # `Measurement' object in output.  Arguments are:
 #   * val: the nominal result of operation G(a)
@@ -41,8 +49,8 @@ export @uncertain
 #   σ_G = |σ_a·∂G/∂a|
 # The list of derivatives with respect to each measurement is updated with
 #   ∂G/∂a · previous_derivatives
-@inline function result{T<:AbstractFloat}(val::Real, der::Real, a::Measurement{T})
-    newder = similar(a.der)
+@inline function result(val::Real, der::Real, a::Measurement{<:AbstractFloat})
+    newder = empty_der1(a)
     @inbounds for tag in keys(a.der)
         if ! iszero(tag[2]) # Skip values with 0 uncertainty
             newder = Derivatives(newder, tag=>der*a.der[tag])
@@ -84,7 +92,7 @@ gettype(collection) = promote_type(_eltype.(collection)...)
 @inline function result(val, der, a)
     @assert length(der) == length(a)
     T = gettype(a)
-    newder = Derivatives{Tuple{T,T,Float64},T}()
+    newder = empty_der2(zero(T))
     err::T = zero(T)
     # Iterate over all independent variables.  We first iterate over all
     # variables listed in `a' in order to get all independent variables upon
