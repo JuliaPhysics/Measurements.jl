@@ -446,19 +446,17 @@ end
     frac, int = @inferred(modf(x + w))
     @test frac ≈ x + w - int
     @test int ≈ @inferred(floor((x + w).val))
-    for a in (x, y) # Test property of "mod" function
-        b = 10.0*w
-        @test @inferred(mod(a, b)) ≈ a - fld(a, b)*b
+    for a in (w, x/2, y)
+        @test @inferred(mod(a, -2.1)) ≈ @inferred(a + fld(a, -2.1) * 2.1)
+        @test @inferred(mod(-5.8, a)) ≈ @inferred(-5.8 - fld(-5.8, a) * a)
+        @test @inferred(rem(a, -3.7)) ≈ @inferred(a + div(a, -3.7) * 3.7)
+        @test @inferred(rem(-4.9, a)) ≈ @inferred(-4.9 - div(-4.9, a) * a)
+        for b in (10w, x, y)
+            @test @inferred(mod(a, b)) ≈ a - fld(a, b)*b
+            @test @inferred(rem(a, b)) ≈ a - div(a, b)*b
+        end
     end
-    @test mod(y, -3) ≈ y + fld(y, -3)*3
-    @test mod(-5.8, x) ≈ 0.2 ± 0.2
-    for a in (x, y) # Test property of "rem" function
-        b = 10.0*w
-        @test @inferred(rem(a, b)) ≈ a - div(a, b)*b
-    end
-    @test rem(y, -3) ≈ y + div(y, -3)*3
-    @test rem(-5.8, x) ≈ -2.8 ± 0.1
-    @test mod2pi(pi*x) ≈ measurement(pi, 0.1*pi)
+    @test @inferred(mod2pi(pi*x)) ≈ measurement(pi, 0.1*pi)
 end
 
 @testset "Machine precisionx" begin

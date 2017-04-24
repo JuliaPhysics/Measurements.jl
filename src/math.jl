@@ -864,14 +864,14 @@ import Base: mod, rem, mod2pi
 # Use definition of "mod" function:
 # http://docs.julialang.org/en/stable/manual/mathematical-operations/#division-functions
 mod(a::Measurement, b::Measurement) = a - fld(a, b)*b
-mod(a::Measurement, b::Real) = mod(a, measurement(b))
-mod(a::Real, b::Measurement) = mod(measurement(a), b)
+mod(a::Measurement, b::Real) = result(mod(a.val, b), 1, a)
+mod(a::Real, b::Measurement) = result(mod(a, b.val), -fld(a, b.val), b)
 
 # Use definition of "rem" function:
 # http://docs.julialang.org/en/stable/manual/mathematical-operations/#division-functions
 rem(a::Measurement, b::Measurement) = a - div(a, b)*b
-rem(a::Measurement, b::Real) = rem(a, measurement(b))
-rem(a::Real, b::Measurement) = rem(measurement(a), b)
+rem(a::Measurement, b::Real) = result(rem(a.val, b), 1, a)
+rem(a::Real, b::Measurement) = result(rem(a, b.val), -div(a, b.val), b)
 
 mod2pi(a::Measurement) = result(mod2pi(a.val), 1, a)
 
