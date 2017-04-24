@@ -38,6 +38,7 @@ end
     @test @inferred(measurement(catalan, big(0))).tag === NaN
     @test length(@inferred(measurement(7//3, 0)).der) == 0
     @test length(@inferred(measurement(4.7f0, 0.3)).der) == 1
+    @test typeof(@inferred(measurement(1, big(0)))) == Measurement{BigFloat}
 end
 
 @testset "Weighted Average" begin

@@ -26,7 +26,7 @@ convert(::Type{Measurement{T}}, a::Real) where {T<:AbstractFloat} = measurement(
 convert(::Type{Measurement{T}}, a::Measurement{T}) where {T<:AbstractFloat} = a
 function convert(::Type{Measurement{T}},
                  a::Measurement{S}) where {T<:AbstractFloat,S<:AbstractFloat}
-    newder = Derivatives{Tuple{T, T, Float64}, T}()
+    newder = empty_der2(zero(T))
     for tag in keys(a.der)
         newder = Derivatives(newder, (T(tag[1]), T(tag[2]), tag[3])=>T(a.der[tag]))
     end

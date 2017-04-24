@@ -65,9 +65,21 @@ _eltype(::Type{Measurement{T}}) where {T<:AbstractFloat} = T
 end
 @generated empty_der2(x) = Derivatives{Tuple{x,x,Float64},x}()
 
-# The constructor that users are going to use.  As a Julia convention, the
-# lowercase version of a type constructor does something more than the
-# constructor itself.
+# zero(typeof(val)) can be replaced with the simpler zero(val), but seems like the first one
+# is faster for BigFloats, otherwise I don't have reasons to prefer zero(typeof(val)).
+measurement(val::AbstractFloat) = Measurement(val, zero(typeof(val)), NaN, empty_der2(val))
+measurement(val::Real) = measurement(float(val))
+function measurement(val::T, err::T) where {T<:AbstractFloat}
+    newder = empty_der2(val)
+    if iszero(err)
+        Measurement{T}(val, err, NaN, newder)
+    else
+        tag = rand()
+        return Measurement{T}(val, err, tag, Derivatives(newder, (val, err, tag)=>one(T)))
+    end
+end
+measurement(val::Real, err::Real) = measurement(promote(float(val), float(err))...)
+const ± = measurement
 
 """
     measurement(val::Real, [err::Real]) -> Measurement
@@ -80,29 +92,6 @@ The binary operator `±` is equivalent to `measurement`, so you can construct a
 `Measurement` object by explicitely writing `123 ± 4`.
 """
 measurement
-
-## Simpler definition for one-arg method, but requires
-## https://github.com/JuliaLang/julia/pull/21219 to be merged.
-# function measurement(val::T) where {T<:Real}
-#     F = float(T)
-#     Measurement{F}(F(val), zero(F), NaN, empty_der2(zero(F)))
-# end
-function measurement(_val::Real)
-    val = float(_val)
-    F = typeof(val)
-    Measurement{F}(val, zero(F), NaN, empty_der2(zero(F)))
-end
-function measurement(_val::Real, _err::Real)
-    val, err = promote(float(_val), float(_err))
-    F = typeof(val)
-    if iszero(err)
-        Measurement{F}(val, zero(F), NaN, empty_der2(zero(F)))
-    else
-        tag = rand()
-        return Measurement{F}(val, err, tag, Derivatives((val, err, tag)=>one(F)))
-    end
-end
-const ± = measurement
 
 # Type representation
 show(io::IO, measure::Measurement) =
