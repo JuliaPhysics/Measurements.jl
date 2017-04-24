@@ -625,24 +625,22 @@ function copysign(a::Measurement, b::Measurement)
            (copysign(1, aval)/copysign(1, bval), 0),
            (a, b))
 end
-
-copysign(a::Measurement, b::Real) = copysign(a, measurement(b))
-copysign(a::Signed, b::Measurement) = copysign(measurement(a), b)
-copysign(a::Rational, b::Measurement) = copysign(measurement(a), b)
-copysign(a::Float32, b::Measurement) = copysign(measurement(a), b)
-copysign(a::Float64, b::Measurement) = copysign(measurement(a), b)
-copysign(a::Real, b::Measurement) = copysign(measurement(a), b)
+copysign(a::Measurement, b::Real) =
+    result(copysign(a.val, b), copysign(1, a.val)/copysign(1, b), a)
 
 function flipsign(a::Measurement, b::Measurement)
     flip = flipsign(a.val, b.val)
     return result(flip, (copysign(1, flip), 0), (a, b))
 end
+function flipsign(a::Measurement, b::Real)
+    flip = flipsign(a.val, b)
+    return result(flip, copysign(1, flip), a)
+end
 
-flipsign(a::Measurement, b::Real) = flipsign(a, measurement(b))
-flipsign(a::Signed, b::Measurement) = flipsign(measurement(a), b)
-flipsign(a::Float32, b::Measurement) = flipsign(measurement(a), b)
-flipsign(a::Float64, b::Measurement) = flipsign(measurement(a), b)
-flipsign(a::Real, b::Measurement) = flipsign(measurement(a), b)
+for T in (Signed, Rational, Float32, Float64, Real)
+    @eval copysign(a::$T, b::Measurement) = copysign(a, b.val)
+    @eval flipsign(a::$T, b::Measurement) = flipsign(a, b.val)
+end
 
 ### Special functions
 

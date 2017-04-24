@@ -359,15 +359,15 @@ end
     @test @inferred(copysign(5, w)) == -5
     @test @inferred(copysign(1//2, w)) == -1//2
     @test @inferred(copysign(w, w)) == w
-    @test @inferred(copysign(Float32(5), w)) == -5
-    @test @inferred(copysign(Float64(5), w)) == -5
-    @test @inferred(copysign(pi, w)) == -pi
+    @test @inferred(copysign(Float32(5), w)) === -Float32(5)
+    @test @inferred(copysign(Float64(5), w)) === -Float64(5)
+    @test copysign(pi, w) == -pi # This isn't inferrable in Julia
     @test @inferred(flipsign(x, -5)) == -x
     @test @inferred(flipsign(w, w)) == -w
     @test @inferred(flipsign(-5, w)) == 5
-    @test @inferred(flipsign(Float32(-5), w)) == 5
-    @test @inferred(flipsign(Float64(-5), w)) == 5
-    @test @inferred(flipsign(pi, w)) == -pi
+    @test @inferred(flipsign(Float32(-5), w)) === Float32(5)
+    @test @inferred(flipsign(Float64(-5), w)) === Float64(5)
+    @test flipsign(pi, w) == -pi # This isn't inferrable in Julia
 end
 
 @testset "One and zero" begin
