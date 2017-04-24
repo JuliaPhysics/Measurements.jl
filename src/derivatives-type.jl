@@ -19,7 +19,7 @@
 #
 ### Code:
 
-import Base: getindex, get, start, next, done, similar, length
+import Base: getindex, get, start, next, done, length
 
 struct Derivatives{T} <: Associative{Tuple{T,T,Float64},T}
     parent::Derivatives{T}
@@ -58,10 +58,4 @@ end
 start(t::Derivatives) = t
 next{T}(::Derivatives{T}, t) = (Pair{Tuple{T,T,Float64},T}(t.key, t.value), t.parent)
 done(::Derivatives, t) = !isdefined(t, :parent)
-function similar(t::Derivatives)
-    while isdefined(t, :parent)
-        t = t.parent
-    end
-    return t
-end
 length(t::Derivatives) = count(x->true, t)
