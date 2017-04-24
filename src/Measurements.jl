@@ -54,16 +54,16 @@ struct Measurement{T<:AbstractFloat} <: AbstractFloat
     val::T
     err::T
     tag::Float64
-    der::Derivatives{Tuple{T, T, Float64}, T}
+    der::Derivatives{T}
 end
 
 # Functions to quickly create an empty Derivatives object.
 _eltype(::Type{Measurement{T}}) where {T<:AbstractFloat} = T
 @generated function empty_der1(x::Measurement)
     T = _eltype(x)
-    Derivatives{Tuple{T,T,Float64},T}()
+    Derivatives{T}()
 end
-@generated empty_der2(x) = Derivatives{Tuple{x,x,Float64},x}()
+@generated empty_der2(x) = Derivatives{x}()
 
 # zero(typeof(val)) can be replaced with the simpler zero(val), but seems like the first one
 # is faster for BigFloats, otherwise I don't have reasons to prefer zero(typeof(val)).

@@ -26,7 +26,7 @@ In detail, this is the definition of the type:
         val::T
         err::T
         tag::Float64
-        der::Derivatives{Tuple{T, T, Float64}, T}
+        der::Derivatives{T}
     end
 
 The fields represent:

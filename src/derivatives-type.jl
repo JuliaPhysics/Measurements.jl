@@ -21,17 +21,15 @@
 
 import Base: getindex, get, start, next, done, similar, length
 
-struct Derivatives{K, V} <: Associative{K,V}
-    parent::Derivatives{K, V}
-    key::K
-    value::V
-    Derivatives{K,V}() where {K,V} = new() # represents an empty dictionary
-    Derivatives{K,V}(key, value) where {K,V} = (empty = new(); new(empty, key, value))
-    Derivatives{K,V}(parent::Derivatives, key, value) where {K,V} = new(parent, key, value)
+struct Derivatives{T} <: Associative{Tuple{T,T,Float64},T}
+    parent::Derivatives{T}
+    key::Tuple{T,T,Float64}
+    value::T
+    Derivatives{T}() where {T} = new() # represents an empty dictionary
+    Derivatives{T}(parent::Derivatives, key, value) where {T} = new(parent, key, value)
 end
 
-Derivatives{K,V}(KV::Pair{K,V}) = Derivatives{K,V}(KV[1], KV[2])
-Derivatives{K,V}(t::Derivatives{K,V}, KV::Pair) = Derivatives{K,V}(t, KV[1], KV[2])
+Derivatives{T}(t::Derivatives{T}, KV::Pair) = Derivatives{T}(t, KV[1], KV[2])
 
 function getindex(dict::Derivatives, key)
     while isdefined(dict, :parent)
@@ -58,7 +56,7 @@ end
 
 # this actually defines reverse iteration (e.g. it should not be used for merge/copy/filter type operations)
 start(t::Derivatives) = t
-next{K,V}(::Derivatives{K,V}, t) = (Pair{K,V}(t.key, t.value), t.parent)
+next{T}(::Derivatives{T}, t) = (Pair{Tuple{T,T,Float64},T}(t.key, t.value), t.parent)
 done(::Derivatives, t) = !isdefined(t, :parent)
 function similar(t::Derivatives)
     while isdefined(t, :parent)
