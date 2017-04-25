@@ -84,8 +84,9 @@ gettype(collection) = promote_type(_eltype.(collection)...)
 @inline function result(val, der, a)
     @assert length(der) == length(a)
     T = gettype(a)
-    newder = empty_der2(zero(T))
-    err::T = zero(T)
+    nil::T = zero(T)
+    err = nil
+    newder = empty_der2(nil)
     # Iterate over all independent variables.  We first iterate over all
     # variables listed in `a' in order to get all independent variables upon
     # which those variables depend, then we get the `tag' of each independent
@@ -95,7 +96,7 @@ gettype(collection) = promote_type(_eltype.(collection)...)
             if tag ∉ keys(newder) # Skip independent variables already considered
                 σ_x = tag[2]
                 if ! iszero(σ_x)  # Skip values with 0 uncertainty
-                    ∂G_∂x::T = zero(T)
+                    ∂G_∂x::T = nil
                     # Iteratate over all the arguments of the function
                     for (i, x) in enumerate(a)
                         # Calculate the derivative of G with respect to the
