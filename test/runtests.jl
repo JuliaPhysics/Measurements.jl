@@ -119,7 +119,7 @@ end
     @test @inferred(x + true) ≈ measurement(4, 0.1)
     @test @inferred(x + 2) ≈ measurement(5, 0.1)
     for a in (w, x, y)
-        @test @inferred(+a) ≈ a
+        @test @inferred(+a) === a
         @test @inferred(a + zero(a)) ≈ a ≈ @inferred(measurement(0) + a) # Neutral element
         @test @inferred(a + a + a) ≈ 3a # Correlation
         for b in (w, x, y)

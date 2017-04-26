@@ -161,7 +161,6 @@ end
 import Base: +, -, *, /, div, inv, fld, cld
 
 # Addition: +
-+(a::Measurement) = a
 +(a::Measurement, b::Measurement) = result(a.val + b.val, (1, 1), (a, b))
 +(a::Real, b::Measurement) = result(a + b.val, 1, b)
 +(a::Measurement, b::Bool) = result(a.val +b, 1, a)
@@ -308,8 +307,8 @@ end
 # deg2rad, rad2deg
 import Base: deg2rad, rad2deg
 
-deg2rad(a::Measurement) = result(deg2rad(a.val), oftype(a.val, pi)/180, a)
-rad2deg(a::Measurement) = result(rad2deg(a.val), 180/oftype(a.val, pi), a)
+deg2rad(a::Measurement) = a * (oftype(a.val, pi) / 180)
+rad2deg(a::Measurement) = a * (180 / oftype(a.val, pi))
 
 # Cosine: cos, cosd, cosh
 import Base: cos, cosd, cosh
