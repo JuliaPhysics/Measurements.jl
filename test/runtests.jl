@@ -94,6 +94,7 @@ end
     @test z == x ≠ y
     @test x == x
     @test -2 < w <= x < y < 5
+    @test big(1) < big(x) < big(4) <= big(y) <= big(5)
     @test -5//3 < w <= -1//2 <= x < 11//3 < y <= 24//6
     @test 3 == x
     @test y == 4 ≠ w

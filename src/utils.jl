@@ -66,7 +66,7 @@ independent measurement `y`, calculated on the nominal value of `y`.  Return
 zero if `x` does not depend on `y`.
 
 Use `Measurements.derivative.(x, array)` to calculate the gradient of `x` with respect to an
-arrays of independent measurements.
+array of independent measurements.
 """
 derivative(a::Measurement, b::Measurement) =
     derivative(a, (b.val, b.err, b.tag))

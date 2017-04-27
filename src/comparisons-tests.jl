@@ -37,8 +37,15 @@ import Base: ==, isless, <, <=, isnan, isfinite, isinf, isinteger, iszero
 ==(a::Real, b::Measurement) = a==b.val
 
 # Order relation is based on the value of measurements, uncertainties are ignored
-<(a::Measurement, b::Measurement) = <(a.val, b.val)
-<=(a::Measurement, b::Measurement) = <=(a.val, b.val)
+for cmp in (:<, :<=)
+    @eval begin
+        ($cmp)(a::Measurement, b::Measurement) = ($cmp)(a.val, b.val)
+        ($cmp)(a::Measurement, b::Rational) = ($cmp)(a.val, b)
+        ($cmp)(a::Measurement, b::Real) = ($cmp)(a.val, b)
+        ($cmp)(a::Rational, b::Measurement) = ($cmp)(a, b.val)
+        ($cmp)(a::Real, b::Measurement) = ($cmp)(a, b.val)
+    end
+end
 # This is used for comparisons with Rational
 Base.decompose(a::Measurement) = Base.decompose(a.val)
 
