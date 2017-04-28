@@ -46,8 +46,6 @@ for cmp in (:<, :<=)
         ($cmp)(a::Real, b::Measurement) = ($cmp)(a, b.val)
     end
 end
-# This is used for comparisons with Rational
-Base.decompose(a::Measurement) = Base.decompose(a.val)
 
 for f in (:isnan, :isfinite, :isinf, :isinteger, :iszero)
     @eval ($f)(a::Measurement) = ($f)(a.val)
