@@ -45,10 +45,10 @@ end
 end
 
 @testset "Square root" begin
-    @test @inferred(sqrt(big(x))) ≈ sqrt(x)
     for a in (u, v, z)
         @test @inferred(sqrt(a))         ≈ @inferred(a^0.5)
         @test @inferred(sqrt(a)*sqrt(a)) ≈ a
+        @test @inferred(sqrt(big(a)))    ≈ sqrt(a)
     end
 end
 

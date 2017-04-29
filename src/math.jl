@@ -896,6 +896,8 @@ widen{T<:AbstractFloat}(::Type{Measurement{T}}) = Measurement{widen(T)}
 import Base: big
 
 big{T<:AbstractFloat}(x::Measurement{T}) = convert(Measurement{BigFloat}, x)
+big(x::Complex{Measurement{T}}) where {T<:AbstractFloat} =
+    convert(Complex{Measurement{BigFloat}}, x)
 
 # Sum and prod
 import Base: sum, prod
