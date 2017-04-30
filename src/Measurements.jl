@@ -65,9 +65,7 @@ _eltype(::Type{Measurement{T}}) where {T<:AbstractFloat} = T
 end
 @generated empty_der2(x) = Derivatives{x}()
 
-# zero(typeof(val)) can be replaced with the simpler zero(val), but seems like the first one
-# is faster for BigFloats, otherwise I don't have reasons to prefer zero(typeof(val)).
-measurement(val::AbstractFloat) = Measurement(val, zero(typeof(val)), NaN, empty_der2(val))
+measurement(val::T) where {T<:AbstractFloat} = Measurement(val, zero(T), NaN, empty_der2(val))
 measurement(val::Real) = measurement(float(val))
 function measurement(val::T, err::T) where {T<:AbstractFloat}
     newder = empty_der2(val)

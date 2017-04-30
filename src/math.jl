@@ -938,16 +938,16 @@ quadgk_result(integral::Real, derivatives::Tuple, a::Tuple) =
     result(integral, derivatives, a)
 
 # Upper bound is a Measurement.  The derivative is f(b).
-function QuadGK.quadgk{T<:AbstractFloat}(f, a, b::Measurement{T}; kws...)
-    F = promote_type(typeof(float(a)), T)
+function QuadGK.quadgk(f, a::S, b::Measurement{T}; kws...) where {S,T<:AbstractFloat}
+    F = promote_type(S, T)
     bval = b.val
     integral = QuadGK.quadgk(f, convert(F, a), convert(F, bval); kws...)
     return (quadgk_result(integral[1], f(bval), b), integral[2])
 end
 
 # Lower bound is a Measurement.  The derivative is -f(a).
-function QuadGK.quadgk{T<:AbstractFloat}(f, a::Measurement{T}, b; kws...)
-    F = promote_type(typeof(float(b)), T)
+function QuadGK.quadgk(f, a::Measurement{T}, b::S; kws...) where {S,T<:AbstractFloat}
+    F = promote_type(S, T)
     aval = a.val
     integral = QuadGK.quadgk(f, convert(F, aval), convert(F, b); kws...)
     return (quadgk_result(integral[1], -f(aval), a), integral[2])
