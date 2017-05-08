@@ -895,6 +895,8 @@ widen{T<:AbstractFloat}(::Type{Measurement{T}}) = Measurement{widen(T)}
 # To big float
 import Base: big
 
+big(::Type{Measurement}) = Measurement{BigFloat}
+big(::Type{Measurement{T}}) where {T<:AbstractFloat} = Measurement{BigFloat}
 big{T<:AbstractFloat}(x::Measurement{T}) = convert(Measurement{BigFloat}, x)
 big(x::Complex{Measurement{T}}) where {T<:AbstractFloat} =
     convert(Complex{Measurement{BigFloat}}, x)
