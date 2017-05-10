@@ -105,11 +105,13 @@ end
     @test isnan(x) == false
     @test isfinite(y) == true && isfinite(measurement(Inf)) == false
     @test isinf(measurement(Inf)) == true && isinf(x) == false
-    @test (isinteger(x) == true && isinteger(w) == false)
-    @test iszero(x) == false
-    @test iszero(y * 0) == true
-    @test iszero(0 ± 1) == true
-    @test iszero(1 ± 0) == false
+    @test isinteger(-3 ± 0)
+    @test !isinteger(3 ± 1)
+    @test !isinteger(pi ± 0)
+    @test iszero(0 ± 0)
+    @test iszero(zero(Measurement))
+    @test !iszero(0 ± 1)
+    @test !iszero(1 ± 0)
 end
 
 ##### Mathematical Operations

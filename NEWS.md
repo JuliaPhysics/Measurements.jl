@@ -1,6 +1,13 @@
 History of Measurements.jl
 ==========================
 
+v0.4.1 (201?-??-??)
+-------------------
+
+### Breaking Changes
+
+* `isinteger` and `iszero` now check also that the uncertainty is zero.
+
 v0.4.0 (2017-04-26)
 -------------------
 

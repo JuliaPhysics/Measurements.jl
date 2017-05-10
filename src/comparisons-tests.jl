@@ -47,6 +47,11 @@ for cmp in (:<, :<=)
     end
 end
 
-for f in (:isnan, :isfinite, :isinf, :isinteger, :iszero)
+for f in (:isnan, :isfinite, :isinf)
     @eval ($f)(a::Measurement) = ($f)(a.val)
 end
+# "isinteger" should check the number is exactly an integer, without uncertainty.
+isinteger(a::Measurement) = isinteger(a.val) && iszero(a.err)
+# "iszero" is supposed to check the number is the additive identity element, so we must
+# check also the uncertainty is zero.
+iszero(a::Measurement) = iszero(a.val) && iszero(a.err)
