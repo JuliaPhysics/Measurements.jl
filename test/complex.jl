@@ -33,14 +33,20 @@ end
 end
 
 @testset "Exponential and logarithm" begin
+    @test @inferred(u ^ v) ≈ @inferred(exp(v * log(u)))
     for a in (u, v)
-        @test @inferred(exp(a))      ≈ e^a
-        @test @inferred(expm1(a))    ≈ exp(a) - 1
-        @test @inferred(exp10(a))    ≈ 10^a
-        @test @inferred(exp(log(a))) ≈ a
-        @test @inferred(log(e, a))   ≈ log(a)
-        @test @inferred(log(10, a))  ≈ log10(a)
-        @test @inferred(log1p(a))    ≈ log(1 + a)
+        @test @inferred(exp(a))          ≈ e^a
+        @test @inferred(expm1(a))        ≈ exp(a) - 1
+        @test @inferred(exp10(a))        ≈ 10^a
+        @test @inferred(exp2(a))         ≈ 2^a
+        @test @inferred(exp(log(a)))     ≈ a
+        @test @inferred(log(e, a))       ≈ log(a)
+        @test @inferred(log(10, a))      ≈ log10(a)
+        @test @inferred(log(2, a))       ≈ log2(a)
+        @test @inferred(log1p(a))        ≈ log(1 + a)
+        @test @inferred(exp2(log2(a)))   ≈ a
+        @test @inferred(exp10(log10(a))) ≈ a
+        @test @inferred(expm1(log1p(a))) ≈ a
     end
 end
 

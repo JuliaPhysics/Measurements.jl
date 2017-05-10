@@ -202,21 +202,25 @@ end
 end
 
 @testset "Power" begin
+    # Test numerical values
     @test @inferred(x^y) ≈ measurement(81, 20.818061515800505)
     @test @inferred(x^2) ≈ measurement(9, 0.6)
     @test @inferred(y^(1//2)) ≈ measurement(2, 0.05)
     @test @inferred(x^(pi)) ≈ measurement(31.54428070019754, 3.3033093503504967)
     @test @inferred(2^x) ≈ measurement(8, 0.5545177444479562)
     @test @inferred(pi^x) ≈ measurement(31.006276680299816, 3.5493811564854525)
-    @test @inferred(z^2.5) ≈ x^2.5
-    @test @inferred(z^3) ≈ x^3
+    @test @inferred(z ^ 2.5) ≈ @inferred(x ^ 2.5)
+    @test @inferred(z ^ 3) ≈ @inferred(x ^ 3)
     for a in (w, x, y)
-        @test @inferred(a^(-1)) ≈ inv(a)
-        @test @inferred(a^2) ≈ a^2.0
-        @test @inferred(a^(4//2)) ≈ a*a
-        @test @inferred(2^a) ≈ 2.0^a
-        @test @inferred(e^a) ≈ exp(a)
-        @test @inferred(exp2(a)) ≈ 2^a
+        @test @inferred(x ^ a) ≈ @inferred(exp(a * log(x)))
+        @test @inferred(abs(a) ^ w) ≈ @inferred(exp(w * log(abs(a))))
+        @test @inferred(abs(a) ^ a) ≉ @inferred(exp(a * log(abs(a.val) ± a.err))) # correlation
+        @test @inferred(a ^ (-1)) ≈ @inferred(inv(a))
+        @test @inferred(a ^ 2) ≈ @inferred(a ^ 2.0)
+        @test @inferred(a ^ (4//2)) ≈ @inferred(a * a) # correlation
+        @test @inferred(2 ^ a) ≈ @inferred(2.0 ^ a)
+        @test @inferred(e ^ a) ≈ @inferred(exp(a))
+        @test @inferred(exp2(a)) ≈ @inferred(2 ^ a)
     end
     # Make sure "p ± 0" behaves like "p", in particular with regard to the
     # uncertainty.
@@ -297,6 +301,9 @@ end
         @test @inferred(expm1(a)) ≈ exp(a) - one(a)
         @test @inferred(exp10(a)) ≈ 10^a
         @test @inferred(ldexp(frexp(a)...)) ≈ a
+        @test @inferred(log2(exp2(a))) ≈ a
+        @test @inferred(log10(exp10(a))) ≈ a
+        @test @inferred(log1p(expm1(a))) ≈ a
     end
 end
 
@@ -389,7 +396,7 @@ end
 end
 
 @testset "Cis" begin
-    for a in (w, x, y); @test @inferred(cis(a)) ≈ @inferred(exp(im * a)); end
+    for a in (w, x, y); @test @inferred(cis(a) - exp(im * a)) ≈ 0; end
 end
 
 @testset "Factorial and gamma" begin
