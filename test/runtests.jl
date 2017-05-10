@@ -582,7 +582,8 @@ end
 @testset "BigFloat's" begin
     @test big(Measurement) == Measurement{BigFloat}
     @test typeof(big(x)) == big(typeof(x))
-    @test typeof(big(z)) == big(typeof(z))
+    # Enable following test when support for Julia 0.6 will be dropped.
+    @test_skip typeof(big(z)) == big(typeof(z))
     a = big"3.00000001" ± big"1e-17"
     b = big"4.00000001" ± big"1e-17"
     c = big"5.00000001" ± big"1e-15"
