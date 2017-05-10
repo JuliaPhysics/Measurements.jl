@@ -29,6 +29,10 @@ end
         @test @inferred(tan(atan(a)))   ≈ a
         @test @inferred(tanh(a))        ≈ @inferred(sinh(a)/cosh(a))
         @test @inferred(tanh(atanh(a))) ≈ a
+        @test @inferred(sinpi(a))       ≈ sin(pi * a)
+        @test @inferred(cospi(a))       ≈ cos(pi * a)
+        @test @inferred(sinc(a))        ≈ (sin(pi * a) / (pi * a))
+        @test @inferred(cosc(a))        ≈ ((cos(pi * a) - sin(pi * a) / (pi * a)) / a)
     end
 end
 

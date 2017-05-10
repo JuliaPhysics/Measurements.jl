@@ -364,6 +364,19 @@ function tanh(a::Measurement)
     return result(tanh(aval), abs2(sech(aval)), a)
 end
 
+# Pi-related functions: sinpi, cospi
+import Base: sinpi, cospi
+
+function sinpi(a::Measurement)
+    x = a.val
+    return result(sinpi(x), cospi(x) * pi, a)
+end
+
+function cospi(a::Measurement)
+    x = a.val
+    return result(cospi(x), -sinpi(x) * pi, a)
+end
+
 # Inverse trig functions: acos, acosd, acosh, asin, asind, asinh, atan, atand,
 # atan2, atanh
 import Base: acos, acosd, acosh, asin, asind, asinh, atan, atand, atan2, atanh

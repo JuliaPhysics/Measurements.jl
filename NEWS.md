@@ -8,6 +8,10 @@ v0.4.1 (201?-??-??)
 
 * `isinteger` and `iszero` now check also that the uncertainty is zero.
 
+### New Features
+
+* New mathematical operations supported: `sinpi`, `cospi`.
+
 v0.4.0 (2017-04-26)
 -------------------
 
