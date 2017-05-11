@@ -29,7 +29,7 @@ struct Derivatives{T} <: Associative{Tuple{T,T,Float64},T}
     Derivatives{T}(parent::Derivatives, key, value) where {T} = new(parent, key, value)
 end
 
-Derivatives{T}(t::Derivatives{T}, KV::Pair) = Derivatives{T}(t, KV[1], KV[2])
+Derivatives(t::Derivatives{T}, KV::Pair) where {T} = Derivatives{T}(t, KV[1], KV[2])
 
 function getindex(dict::Derivatives, key)
     while isdefined(dict, :parent)
@@ -56,6 +56,6 @@ end
 
 # this actually defines reverse iteration (e.g. it should not be used for merge/copy/filter type operations)
 start(t::Derivatives) = t
-next{T}(::Derivatives{T}, t) = (Pair{Tuple{T,T,Float64},T}(t.key, t.value), t.parent)
+next(::Derivatives{T}, t) where {T} = (Pair{Tuple{T,T,Float64},T}(t.key, t.value), t.parent)
 done(::Derivatives, t) = !isdefined(t, :parent)
 length(t::Derivatives) = count(x->true, t)

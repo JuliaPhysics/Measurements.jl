@@ -60,9 +60,9 @@ end
 # Get the common type parameter of a collection of Measurement objects.  The first two
 # methods are for the trivial cases of homogeneous tuples and arrays, the last, inefficient,
 # method is for inhomogeneous collections (probably the least common case).
-gettype{T<:AbstractFloat}(::Tuple{Vararg{Measurement{T}}}) = T
-gettype{T<:AbstractFloat}(::AbstractArray{Measurement{T}}) = T
-_eltype{T<:AbstractFloat}(::Measurement{T}) = T
+gettype(::Tuple{Vararg{Measurement{T}}}) where {T<:AbstractFloat} = T
+gettype(::AbstractArray{Measurement{T}}) where {T<:AbstractFloat} = T
+_eltype(::Measurement{T}) where {T<:AbstractFloat} = T
 gettype(collection) = promote_type(_eltype.(collection)...)
 
 # This function is similar to the previous one, but applies to mathematical
@@ -275,29 +275,29 @@ function ^(a::Measurement, b::Measurement)
     return result(pow, (aval^(bval - 1)*bval, pow*log(aval)), (a, b))
 end
 
-function ^{T<:Integer}(a::Measurement, b::T)
+function ^(a::Measurement, b::Integer)
     x = a.val
     return result(x ^ b, b * x ^ (b - 1), a)
 end
 
-function ^{F<:AbstractFloat,T<:Rational}(a::Measurement{F},  b::T)
+function ^(a::Measurement{T},  b::Rational) where {T<:AbstractFloat}
     x = a.val
-    return result(x ^ b, b * x ^ (b - one(F)), a)
+    return result(x ^ b, b * x ^ (b - one(T)), a)
 end
 
-function ^{T<:Real}(a::Measurement,  b::T)
+function ^(a::Measurement,  b::Real)
     x = a.val
     return result(x ^ b, b * x ^ (b - 1), a)
 end
 
 ^(::Irrational{:e}, b::Measurement) = exp(b)
 
-function ^{T<:Real}(a::T,  b::Measurement)
+function ^(a::Real,  b::Measurement)
     res = a^b.val
     return result(res, res*log(a), b)
 end
 
-function exp2{T<:AbstractFloat}(a::Measurement{T})
+function exp2(a::Measurement{T}) where {T<:AbstractFloat}
     pow = exp2(a.val)
     return result(pow, pow*log(T(2)), a)
 end
@@ -381,49 +381,49 @@ end
 # atan2, atanh
 import Base: acos, acosd, acosh, asin, asind, asinh, atan, atand, atan2, atanh
 
-function acos{T<:AbstractFloat}(a::Measurement{T})
+function acos(a::Measurement{T}) where {T<:AbstractFloat}
     aval = a.val
-    return result(acos(aval), -one(T) / (sqrt(one(T) - abs2(aval))), a)
+    return result(acos(aval), -inv(sqrt(one(T) - abs2(aval))), a)
 end
 
-function acosd{T<:AbstractFloat}(a::Measurement{T})
+function acosd(a::Measurement{T}) where {T<:AbstractFloat}
     aval = a.val
-    return result(acosd(aval), -rad2deg(one(T) / (sqrt(one(T) - abs2(aval)))), a)
+    return result(acosd(aval), -rad2deg(inv(sqrt(one(T) - abs2(aval)))), a)
 end
 
-function acosh{T<:AbstractFloat}(a::Measurement{T})
+function acosh(a::Measurement{T}) where {T<:AbstractFloat}
     aval = a.val
-    return result(acosh(aval), one(T) / (sqrt(abs2(aval) - one(T))), a)
+    return result(acosh(aval), inv(sqrt(abs2(aval) - one(T))), a)
 end
 
-function asin{T<:AbstractFloat}(a::Measurement{T})
+function asin(a::Measurement{T}) where {T<:AbstractFloat}
     aval = a.val
-    return result(asin(aval), one(T) / (sqrt(one(T) - abs2(aval))), a)
+    return result(asin(aval), inv(sqrt(one(T) - abs2(aval))), a)
 end
 
-function asind{T<:AbstractFloat}(a::Measurement{T})
+function asind(a::Measurement{T}) where {T<:AbstractFloat}
     aval = a.val
-    return result(asind(aval), rad2deg(one(T) / (sqrt(one(T) - abs2(aval)))), a)
+    return result(asind(aval), rad2deg(inv(sqrt(one(T) - abs2(aval)))), a)
 end
 
-function asinh{T<:AbstractFloat}(a::Measurement{T})
+function asinh(a::Measurement{T}) where {T<:AbstractFloat}
     aval = a.val
-    return result(asinh(aval), one(T) / (hypot(aval, one(T))), a)
+    return result(asinh(aval), inv(hypot(aval, one(T))), a)
 end
 
-function atan{T<:AbstractFloat}(a::Measurement{T})
+function atan(a::Measurement{T}) where {T<:AbstractFloat}
     aval = a.val
-    return result(atan(aval), one(T) / (abs2(aval) + one(T)), a)
+    return result(atan(aval), inv(abs2(aval) + one(T)), a)
 end
 
-function atand{T<:AbstractFloat}(a::Measurement{T})
+function atand(a::Measurement{T}) where {T<:AbstractFloat}
     aval = a.val
-    return result(atand(aval), rad2deg(one(T) / (abs2(aval) + one(T))), a)
+    return result(atand(aval), rad2deg(inv(abs2(aval) + one(T))), a)
 end
 
-function atanh{T<:AbstractFloat}(a::Measurement{T})
+function atanh(a::Measurement{T}) where {T<:AbstractFloat}
     aval = a.val
-    return result(atanh(aval), one(T) / (one(T) - abs2(aval)), a)
+    return result(atanh(aval), inv(one(T) - abs2(aval)), a)
 end
 
 function atan2(a::Measurement, b::Measurement)
@@ -514,17 +514,18 @@ function expm1(a::Measurement)
     return result(expm1(aval), exp(aval), a)
 end
 
-function exp10{T<:AbstractFloat}(a::Measurement{T})
+function exp10(a::Measurement{T}) where {T<:AbstractFloat}
     val = exp10(a.val)
     return result(val, log(T(10))*val, a)
 end
 
-function frexp{T<:AbstractFloat}(a::Measurement{T})
+function frexp(a::Measurement)
     x, y = frexp(a.val)
-    return (result(x, one(T) / exp2(y), a), y)
+    return (result(x, inv(exp2(y)), a), y)
 end
 
-ldexp{T}(a::Measurement{T}, e::Integer) = result(ldexp(a.val, e), ldexp(one(T), e), a)
+ldexp(a::Measurement{T}, e::Integer) where {T<:AbstractFloat} =
+    result(ldexp(a.val, e), ldexp(one(T), e), a)
 
 # Logarithms
 import Base: log, log2, log10, log1p
@@ -537,31 +538,31 @@ function log(a::Measurement, b::Measurement)
     return result(val, (-val / (aval * loga), 1 / (loga * bval)), (a, b))
 end
 
-function log{T<:AbstractFloat}(a::Measurement{T}) # Special case
+function log(a::Measurement) # Special case
     aval = a.val
-    return result(log(aval), one(T) / aval, a)
+    return result(log(aval), inv(aval), a)
 end
 
-function log2{T<:AbstractFloat}(a::Measurement{T}) # Special case
+function log2(a::Measurement{T}) where {T<:AbstractFloat} # Special case
     x = a.val
-    return result(log2(x), one(T) / (log(T(2)) * x), a)
+    return result(log2(x), inv(log(T(2)) * x), a)
 end
 
-function log10{T<:AbstractFloat}(a::Measurement{T}) # Special case
+function log10(a::Measurement{T}) where {T<:AbstractFloat} # Special case
     aval = a.val
-    return result(log10(aval), one(T) / (log(T(10)) * aval), a)
+    return result(log10(aval), inv(log(T(10)) * aval), a)
 end
 
-function log1p{T<:AbstractFloat}(a::Measurement{T}) # Special case
+function log1p(a::Measurement{T}) where {T<:AbstractFloat} # Special case
     aval = a.val
-    return result(log1p(aval), one(T) / (aval + one(T)), a)
+    return result(log1p(aval), inv(aval + one(T)), a)
 end
 
 log(::Irrational{:e}, a::Measurement) = log(a)
 
-function log{T<:AbstractFloat}(a::Real, b::Measurement{T})
+function log(a::Real, b::Measurement{T}) where {T<:AbstractFloat}
     bval = b.val
-    return result(log(a, bval), one(T) / (log(a) * bval), b)
+    return result(log(a, bval), inv(log(a) * bval), b)
 end
 
 function log(a::Measurement, b::Real)
@@ -597,9 +598,9 @@ end
 # Square root: sqrt
 import Base: sqrt
 
-function sqrt{T<:AbstractFloat}(a::Measurement{T})
+function sqrt(a::Measurement)
     val = sqrt(a.val)
-    return result(val, one(T) / (2 * val), a)
+    return result(val, inv(2 * val), a)
 end
 
 # Cube root: cbrt
@@ -645,40 +646,40 @@ end
 # Error function: erf, erfinv, erfc, erfcinv, erfcx, erfi, dawson
 import Base: erf, erfinv, erfc, erfcinv, erfcx, erfi, dawson
 
-function erf{T<:AbstractFloat}(a::Measurement{T})
+function erf(a::Measurement{T}) where {T<:AbstractFloat}
     aval = a.val
     return result(erf(aval), 2*exp(-abs2(aval))/sqrt(T(pi)), a)
 end
 
-function erfinv{T<:AbstractFloat}(a::Measurement{T})
+function erfinv(a::Measurement{T}) where {T<:AbstractFloat}
     res = erfinv(a.val)
     # For the derivative, see http://mathworld.wolfram.com/InverseErf.html
     return result(res, sqrt(T(pi)) * exp(abs2(res)) / 2, a)
 end
 
-function erfc{T<:AbstractFloat}(a::Measurement{T})
+function erfc(a::Measurement{T}) where {T<:AbstractFloat}
     aval = a.val
     return result(erfc(aval), -2*exp(-abs2(aval))/sqrt(T(pi)), a)
 end
 
-function erfcinv{T<:AbstractFloat}(a::Measurement{T})
+function erfcinv(a::Measurement{T}) where {T<:AbstractFloat}
     res = erfcinv(a.val)
     # For the derivative, see http://mathworld.wolfram.com/InverseErfc.html
     return result(res, -sqrt(T(pi)) * exp(abs2(res)) / 2, a)
 end
 
-function erfcx{T<:AbstractFloat}(a::Measurement{T})
+function erfcx(a::Measurement{T}) where {T<:AbstractFloat}
     aval = a.val
     res = erfcx(aval)
-    return result(res, 2 * (aval * res - one(T) / (sqrt(T(pi)))), a)
+    return result(res, 2 * (aval * res - inv(sqrt(T(pi)))), a)
 end
 
-function erfi{T<:AbstractFloat}(a::Measurement{T})
+function erfi(a::Measurement{T}) where {T<:AbstractFloat}
     aval = a.val
     return result(erfi(aval), 2*exp(abs2(aval))/sqrt(T(pi)), a)
 end
 
-function dawson{T<:AbstractFloat}(a::Measurement{T})
+function dawson(a::Measurement{T}) where {T<:AbstractFloat}
     aval = a.val
     res = dawson(aval)
     return result(res, one(T) - 2 * aval * res, a)
@@ -709,10 +710,10 @@ function digamma(a::Measurement)
     return result(digamma(aval), trigamma(aval), a)
 end
 
-function invdigamma{T<:AbstractFloat}(a::Measurement{T})
+function invdigamma(a::Measurement)
     aval = a.val
     res = invdigamma(aval)
-    return result(res, one(T) / trigamma(res), a)
+    return result(res, inv(trigamma(res)), a)
 end
 
 function trigamma(a::Measurement)
@@ -875,15 +876,15 @@ mod2pi(a::Measurement) = result(mod2pi(a.val), 1, a)
 
 import Base: eps, nextfloat, maxintfloat, typemax
 
-eps{T<:AbstractFloat}(::Type{Measurement{T}}) = eps(T)
-eps{T<:AbstractFloat}(a::Measurement{T}) = eps(a.val)
+eps(::Type{Measurement{T}}) where {T<:AbstractFloat} = eps(T)
+eps(a::Measurement) = eps(a.val)
 
 nextfloat(a::Measurement) = nextfloat(a.val)
 nextfloat(a::Measurement, n::Integer) = nextfloat(a.val, n)
 
-maxintfloat{T<:AbstractFloat}(::Type{Measurement{T}}) = maxintfloat(T)
+maxintfloat(::Type{Measurement{T}}) where {T<:AbstractFloat} = maxintfloat(T)
 
-typemax{T<:AbstractFloat}(::Type{Measurement{T}}) = typemax(T)
+typemax(::Type{Measurement{T}}) where {T<:AbstractFloat} = typemax(T)
 
 ### Rounding
 import Base: round, floor, ceil, trunc
@@ -892,27 +893,26 @@ round(a::Measurement) = measurement(round(value(a)), round(uncertainty(a)))
 round(a::Measurement, digits::Integer, base::Integer=10) =
     measurement(round(value(a), digits, base),
                 round(uncertainty(a), digits, base))
-round{T<:Integer}(::Type{T}, a::Measurement) = round(T, a.val)
+round(::Type{T}, a::Measurement) where {T<:Integer} = round(T, a.val)
 floor(a::Measurement) = measurement(floor(a.val))
-floor{T<:Integer}(::Type{T}, a::Measurement) = floor(T, a.val)
+floor(::Type{T}, a::Measurement) where {T<:Integer} = floor(T, a.val)
 ceil(a::Measurement) = measurement(ceil(a.val))
-ceil{T<:Integer}(::Type{T}, a::Measurement) = ceil(Integer, a.val)
+ceil(::Type{T}, a::Measurement) where {T<:Integer} = ceil(Integer, a.val)
 trunc(a::Measurement) = measurement(trunc(a.val))
-trunc{T<:Integer}(::Type{T}, a::Measurement) = trunc(T, a.val)
+trunc(::Type{T}, a::Measurement) where {T<:Integer} = trunc(T, a.val)
 
 # Widening
 import Base: widen
 
-widen{T<:AbstractFloat}(::Type{Measurement{T}}) = Measurement{widen(T)}
+widen(::Type{Measurement{T}}) where {T<:AbstractFloat} = Measurement{widen(T)}
 
 # To big float
 import Base: big
 
 big(::Type{Measurement}) = Measurement{BigFloat}
 big(::Type{Measurement{T}}) where {T<:AbstractFloat} = Measurement{BigFloat}
-big{T<:AbstractFloat}(x::Measurement{T}) = convert(Measurement{BigFloat}, x)
-big(x::Complex{Measurement{T}}) where {T<:AbstractFloat} =
-    convert(Complex{Measurement{BigFloat}}, x)
+big(x::Measurement{<:AbstractFloat}) = convert(Measurement{BigFloat}, x)
+big(x::Complex{Measurement{<:AbstractFloat}}) = convert(Complex{Measurement{BigFloat}}, x)
 
 # Sum and prod
 import Base: sum, prod
@@ -922,14 +922,13 @@ import Base: sum, prod
 # in the number of arguments, but `result' is quadratic in the number of
 # arguments, so in the end the function goes from cubic to quadratic.  Still not
 # ideal, but this is an improvement.
-sum{T<:Measurement}(a::AbstractArray{T}) =
-    result(sum(value.(a)), ones(length(a)), a)
+sum(a::AbstractArray{<:Measurement}) = result(sum(value.(a)), ones(length(a)), a)
 
 # Same as above.  I'm not particularly proud of how the derivatives are
 # computed, but something like this is needed in order to avoid errors with null
 # nominal values: you may think to x ./ prod(x), but that would fail if one or
 # more elements are zero.
-function prod{T<:Measurement}(a::AbstractArray{T})
+function prod(a::AbstractArray{<:Measurement})
     x = value.(a)
     return result(prod(x),
                   [prod(deleteat!(copy(x), i)) for i in eachindex(x)],
@@ -969,9 +968,8 @@ function QuadGK.quadgk(f, a::Measurement{T}, b::S; kws...) where {S,T<:AbstractF
 end
 
 # Both bounds are Measurement's.  Derivatives are -f(a) and f(b).
-function QuadGK.quadgk{T<:AbstractFloat,S<:AbstractFloat}(f, a::Measurement{T},
-                                                          b::Measurement{S};
-                                                          kws...)
+function QuadGK.quadgk(f, a::Measurement{T}, b::Measurement{S};
+                       kws...) where {T<:AbstractFloat,S<:AbstractFloat}
     F = promote_type(T, S)
     aval = a.val
     bval = b.val
