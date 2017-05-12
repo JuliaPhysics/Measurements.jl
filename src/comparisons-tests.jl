@@ -26,13 +26,11 @@ import Base: ==, isless, <, <=, isnan, isfinite, isinf, isinteger, iszero
 
 # Comparison with Real: they are equal if the value of Measurement is equal to
 # the number.  If you want to treat the Real like a measurement convert it with
-# `Measurement'.  Note on Irrational: the value of a Measurement is always
-# T<:AbstractFloat, so it can never be equal to an Irrational, we give a chance
-# to the equality to be try by converting the Irrational to T.
-=={T<:AbstractFloat}(a::Measurement{T}, b::Irrational) = a.val==T(b)
+# `Measurement'.
+==(a::Measurement{<:AbstractFloat}, b::Irrational) = false
 ==(a::Measurement, b::Rational) = a.val==b
 ==(a::Measurement, b::Real) = a.val==b
-=={T<:AbstractFloat}(a::Irrational, b::Measurement{T}) = T(a)==b.val
+==(a::Irrational, b::Measurement{<:AbstractFloat}) = false
 ==(a::Rational, b::Measurement) = a==b.val
 ==(a::Real, b::Measurement) = a==b.val
 

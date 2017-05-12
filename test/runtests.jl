@@ -99,8 +99,8 @@ end
     @test 3 == x
     @test y == 4 ≠ w
     @test measurement(big"0.75", 0.01) == 3//4
-    @test measurement(big(π)) == π
-    @test e == measurement(Float32(e))
+    @test measurement(big(π)) ≠ π
+    @test e ≠ measurement(Float32(e))
     @test 3//4 == measurement(Float32(0.75), Float32(0.03))
     @test isnan(x) == false
     @test isfinite(y) == true && isfinite(measurement(Inf)) == false

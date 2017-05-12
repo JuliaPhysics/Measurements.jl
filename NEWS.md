@@ -7,6 +7,8 @@ v0.4.1 (201?-??-??)
 ### Breaking Changes
 
 * `isinteger` and `iszero` now check also that the uncertainty is zero.
+* Comparison between `Measurement` and `Irrational` with `==` now gives always
+  `false`, consistently with the rest of `Real` types.
 
 ### New Features
 
