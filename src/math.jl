@@ -912,7 +912,9 @@ import Base: big
 big(::Type{Measurement}) = Measurement{BigFloat}
 big(::Type{Measurement{T}}) where {T<:AbstractFloat} = Measurement{BigFloat}
 big(x::Measurement{<:AbstractFloat}) = convert(Measurement{BigFloat}, x)
-big(x::Complex{Measurement{<:AbstractFloat}}) = convert(Complex{Measurement{BigFloat}}, x)
+# big(x::Complex{Measurement{<:AbstractFloat}}) doesn't seem to work on Julia 0.6.
+big(x::Complex{Measurement{T}}) where {T<:AbstractFloat} =
+    convert(Complex{Measurement{BigFloat}}, x)
 
 # Sum and prod
 import Base: sum, prod
