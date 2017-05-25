@@ -346,6 +346,18 @@ function sinh(a::Measurement)
     result(sinh(aval), cosh(aval), a)
 end
 
+# Sincos: sincos
+
+# TODO: remove the `isdefined` when support for Julia 0.6 will be dropped.  Note: this
+# definition is not strictly needed, it's just for slightly better performance.
+if isdefined(Base, :sincos)
+    function Base.sincos(a::Measurement)
+        x = a.val
+        s, c = sincos(x)
+        return (result(s, c, a), result(c, -s, a))
+    end
+end
+
 # Tangent: tan, tand, tanh
 import Base: tan, tand, tanh
 

@@ -251,6 +251,11 @@ end
         @test @inferred(cospi(a))≈ cos(pi * a) atol = 1e-15
         @test @inferred(sinc(a)) ≈ (sin(pi * a) / (pi * a)) atol = 1e-16
         @test @inferred(cosc(a)) ≈ ((cos(pi * a) - sin(pi * a) / (pi * a)) / a) atol = 1e-16
+        if isdefined(Base, :sincos)
+            # Check we got the sign of derivatives in `sincos` right.
+            s, c = @inferred(sincos(a))
+            @test s + c ≈ sin(a) + cos(a)
+        end
     end
 end
 

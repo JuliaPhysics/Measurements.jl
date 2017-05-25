@@ -12,7 +12,8 @@ v0.4.1 (201?-??-??)
 
 ### New Features
 
-* New mathematical operations supported: `sinpi`, `cospi`.
+* New mathematical operations supported: `sinpi`, `cospi`, `sincos` (only on
+  Julia 0.7).
 
 v0.4.0 (2017-04-26)
 -------------------
