@@ -255,6 +255,7 @@ end
             # Check we got the sign of derivatives in `sincos` right.
             s, c = @inferred(sincos(a))
             @test s + c ≈ sin(a) + cos(a)
+            @test s ^ 2 + c ^ 2 ≈ one(a)
         end
     end
 end

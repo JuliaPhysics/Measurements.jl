@@ -313,9 +313,17 @@ rad2deg(a::Measurement) = a * (180 / oftype(a.val, pi))
 # Cosine: cos, cosd, cosh
 import Base: cos, cosd, cosh
 
-function cos(a::Measurement)
-    aval = a.val
-    result(cos(aval), -sin(aval), a)
+if isdefined(Base, :sincos)
+    function cos(a::Measurement)
+        s, c = sincos(a.val)
+        return result(c, -s, a)
+    end
+else
+    # TODO: remove the if and this branch when support for Julia 0.6 will be dropped.
+    function cos(a::Measurement)
+        x = a.val
+        return result(cos(x), -sin(x), a)
+    end
 end
 
 function cosd(a::Measurement)
@@ -331,9 +339,17 @@ end
 # Sine: sin, sind, sinh
 import Base: sin, sind, sinh
 
-function sin(a::Measurement)
-    aval = a.val
-    result(sin(aval), cos(aval), a)
+if isdefined(Base, :sincos)
+    function sin(a::Measurement)
+        s, c = sincos(a.val)
+        return result(s, c, a)
+    end
+else
+    # TODO: remove the if and this branch when support for Julia 0.6 will be dropped.
+    function sin(a::Measurement)
+        x = a.val
+        return result(sin(x), cos(x), a)
+    end
 end
 
 function sind(a::Measurement)
