@@ -313,17 +313,9 @@ rad2deg(a::Measurement) = a * (180 / oftype(a.val, pi))
 # Cosine: cos, cosd, cosh
 import Base: cos, cosd, cosh
 
-if isdefined(Base, :sincos)
-    function cos(a::Measurement)
-        s, c = sincos(a.val)
-        return result(c, -s, a)
-    end
-else
-    # TODO: remove the if and this branch when support for Julia 0.6 will be dropped.
-    function cos(a::Measurement)
-        x = a.val
-        return result(cos(x), -sin(x), a)
-    end
+function cos(a::Measurement)
+    s, c = sincos(a.val)
+    return result(c, -s, a)
 end
 
 function cosd(a::Measurement)
@@ -339,17 +331,9 @@ end
 # Sine: sin, sind, sinh
 import Base: sin, sind, sinh
 
-if isdefined(Base, :sincos)
-    function sin(a::Measurement)
-        s, c = sincos(a.val)
-        return result(s, c, a)
-    end
-else
-    # TODO: remove the if and this branch when support for Julia 0.6 will be dropped.
-    function sin(a::Measurement)
-        x = a.val
-        return result(sin(x), cos(x), a)
-    end
+function sin(a::Measurement)
+    s, c = sincos(a.val)
+    return result(s, c, a)
 end
 
 function sind(a::Measurement)
@@ -368,10 +352,11 @@ end
 # definition is not strictly needed, it's just for slightly better performance.
 if isdefined(Base, :sincos)
     function Base.sincos(a::Measurement)
-        x = a.val
-        s, c = sincos(x)
+        s, c = sincos(a.val)
         return (result(s, c, a), result(c, -s, a))
     end
+else
+    sincos(x::Real) = (sin(x), cos(x))
 end
 
 # Tangent: tan, tand, tanh
