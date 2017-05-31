@@ -1,7 +1,7 @@
 History of Measurements.jl
 ==========================
 
-v0.4.1 (201?-??-??)
+v0.5.0 (201?-??-??)
 -------------------
 
 ### Breaking Changes
@@ -14,6 +14,10 @@ v0.4.1 (201?-??-??)
 
 * New mathematical operations supported: `sinpi`, `cospi`, `sincos` (only on
   Julia 0.7).
+* It is now possible to parse a string as a `Measurement{T}` with any
+  `T<:AbstractFloat` (not only `Measurement{Float64}`), as long as the parsing
+  method is able to digest the string.  Tested with `T` equal to `Float16`,
+  `Float32`, `Float64`, and `BigFloat`.
 
 v0.4.0 (2017-04-26)
 -------------------

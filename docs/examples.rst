@@ -48,8 +48,8 @@ These are some basic examples of use of the package:
 Measurements from Strings
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You can construct ``Measurement`` objects from strings.  Within parentheses
-there is the uncertainty referred to the corresponding last digits.
+You can construct ``Measurement{Float64}`` objects from strings.  Within
+parentheses there is the uncertainty referred to the corresponding last digits.
 
 .. code-block:: julia
 
@@ -70,6 +70,25 @@ there is the uncertainty referred to the corresponding last digits.
 
    julia> measurement("-1234e-2")
    -12.34 ± 0.0
+
+It is also possible to use ``parse(Measurement{T}, string)`` to parse the
+``string`` as a ``Measurement{T}``, with ``T<:AbstractFloat``.  This has been
+tested with standard numeric floating types (``Float16``, ``Float32``,
+``Float64``, and ``BigFloat``).
+
+.. code-block:: julia
+
+   julia> parse(Measurement{Float16}, "19.5 ± 2.8")
+   19.5 ± 2.8
+
+   julia> parse(Measurement{Float32}, "-7.6 ± 0.4")
+   -7.6 ± 0.4
+
+   julia> parse(Measurement{Float64}, "4 ± 1.3")
+   4.0 ± 1.3
+
+   julia> parse(Measurement{BigFloat}, "+5.1 ± 3.3")
+   5.099999999999999999999999999999999999999999999999999999999999999999999999999986 ± 3.299999999999999999999999999999999999999999999999999999999999999999999999999993
 
 Correlation Between Variables
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

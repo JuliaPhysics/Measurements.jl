@@ -52,11 +52,11 @@ const rxp_error_with_pm =
 const rxp_no_error = Regex("^[ \\t]*(" * rxp_full_numb_sign * ")[ \\t]*\$")
 
 """
-    measurement(string) -> Measurement
+    measurement(string) -> Measurement{Float64}
 
-Parse the string and return a `Measurement` object.
+Parse the string and return a `Measurement{Float64}` object.
 
-Examples of valid strings and the resulting `Measurement` are:
+Examples of valid strings and the resulting `Measurement{Float64}` are:
 
 ```
 measurement("-123.4(56)")         -> -123.4 ± 5.6
@@ -67,10 +67,12 @@ measurement("1234e-1 +/- 5.6e0")  ->  123.4 ± 5.6
 measurement("-1234e-1")           -> -123.4 ± 0.0
 ```
 """
-function measurement{T<:AbstractString}(str::T)
+measurement(str::AbstractString) = parse(Measurement{Float64}, str)
+
+function Base.parse(::Type{Measurement{T}}, str::S) where {T<:AbstractFloat, S<:AbstractString}
     m = match(rxp_error_with_parentheses, str)
     if m !== nothing # "123(45)e6"
-        val_str::T, val_dec, err_str::T, expn = m.captures
+        val_str::S, val_dec, err_str::S, expn = m.captures
     else
         m = match(rxp_global_exponent, str)
         if m === nothing # There is no global exponent
@@ -93,19 +95,17 @@ function measurement{T<:AbstractString}(str::T)
             end
         end
     end
-    val::Float64 = parse(Float64, val_str)
-    err::Float64 = parse(Float64, err_str)
+    val::T = parse(T, val_str)
+    err::T = parse(T, err_str)
     if val_dec !== nothing # The nominal value has a decimal part
         # Multiply the uncertainty by 10^(-number_of_decimal_digits)
         err *= exp10(1.0 - length(val_dec))
     end
     if expn !== nothing # There is a global exponent factor
         # Parse to a number
-        fact = parse(Float64, "1" * expn)
+        fact = parse(T, "1" * expn)
         val *= fact
         err *= fact
     end
     return measurement(val, err)
 end
-
-Base.parse(::Type{Measurement{Float64}}, str::AbstractString) = measurement(str)
