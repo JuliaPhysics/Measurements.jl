@@ -59,10 +59,7 @@ end
 
 # Functions to quickly create an empty Derivatives object.
 _eltype(::Type{Measurement{T}}) where {T<:AbstractFloat} = T
-@generated function empty_der1(x::Measurement)
-    T = _eltype(x)
-    Derivatives{T}()
-end
+@generated empty_der1(x::Measurement) = Derivatives{_eltype(x)}()
 @generated empty_der2(x) = Derivatives{x}()
 
 measurement(val::T) where {T<:AbstractFloat} = Measurement(val, zero(T), NaN, empty_der2(val))

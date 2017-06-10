@@ -57,7 +57,7 @@ copyright = '2016, 2017, ' + author
 # built documents.
 #
 # The short X.Y version.
-version = '0.4.1'
+version = '0.5.0'
 # The full version, including alpha/beta/rc tags.
 release = version + '-dev'
 
