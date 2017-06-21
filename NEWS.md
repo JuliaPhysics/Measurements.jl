@@ -45,10 +45,10 @@ v0.4.0 (2017-04-26)
 
 * `quadgk` function from [`QuadGK.jl`](https://github.com/JuliaMath/QuadGK.jl)
   package is extended to support `Measurement` objects as endpoints of
-  integration ([#8](https://github.com/giordano/Measurements.jl/pull/8)).  Note
-  that only the case of two real endpoints is supported.
-* Real `Measurement` objects can be printed with `"text/x-tex"` and `"text/x-latex"`
-  MIME types.  `\pm` TeX macro is used to render the `±` sign.
+  integration ([#8](https://github.com/JuliaPhysics/Measurements.jl/pull/8)).
+  Note that only the case of two real endpoints is supported.
+* Real `Measurement` objects can be printed with `"text/x-tex"` and
+  `"text/x-latex"` MIME types.  `\pm` TeX macro is used to render the `±` sign.
 * A new `parse` method is provided, to parse a string to
   `Measurement{Float64}`.  This is the same as calling `measurement` with a
   string argument.
@@ -139,11 +139,11 @@ v0.1.0 (2016-06-18)
 ### New Features
 
 * Support for correlated variables has been added
-  ([#3](https://github.com/giordano/Measurements.jl/issues/3)).
+  ([#3](https://github.com/JuliaPhysics/Measurements.jl/issues/3)).
 * Full support for complex measurements.
 * Macro `@uncertain` enables propagation of uncertainty in any real function of
   one or two real arguments, including those functions making use of C/Fortran
-  calls ([#4](https://github.com/giordano/Measurements.jl/issues/4)).
+  calls ([#4](https://github.com/JuliaPhysics/Measurements.jl/issues/4)).
 * New functions `Measurements.derivative` and `Measurements.gradient` to get the
   derivative and the gradient of an expression with respect to one or more
   independent measurements.
@@ -156,8 +156,8 @@ v0.0.2 (2016-06-13)
 ### New Features
 
 * `Measurement` is now subtype of `AbstractFloat`
-  ([#1](https://github.com/giordano/Measurements.jl/issues/1)), but you can feed
-  the constructor with any subtype of `Real` that can be converted to an
+  ([#1](https://github.com/JuliaPhysics/Measurements.jl/issues/1)), but you can
+  feed the constructor with any subtype of `Real` that can be converted to an
   `AbstractFloat`.
 * New `weightedmean` function for calculating the weighted mean of measurements
   using
@@ -169,7 +169,7 @@ v0.0.2 (2016-06-13)
 ### Breaking Changes
 
 * Function `Constant` has been removed as it was mostly redundant and badly
-  capitalized ([#2](https://github.com/giordano/Measurements.jl/issues/2)).
+  capitalized ([#2](https://github.com/JuliaPhysics/Measurements.jl/issues/2)).
 * In order to define complex `Measurement`s you have to use
   `complex(Measurement(a, b), Measurement(c, d))` so real and imaginary parts of
   the number have each their uncertainty.

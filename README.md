@@ -429,13 +429,13 @@ julia> 2pi*sqrt((5.4 ± 0.3)*u"m" / ((9.81 ± 0.01)*u"m/s^2")) # Pendulum's peri
 Development
 -----------
 
-The package is developed at https://github.com/giordano/Measurements.jl.  There
+The package is developed at https://github.com/JuliaPhysics/Measurements.jl.  There
 you can submit bug reports, make suggestions, and propose pull requests.
 
 ### How Can I Help? ###
 
 Have a look at the TODO list below and the bug list at
-https://github.com/giordano/Measurements.jl/issues, pick-up a task, write great
+https://github.com/JuliaPhysics/Measurements.jl/issues, pick-up a task, write great
 code to accomplish it and send a pull request.  In addition, you can instruct
 more mathematical functions to accept `Measurement` type arguments.  Please,
 read the
@@ -446,13 +446,13 @@ Bug reports and wishlists are welcome as well.
 ### TODO ###
 
 * Add pretty printing: optionally print only the relevant significant digits
-  ([issue #5](https://github.com/giordano/Measurements.jl/issues/5))
+  ([issue #5](https://github.com/JuliaPhysics/Measurements.jl/issues/5))
 * Other suggestions welcome `:-)`
 
 ### History ###
 
 The ChangeLog of the package is available in
-[NEWS.md](https://github.com/giordano/Measurements.jl/blob/master/NEWS.md) file
+[NEWS.md](https://github.com/JuliaPhysics/Measurements.jl/blob/master/NEWS.md) file
 in top directory.  There have been some breaking changes from time to time,
 beware of them when upgrading the package.
 
@@ -479,14 +479,14 @@ employ this package in your research work.
 [pkg-0.6-img]: http://pkg.julialang.org/badges/Measurements_0.6.svg
 [pkg-0.6-url]: http://pkg.julialang.org/detail/Measurements.html
 
-[travis-img]: https://travis-ci.org/giordano/Measurements.jl.svg?branch=master
-[travis-url]: https://travis-ci.org/giordano/Measurements.jl
+[travis-img]: https://travis-ci.org/JuliaPhysics/Measurements.jl.svg?branch=master
+[travis-url]: https://travis-ci.org/JuliaPhysics/Measurements.jl
 
 [appvey-img]: https://ci.appveyor.com/api/projects/status/u8mg5dlhyb1vjcpe?svg=true
 [appvey-url]: https://ci.appveyor.com/project/giordano/measurements-jl
 
-[coveral-img]: https://coveralls.io/repos/github/giordano/Measurements.jl/badge.svg?branch=master
-[coveral-url]: https://coveralls.io/github/giordano/Measurements.jl?branch=master
+[coveral-img]: https://coveralls.io/repos/github/JuliaPhysics/Measurements.jl/badge.svg?branch=master
+[coveral-url]: https://coveralls.io/github/JuliaPhysics/Measurements.jl?branch=master
 
-[codecov-img]: https://codecov.io/gh/giordano/Measurements.jl/branch/master/graph/badge.svg
-[codecov-url]: https://codecov.io/gh/giordano/Measurements.jl
+[codecov-img]: https://codecov.io/gh/JuliaPhysics/Measurements.jl/branch/master/graph/badge.svg
+[codecov-url]: https://codecov.io/gh/JuliaPhysics/Measurements.jl

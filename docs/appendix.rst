@@ -87,7 +87,7 @@ use assignment:
 Thanks to how the Julia language is designed, support for complex measurements,
 arbitrary precision calculations and array operations came with practically no
 effort during the development of the package.  As `explained
-<https://github.com/giordano/Measurements.jl/issues/1#issuecomment-220727553>`__
+<https://github.com/JuliaPhysics/Measurements.jl/issues/1#issuecomment-220727553>`__
 by Steven G. Johnson, since in Julia a lot of nonlinear functions are internally
 implemented in terms of elementary operations on the real and imaginary parts it
 was natural to make the type subtype of ``Real`` in order to easily work with

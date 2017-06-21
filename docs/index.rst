@@ -1,8 +1,8 @@
 Measurements.jl
 ===============
 
-`Measurements.jl <https://github.com/giordano/Measurements.jl>`__ is a package
-that allows you to define numbers with `uncertainties
+`Measurements.jl <https://github.com/JuliaPhysics/Measurements.jl>`__ is a
+package that allows you to define numbers with `uncertainties
 <https://en.wikipedia.org/wiki/Measurement_uncertainty>`__, perform calculations
 involving them, and easily get the uncertainty of the result according to
 `linear error propagation theory
