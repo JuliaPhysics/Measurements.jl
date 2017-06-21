@@ -258,6 +258,11 @@ end
             @test s ^ 2 + c ^ 2 ≈ one(a)
         end
     end
+    for c in (-1 ± 1, 0 ± 1, 1 ± 1)
+        @test sinc(c) ≈ @uncertain(sinc(c)) rtol = 1e-7
+        @test cosc(c) ≈ @uncertain(cosc(c)) rtol = 1e-7
+        @test Measurements.value(sinc(c) ^ 2 + cosc(c) ^ 2) == 1
+    end
 end
 
 @testset "Inverse trig functions" begin
