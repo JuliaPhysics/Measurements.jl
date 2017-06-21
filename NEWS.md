@@ -7,6 +7,9 @@ v0.5.0 (201?-??-??)
 ### Breaking Changes
 
 * `isinteger` and `iszero` now check also that the uncertainty is zero.
+* Comparison between `Measurement` and `Real` with `==` now compares also the
+  uncertainty, so that the `Measurement` must have uncertainty equal to zero to
+  be equal to a real number.
 * Comparison between `Measurement` and `Irrational` with `==` now gives always
   `false`, consistently with the rest of `Real` types.
 

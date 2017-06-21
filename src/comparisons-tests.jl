@@ -24,15 +24,12 @@ import Base: ==, isless, <, <=, isnan, isfinite, isinf, isinteger, iszero
 # If you need stricter equality use "===" instead of "==".
 ==(a::Measurement, b::Measurement) = (a.val==b.val && a.err==b.err)
 
-# Comparison with Real: they are equal if the value of Measurement is equal to
-# the number.  If you want to treat the Real like a measurement convert it with
-# `Measurement'.
-==(a::Measurement{<:AbstractFloat}, b::Irrational) = false
-==(a::Measurement, b::Rational) = a.val==b
-==(a::Measurement, b::Real) = a.val==b
-==(a::Irrational, b::Measurement{<:AbstractFloat}) = false
-==(a::Rational, b::Measurement) = a==b.val
-==(a::Real, b::Measurement) = a==b.val
+==(a::Measurement, b::Irrational) = false
+==(a::Measurement, b::Rational) = (a.val==b && iszero(a.err))
+==(a::Measurement, b::Real) = (a.val==b && iszero(a.err))
+==(a::Irrational, b::Measurement) = false
+==(a::Rational, b::Measurement) = (a==b.val && iszero(b.err))
+==(a::Real, b::Measurement) = (a==b.val && iszero(b.err))
 
 # Order relation is based on the value of measurements, uncertainties are ignored
 for cmp in (:<, :<=)

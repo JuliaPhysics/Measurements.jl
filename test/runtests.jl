@@ -96,12 +96,12 @@ end
     @test -2 < w <= x < y < 5
     @test big(1) < big(x) < big(4) <= big(y) <= big(5)
     @test -5//3 < w <= -1//2 <= x < 11//3 < y <= 24//6
-    @test 3 == x
-    @test y == 4 ≠ w
-    @test measurement(big"0.75", 0.01) == 3//4
+    @test 3 == 3 ± 0 ≠ x == 3 ± 0.1
+    @test 4 ± 0.2 == y ≠ 4 == 4 ± 0
+    @test measurement(big"0.75", 0.01) == 3//4 ± 1//100
     @test measurement(big(π)) ≠ π
     @test e ≠ measurement(Float32(e))
-    @test 3//4 == measurement(Float32(0.75), Float32(0.03))
+    @test 3//4 == measurement(Float32(0.75), Float32(0))
     @test isnan(x) == false
     @test isfinite(y) == true && isfinite(measurement(Inf)) == false
     @test isinf(measurement(Inf)) == true && isinf(x) == false
