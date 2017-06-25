@@ -403,9 +403,10 @@ function cosc(a::Measurement)
                   a)
 end
 
-# Inverse trig functions: acos, acosd, acosh, asin, asind, asinh, atan, atand,
-# atan2, atanh
-import Base: acos, acosd, acosh, asin, asind, asinh, atan, atand, atan2, atanh
+# Inverse trig functions: acos, acosd, acosh, asin, asind, asinh, atan, atand, atan2, atanh,
+#                         asec, acsc, acot, asech, acsch, acoth
+import Base: acos, acosd, acosh, asin, asind, asinh, atan, atand, atan2, atanh, asec, acsc,
+    acot, asech, acsch, acoth
 
 function acos(a::Measurement{T}) where {T<:AbstractFloat}
     aval = a.val
@@ -469,6 +470,36 @@ end
 function atan2(a::Real, b::Measurement)
     y = b.val
     return result(atan2(a, y), -a/(abs2(a) + abs2(y)), b)
+end
+
+function asec(a::Measurement)
+    x = a.val
+    return result(asec(x), 1 / (sqrt(x ^ 2 - 1) * abs(x)), a)
+end
+
+function acsc(a::Measurement)
+    x = a.val
+    return result(acsc(x), -1 / (sqrt(x ^ 2 - 1) * abs(x)), a)
+end
+
+function acot(a::Measurement)
+    x = a.val
+    return result(acot(x), -1 / (x ^ 2 + 1), a)
+end
+
+function asech(a::Measurement)
+    x = a.val
+    return result(asech(x), -1 / (sqrt(1 - x ^ 2) * abs(x)), a)
+end
+
+function acsch(a::Measurement)
+    x = a.val
+    return result(acsch(x), -1 / (sqrt(x ^ 2 + 1) * abs(x)), a)
+end
+
+function acoth(a::Measurement)
+    x = a.val
+    return result(acoth(x), 1 / (1 - x ^ 2), a)
 end
 
 # Reciprocal trig functions: csc, cscd, csch, sec, secd, sech, cot, cotd, coth

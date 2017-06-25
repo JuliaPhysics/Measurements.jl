@@ -101,7 +101,7 @@ end
     @test measurement(big"0.75", 0.01) == 3//4 ± 1//100
     @test measurement(big(π)) ≠ π
     @test e ≠ measurement(Float32(e))
-    @test 3//4 == measurement(Float32(0.75), Float32(0))
+    @test 3//4 == measurement(Float32(0.75), Float32(0)) ≠ 4//3
     @test isnan(x) == false
     @test isfinite(y) == true && isfinite(measurement(Inf)) == false
     @test isinf(measurement(Inf)) == true && isinf(x) == false
@@ -283,7 +283,15 @@ end
     @test @inferred(atanh(w)) ≈ measurement(-0.5493061443340548, 0.04)
     for a in (w, x, y); @test @inferred(tan(atan(a))) ≈ a; end
     for a in (w, x, y); @test @inferred(tand(atand(a))) ≈ a; end
+    for a in (x, y)
+        @test @inferred(sec(asec(a))) ≈ a
+        @test @inferred(csc(acsc(a))) ≈ a
+        @test @inferred(cot(acot(a))) ≈ a
+        @test @inferred(coth(acoth(a))) ≈ a
+    end
     @test @inferred(tanh(atanh(w))) ≈ w
+    @test @inferred(sech(asech(-w))) ≈ -w
+    @test @inferred(csch(acsch(w))) ≈ w
     @test @inferred(atan2(x, y)) ≈ measurement(0.6435011087932844, 0.028844410203711916)
     @test @inferred(atan2(x, 5)) ≈ measurement(0.5404195002705842, 0.014705882352941178)
     @test @inferred(atan2(-3, y)) ≈ measurement(-0.6435011087932844, 0.024)

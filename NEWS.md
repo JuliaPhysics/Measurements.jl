@@ -16,7 +16,8 @@ v0.5.0 (201?-??-??)
 ### New Features
 
 * New mathematical operations supported: `sinpi`, `cospi`, `sinc`, `cosc`,
-  `sincos` (the last one only on Julia 0.7).
+  `asec`, `acsc`, `acot`, `asech`, `acsch`, `acoth`, `sincos` (the last one only
+  on Julia 0.7).
 * It is now possible to parse a string as a `Measurement{T}` with any
   `T<:AbstractFloat` (not only `Measurement{Float64}`), as long as the parsing
   method is able to digest the string.  Tested with `T` equal to `Float16`,
