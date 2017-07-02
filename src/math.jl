@@ -122,12 +122,25 @@ gettype(collection) = promote_type(_eltype.(collection)...)
     return Measurement(T(val), sqrt(err), NaN, newder)
 end
 
-# "result" function for complex-valued functions (like "besselh").  This takes
-# the same argument as the first implementation of "result", but with complex
+# "result" function for complex-valued functions of one real argument (like "besselh").
+# This takes the same argument as the first implementation of "result", but with complex
 # "val" and "der".
-function result(val::Complex, der::Complex, a::Measurement)
-    return complex(result(real(val), real(der), a), result(imag(val), imag(der), a))
-end
+result(val::Complex, der::Complex, a::Measurement) =
+    complex(result(real(val), real(der), a), result(imag(val), imag(der), a))
+
+# "result" function for complex-valued functions of one complex argument:
+#
+#   f(z) = f(x, y) = u(x, y) + im * v(x, y)
+#
+# where z = x + im * y, x and y are real variables, u and v are real-valued functions.
+# Arguments of this methods are:
+#
+#   1) the nominal value of the result (a complex number)
+#   2) the 4-tuple of derivatives (∂u/∂x, ∂u/∂y, ∂v/∂x, ∂v/∂y)
+#   3) the input measurement
+result(val::Complex, der, a::Complex{<:Measurement}) =
+    complex(result(real(val), der[1:2], reim(a)),
+            result(imag(val), der[3:4], reim(a)))
 
 ### @uncertain macro.
 """
@@ -163,7 +176,7 @@ import Base: +, -, *, /, div, inv, fld, cld
 # Addition: +
 +(a::Measurement, b::Measurement) = result(a.val + b.val, (1, 1), (a, b))
 +(a::Real, b::Measurement) = result(a + b.val, 1, b)
-+(a::Measurement, b::Bool) = result(a.val +b, 1, a)
++(a::Measurement, b::Bool) = result(a.val + b, 1, a)
 +(a::Measurement, b::Real) = result(a.val + b, 1, a)
 
 # Subtraction: -
