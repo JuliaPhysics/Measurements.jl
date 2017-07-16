@@ -98,7 +98,7 @@ end
 # Representation of complex measurements.  Print something that is easy to
 # understand and that can be meaningfully copy-pasted into the REPL, at least
 # for standard numeric types.
-function show{T<:Measurement}(io::IO, measure::Complex{T})
+function show(io::IO, measure::Complex{<:Measurement})
     r, i = reim(measure)
     compact = get(io, :compact, false)
     print(io, "(", r, ")")
