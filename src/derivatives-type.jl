@@ -19,8 +19,6 @@
 #
 ### Code:
 
-import Base: getindex, get, start, next, done, length
-
 struct Derivatives{T} <: Associative{Tuple{T,T,Float64},T}
     parent::Derivatives{T}
     key::Tuple{T,T,Float64}
@@ -31,7 +29,7 @@ end
 
 Derivatives(t::Derivatives{T}, KV::Pair) where {T} = Derivatives{T}(t, KV[1], KV[2])
 
-function getindex(dict::Derivatives, key)
+function Base.getindex(dict::Derivatives, key)
     while isdefined(dict, :parent)
         # We want to compare the three elements of the key tuples.  In order to allow for
         # calculations involving NaNs we need to use `isequal` for comparing the first two
@@ -44,7 +42,7 @@ function getindex(dict::Derivatives, key)
     end
     throw(KeyError(key))
 end
-function get(dict::Derivatives, key, default)
+function Base.get(dict::Derivatives, key, default)
     while isdefined(dict, :parent)
         # See comment in `getindex'.
         dict.key[3] == key[3] && isequal(dict.key[1], key[1]) &&
@@ -55,7 +53,8 @@ function get(dict::Derivatives, key, default)
 end
 
 # this actually defines reverse iteration (e.g. it should not be used for merge/copy/filter type operations)
-start(t::Derivatives) = t
-next(::Derivatives{T}, t) where {T} = (Pair{Tuple{T,T,Float64},T}(t.key, t.value), t.parent)
-done(::Derivatives, t) = !isdefined(t, :parent)
-length(t::Derivatives) = count(x->true, t)
+Base.start(t::Derivatives) = t
+Base.next(::Derivatives{T}, t) where {T} =
+    (Pair{Tuple{T,T,Float64},T}(t.key, t.value), t.parent)
+Base.done(::Derivatives, t) = !isdefined(t, :parent)
+Base.length(t::Derivatives) = count(x->true, t)

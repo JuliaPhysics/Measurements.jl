@@ -24,9 +24,6 @@ module Measurements
 # Calculus is used to calculate numerical derivatives in "@uncertain" macro.
 using Calculus
 
-# Function to handle new type
-import Base: alignment, show
-
 # Functions provided by this package and exposed to users
 export Measurement, measurement, ±
 
@@ -89,16 +86,16 @@ The binary operator `±` is equivalent to `measurement`, so you can construct a
 measurement
 
 # Type representation
-show(io::IO, measure::Measurement) =
+Base.show(io::IO, measure::Measurement) =
     print(io, measure.val, get(io, :compact, false) ? "±" : " ± ", measure.err)
 for mime in (MIME"text/x-tex", MIME"text/x-latex")
-    @eval show(io::IO, ::$mime, measure::Measurement) =
+    @eval Base.show(io::IO, ::$mime, measure::Measurement) =
         print(io, measure.val, " \\pm ", measure.err)
 end
 # Representation of complex measurements.  Print something that is easy to
 # understand and that can be meaningfully copy-pasted into the REPL, at least
 # for standard numeric types.
-function show(io::IO, measure::Complex{<:Measurement})
+function Base.show(io::IO, measure::Complex{<:Measurement})
     r, i = reim(measure)
     compact = get(io, :compact, false)
     print(io, "(", r, ")")
@@ -111,7 +108,7 @@ function show(io::IO, measure::Complex{<:Measurement})
     print(io, "(", i, ")im")
 end
 # This is adapted from base/show.jl for Complex type.
-function alignment(io::IO, measure::Measurement)
+function Base.alignment(io::IO, measure::Measurement)
     m = match(r"^(.*[\±])(.*)$", sprint(0, show, measure, env=io))
     m === nothing ? (length(sprint(0, show, x, env=io)), 0) :
         (length(m.captures[1]), length(m.captures[2]))

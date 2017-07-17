@@ -1,4 +1,4 @@
-using Measurements
+using Measurements, SpecialFunctions
 using Base.Test
 
 import Base: isapprox
