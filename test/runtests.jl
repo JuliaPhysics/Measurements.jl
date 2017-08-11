@@ -250,7 +250,7 @@ end
         @test @inferred(sinpi(a))≈ sin(pi * a) atol = 1e-15
         @test @inferred(cospi(a))≈ cos(pi * a) atol = 1e-15
         @test @inferred(sinc(a)) ≈ (sin(pi * a) / (pi * a)) atol = 1e-16
-        @test @inferred(cosc(a)) ≈ ((cos(pi * a) - sin(pi * a) / (pi * a)) / a) atol = 1e-16
+        @test @inferred(cosc(a)) ≈ ((cos(pi * a) - sin(pi * a) / (pi * a)) / a) atol = 1e-15
         if isdefined(Base, :sincos)
             # Check we got the sign of derivatives in `sincos` right.
             s, c = @inferred(sincos(a))
@@ -518,8 +518,8 @@ end
 end
 
 @testset "Type representation" begin
-    @test reprmime("text/plain", [w, 10x, 100y]) ==
-        "3-element Array{Measurements.Measurement{Float64},1}:\n  -0.5±0.03\n  30.0±1.0 \n 400.0±20.0"
+    @test reprmime("text/plain", [w 10x; 100y 1000w]) ==
+        "2×2 Array{Measurements.Measurement{Float64},2}:\n  -0.5±0.03    30.0±1.0 \n 400.0±20.0  -500.0±30.0"
     @test reprmime("text/plain", complex(x, w)) == "(3.0 ± 0.1) - (0.5 ± 0.03)im"
     @test reprmime("text/plain", complex(w, y)) == "(-0.5 ± 0.03) + (4.0 ± 0.2)im"
     @test reprmime("text/x-tex", y) == reprmime("text/x-latex", y) == "4.0 \\pm 0.2"
@@ -577,6 +577,12 @@ end
     @test @uncertain((a -> a + a + a)(x)) ≈ 3x
     @test @uncertain(zeta(x)) ≈
         measurement(1.2020569031595951, 0.019812624290876782)
+    # Test a couple of identities of the zeta function:
+    # http://functions.wolfram.com/ZetaFunctionsandPolylogarithms/Zeta/17/01/01/
+    @test @uncertain(zeta(w)) ≈
+        gamma(1 - w) * 2 ^ w * pi ^ (w - 1) * sinpi(w / 2) * @uncertain(zeta(1 - w))
+    @test @uncertain(zeta(w)) ≈
+        pi ^ (w - 1/2) * gamma((1 - w) / 2) / gamma(w / 2) * @uncertain(zeta(1 - w))
     for f in (log, hypot, atan2); @test @uncertain(f(x, y)) ≈ f(x, y); end
     @test @uncertain(+(x, -x, y, log(y), -w, w^2)) ≈ + y + log(y) - w * (1 - w)
     # Test with a "ccall"
