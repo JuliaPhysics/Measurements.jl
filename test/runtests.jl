@@ -574,22 +574,34 @@ end
 
 @testset "@uncertain" begin
     @test @uncertain(tan(x)) ≈ tan(x)
-    @test @uncertain((a -> a + a + a)(x)) ≈ 3x
-    @test @uncertain(zeta(x)) ≈
-        measurement(1.2020569031595951, 0.019812624290876782)
-    # Test a couple of identities of the zeta function:
-    # http://functions.wolfram.com/ZetaFunctionsandPolylogarithms/Zeta/17/01/01/
-    @test @uncertain(zeta(w)) ≈
-        gamma(1 - w) * 2 ^ w * pi ^ (w - 1) * sinpi(w / 2) * @uncertain(zeta(1 - w))
-    @test @uncertain(zeta(w)) ≈
-        pi ^ (w - 1/2) * gamma((1 - w) / 2) / gamma(w / 2) * @uncertain(zeta(1 - w))
-    for f in (log, hypot, atan2); @test @uncertain(f(x, y)) ≈ f(x, y); end
-    @test @uncertain(+(x, -x, y, log(y), -w, w^2)) ≈ + y + log(y) - w * (1 - w)
-    # Test with a "ccall"
-    f(x) = x*x
-    ptr = cfunction(f, Cdouble, (Cdouble,))
-    g(x) = ccall(ptr, Cdouble, (Cdouble,), x)*x
-    @test @uncertain(g(x)) ≈ x^3
+    @testset "correlation" begin
+        @test @uncertain((a -> a + a + a)(x)) ≈ 3x
+        @test @uncertain(+(x, -x, y, log(y), -w, w^2)) ≈ + y + log(y) - w * (1 - w)
+    end
+    @testset "zeta function" begin
+        @test @uncertain(zeta(x)) ≈
+            measurement(1.2020569031595951, 0.019812624290876782)
+        # Test a couple of identities of the zeta function:
+        # http://functions.wolfram.com/ZetaFunctionsandPolylogarithms/Zeta/17/01/01/
+        @test @uncertain(zeta(w)) ≈
+            gamma(1 - w) * 2 ^ w * pi ^ (w - 1) * sinpi(w / 2) * @uncertain(zeta(1 - w))
+        @test @uncertain(zeta(w)) ≈
+            pi ^ (w - 1/2) * gamma((1 - w) / 2) / gamma(w / 2) * @uncertain(zeta(1 - w))
+        # Test a few derivatives of the zeta functions which are known:
+        # http://mathworld.wolfram.com/RiemannZetaFunction.html
+        @test @uncertain(zeta(0 ± 1)).der.value ≈ -log(2pi) / 2
+        @test @uncertain(zeta(0.5 ± 1)).der.value ≈ -3.92264613
+        @test @uncertain(zeta(2 ± 1)).der.value ≈ -0.93754825431
+    end
+    @testset "2-arg functions: $f" for f in (log, hypot, atan2)
+        @test @uncertain(f(x, y)) ≈ f(x, y)
+    end
+    @testset "ccall" begin
+        f(x) = x*x
+        ptr = cfunction(f, Cdouble, (Cdouble,))
+        g(x) = ccall(ptr, Cdouble, (Cdouble,), x)*x
+        @test @uncertain(g(x)) ≈ x^3
+    end
 end
 
 @testset "value and uncertainty" begin
