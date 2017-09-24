@@ -123,6 +123,7 @@ end
     @test @inferred(x + 5//2) ≈ measurement(5.5, 0.1)
     @test @inferred(x + true) ≈ measurement(4, 0.1)
     @test @inferred(x + 2) ≈ measurement(5, 0.1)
+    @test @inferred(x + big(1)) == (x.val + big(1)) ± big(x.err)
     for a in (w, x, y)
         @test @inferred(+a) === a
         @test @inferred(a + zero(a)) ≈ a ≈ @inferred(measurement(0) + a) # Neutral element
@@ -339,6 +340,7 @@ end
     @test @inferred(log(y)) ≈ measurement(1.3862943611198906, 0.05)
     @test @inferred(log(y, 4)) ≈ measurement(1, 0.03606737602222409)
     @test @inferred(log(pi, x)) ≈ measurement(0.9597131185693899, 0.029118950894341064)
+    @test @inferred(log(big(3), x)) == big(1) ± (x.err / (log(big(3)) * x.val))
     for a in (abs(w), x, y)
         @test @inferred(log(e, a)) ≈ log(a)
         @test @inferred(log(2, a)) ≈ log2(a)

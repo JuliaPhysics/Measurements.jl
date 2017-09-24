@@ -53,11 +53,15 @@ struct Measurement{T<:AbstractFloat} <: AbstractFloat
     tag::Float64
     der::Derivatives{T}
 end
+function Measurement(val::V, err::E, tag::Float64,
+                     der::Derivatives{D}) where {V,E,D}
+    T = promote_type(V, E, D)
+    return Measurement(T(val), T(err), tag, Derivatives{T}(der))
+end
 
 # Functions to quickly create an empty Derivatives object.
-_eltype(::Type{Measurement{T}}) where {T<:AbstractFloat} = T
-@generated empty_der1(x::Measurement) = Derivatives{_eltype(x)}()
-@generated empty_der2(x) = Derivatives{x}()
+@generated empty_der1(x::Measurement{T}) where {T<:AbstractFloat} = Derivatives{T}()
+@generated empty_der2(x::T) where {T<:AbstractFloat} = Derivatives{x}()
 
 measurement(x::Measurement) = x
 measurement(val::T) where {T<:AbstractFloat} = Measurement(val, zero(T), NaN, empty_der2(val))

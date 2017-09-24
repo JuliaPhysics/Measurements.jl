@@ -29,6 +29,16 @@ end
 
 Derivatives(t::Derivatives{T}, KV::Pair) where {T} = Derivatives{T}(t, KV[1], KV[2])
 
+Base.convert(::Type{Derivatives{T}}, ders::Derivatives{T}) where {T} = ders
+# XXX: this function is very slow, but shouldn't be called often.
+function Base.convert(::Type{Derivatives{T}}, ders::Derivatives{S}) where {T,S}
+    new = Derivatives{T}()
+    for der in ders
+        new = Derivatives{T}(new, Tuple{T,T,T}(der[1]), T(der[2]))
+    end
+    return new
+end
+
 function Base.getindex(dict::Derivatives, key)
     while isdefined(dict, :parent)
         # We want to compare the three elements of the key tuples.  In order to allow for
