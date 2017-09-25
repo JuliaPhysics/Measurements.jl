@@ -1,5 +1,5 @@
-using Measurements, SpecialFunctions
-using Base.Test
+using Measurements, SpecialFunctions, QuadGK, Calculus
+using Test, LinearAlgebra, Statistics
 
 import Base: isapprox
 import Measurements: value, uncertainty
@@ -37,7 +37,7 @@ end
     @test iszero(@inferred(measurement(1)).err)
     @test @inferred(measurement(pi)).tag === UInt64(0)
     @test length(@inferred(measurement(4//5)).der) == 0
-    @test @inferred(measurement(catalan, big(0))).tag === UInt64(0)
+    @test @inferred(measurement(ℯ, big(0))).tag === UInt64(0)
     @test length(@inferred(measurement(7//3, 0)).der) == 0
     @test length(@inferred(measurement(4.7f0, 0.3)).der) == 1
     @test typeof(@inferred(measurement(1, big(0)))) == Measurement{BigFloat}
@@ -102,7 +102,7 @@ end
     @test 4 ± 0.2 == y ≠ 4 == 4 ± 0
     @test measurement(big"0.75", 0.01) == 3//4 ± 1//100
     @test measurement(big(π)) ≠ π
-    @test e ≠ measurement(Float32(e))
+    @test ℯ ≠ measurement(Float32(ℯ))
     @test 3//4 == measurement(Float32(0.75), Float32(0)) ≠ 4//3
     @test isnan(x) == false
     @test isfinite(y) == true && isfinite(measurement(Inf)) == false
@@ -224,7 +224,7 @@ end
         @test @inferred(a ^ 2) ≈ @inferred(a ^ 2.0)
         @test @inferred(a ^ (4//2)) ≈ @inferred(a * a) # correlation
         @test @inferred(2 ^ a) ≈ @inferred(2.0 ^ a)
-        @test @inferred(e ^ a) ≈ @inferred(exp(a))
+        @test @inferred(ℯ ^ a) ≈ @inferred(exp(a))
         @test @inferred(exp2(a)) ≈ @inferred(2 ^ a)
     end
     # Make sure "p ± 0" behaves like "p", in particular with regard to the
@@ -295,9 +295,9 @@ end
     @test @inferred(tanh(atanh(w))) ≈ w
     @test @inferred(sech(asech(-w))) ≈ -w
     @test @inferred(csch(acsch(w))) ≈ w
-    @test @inferred(atan2(x, y)) ≈ measurement(0.6435011087932844, 0.028844410203711916)
-    @test @inferred(atan2(x, 5)) ≈ measurement(0.5404195002705842, 0.014705882352941178)
-    @test @inferred(atan2(-3, y)) ≈ measurement(-0.6435011087932844, 0.024)
+    @test @inferred(atan(x, y)) ≈ measurement(0.6435011087932844, 0.028844410203711916)
+    @test @inferred(atan(x, 5)) ≈ measurement(0.5404195002705842, 0.014705882352941178)
+    @test @inferred(atan(-3, y)) ≈ measurement(-0.6435011087932844, 0.024)
 end
 
 @testset "Reciprocal trig functions" begin
@@ -342,7 +342,7 @@ end
     @test @inferred(log(pi, x)) ≈ measurement(0.9597131185693899, 0.029118950894341064)
     @test @inferred(log(big(3), x)) == big(1) ± (x.err / (log(big(3)) * x.val))
     for a in (abs(w), x, y)
-        @test @inferred(log(e, a)) ≈ log(a)
+        @test @inferred(log(ℯ, a)) ≈ log(a)
         @test @inferred(log(2, a)) ≈ log2(a)
         @test @inferred(log(10, a)) ≈ log10(a)
         @test @inferred(log1p(a)) ≈ log(1 + a)
@@ -429,12 +429,12 @@ end
 end
 
 @testset "Factorial and gamma" begin
-    @test @inferred(factorial(x)) ≈ measurement(6, 0.7536706010590813)
+    @test @inferred(SpecialFunctions.factorial(x)) ≈ measurement(6, 0.7536706010590813)
     @test @inferred(digamma(y)) ≈ 1.256117668431802 ± 0.056764591147422994
     @test @inferred(polygamma(3, w)) ≈ 193.40909103400242 ± 0.10422749480000776
     for a in (w, x, y)
-        @test @inferred(gamma(a)) ≈ factorial(a - one(a))
-        @test @inferred(gamma(a + one(a))) ≈ factorial(a)
+        @test @inferred(gamma(a)) ≈ SpecialFunctions.factorial(a - one(a))
+        @test @inferred(gamma(a + one(a))) ≈ SpecialFunctions.factorial(a)
         @test @inferred(lgamma(abs(a))) ≈ log(gamma(abs(a)))
         @test @inferred(digamma(a)) ≈ polygamma(0, a)
         @test @inferred(digamma(invdigamma(a))) ≈ a + zero(a)
@@ -446,10 +446,10 @@ end
     for a in (w, x, y)
         @test beta(a, x) ≈ gamma(a)*gamma(x)/gamma(a + x)
         @test beta(a, pi) ≈ gamma(a)*gamma(pi)/gamma(a + pi)
-        @test beta(e, a) ≈ gamma(e)*gamma(a)/gamma(e + a)
+        @test beta(ℯ, a) ≈ gamma(ℯ)*gamma(a)/gamma(ℯ + a)
         @test lbeta(abs(a), x) ≈ log(beta(abs(a), x))
         @test lbeta(abs(a), pi) ≈ log(beta(abs(a), pi))
-        @test lbeta(e, abs(a)) ≈ log(beta(e, abs(a)))
+        @test lbeta(ℯ, abs(a)) ≈ log(beta(ℯ, abs(a)))
     end
 end
 
@@ -506,7 +506,8 @@ end
 
 @testset "Rounding" begin
     @test @inferred(round(w)) ≈ measurement(round(w.val), round(w.err))
-    @test @inferred(round(w, 1)) ≈ measurement(round(w.val, 1), round(w.err, 1))
+    @test @inferred(round(w, digits=1)) ≈ measurement(round(w.val, digits=1),
+                                                      round(w.err, digits=1))
     @test @inferred(round(Int, w)) ≈ round(Int, w.val)
     @test @inferred(floor(w)) ≈ measurement(floor(w.val))
     @test @inferred(floor(Int, w)) ≈ floor(Int, w.val)
@@ -522,16 +523,16 @@ end
 end
 
 @testset "Type representation" begin
-    @test reprmime("text/plain", [w 10x; 100y 1000w]) ==
-        "2×2 Array{Measurements.Measurement{Float64},2}:\n  -0.5±0.03    30.0±1.0 \n 400.0±20.0  -500.0±30.0"
-    @test reprmime("text/plain", complex(x, w)) == "(3.0 ± 0.1) - (0.5 ± 0.03)im"
-    @test reprmime("text/plain", complex(w, y)) == "(-0.5 ± 0.03) + (4.0 ± 0.2)im"
-    @test reprmime("text/latex", x) == "\$3.0 \\pm 0.1\$"
-    @test reprmime("text/x-tex", y) == reprmime("text/x-latex", y) == "4.0 \\pm 0.2"
-    @test Base.alignment(DevNull, x) == (5,4)
+    @test repr("text/plain", [w 10x; 100y 1000w]) ==
+        "2×2 Array{Measurement{Float64},2}:\n  -0.5±0.03    30.0±1.0 \n 400.0±20.0  -500.0±30.0"
+    @test repr("text/plain", complex(x, w)) == "(3.0 ± 0.1) - (0.5 ± 0.03)im"
+    @test repr("text/plain", complex(w, y)) == "(-0.5 ± 0.03) + (4.0 ± 0.2)im"
+    @test repr("text/latex", x) == "\$3.0 \\pm 0.1\$"
+    @test repr("text/x-tex", y) == repr("text/x-latex", y) == "4.0 \\pm 0.2"
+    @test Base.alignment(devnull, x) == (5,4)
     # Make sure the printed representation of a Measurement object is correctly parsed as
     # the same number (note that the tag will be different, but that's not important here).
-    for a in (w, x, y); @test eval(parse(repr(a))) == a; end
+    for a in (w, x, y); @test eval(Meta.parse(repr(a))) == a; end
 end
 
 @testset "sum" begin
@@ -562,7 +563,7 @@ end
     @test @inferred(A * b) ≈ c
     @test @inferred(b ⋅ c) ≈ 7.423202614379084 ± 0.5981875954418516
     @test @inferred(det(A)) ≈ 612 ± 9.51262319236918
-    @test @inferred(A * inv(A)) ≈ eye(A)
+    @test @inferred(A * inv(A)) ≈ Matrix{eltype(A)}(I, size(A))
 end
 
 @testset "NaNs" begin
@@ -582,7 +583,7 @@ end
     @testset "non-Measurement arguments" begin
         @test @uncertain(sin(-7.8)) == measurement(sin(-7.8))
         @test @uncertain(log(5.4, 3.6)) == measurement(log(5.4, 3.6))
-        @test @uncertain(atan2(x, 1.2)) ≈ atan2(x, 1.2)
+        @test @uncertain(atan(x, 1.2)) ≈ atan(x, 1.2)
         @test @uncertain(hypot(-2.9, y)) ≈ hypot(-2.9, y)
     end
     @testset "correlation" begin
@@ -604,15 +605,17 @@ end
         @test @uncertain(zeta(0.5 ± 1)).der.value ≈ -3.92264613
         @test @uncertain(zeta(2 ± 1)).der.value ≈ -0.93754825431
     end
-    @testset "2-arg functions: $f" for f in (log, hypot, atan2)
+    @testset "2-arg functions: $f" for f in (log, hypot, atan)
         @test @uncertain(f(x, y)) ≈ f(x, y)
     end
-    @testset "ccall" begin
-        f(x) = x*x
-        ptr = cfunction(f, Cdouble, (Cdouble,))
-        g(x) = ccall(ptr, Cdouble, (Cdouble,), x)*x
-        @test @uncertain(g(x)) ≈ x^3
-    end
+    ## XXX: re-enable the following test when this bug is fixed:
+    ## https://github.com/JuliaLang/julia/issues/23878
+    # @testset "ccall" begin
+    #     f(x) = x*x
+    #     ptr = @cfunction(f, Cdouble, (Cdouble,))
+    #     g(x) = ccall(ptr, Cdouble, (Cdouble,), x)*x
+    #     @test @uncertain(g(x)) ≈ x^3
+    # end
 end
 
 @testset "value and uncertainty" begin
@@ -639,8 +642,7 @@ end
     for a in (w, x, y); @test big(x) ^ 2 - x * x ≈ zero(x); end
     @test Measurements.derivative(big(x) / 3 + x, x) ≈ inv(big(3)) + 1
     @test Measurements.derivative(big(x) + y, y) ≈ 1
-    # Enable following test when support for Julia 0.6 will be dropped.
-    @test_skip typeof(big(z)) == big(typeof(z))
+    @test typeof(big(z)) == big(typeof(z))
     a = big"3.00000001" ± big"1e-17"
     b = big"4.00000001" ± big"1e-17"
     c = big"5.00000001" ± big"1e-15"

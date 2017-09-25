@@ -16,6 +16,7 @@
 ### Code:
 
 export stdscore, weightedmean
+using LinearAlgebra
 
 # Standard Score
 """
