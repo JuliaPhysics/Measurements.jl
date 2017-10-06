@@ -6,6 +6,8 @@ v0.5.1 (2017-??-??)
 
 ### New Features
 
+* `@uncertain` macro automatically converts all arguments of the function call
+  to `Measurement` type, so that the user does not have to manually cast them.
 * New method for `measurement(x::Measurement)` returning `x`.
 * New methods for `Measurements.value(x::Real)` returning `x` and
   `Measurements.uncertainty(x::Real)` returning `zero(x)`.

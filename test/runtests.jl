@@ -575,6 +575,12 @@ end
 
 @testset "@uncertain" begin
     @test @uncertain(tan(x)) ≈ tan(x)
+    @testset "non-Measurement arguments" begin
+        @test @uncertain(sin(-7.8)) == measurement(sin(-7.8))
+        @test @uncertain(log(5.4, 3.6)) == measurement(log(5.4, 3.6))
+        @test @uncertain(atan2(x, 1.2)) ≈ atan2(x, 1.2)
+        @test @uncertain(hypot(-2.9, y)) ≈ hypot(-2.9, y)
+    end
     @testset "correlation" begin
         @test @uncertain((a -> a + a + a)(x)) ≈ 3x
         @test @uncertain(+(x, -x, y, log(y), -w, w^2)) ≈ + y + log(y) - w * (1 - w)

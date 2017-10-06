@@ -172,8 +172,14 @@ by this package.
    julia> @uncertain log(9.4 ± 1.3, 58.8 ± 3.7)
    1.8182372640255153 ± 0.11568300475873611
 
-   julia> log(9.4 ± 1.3, 58.8 ± 3.7)
+   julia> log(9.4 ± 1.3, 58.8 ± 3.7) # Exact result
    1.8182372640255153 ± 0.11568300475593848
+
+   julia> @uncertain atan2(10, 13.5 ± 0.8)
+   0.6375487981386927 ± 0.028343666962347438
+
+   julia> atan2(10, 13.5 ± 0.8) # Exact result
+   0.6375487981386927 ± 0.028343666961913202
 
 You usually do not need to define a wrapping function before using it.  In the
 case where you have to define a function, like in the first line of previous
@@ -201,7 +207,7 @@ in ``Measurements.jl`` package
     julia> @uncertain cubaerf(0.5 ± 0.01)
     0.5204998778130466 ± 0.008787825789336267
 
-    julia> erf(0.5 ± 0.01)
+    julia> erf(0.5 ± 0.01) # Exact result
     0.5204998778130465 ± 0.008787825789354449
 
 Also here you can use an anonymous function instead of defining the ``cubaerf``
@@ -212,8 +218,8 @@ you to set ``Measurement`` objects as endpoints, see below.
 
 .. Tip::
 
-   Note that the argument of ``@uncertain`` macro must be a function call whose
-   arguments are ``Measurement`` objects.  Thus,
+   Note that the argument of ``@uncertain`` macro must be a function call.
+   Thus,
 
    .. code-block:: julia
 
@@ -229,25 +235,12 @@ you to set ``Measurement`` objects as endpoints, see below.
       julia> @uncertain(zeta(13.4 ± 0.8)) +  @uncertain(eta(8.51 ± 0.67))
       1.9974303172187315 ± 0.0012169293212062773
 
-   The type of *all* the arguments provided must be ``Measurement``.  If one of
-   the arguments is actually an exact number (so without uncertainty), promote
-   it to ``Measurement`` type:
-
-   .. code-block:: julia
-
-      julia> atan2(10, 13.5 ± 0.8)
-      0.6375487981386927 ± 0.028343666961913202
-
-      julia> @uncertain atan2(10 ± 0, 13.5 ± 0.8)
-      0.6375487981386927 ± 0.028343666962347438
-
    In addition, the function must be differentiable in all its arguments.  For
    example, the polygamma function of order :math:`m`, ``polygamma(m, x)``, is
    the :math:`m+1`-th derivative of the logarithm of gamma function, and is not
-   differentiable in the first argument.  Not even the trick of passing an exact
-   measurement would work, because the first argument must be an integer.  You
-   can easily work around this limitation by wrapping the function in a
-   single-argument function:
+   differentiable in the first argument, because the first argument must be an
+   integer.  You can easily work around this limitation by wrapping the function
+   in a single-argument function:
 
    .. code-block:: julia
 

@@ -157,11 +157,14 @@ macro uncertain(expr::Expr)
     n = length(expr.args) - 1
     if n == 1
         a = esc(expr.args[2]) # Argument, of Measurement type
-        return :( result($f($a.val), Calculus.derivative($f, $a.val), $a) )
+        return quote
+            x = measurement($a)
+            result($f(x.val), Calculus.derivative($f, x.val), x)
+        end
     else
         a = expr.args[2:end] # Arguments, as an array of expressions
         args = :([])  # Build up array of arguments
-        [push!(args.args, :($(esc(a[i])))) for i=1:n] # Fill the array
+        [push!(args.args, :(measurement($(esc(a[i]))))) for i=1:n] # Fill the array
         argsval =:([])  # Build up the array of values of arguments
         [push!(argsval.args, :($(args.args[i]).val)) for i=1:n] # Fill the array
         return :( result($f($argsval...),
