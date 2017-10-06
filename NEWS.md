@@ -1,6 +1,13 @@
 History of Measurements.jl
 ==========================
 
+v0.5.1 (2017-??-??)
+-------------------
+
+### New Features
+
+* Define method for `measurement(x::Measurement)` returning `x`.
+
 v0.5.0 (2017-07-08)
 -------------------
 

@@ -59,6 +59,7 @@ _eltype(::Type{Measurement{T}}) where {T<:AbstractFloat} = T
 @generated empty_der1(x::Measurement) = Derivatives{_eltype(x)}()
 @generated empty_der2(x) = Derivatives{x}()
 
+measurement(x::Measurement) = x
 measurement(val::T) where {T<:AbstractFloat} = Measurement(val, zero(T), NaN, empty_der2(val))
 measurement(val::Real) = measurement(float(val))
 function measurement(val::T, err::T) where {T<:AbstractFloat}

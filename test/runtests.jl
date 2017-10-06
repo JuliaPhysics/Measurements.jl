@@ -31,6 +31,7 @@ z = complex(x)
 end
 
 @testset "measurement" begin
+    @test measurement(x) === x
     @test measurement.(1:2:5, 2:2:6) == [1±2, 3±4, 5±6]
     @test iszero(@inferred(measurement(1)).err)
     @test @inferred(measurement(pi)).tag === NaN
