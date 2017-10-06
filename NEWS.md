@@ -6,7 +6,9 @@ v0.5.1 (2017-??-??)
 
 ### New Features
 
-* Define method for `measurement(x::Measurement)` returning `x`.
+* New method for `measurement(x::Measurement)` returning `x`.
+* New methods for `Measurements.value(x::Real)` returning `x` and
+  `Measurements.uncertainty(x::Real)` returning `zero(x)`.
 
 v0.5.0 (2017-07-08)
 -------------------

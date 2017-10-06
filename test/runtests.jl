@@ -610,6 +610,12 @@ end
     @test Measurements.value.([complex(w, x)]) == [complex(-0.5, 3.0)]
     @test Measurements.uncertainty.([w, x, y]) == [0.03, 0.1, 0.2]
     @test Measurements.uncertainty.([complex(w, x)]) == [complex(0.03, 0.1)]
+    @test Measurements.uncertainty(5) === 0
+    @test Measurements.uncertainty(7.4) === 0.0
+    @test Measurements.uncertainty(-3.6 + 7.4im) === complex(0.0)
+    @test Measurements.value(5) === 5
+    @test Measurements.value(7.4) === 7.4
+    @test Measurements.value(-3.6 + 7.4im) === complex(-3.6 + 7.4im)
 end
 
 @testset "Derivatives type" begin

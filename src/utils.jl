@@ -75,9 +75,11 @@ derivative(a::Measurement, b::Measurement) =
 for (f, field) in ((:value, :val), (:uncertainty, :err))
     @eval begin
         ($f)(a::Measurement) = a.$field
-        ($f)(a::Complex{<:Measurement}) = complex(($f)(a.re), ($f)(a.im))
+        ($f)(a::Complex{<:Real}) = complex(($f)(a.re), ($f)(a.im))
     end
 end
+value(a::Real) = a
+uncertainty(a::Real) = zero(a)
 
 """
     Measurements.value(x::Measurement)
