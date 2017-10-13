@@ -120,5 +120,6 @@ include("comparisons-tests.jl")
 include("utils.jl")
 include("math.jl")
 include("parsing.jl")
+include("plot-recipes.jl")
 
 end # module

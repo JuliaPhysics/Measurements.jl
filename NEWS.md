@@ -6,6 +6,9 @@ v0.5.1 (2017-??-??)
 
 ### New Features
 
+* You can easily plot vectors of `Measurement` objects using the `Plots.jl`
+  package.  The uncertainties of the numbers will automatically be used as sizes
+  of the errorbars.
 * `@uncertain` macro automatically converts all arguments of the function call
   to `Measurement` type, so that the user does not have to manually cast them.
 * New method for `measurement(x::Measurement)` returning `x`.
