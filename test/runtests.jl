@@ -2,6 +2,7 @@ using Measurements, SpecialFunctions
 using Base.Test
 
 import Base: isapprox
+import Measurements: value, uncertainty
 
 # A few tests before overloading `isapprox`.
 @testset "isapprox" begin
@@ -710,4 +711,8 @@ end
 
 @testset "Complex measurements" begin
     include("complex.jl")
+end
+
+@testset "Plot recipes" begin
+    include("plots.jl")
 end

@@ -57,6 +57,7 @@ it can serve also as an easy-to-use calculator.
   measurements with their physical units, perform numerical integration
   with [`QuadGK.jl`](https://github.com/JuliaMath/QuadGK.jl), numerical and
   automatic differentiation, and much more.
+* Integration with [`Plots.jl`](https://github.com/JuliaPlots/Plots.jl).
 
 Further features are expected to come in the future, see the section "How Can I
 Help?" and the TODO list below.

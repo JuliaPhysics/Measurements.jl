@@ -740,3 +740,19 @@ few examples.
 
    julia> 2pi*sqrt((5.4 ± 0.3)*u"m" / ((9.81 ± 0.01)*u"m/s^2")) # Pendulum's period
    4.661677707464357 ± 0.12951284359996548 s
+
+Integration with ``Plots.jl``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+``Measurements.jl`` provides plot recipes for the Julia graphic framework
+`Plots.jl <https://github.com/JuliaPlots/Plots.jl>`__.  Arguments to ``plot``
+function that have ``Measurement`` type will be automatically represented with
+errorbars.
+
+.. code-block:: julia
+
+   julia> using Measurements, Plots
+
+   julia> plot(sin, [x ± 0.1 for x in 1:0.2:10], size = (1200, 800))
+
+.. image:: plot-example.png
