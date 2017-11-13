@@ -119,6 +119,26 @@ function Base.alignment(io::IO, measure::Measurement)
         (length(m.captures[1]), length(m.captures[2]))
 end
 
+### Juno pretty printing
+using Requires
+@require Juno begin
+    Juno.render(i::Juno.Inline, measure::Measurement) =
+    Juno.render(i, Juno.span([Juno.render(i, measure.val),
+    " ± ", Juno.render(i, measure.err)]))
+
+    function Juno.render(ji::Juno.Inline, cm::Complex{<:Measurement})
+        r, i = reim(cm)
+        if signbit(i) && !isnan(i)
+            i = -i
+            sss = " - "
+        else
+            sss = " + "
+        end
+        Juno.render(ji, Juno.span(["(", Juno.render(ji, r), ")", sss,
+        "(", Juno.render(ji, i), ")im"]))
+    end
+end
+
 include("conversions.jl")
 include("comparisons-tests.jl")
 include("utils.jl")
