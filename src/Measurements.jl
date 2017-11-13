@@ -90,8 +90,6 @@ The binary operator `±` is equivalent to `measurement`, so you can construct a
 """
 measurement
 
-
-
 # Type representation
 Base.show(io::IO, measure::Measurement) =
     print(io, measure.val, get(io, :compact, false) ? "±" : " ± ", measure.err)
@@ -140,7 +138,6 @@ using Requires
         "(", Juno.render(ji, i), ")im"]))
     end
 end
-
 
 include("conversions.jl")
 include("comparisons-tests.jl")
