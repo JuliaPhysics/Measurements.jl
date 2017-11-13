@@ -92,10 +92,11 @@ measurement
 
 using Requires
 @require Juno begin
-    Juno.render(i::Juno.Inline, measure::Measurement) = 
-    Juno.render(i, Text("$(measure.val) ± $(measure.err)")
+    Juno.render(i::Juno.Inline, measure::Measurement) =
+    Juno.render(i, Juno.span([Juno.render(i, measure.val),
+    " ± ", Juno.render(i, measure.err)]))
 end
-    
+
 
 # Type representation
 Base.show(io::IO, measure::Measurement) =
