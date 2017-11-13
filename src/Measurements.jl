@@ -90,6 +90,13 @@ The binary operator `±` is equivalent to `measurement`, so you can construct a
 """
 measurement
 
+using Requires
+@require Juno begin
+    Juno.render(i::Juno.Inline, measure::Measurement) = 
+    Juno.render(i, Text("$(measure.val) ± $(measure.err)")
+end
+    
+
 # Type representation
 Base.show(io::IO, measure::Measurement) =
     print(io, measure.val, get(io, :compact, false) ? "±" : " ± ", measure.err)
