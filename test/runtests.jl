@@ -635,6 +635,9 @@ end
 @testset "BigFloat's" begin
     @test big(Measurement) == Measurement{BigFloat}
     @test typeof(big(x)) == big(typeof(x))
+    for a in (w, x, y); @test big(x) ^ 2 - x * x ≈ zero(x); end
+    @test Measurements.derivative(big(x) / 3 + x, x) ≈ inv(big(3)) + 1
+    @test Measurements.derivative(big(x) + y, y) ≈ 1
     # Enable following test when support for Julia 0.6 will be dropped.
     @test_skip typeof(big(z)) == big(typeof(z))
     a = big"3.00000001" ± big"1e-17"

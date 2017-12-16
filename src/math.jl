@@ -252,7 +252,7 @@ function Base.:/(a::Measurement, b::Measurement)
     return result(x / y, (oneovery, -x * abs2(oneovery)), (a, b))
 end
 Base.:/(a::Real, b::Measurement) = result(a/b.val, -a/abs2(b.val), b)
-Base.:/(a::Measurement, b::Real) = result(a.val/b, 1/b, a)
+Base.:/(a::Measurement{T}, b::Real) where {T<:AbstractFloat} = result(a.val/b, 1/T(b), a)
 
 # 0.0 as partial derivative for both arguments of "div", "fld", "cld" should be
 # correct for most cases.  This has been tested against "@uncertain" macro.
