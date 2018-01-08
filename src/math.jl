@@ -41,7 +41,7 @@ export @uncertain
 #   σ_G = |σ_a·∂G/∂a|
 # The list of derivatives with respect to each measurement is updated with
 #   ∂G/∂a · previous_derivatives
-@inline function result(val::Real, der::Real, a::Measurement{<:AbstractFloat})
+@inline function result(val::T, der::Real, a::Measurement{<:AbstractFloat}) where {T<:Real}
     newder = empty_der1(a)
     @inbounds for tag in keys(a.der)
         if ! iszero(tag[2]) # Skip values with 0 uncertainty
@@ -54,7 +54,7 @@ export @uncertain
     σ = iszero(a.err) ? a.err : abs(der*a.err)
     # The tag is NaN because we don't care about tags of derived quantities, we
     # are only interested in independent ones.
-    Measurement(val,  σ, NaN, newder)
+    Measurement{float(T)}(val, σ, NaN, newder)
 end
 
 # Get the common type parameter of a collection of Measurement objects.  The first two
