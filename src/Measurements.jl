@@ -135,7 +135,6 @@ using Requires
         else
             sss = " + "
         end
-        Juno.Row(measure.val, Text(" ± "), measure.err)
         Juno.render(ji, Juno.Row("(", Juno.render(ji, r), ")", sss,
         "(", Juno.render(ji, i), ")im"))
     end
