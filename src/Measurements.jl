@@ -123,8 +123,9 @@ end
 using Requires
 @require Juno begin
     Juno.render(i::Juno.Inline, measure::Measurement) =
-    Juno.render(i, Juno.span([Juno.render(i, measure.val),
-    " ± ", Juno.render(i, measure.err)]))
+    Juno.render(i, Juno.Row(measure.val, Text(" ± "), measure.err))
+    
+    Juno.Row(measure.val, Text(" ± "), measure.err)
 
     function Juno.render(ji::Juno.Inline, cm::Complex{<:Measurement})
         r, i = reim(cm)
@@ -134,8 +135,8 @@ using Requires
         else
             sss = " + "
         end
-        Juno.render(ji, Juno.span(["(", Juno.render(ji, r), ")", sss,
-        "(", Juno.render(ji, i), ")im"]))
+        Juno.render(ji, Juno.Row("(", Juno.render(ji, r), ")", sss,
+        "(", Juno.render(ji, i), ")im"))
     end
 end
 
