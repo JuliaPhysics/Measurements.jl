@@ -6,6 +6,9 @@ os:
 julia:
   - 0.6
   - nightly
+matrix:
+  allow_failures:
+    - julia: nightly
 git:
   depth: 999999
 notifications:
