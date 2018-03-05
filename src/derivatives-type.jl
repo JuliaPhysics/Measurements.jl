@@ -19,9 +19,9 @@
 #
 ### Code:
 
-struct Derivatives{T} <: Associative{Tuple{T,T,Float64},T}
+struct Derivatives{T} <: Associative{Tuple{T,T,UInt64},T}
     parent::Derivatives{T}
-    key::Tuple{T,T,Float64}
+    key::Tuple{T,T,UInt64}
     value::T
     Derivatives{T}() where {T} = new() # represents an empty dictionary
     Derivatives{T}(parent::Derivatives, key, value) where {T} = new(parent, key, value)
@@ -65,6 +65,6 @@ end
 # this actually defines reverse iteration (e.g. it should not be used for merge/copy/filter type operations)
 Base.start(t::Derivatives) = t
 Base.next(::Derivatives{T}, t) where {T} =
-    (Pair{Tuple{T,T,Float64},T}(t.key, t.value), t.parent)
+    (Pair{Tuple{T,T,UInt64},T}(t.key, t.value), t.parent)
 Base.done(::Derivatives, t) = !isdefined(t, :parent)
 Base.length(t::Derivatives) = count(x->true, t)

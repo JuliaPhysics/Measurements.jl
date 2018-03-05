@@ -36,9 +36,8 @@ include("derivatives-type.jl")
 #   * val: the nominal value of the measurement
 #   * err: the uncertainty, assumed to be standard deviation
 #   * tag: a (hopefully) unique identifier, it is used to identify a specific
-#     measurement in the list of derivatives.  This is usually created with
-#     `rand'.  NOTE: only independent measurements have a finite tag.  For
-#     dependent quantities the tag is NaN.
+#     measurement in the list of derivatives.  NOTE: independent measurements
+#     have tag > 0.  For dependent quantities the tag is 0.
 #   * der: the list of derivates.  It is a lightweight dictionary, whose keys
 #     are the tuples (nominal value, uncertainty, tag) of all independent
 #     variables from which the object has been derived, the corresponding value
@@ -50,10 +49,10 @@ include("derivatives-type.jl")
 struct Measurement{T<:AbstractFloat} <: AbstractFloat
     val::T
     err::T
-    tag::Float64
+    tag::UInt64
     der::Derivatives{T}
 end
-function Measurement(val::V, err::E, tag::Float64,
+function Measurement(val::V, err::E, tag::UInt64,
                      der::Derivatives{D}) where {V,E,D}
     T = promote_type(V, E, D)
     return Measurement(T(val), T(err), tag, Derivatives{T}(der))
@@ -63,15 +62,21 @@ end
 @generated empty_der1(x::Measurement{T}) where {T<:AbstractFloat} = Derivatives{T}()
 @generated empty_der2(x::T) where {T<:AbstractFloat} = Derivatives{x}()
 
+const tag_counters = UInt64[1]
+function __init__()
+    nthr = Base.Threads.nthreads()
+    resize!(tag_counters, nthr)[:] = range(UInt64(1), typemax(UInt64)÷nthr, nthr)
+end
+
 measurement(x::Measurement) = x
-measurement(val::T) where {T<:AbstractFloat} = Measurement(val, zero(T), NaN, empty_der2(val))
+measurement(val::T) where {T<:AbstractFloat} = Measurement(val, zero(T), UInt64(0), empty_der2(val))
 measurement(val::Real) = measurement(float(val))
 function measurement(val::T, err::T) where {T<:AbstractFloat}
     newder = empty_der2(val)
     if iszero(err)
-        Measurement{T}(val, err, NaN, newder)
+        Measurement{T}(val, err, UInt64(0), newder)
     else
-        tag = rand()
+        @inbounds tag = tag_counters[Base.Threads.threadid()] += 1
         return Measurement{T}(val, err, tag, Derivatives(newder, (val, err, tag)=>one(T)))
     end
 end
