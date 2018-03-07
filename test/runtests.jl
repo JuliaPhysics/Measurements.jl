@@ -35,9 +35,9 @@ end
     @test measurement(x) === x
     @test measurement.(1:2:5, 2:2:6) == [1±2, 3±4, 5±6]
     @test iszero(@inferred(measurement(1)).err)
-    @test @inferred(measurement(pi)).tag === NaN
+    @test @inferred(measurement(pi)).tag === UInt64(0)
     @test length(@inferred(measurement(4//5)).der) == 0
-    @test @inferred(measurement(catalan, big(0))).tag === NaN
+    @test @inferred(measurement(catalan, big(0))).tag === UInt64(0)
     @test length(@inferred(measurement(7//3, 0)).der) == 0
     @test length(@inferred(measurement(4.7f0, 0.3)).der) == 1
     @test typeof(@inferred(measurement(1, big(0)))) == Measurement{BigFloat}
