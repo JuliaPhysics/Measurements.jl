@@ -98,6 +98,8 @@ measurement
 # Type representation
 Base.show(io::IO, measure::Measurement) =
     print(io, measure.val, get(io, :compact, false) ? "±" : " ± ", measure.err)
+Base.show(io::IO, ::MIME"text/latex", measure::Measurement) =
+    print(io, "\$", measure.val, " \\pm ", measure.err, "\$")
 for mime in (MIME"text/x-tex", MIME"text/x-latex")
     @eval Base.show(io::IO, ::$mime, measure::Measurement) =
         print(io, measure.val, " \\pm ", measure.err)
