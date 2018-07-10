@@ -1,7 +1,7 @@
 History of Measurements.jl
 ==========================
 
-v0.5.1 (2017-??-??)
+v0.5.1 (2018-07-11)
 -------------------
 
 ### New Features
@@ -14,6 +14,14 @@ v0.5.1 (2017-??-??)
 * New method for `measurement(x::Measurement)` returning `x`.
 * New methods for `Measurements.value(x::Real)` returning `x` and
   `Measurements.uncertainty(x::Real)` returning `zero(x)`.
+* The package now supports pretty printing in Juno
+  ([#12](https://github.com/JuliaPhysics/Measurements.jl/issues/12),
+  [#13](https://github.com/JuliaPhysics/Measurements.jl/pull/13))
+* The tage used internally to identify an independent quantity is now a
+  (thread-safe) counter, rather than a (thread-unsafe) random number
+  ([#15](https://github.com/JuliaPhysics/Measurements.jl/issues/15),
+  [#16](https://github.com/JuliaPhysics/Measurements.jl/pull/16)).
+* New `show` method for `text/latex` MIME, used in Jupyter notebooks.
 
 v0.5.0 (2017-07-08)
 -------------------

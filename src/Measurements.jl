@@ -131,7 +131,7 @@ using Requires
 @require Juno begin
     Juno.render(i::Juno.Inline, measure::Measurement) =
     Juno.render(i, Juno.Row(measure.val, Text(" ± "), measure.err))
-    
+
     Juno.Row(measure.val, Text(" ± "), measure.err)
 
     function Juno.render(ji::Juno.Inline, cm::Complex{<:Measurement})
