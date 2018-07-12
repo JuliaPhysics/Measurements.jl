@@ -19,7 +19,7 @@
 #
 ### Code:
 
-struct Derivatives{T} <: Associative{Tuple{T,T,UInt64},T}
+struct Derivatives{T} <: AbstractDict{Tuple{T,T,UInt64},T}
     parent::Derivatives{T}
     key::Tuple{T,T,UInt64}
     value::T

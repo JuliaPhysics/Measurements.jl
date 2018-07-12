@@ -57,6 +57,8 @@ function Measurement(val::V, err::E, tag::UInt64,
     T = promote_type(V, E, D)
     return Measurement(T(val), T(err), tag, Derivatives{T}(der))
 end
+Measurement{T}(x::Measurement{S}) where {T,S} = convert(Measurement{T}, x)
+Measurement{T}(x::S) where {T,S} = measurement(x)
 
 # Functions to quickly create an empty Derivatives object.
 @generated empty_der1(x::Measurement{T}) where {T<:AbstractFloat} = Derivatives{T}()
@@ -65,7 +67,7 @@ end
 const tag_counters = UInt64[1]
 function __init__()
     nthr = Base.Threads.nthreads()
-    resize!(tag_counters, nthr)[:] = range(UInt64(1), typemax(UInt64)÷nthr, nthr)
+    resize!(tag_counters, nthr)[:] = range(UInt64(1), step=typemax(UInt64)÷nthr, length=nthr)
 end
 
 measurement(x::Measurement) = x
@@ -121,14 +123,14 @@ function Base.show(io::IO, measure::Complex{<:Measurement})
 end
 # This is adapted from base/show.jl for Complex type.
 function Base.alignment(io::IO, measure::Measurement)
-    m = match(r"^(.*[\±])(.*)$", sprint(0, show, measure, env=io))
-    m === nothing ? (length(sprint(0, show, x, env=io)), 0) :
+    m = match(r"^(.*[\±])(.*)$", sprint(show, measure, context=io, sizehint=0))
+    m === nothing ? (length(sprint(show, measure, context=io, sizehint=0)), 0) :
         (length(m.captures[1]), length(m.captures[2]))
 end
 
 ### Juno pretty printing
 using Requires
-@require Juno begin
+@require Juno="e5e0dc1b-0480-54bc-9374-aad01c23163d" begin
     Juno.render(i::Juno.Inline, measure::Measurement) =
     Juno.render(i, Juno.Row(measure.val, Text(" ± "), measure.err))
 

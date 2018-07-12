@@ -167,8 +167,8 @@ macro uncertain(expr::Expr)
         argsval =:([])  # Build up the array of values of arguments
         [push!(argsval.args, :($(args.args[i]).val)) for i=1:n] # Fill the array
         return :( result($f($argsval...),
-                         (Calculus.gradient(x -> $f(x...), $argsval)...),
-                         ($args...)) )
+                         (Calculus.gradient(x -> $f(x...), $argsval)...,),
+                         ($args...,)) )
     end
 end
 
@@ -301,7 +301,7 @@ function Base.:^(a::Measurement,  b::Real)
     return result(x ^ b, b * x ^ (b - 1), a)
 end
 
-Base.:^(::Irrational{:e}, b::Measurement) = exp(b)
+Base.:^(::Irrational{:ℯ}, b::Measurement) = exp(b)
 
 function Base.:^(a::Real,  b::Measurement)
     res = a^b.val
@@ -356,15 +356,9 @@ end
 
 # Sincos: sincos
 
-# TODO: remove the `isdefined` when support for Julia 0.6 will be dropped.  Note: this
-# definition is not strictly needed, it's just for slightly better performance.
-if isdefined(Base, :sincos)
-    function Base.sincos(a::Measurement)
-        s, c = sincos(a.val)
-        return (result(s, c, a), result(c, -s, a))
-    end
-else
-    sincos(x::Real) = (sin(x), cos(x))
+function Base.sincos(a::Measurement)
+    s, c = sincos(a.val)
+    return (result(s, c, a), result(c, -s, a))
 end
 
 # Tangent: tan, tand, tanh
@@ -409,7 +403,7 @@ function Base.cosc(a::Measurement)
                   a)
 end
 
-# Inverse trig functions: acos, acosd, acosh, asin, asind, asinh, atan, atand, atan2, atanh,
+# Inverse trig functions: acos, acosd, acosh, asin, asind, asinh, atan, atand, atanh,
 #                         asec, acsc, acot, asech, acsch, acoth
 
 function Base.acos(a::Measurement{T}) where {T<:AbstractFloat}
@@ -457,23 +451,23 @@ function Base.atanh(a::Measurement{T}) where {T<:AbstractFloat}
     return result(atanh(aval), inv(one(T) - abs2(aval)), a)
 end
 
-function Base.atan2(a::Measurement, b::Measurement)
+function Base.atan(a::Measurement, b::Measurement)
     aval = a.val
     bval = b.val
     denom = abs2(aval) + abs2(bval)
-    return result(atan2(aval, bval),
+    return result(atan(aval, bval),
                   (bval / denom, -aval / denom),
                   (a, b))
 end
 
-function Base.atan2(a::Measurement, b::Real)
+function Base.atan(a::Measurement, b::Real)
     x = a.val
-    return result(atan2(x, b), -b/(abs2(x) + abs2(b)), a)
+    return result(atan(x, b), -b/(abs2(x) + abs2(b)), a)
 end
 
-function Base.atan2(a::Real, b::Measurement)
+function Base.atan(a::Real, b::Measurement)
     y = b.val
-    return result(atan2(a, y), -a/(abs2(a) + abs2(y)), b)
+    return result(atan(a, y), -a/(abs2(a) + abs2(y)), b)
 end
 
 function Base.asec(a::Measurement)
@@ -616,7 +610,7 @@ function Base.log1p(a::Measurement{T}) where {T<:AbstractFloat} # Special case
     return result(log1p(aval), inv(aval + one(T)), a)
 end
 
-Base.log(::Irrational{:e}, a::Measurement) = log(a)
+Base.log(::Irrational{:ℯ}, a::Measurement) = log(a)
 
 function Base.log(a::Real, b::Measurement{T}) where {T<:AbstractFloat}
     bval = b.val
@@ -739,19 +733,19 @@ end
 
 # Factorial and gamma
 
-function Base.factorial(a::Measurement)
+function SpecialFunctions.factorial(a::Measurement)
     aval = a.val
-    fact = factorial(aval)
+    fact = SpecialFunctions.factorial(aval)
     return result(fact, fact*digamma(aval + one(aval)), a)
 end
 
-function Base.gamma(a::Measurement)
+function SpecialFunctions.gamma(a::Measurement)
     aval = a.val
     Γ = gamma(aval)
     return result(Γ, Γ*digamma(aval), a)
 end
 
-function Base.lgamma(a::Measurement)
+function SpecialFunctions.lgamma(a::Measurement)
     aval = a.val
     return result(lgamma(aval), digamma(aval), a)
 end
@@ -779,7 +773,7 @@ end
 
 # Beta function: beta, lbeta
 
-function Base.beta(a::Measurement, b::Measurement)
+function SpecialFunctions.beta(a::Measurement, b::Measurement)
     aval = a.val
     bval = b.val
     res = beta(aval, bval)
@@ -789,15 +783,15 @@ function Base.beta(a::Measurement, b::Measurement)
                   (a, b))
 end
 
-function Base.beta(a::Measurement, b::Real)
+function SpecialFunctions.beta(a::Measurement, b::Real)
     aval = a.val
     res = beta(aval, b)
     return result(res, res*(digamma(aval) - digamma(aval + b)), a)
 end
 
-Base.beta(a::Real, b::Measurement) = beta(b, a)
+SpecialFunctions.beta(a::Real, b::Measurement) = beta(b, a)
 
-function Base.lbeta(a::Measurement, b::Measurement)
+function SpecialFunctions.lbeta(a::Measurement, b::Measurement)
     aval = a.val
     bval = b.val
     return result(lbeta(aval, bval),
@@ -806,12 +800,12 @@ function Base.lbeta(a::Measurement, b::Measurement)
                   (a, b))
 end
 
-function Base.lbeta(a::Measurement, b::Real)
+function SpecialFunctions.lbeta(a::Measurement, b::Real)
     aval = a.val
     return result(lbeta(aval, b), digamma(aval) - digamma(aval + b), a)
 end
 
-Base.lbeta(a::Real, b::Measurement) = lbeta(b, a)
+SpecialFunctions.lbeta(a::Real, b::Measurement) = lbeta(b, a)
 
 # Airy functions
 
@@ -931,10 +925,8 @@ Base.typemax(::Type{Measurement{T}}) where {T<:AbstractFloat} = typemax(T)
 
 ### Rounding
 
-Base.round(a::Measurement) = measurement(round(value(a)), round(uncertainty(a)))
-Base.round(a::Measurement, digits::Integer, base::Integer=10) =
-    measurement(round(value(a), digits, base),
-                round(uncertainty(a), digits, base))
+Base.round(a::Measurement; kwargs...) =
+    measurement(round(value(a); kwargs...), round(uncertainty(a); kwargs...))
 Base.round(::Type{T}, a::Measurement) where {T<:Integer} = round(T, a.val)
 Base.floor(a::Measurement) = measurement(floor(a.val))
 Base.floor(::Type{T}, a::Measurement) where {T<:Integer} = floor(T, a.val)
@@ -952,9 +944,7 @@ Base.widen(::Type{Measurement{T}}) where {T<:AbstractFloat} = Measurement{widen(
 Base.big(::Type{Measurement}) = Measurement{BigFloat}
 Base.big(::Type{Measurement{T}}) where {T<:AbstractFloat} = Measurement{BigFloat}
 Base.big(x::Measurement{<:AbstractFloat}) = convert(Measurement{BigFloat}, x)
-# big(x::Complex{Measurement{<:AbstractFloat}}) doesn't seem to work on Julia 0.6.
-Base.big(x::Complex{Measurement{T}}) where {T<:AbstractFloat} =
-    convert(Complex{Measurement{BigFloat}}, x)
+Base.big(x::Complex{<:Measurement}) = convert(Complex{Measurement{BigFloat}}, x)
 
 # Sum and prod
 

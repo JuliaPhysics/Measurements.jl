@@ -56,12 +56,12 @@ end
 @testset "Exponential and logarithm" begin
     @test @inferred(u ^ v) ≈ @inferred(exp(v * log(u)))
     for a in (u, v, z)
-        @test @inferred(exp(a))          ≈ e^a
+        @test @inferred(exp(a))          ≈ ℯ^a
         @test @inferred(expm1(a))        ≈ exp(a) - 1
         @test @inferred(exp10(a))        ≈ 10^a
         @test @inferred(exp2(a))         ≈ 2^a
         @test @inferred(exp(log(a)))     ≈ a
-        @test @inferred(log(e, a))       ≈ log(a)
+        @test @inferred(log(ℯ, a))       ≈ log(a)
         @test @inferred(log(10, a))      ≈ log10(a)
         @test @inferred(log(2, a))       ≈ log2(a)
         @test @inferred(log1p(a))        ≈ log(1 + a)
@@ -86,7 +86,7 @@ end
 @testset "Representation" begin
     # Make sure the printed representation of a Measurement object is correctly parsed as
     # the same object (well, the tag will be different, but that's not important here).
-    for a in (u, v, z); @test eval(parse(repr(a))) == a; end
+    for a in (u, v, z); @test eval(Meta.parse(repr(a))) == a; end
 end
 
 @testset "Other" begin
