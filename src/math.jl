@@ -145,11 +145,10 @@ result(val::Complex, der, a::Complex{<:Measurement}) =
 """
     @uncertain f(value ± stddev, ...)
 
-A macro to calculate \$f(value) ± uncertainty\$, with \$uncertainty\$ derived
-from \$stddev\$ according to rules of linear error propagation theory.
+A macro to calculate `f(value) ± uncertainty`, with `uncertainty` derived from `stddev`
+according to rules of linear error propagation theory.
 
-Function \$f\$ can accept any number of real arguments, the type of the
-arguments provided must be `Measurement`.
+Function `f` can accept any number of real arguments.
 """
 macro uncertain(expr::Expr)
     f = esc(expr.args[1]) # Function name
