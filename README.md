@@ -74,11 +74,10 @@ If you use use this package for your research, please cite it.
 ### Documentation ###
 
 The complete manual of `Measurements.jl` is available at
-http://measurementsjl.readthedocs.io.  There, people interested in the details
-of the package, in order integrate the package in their workflow, can can find a
-technical appendix explaining how the package internally works.  You can also
-download the PDF version of the manual from
-https://media.readthedocs.org/pdf/measurementsjl/latest/measurementsjl.pdf.
+https://juliaphysics.github.io/Measurements.jl/stable/.  There, people
+interested in the details of the package, in order integrate the package in
+their workflow, can can find a technical appendix explaining how the package
+internally works.
 
 Installation
 ------------
@@ -89,7 +88,6 @@ installed with
 In a Julia session run the commands
 
 ```julia
-julia> using Pkg
 julia> Pkg.update()
 julia> Pkg.add("Measurements")
 ```
@@ -156,21 +154,6 @@ package, and the `quadgk` integration routine
 from [`QuadGK.jl`](https://github.com/JuliaMath/QuadGK.jl) package.  See the
 full manual for details.
 
-### Caveat about `±` Sign ###
-
-The `±` infix operator is a convenient symbol to define quantities with
-uncertainty, but can lead to unexpected results if used in elaborate expressions
-involving many `±`s.  Use parantheses where appropriate to avoid confusion.  See
-for example the following cases:
-
-``` julia
-julia> 7.5±1.2 + 3.9±0.9 # This is wrong!
-11.4 ± 1.2 ± 0.9 ± 0.0
-
-julia> (7.5±1.2) + (3.9±0.9) # This is correct
-11.4 ± 1.5
-```
-
 Examples
 --------
 
@@ -212,10 +195,10 @@ employ this package in your research work.
 
 
 [docs-latest-img]: https://img.shields.io/badge/docs-latest-blue.svg
-[docs-latest-url]: http://measurementsjl.readthedocs.io/en/latest/
+[docs-latest-url]: https://juliaphysics.github.io/Measurements.jl/latest/
 
 [docs-stable-img]: https://img.shields.io/badge/docs-stable-blue.svg
-[docs-stable-url]: http://measurementsjl.readthedocs.io/en/stable/
+[docs-stable-url]: https://juliaphysics.github.io/Measurements.jl/stable/
 
 [pkgeval-link]: http://pkg.julialang.org/?pkg=Measurements
 
