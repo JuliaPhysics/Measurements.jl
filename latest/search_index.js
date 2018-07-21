@@ -53,7 +53,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Usage",
     "title": "Measurements.measurement",
     "category": "method",
-    "text": "measurement(string) -> Measurement{Float64}\n\nParse the string and return a Measurement{Float64} object.\n\nExamples of valid strings and the resulting Measurement{Float64} are:\n\nmeasurement(\"-123.4(56)\")         -> -123.4 ± 5.6\nmeasurement(\"+1234(56)e-1\")       ->  123.4 ± 5.6\nmeasurement(\"12.34e-1 +- 0.56e1\") ->  123.4 ± 5.6\nmeasurement(\"(-1.234 ± 0.056)e2\")  > -123.4 ± 5.6\nmeasurement(\"1234e-1 +/- 5.6e0\")  ->  123.4 ± 5.6\nmeasurement(\"-1234e-1\")           -> -123.4 ± 0.0\n\n\n\n\n\n"
+    "text": "measurement(string) -> Measurement{Float64}\n\nParse the string and return a Measurement{Float64} object.\n\nExamples of valid strings and the resulting Measurement{Float64} are:\n\njulia> measurement(\"-123.4(56)\")\n-123.4 ± 5.6\n\njulia> measurement(\"+1234(56)e-1\")\n123.4 ± 5.6000000000000005\n\njulia> measurement(\"12.34e-1 +- 0.56e1\")\n1.234 ± 5.6\n\njulia> measurement(\"(-1.234 ± 0.056)e2\")\n-123.4 ± 5.6000000000000005\n\njulia> measurement(\"1234e-1 +/- 5.6e0\")\n123.4 ± 5.6\n\njulia> measurement(\"-1234e-1\")\n-123.4 ± 0.0\n\n\n\n\n\n"
 },
 
 {
