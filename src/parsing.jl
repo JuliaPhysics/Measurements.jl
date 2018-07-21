@@ -58,13 +58,24 @@ Parse the string and return a `Measurement{Float64}` object.
 
 Examples of valid strings and the resulting `Measurement{Float64}` are:
 
-```
-measurement("-123.4(56)")         -> -123.4 ± 5.6
-measurement("+1234(56)e-1")       ->  123.4 ± 5.6
-measurement("12.34e-1 +- 0.56e1") ->  123.4 ± 5.6
-measurement("(-1.234 ± 0.056)e2")  > -123.4 ± 5.6
-measurement("1234e-1 +/- 5.6e0")  ->  123.4 ± 5.6
-measurement("-1234e-1")           -> -123.4 ± 0.0
+```jldoctest
+julia> measurement("-123.4(56)")
+-123.4 ± 5.6
+
+julia> measurement("+1234(56)e-1")
+123.4 ± 5.6000000000000005
+
+julia> measurement("12.34e-1 +- 0.56e1")
+1.234 ± 5.6
+
+julia> measurement("(-1.234 ± 0.056)e2")
+-123.4 ± 5.6000000000000005
+
+julia> measurement("1234e-1 +/- 5.6e0")
+123.4 ± 5.6
+
+julia> measurement("-1234e-1")
+-123.4 ± 0.0
 ```
 """
 measurement(str::AbstractString) = parse(Measurement{Float64}, str)
@@ -98,8 +109,8 @@ function Base.parse(::Type{Measurement{T}}, str::S) where {T<:AbstractFloat, S<:
     val::T = parse(T, val_str)
     err::T = parse(T, err_str)
     if val_dec !== nothing # The nominal value has a decimal part
-        # Multiply the uncertainty by 10^(-number_of_decimal_digits)
-        err *= exp10(1.0 - length(val_dec))
+        # Divide the uncertainty by 10^(number_of_decimal_digits)
+        err /= 10 ^ (length(val_dec) - 1)
     end
     if expn !== nothing # There is a global exponent factor
         # Parse to a number
