@@ -63,8 +63,9 @@ function Base.get(dict::Derivatives, key, default)
 end
 
 # this actually defines reverse iteration (e.g. it should not be used for merge/copy/filter type operations)
-Base.start(t::Derivatives) = t
-Base.next(::Derivatives{T}, t) where {T} =
+function Base.iterate(derivs::Derivatives{T}, t=derivs) where T
+    isdefined(t, :parent) || return nothing
     (Pair{Tuple{T,T,UInt64},T}(t.key, t.value), t.parent)
-Base.done(::Derivatives, t) = !isdefined(t, :parent)
+end
+
 Base.length(t::Derivatives) = count(x->true, t)
