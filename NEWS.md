@@ -1,6 +1,15 @@
 History of Measurements.jl
 ==========================
 
+v0.6.0 (2018-??-??)
+-------------------
+
+### Breaking Changes
+
+* Julia 0.7 is required, support for previous versions is dropped.
+* Documentation has been movedo to
+  https://juliaphysics.github.io/Measurements.jl/stable/.
+
 v0.5.1 (2018-07-11)
 -------------------
 
