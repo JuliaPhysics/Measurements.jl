@@ -1,12 +1,12 @@
 History of Measurements.jl
 ==========================
 
-v0.6.0 (2018-??-??)
+v1.0.0 (2018-08-16)
 -------------------
 
 ### Breaking Changes
 
-* Julia 0.7 is required, support for previous versions is dropped.
+* Julia 0.7 is required, support for previous versions was dropped.
 * Documentation has been movedo to
   https://juliaphysics.github.io/Measurements.jl/stable/.
 
@@ -26,7 +26,7 @@ v0.5.1 (2018-07-11)
 * The package now supports pretty printing in Juno
   ([#12](https://github.com/JuliaPhysics/Measurements.jl/issues/12),
   [#13](https://github.com/JuliaPhysics/Measurements.jl/pull/13))
-* The tage used internally to identify an independent quantity is now a
+* The tag used internally to identify an independent quantity is now a
   (thread-safe) counter, rather than a (thread-unsafe) random number
   ([#15](https://github.com/JuliaPhysics/Measurements.jl/issues/15),
   [#16](https://github.com/JuliaPhysics/Measurements.jl/pull/16)).
