@@ -715,6 +715,7 @@ end
 
 @testset "Fixed bugs" begin
     @test 1 * (big(3) ± 0) ≈ 3 ± 0
+    @test Measurement{Float64}(2//1) === Measurement{Float64}(2.0)
 end
 
 @testset "Complex measurements" begin
