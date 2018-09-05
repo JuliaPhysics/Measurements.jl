@@ -114,6 +114,10 @@ end
     @test iszero(zero(Measurement))
     @test !iszero(0 ± 1)
     @test !iszero(1 ± 0)
+    @test isone(1 ± 0)
+    @test isone(one(Measurement))
+    @test !isone(1 ± 1)
+    @test !isone(0 ± 0)
 end
 
 ##### Mathematical Operations
