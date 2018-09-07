@@ -1,6 +1,14 @@
 History of Measurements.jl
 ==========================
 
+v1.0.1 (2018-09-07)
+-------------------
+
+### Bug Fixes
+
+Minor bug fixes ([#20](https://github.com/JuliaPhysics/Measurements.jl/pull/20),
+[#23](https://github.com/JuliaPhysics/Measurements.jl/pull/23)).
+
 v1.0.0 (2018-08-16)
 -------------------
 
