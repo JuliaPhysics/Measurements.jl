@@ -36,7 +36,12 @@ end
 Base.convert(::Type{Measurement}, a::Measurement) = a::Measurement
 Base.convert(::Type{Measurement}, a::Rational{<:Integer}) = measurement(a)::Measurement
 Base.convert(::Type{Measurement}, a::Real) = measurement(a)::Measurement
-Base.convert(::Type{Signed}, a::Measurement) = convert(Signed, a.val)
+# This is used in power of complex numbers.  Allow the conversion only if the uncertainty is
+# zero, so there is no loss of information.
+function Base.convert(::Type{Int}, a::Measurement)
+    @assert isinteger(a)
+    return convert(Int, a.val)::Int
+end
 
 Base.promote_rule(::Type{Measurement{T}}, ::Type{S}) where {T<:AbstractFloat, S<:Real} =
     Measurement{promote_type(T, S)}

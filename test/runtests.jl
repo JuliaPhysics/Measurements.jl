@@ -76,7 +76,8 @@ end
     @test convert(Measurement, pi) == pi ± 0
     @test convert(Measurement, 1//2) == 0.5 ± 0
     @test convert(Measurement, 3) == 3 ± 0
-    @test convert(Signed, x) == 3
+    @test convert(Int, measurement(3, 0)) === 3
+    @test_throws AssertionError convert(Int, measurement(3, 1))
     @test float(3 ± 1) == 3.0 ± 1.0
     @test promote(Measurement{Float32}(3 ± 0.5), Measurement{Float64}(4 ± 0)) ==
         (Measurement{Float64}(3 ± 0.5), Measurement{Float64}(4 ± 0))
