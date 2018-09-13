@@ -41,6 +41,8 @@ end
     @test length(@inferred(measurement(7//3, 0)).der) == 0
     @test length(@inferred(measurement(4.7f0, 0.3)).der) == 1
     @test typeof(@inferred(measurement(1, big(0)))) == Measurement{BigFloat}
+    @test typeof(@inferred(Measurement{Float64}(big"3.14"))) == Measurement{Float64}
+    @test typeof(@inferred(Measurement{BigFloat}(-5.43f2))) == Measurement{BigFloat}
 end
 
 @testset "Weighted Average" begin

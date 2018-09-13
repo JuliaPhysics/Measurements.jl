@@ -58,8 +58,8 @@ function Measurement(val::V, err::E, tag::UInt64,
     return Measurement(T(val), T(err), tag, Derivatives{T}(der))
 end
 Measurement{T}(x::Measurement{S}) where {T,S} = convert(Measurement{T}, x)
-Measurement{T}(x::S) where {T,S} = measurement(x)
-Measurement{T}(x::S) where {T,S<:Rational} = measurement(x)
+Measurement{T}(x::S) where {T,S} = convert(Measurement{T}, x)
+Measurement{T}(x::S) where {T,S<:Rational} = convert(Measurement{T}, x)
 
 # Functions to quickly create an empty Derivatives object.
 @generated empty_der1(x::Measurement{T}) where {T<:AbstractFloat} = Derivatives{T}()

@@ -17,10 +17,11 @@
 ### Code:
 
 Base.convert(::Type{Measurement{T}}, a::Irrational) where {T<:AbstractFloat} =
-    measurement(T(a))
+    measurement(T(a))::Measurement{T}
 Base.convert(::Type{Measurement{T}}, a::Rational{<:Integer}) where {T<:AbstractFloat} =
-    measurement(T(a))
-Base.convert(::Type{Measurement{T}}, a::Real) where {T<:AbstractFloat} = measurement(T(a))
+    measurement(T(a))::Measurement{T}
+Base.convert(::Type{Measurement{T}}, a::Real) where {T<:AbstractFloat} =
+    measurement(T(a))::Measurement{T}
 
 Base.convert(::Type{Measurement{T}}, a::Measurement{T}) where {T<:AbstractFloat} = a
 function Base.convert(::Type{Measurement{T}},
@@ -29,12 +30,12 @@ function Base.convert(::Type{Measurement{T}},
     for tag in keys(a.der)
         newder = Derivatives(newder, (T(tag[1]), T(tag[2]), tag[3])=>T(a.der[tag]))
     end
-    Measurement(T(a.val), T(a.err), a.tag, newder)
+    return Measurement(T(a.val), T(a.err), a.tag, newder)::Measurement{T}
 end
 
-Base.convert(::Type{Measurement}, a::Measurement) = a
-Base.convert(::Type{Measurement}, a::Rational{<:Integer}) = measurement(a)
-Base.convert(::Type{Measurement}, a::Real) = measurement(a)
+Base.convert(::Type{Measurement}, a::Measurement) = a::Measurement
+Base.convert(::Type{Measurement}, a::Rational{<:Integer}) = measurement(a)::Measurement
+Base.convert(::Type{Measurement}, a::Real) = measurement(a)::Measurement
 Base.convert(::Type{Signed}, a::Measurement) = convert(Signed, a.val)
 
 Base.promote_rule(::Type{Measurement{T}}, ::Type{S}) where {T<:AbstractFloat, S<:Real} =
