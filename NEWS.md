@@ -1,13 +1,25 @@
 History of Measurements.jl
 ==========================
 
+v1.0.2 (2018-??-??)
+-------------------
+
+### Bug Fixes
+
+* Fix converion of a `Measurement` object to an `Int`.  This fixes also power of
+  complex measurements.
+* We now ensure that `Measurement{T}(x)` returns a `Measurement{T}`
+  ([#24](https://github.com/JuliaPhysics/Measurements.jl/pull/24)).  Until Julia
+  0.6 this was done automatically, now we have to test this manually.
+
 v1.0.1 (2018-09-07)
 -------------------
 
 ### Bug Fixes
 
-Minor bug fixes ([#20](https://github.com/JuliaPhysics/Measurements.jl/pull/20),
-[#23](https://github.com/JuliaPhysics/Measurements.jl/pull/23)).
+* Minor bug fixes
+  ([#20](https://github.com/JuliaPhysics/Measurements.jl/pull/20),
+  [#23](https://github.com/JuliaPhysics/Measurements.jl/pull/23)).
 
 v1.0.0 (2018-08-16)
 -------------------
