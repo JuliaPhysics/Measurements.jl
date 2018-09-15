@@ -570,7 +570,7 @@ end
     @test @inferred(A * b) ≈ c
     @test @inferred(b ⋅ c) ≈ 7.423202614379084 ± 0.5981875954418516
     @test @inferred(det(A)) ≈ 612 ± 9.51262319236918
-    @test @inferred(A * inv(A)) ≈ Matrix{eltype(A)}(I, size(A))
+    @test @inferred(A * inv(A)) ≈ I
 end
 
 @testset "NaNs" begin
