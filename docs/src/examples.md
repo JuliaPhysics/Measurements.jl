@@ -648,15 +648,17 @@ smart enough to support out-of-the-box integrand functions that return
 arbitrary types, including `Measurement`:
 
 ```jldoctest
-julia> QuadGK.quadgk(x -> exp(x / (4.73 ± 0.01)), 1, 7)
-(14.933307243306032 ± 0.009999988180463411, 0.0 ± 0.010017961523508253)
+julia> a = 4.71 ± 0.01;
+
+julia> quadgk(x -> exp(x / a), 1, 7)[1]
+14.995360291133252 ± 0.031231329202914222
 ```
 
 `Measurements.jl` pushes the capabilities of `quadgk` further by
 supporting also `Measurement` objects as endpoints:
 
 ```jldoctest
-julia> QuadGK.quadgk(cos, 1.19 ± 0.02, 8.37 ± 0.05)
+julia> quadgk(cos, 1.19 ± 0.02, 8.37 ± 0.05)
 (-0.05857827689796702 ± 0.02576650561689427, 2.547162480937004e-11)
 ```
 
@@ -673,7 +675,7 @@ Also with `quadgk` correlation is properly taken into account:
 julia> a = 6.42 ± 0.03
 6.42 ± 0.03
 
-julia> QuadGK.quadgk(sin, -a, a)
+julia> quadgk(sin, -a, a)
 (2.484178227707412e-17 ± 0.0, 0.0)
 ```
 
@@ -681,7 +683,7 @@ If instead the two endpoints have, by chance, the same nominal value and
 uncertainty but are not correlated:
 
 ```jldoctest
-julia> QuadGK.quadgk(sin, -6.42 ± 0.03, 6.42 ± 0.03)
+julia> quadgk(sin, -6.42 ± 0.03, 6.42 ± 0.03)
 (2.484178227707412e-17 ± 0.005786464233000303, 0.0)
 ```
 
