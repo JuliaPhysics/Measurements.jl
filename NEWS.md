@@ -6,7 +6,7 @@ v1.0.2 (2018-09-26)
 
 ### Bug Fixes
 
-* Fix converion of a `Measurement` object to an `Int`.  This fixes also power of
+* Fix conversion of a `Measurement` object to an `Int`.  This fixes also power of
   complex measurements.
 * Ensure that `Measurement{T}(x)` returns a `Measurement{T}`
   ([#24](https://github.com/JuliaPhysics/Measurements.jl/pull/24)).  Until Julia

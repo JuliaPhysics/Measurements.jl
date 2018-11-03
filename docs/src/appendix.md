@@ -20,7 +20,7 @@ will be exact.
 In detail, this is the definition of the type:
 
 ```julia
-immutable Measurement{T<:AbstractFloat} <: AbstractFloat
+struct Measurement{T<:AbstractFloat} <: AbstractFloat
     val::T
     err::T
     tag::UInt64
@@ -30,17 +30,18 @@ end
 
 The fields represent:
 
-- `val`: the nominal value of the measurement
-- `err`: the uncertainty, assumed to be standard deviation
+- `val`: the nominal value of the measurement.
+- `err`: the uncertainty, assumed to be standard deviation.
 - `tag`: a unique identifier, it is used to identify a specific measurement in
   the list of derivatives. This is a thread-specific counter. The result of
   mathematical operation will have this field set to `0` because it is not
   relevant for non independent measurements.
 - `der`: the list of derivates with respect to the independent variables from
-  which the expression comes. `Derivatives` is a lightweight dictionary
-  type. The keys are the tuples `(val, err, tag)` of all independent variables
-  from which the object has been derived, while the corresponding value is the
-  partial derivative of the object with respect to that independent variable.
+  which this object comes. `Derivatives` is a lightweight dictionary type. The
+  keys are the tuples `(val, err, tag)` of all independent variables from which
+  the object has been derived, while the corresponding value is the partial
+  derivative of the object with respect to that independent variable. An
+  independent measurement has this dictionary empty.
 
 As already explained in the [Usage](@ref) section, every time you use one of the
 constructors
@@ -65,21 +66,21 @@ julia> y = 24.3 ± 2.7
 
 will produce two independent measurements and they will be treated as such when
 performing mathematical operations. In particular, you can also notice that they
-are not [egal](http://docs.julialang.org/en/stable/stdlib/base/#Base.is)
+are not [egal](https://docs.julialang.org/en/stable/base/base/#Core.:===)
 
 ```julia
 julia> x === y
 false
 ```
 
-If you instead intend to make `y` really the same thing as `x` you have to use
-assignment:
+If you instead intend to make a variable really the same thing as an independent
+measurement you have to use assignment:
 
 ```julia
-julia> x = y = 24.3 ± 2.7
+julia> a = b = 24.3 ± 2.7
 24.3 ± 2.7
 
-julia> x === y
+julia> a === b
 true
 ```
 
@@ -119,7 +120,7 @@ more than one argument.
 The use of the list of derivatives has been inspired by Python package
 [uncertainties](https://pythonhosted.org/uncertainties/), but the rest of the
 implementation of `Measurements.jl` is completely independent from that of
-`uncertainties` package, even though it may happen to be similar.
+`uncertainties` package.
 
 Uncertainty Propagation
 -----------------------
@@ -249,8 +250,7 @@ for functions of one argument, and
 result(val, der, a)
 ```
 
-for functions of two or more arguments, in which `der` and `a` are the
-collections (tuples, arrays, etc...) of the same length. The arguments are:
+for functions of two or more arguments.  The arguments are:
 
 - `val`: the nominal result of the operation ``G(a, \dots)``;
 - `der`: the partial derivative ``\partial G/\partial a`` of a function ``G =
