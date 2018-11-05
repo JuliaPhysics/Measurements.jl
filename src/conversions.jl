@@ -30,7 +30,7 @@ function Base.convert(::Type{Measurement{T}},
     for tag in keys(a.der)
         newder = Derivatives(newder, (T(tag[1]), T(tag[2]), tag[3])=>T(a.der[tag]))
     end
-    return Measurement(T(a.val), T(a.err), a.tag, newder)::Measurement{T}
+    return Measurement(T(a.val), T(a.err), a.tag, newder, a.label)::Measurement{T}
 end
 
 Base.convert(::Type{Measurement}, a::Measurement) = a::Measurement

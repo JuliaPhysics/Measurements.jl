@@ -51,11 +51,12 @@ struct Measurement{T<:AbstractFloat} <: AbstractFloat
     err::T
     tag::UInt64
     der::Derivatives{T}
+    label::String
 end
 function Measurement(val::V, err::E, tag::UInt64,
-                     der::Derivatives{D}) where {V,E,D}
+                     der::Derivatives{D}, label::String) where {V,E,D}
     T = promote_type(V, E, D)
-    return Measurement(T(val), T(err), tag, Derivatives{T}(der))
+    return Measurement(T(val), T(err), tag, Derivatives{T}(der), label)
 end
 Measurement{T}(x::Measurement{S}) where {T,S} = convert(Measurement{T}, x)
 Measurement{T}(x::S) where {T,S} = convert(Measurement{T}, x)
@@ -72,18 +73,20 @@ function __init__()
 end
 
 measurement(x::Measurement) = x
-measurement(val::T) where {T<:AbstractFloat} = Measurement(val, zero(T), UInt64(0), empty_der2(val))
-measurement(val::Real) = measurement(float(val))
-function measurement(val::T, err::T) where {T<:AbstractFloat}
+measurement(val::T; label::String="") where {T<:AbstractFloat} =
+    Measurement(val, zero(T), UInt64(0), empty_der2(val), label)
+measurement(val::Real; label::String="") = measurement(float(val), label=label)
+function measurement(val::T, err::T; label::String="") where {T<:AbstractFloat}
     newder = empty_der2(val)
     if iszero(err)
-        Measurement{T}(val, err, UInt64(0), newder)
+        Measurement{T}(val, err, UInt64(0), newder, label)
     else
         @inbounds tag = tag_counters[Base.Threads.threadid()] += 1
-        return Measurement{T}(val, err, tag, Derivatives(newder, (val, err, tag)=>one(T)))
+        return Measurement{T}(val, err, tag, Derivatives(newder, (val, err, tag)=>one(T)), label)
     end
 end
-measurement(val::Real, err::Real) = measurement(promote(float(val), float(err))...)
+measurement(val::Real, err::Real; label::String="") =
+    measurement(promote(float(val), float(err))..., label=label)
 const ± = measurement
 
 """

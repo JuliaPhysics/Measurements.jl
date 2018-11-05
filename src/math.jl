@@ -53,7 +53,7 @@ export @uncertain
     # σ_G = |σ_a·∂G/∂a|.
     σ = iszero(a.err) ? a.err : abs(der*a.err)
     # The tag for derived quantities is 0, for independent ones tag > 0.
-    Measurement{float(T)}(val, σ, UInt64(0), newder)
+    Measurement{float(T)}(val, σ, UInt64(0), newder, "")
 end
 
 # Get the common type parameter of a collection of Measurement objects.  The first two
@@ -118,7 +118,7 @@ gettype(collection) = promote_type(_eltype.(collection)...)
             end
         end
     end
-    return Measurement(T(val), sqrt(err), UInt64(0), newder)
+    return Measurement(T(val), sqrt(err), UInt64(0), newder, "")
 end
 
 # "result" function for complex-valued functions of one real argument (like "besselh").
