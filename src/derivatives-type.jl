@@ -19,9 +19,9 @@
 #
 ### Code:
 
-struct Derivatives{T} <: AbstractDict{Tuple{T,T,UInt64},T}
+struct Derivatives{T} <: AbstractDict{Tuple{T,T,UInt64,String},T}
     parent::Derivatives{T}
-    key::Tuple{T,T,UInt64}
+    key::Tuple{T,T,UInt64,String}
     value::T
     Derivatives{T}() where {T} = new() # represents an empty dictionary
     Derivatives{T}(parent::Derivatives, key, value) where {T} = new(parent, key, value)
@@ -34,7 +34,7 @@ Base.convert(::Type{Derivatives{T}}, ders::Derivatives{T}) where {T} = ders
 function Base.convert(::Type{Derivatives{T}}, ders::Derivatives{S}) where {T,S}
     new = Derivatives{T}()
     for der in ders
-        new = Derivatives{T}(new, Tuple{T,T,T}(der[1]), T(der[2]))
+        new = Derivatives{T}(new, Tuple{T,T,UInt64,String}(der[1]), T(der[2]))
     end
     return new
 end
@@ -65,7 +65,7 @@ end
 # this actually defines reverse iteration (e.g. it should not be used for merge/copy/filter type operations)
 function Base.iterate(derivs::Derivatives{T}, t=derivs) where T
     isdefined(t, :parent) || return nothing
-    (Pair{Tuple{T,T,UInt64},T}(t.key, t.value), t.parent)
+    (Pair{Tuple{T,T,UInt64,String},T}(t.key, t.value), t.parent)
 end
 
 Base.length(t::Derivatives) = count(x->true, t)

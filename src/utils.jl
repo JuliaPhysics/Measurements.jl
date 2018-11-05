@@ -56,7 +56,7 @@ end
 
 # Derivative and Gradient
 derivative(a::Measurement{F},
-           tag::Tuple{T, T, UInt64}) where {F<:AbstractFloat, T<:AbstractFloat} =
+           tag::Tuple{T, T, UInt64, String}) where {F<:AbstractFloat, T<:AbstractFloat} =
                get(a.der, tag, zero(F))
 
 """
@@ -70,7 +70,7 @@ Use `Measurements.derivative.(x, array)` to calculate the gradient of `x` with r
 array of independent measurements.
 """
 derivative(a::Measurement, b::Measurement) =
-    derivative(a, (b.val, b.err, b.tag))
+    derivative(a, (b.val, b.err, b.tag, b.label))
 
 # value and uncertainty
 for (f, field) in ((:value, :val), (:uncertainty, :err))
@@ -105,7 +105,7 @@ Return the components to the uncertainty of the dependent quantity `x` in the
 form of a `Dict`.
 """
 function uncertainty_components(x::Measurement{T}) where {T<:AbstractFloat}
-    out = Dict{Tuple{T, T, UInt64}, T}()
+    out = Dict{Tuple{T, T, UInt64, String}, T}()
     for var in keys(x.der)
         out[var] = abs(var[2] * Measurements.derivative(x, var))
     end

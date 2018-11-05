@@ -51,7 +51,7 @@ end
 
 @testset "Derivative" begin
     c = 1 ± 0
-    @test Measurements.derivative(3*x^2, (x.val, x.err, x.tag)) ≈ 18
+    @test Measurements.derivative(3*x^2, (x.val, x.err, x.tag, x.label)) ≈ 18
     @test Measurements.derivative(3*x^2, x) ≈ 18
     @test Measurements.derivative.(2x + y - w, [x, y, w]) ≈ [2, 1, -1]
     @test Measurements.derivative.(x - x + y - y + w - w + c, [x, y, w, c]) ≈ [0, 0, 0, 0]

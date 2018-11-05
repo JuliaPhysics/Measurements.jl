@@ -82,7 +82,8 @@ function measurement(val::T, err::T; label::String="") where {T<:AbstractFloat}
         Measurement{T}(val, err, UInt64(0), newder, label)
     else
         @inbounds tag = tag_counters[Base.Threads.threadid()] += 1
-        return Measurement{T}(val, err, tag, Derivatives(newder, (val, err, tag)=>one(T)), label)
+        return Measurement{T}(val, err, tag,
+                              Derivatives(newder, (val, err, tag, label)=>one(T)), label)
     end
 end
 measurement(val::Real, err::Real; label::String="") =

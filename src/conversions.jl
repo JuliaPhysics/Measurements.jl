@@ -28,7 +28,7 @@ function Base.convert(::Type{Measurement{T}},
                       a::Measurement{<:AbstractFloat}) where {T<:AbstractFloat}
     newder = empty_der2(zero(T))
     for tag in keys(a.der)
-        newder = Derivatives(newder, (T(tag[1]), T(tag[2]), tag[3])=>T(a.der[tag]))
+        newder = Derivatives(newder, (T(tag[1]), T(tag[2]), tag[3], tag[4])=>T(a.der[tag]))
     end
     return Measurement(T(a.val), T(a.err), a.tag, newder, a.label)::Measurement{T}
 end
