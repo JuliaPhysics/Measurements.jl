@@ -615,14 +615,12 @@ end
     @testset "2-arg functions: $f" for f in (log, hypot, atan)
         @test @uncertain(f(x, y)) ≈ f(x, y)
     end
-    ## XXX: re-enable the following test when this bug is fixed:
-    ## https://github.com/JuliaLang/julia/issues/23878
-    # @testset "ccall" begin
-    #     f(x) = x*x
-    #     ptr = @cfunction(f, Cdouble, (Cdouble,))
-    #     g(x) = ccall(ptr, Cdouble, (Cdouble,), x)*x
-    #     @test @uncertain(g(x)) ≈ x^3
-    # end
+    @testset "ccall" begin
+        f(x) = x * x
+        ptr = @cfunction($f, Cdouble, (Cdouble,))
+        g(x) = ccall(Base.unsafe_convert(Ptr{Cvoid}, ptr), Cdouble, (Cdouble,), x)*x
+        @test GC.@preserve(ptr, @uncertain(g(x))) ≈ x^3
+    end
 end
 
 @testset "value and uncertainty" begin
