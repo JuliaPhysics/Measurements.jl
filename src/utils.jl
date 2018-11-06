@@ -111,3 +111,17 @@ function uncertainty_components(x::Measurement{T}) where {T<:AbstractFloat}
     end
     return out
 end
+
+function uncertainty_components_by_label(x::Measurement{T}) where {T<:AbstractFloat}
+    out = Dict{String, T}()
+    for label in unique!(getfield.(keys(x.der), 4))
+        out[label] = zero(T)
+        for var in keys(x.der)
+            if var[4] == label
+                out[label] =
+                    sqrt(out[label]^2 + (var[2] * Measurements.derivative(x, var))^2)
+            end
+        end
+    end
+    return out
+end
