@@ -1,7 +1,7 @@
 var documenterSearchIndex = {"docs": [
 
 {
-    "location": "index.html#",
+    "location": "#",
     "page": "Introduction",
     "title": "Introduction",
     "category": "page",
@@ -9,7 +9,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "index.html#Measurements.jl-1",
+    "location": "#Measurements.jl-1",
     "page": "Introduction",
     "title": "Measurements.jl",
     "category": "section",
@@ -17,7 +17,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "installation.html#",
+    "location": "installation/#",
     "page": "Installation",
     "title": "Installation",
     "category": "page",
@@ -25,7 +25,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "installation.html#Installation-1",
+    "location": "installation/#Installation-1",
     "page": "Installation",
     "title": "Installation",
     "category": "section",
@@ -33,7 +33,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "usage.html#",
+    "location": "usage/#",
     "page": "Usage",
     "title": "Usage",
     "category": "page",
@@ -41,7 +41,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "usage.html#Measurements.measurement",
+    "location": "usage/#Measurements.measurement",
     "page": "Usage",
     "title": "Measurements.measurement",
     "category": "function",
@@ -49,7 +49,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "usage.html#Measurements.measurement-Tuple{AbstractString}",
+    "location": "usage/#Measurements.measurement-Tuple{AbstractString}",
     "page": "Usage",
     "title": "Measurements.measurement",
     "category": "method",
@@ -57,7 +57,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "usage.html#Usage-1",
+    "location": "usage/#Usage-1",
     "page": "Usage",
     "title": "Usage",
     "category": "section",
@@ -65,7 +65,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "usage.html#Correlation-Between-Variables-1",
+    "location": "usage/#Correlation-Between-Variables-1",
     "page": "Usage",
     "title": "Correlation Between Variables",
     "category": "section",
@@ -73,7 +73,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "usage.html#Measurements.@uncertain",
+    "location": "usage/#Measurements.@uncertain",
     "page": "Usage",
     "title": "Measurements.@uncertain",
     "category": "macro",
@@ -81,7 +81,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "usage.html#Propagate-Uncertainty-for-Arbitrary-Functions-1",
+    "location": "usage/#Propagate-Uncertainty-for-Arbitrary-Functions-1",
     "page": "Usage",
     "title": "Propagate Uncertainty for Arbitrary Functions",
     "category": "section",
@@ -89,7 +89,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "usage.html#Measurements.derivative",
+    "location": "usage/#Measurements.derivative",
     "page": "Usage",
     "title": "Measurements.derivative",
     "category": "function",
@@ -97,7 +97,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "usage.html#Derivative-and-Gradient-1",
+    "location": "usage/#Derivative-and-Gradient-1",
     "page": "Usage",
     "title": "Derivative and Gradient",
     "category": "section",
@@ -105,7 +105,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "usage.html#Measurements.uncertainty_components",
+    "location": "usage/#Measurements.uncertainty_components",
     "page": "Usage",
     "title": "Measurements.uncertainty_components",
     "category": "function",
@@ -113,7 +113,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "usage.html#Uncertainty-Contribution-1",
+    "location": "usage/#Uncertainty-Contribution-1",
     "page": "Usage",
     "title": "Uncertainty Contribution",
     "category": "section",
@@ -121,7 +121,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "usage.html#Measurements.stdscore",
+    "location": "usage/#Measurements.stdscore",
     "page": "Usage",
     "title": "Measurements.stdscore",
     "category": "function",
@@ -129,7 +129,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "usage.html#Standard-Score-1",
+    "location": "usage/#Standard-Score-1",
     "page": "Usage",
     "title": "Standard Score",
     "category": "section",
@@ -137,7 +137,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "usage.html#Measurements.weightedmean",
+    "location": "usage/#Measurements.weightedmean",
     "page": "Usage",
     "title": "Measurements.weightedmean",
     "category": "function",
@@ -145,7 +145,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "usage.html#Weighted-Average-1",
+    "location": "usage/#Weighted-Average-1",
     "page": "Usage",
     "title": "Weighted Average",
     "category": "section",
@@ -153,7 +153,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "usage.html#Measurements.value",
+    "location": "usage/#Measurements.value",
     "page": "Usage",
     "title": "Measurements.value",
     "category": "function",
@@ -161,7 +161,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "usage.html#Measurements.uncertainty",
+    "location": "usage/#Measurements.uncertainty",
     "page": "Usage",
     "title": "Measurements.uncertainty",
     "category": "function",
@@ -169,7 +169,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "usage.html#Access-Nominal-Value-and-Uncertainty-1",
+    "location": "usage/#Access-Nominal-Value-and-Uncertainty-1",
     "page": "Usage",
     "title": "Access Nominal Value and Uncertainty",
     "category": "section",
@@ -177,7 +177,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "usage.html#Error-Propagation-of-Numbers-with-Units-1",
+    "location": "usage/#Error-Propagation-of-Numbers-with-Units-1",
     "page": "Usage",
     "title": "Error Propagation of Numbers with Units",
     "category": "section",
@@ -185,7 +185,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "usage.html#Printing-to-TeX-and-LaTeX-MIMEs-1",
+    "location": "usage/#Printing-to-TeX-and-LaTeX-MIMEs-1",
     "page": "Usage",
     "title": "Printing to TeX and LaTeX MIMEs",
     "category": "section",
@@ -193,7 +193,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "examples.html#",
+    "location": "examples/#",
     "page": "Examples",
     "title": "Examples",
     "category": "page",
@@ -201,7 +201,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "examples.html#Examples-1",
+    "location": "examples/#Examples-1",
     "page": "Examples",
     "title": "Examples",
     "category": "section",
@@ -209,7 +209,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "examples.html#Measurements-from-Strings-1",
+    "location": "examples/#Measurements-from-Strings-1",
     "page": "Examples",
     "title": "Measurements from Strings",
     "category": "section",
@@ -217,7 +217,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "examples.html#Correlation-Between-Variables-1",
+    "location": "examples/#Correlation-Between-Variables-1",
     "page": "Examples",
     "title": "Correlation Between Variables",
     "category": "section",
@@ -225,7 +225,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "examples.html#@uncertain-Macro-1",
+    "location": "examples/#@uncertain-Macro-1",
     "page": "Examples",
     "title": "@uncertain Macro",
     "category": "section",
@@ -233,7 +233,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "examples.html#Complex-Measurements-1",
+    "location": "examples/#Complex-Measurements-1",
     "page": "Examples",
     "title": "Complex Measurements",
     "category": "section",
@@ -241,7 +241,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "examples.html#Arbitrary-Precision-Calculations-1",
+    "location": "examples/#Arbitrary-Precision-Calculations-1",
     "page": "Examples",
     "title": "Arbitrary Precision Calculations",
     "category": "section",
@@ -249,7 +249,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "examples.html#Operations-with-Arrays-and-Linear-Algebra-1",
+    "location": "examples/#Operations-with-Arrays-and-Linear-Algebra-1",
     "page": "Examples",
     "title": "Operations with Arrays and Linear Algebra",
     "category": "section",
@@ -257,7 +257,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "examples.html#Derivative,-Gradient-and-Uncertainty-Components-1",
+    "location": "examples/#Derivative,-Gradient-and-Uncertainty-Components-1",
     "page": "Examples",
     "title": "Derivative, Gradient and Uncertainty Components",
     "category": "section",
@@ -265,7 +265,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "examples.html#stdscore-Function-1",
+    "location": "examples/#stdscore-Function-1",
     "page": "Examples",
     "title": "stdscore Function",
     "category": "section",
@@ -273,7 +273,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "examples.html#weightedmean-Function-1",
+    "location": "examples/#weightedmean-Function-1",
     "page": "Examples",
     "title": "weightedmean Function",
     "category": "section",
@@ -281,7 +281,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "examples.html#Measurements.value-and-Measurements.uncertainty-Functions-1",
+    "location": "examples/#Measurements.value-and-Measurements.uncertainty-Functions-1",
     "page": "Examples",
     "title": "Measurements.value and Measurements.uncertainty Functions",
     "category": "section",
@@ -289,7 +289,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "examples.html#Interplay-with-Third-Party-Packages-1",
+    "location": "examples/#Interplay-with-Third-Party-Packages-1",
     "page": "Examples",
     "title": "Interplay with Third-Party Packages",
     "category": "section",
@@ -297,7 +297,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "examples.html#Numerical-Integration-with-QuadGK.jl-1",
+    "location": "examples/#Numerical-Integration-with-QuadGK.jl-1",
     "page": "Examples",
     "title": "Numerical Integration with QuadGK.jl",
     "category": "section",
@@ -305,7 +305,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "examples.html#Numerical-and-Automatic-Differentiation-1",
+    "location": "examples/#Numerical-and-Automatic-Differentiation-1",
     "page": "Examples",
     "title": "Numerical and Automatic Differentiation",
     "category": "section",
@@ -313,7 +313,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "examples.html#Use-with-SIUnits.jl-and-Unitful.jl-1",
+    "location": "examples/#Use-with-SIUnits.jl-and-Unitful.jl-1",
     "page": "Examples",
     "title": "Use with SIUnits.jl and Unitful.jl",
     "category": "section",
@@ -321,7 +321,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "examples.html#Integration-with-Plots.jl-1",
+    "location": "examples/#Integration-with-Plots.jl-1",
     "page": "Examples",
     "title": "Integration with Plots.jl",
     "category": "section",
@@ -329,7 +329,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "performance.html#",
+    "location": "performance/#",
     "page": "Performance",
     "title": "Performance",
     "category": "page",
@@ -337,7 +337,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "performance.html#Performance-1",
+    "location": "performance/#Performance-1",
     "page": "Performance",
     "title": "Performance",
     "category": "section",
@@ -345,7 +345,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "todo.html#",
+    "location": "todo/#",
     "page": "Development",
     "title": "Development",
     "category": "page",
@@ -353,7 +353,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "todo.html#Development-1",
+    "location": "todo/#Development-1",
     "page": "Development",
     "title": "Development",
     "category": "section",
@@ -361,7 +361,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "todo.html#How-Can-I-Help?-1",
+    "location": "todo/#How-Can-I-Help?-1",
     "page": "Development",
     "title": "How Can I Help?",
     "category": "section",
@@ -369,7 +369,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "todo.html#TODO-1",
+    "location": "todo/#TODO-1",
     "page": "Development",
     "title": "TODO",
     "category": "section",
@@ -377,7 +377,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "todo.html#History-1",
+    "location": "todo/#History-1",
     "page": "Development",
     "title": "History",
     "category": "section",
@@ -385,7 +385,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "appendix.html#",
+    "location": "appendix/#",
     "page": "Appendix",
     "title": "Appendix",
     "category": "page",
@@ -393,7 +393,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "appendix.html#Appendix:-Technical-Details-1",
+    "location": "appendix/#Appendix:-Technical-Details-1",
     "page": "Appendix",
     "title": "Appendix: Technical Details",
     "category": "section",
@@ -401,23 +401,23 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "appendix.html#The-Measurement-Type-1",
+    "location": "appendix/#The-Measurement-Type-1",
     "page": "Appendix",
     "title": "The Measurement Type",
     "category": "section",
-    "text": "Measurement is a composite parametric type, whose parameter is the AbstractFloat subtype of the nominal value and the uncertainty of the measurement. Measurement type itself is subtype of AbstractFloat, thus Measurement objects can be used in any function taking AbstractFloat arguments without redefining it, and calculation of uncertainty will be exact.In detail, this is the definition of the type:immutable Measurement{T<:AbstractFloat} <: AbstractFloat\n    val::T\n    err::T\n    tag::UInt64\n    der::Derivatives{T}\nendThe fields represent:val: the nominal value of the measurement\nerr: the uncertainty, assumed to be standard deviation\ntag: a unique identifier, it is used to identify a specific measurement in the list of derivatives. This is a thread-specific counter. The result of mathematical operation will have this field set to 0 because it is not relevant for non independent measurements.\nder: the list of derivates with respect to the independent variables from which the expression comes. Derivatives is a lightweight dictionary type. The keys are the tuples (val, err, tag) of all independent variables from which the object has been derived, while the corresponding value is the partial derivative of the object with respect to that independent variable.As already explained in the Usage section, every time you use one of the constructorsmeasurement(value, uncertainty)\nvalue ± uncertaintyyou define a new independent measurement. This happens because these contructors generate a new unique tag field, that is used to distinguish between really equal objects and measurements that only by chance share the same nominal value and uncertainty. For these reasons,julia> x = 24.3 ± 2.7\n24.3 ± 2.7\n\njulia> y = 24.3 ± 2.7\n24.3 ± 2.7will produce two independent measurements and they will be treated as such when performing mathematical operations. In particular, you can also notice that they are not egaljulia> x === y\nfalseIf you instead intend to make y really the same thing as x you have to use assignment:julia> x = y = 24.3 ± 2.7\n24.3 ± 2.7\n\njulia> x === y\ntrueThanks to how the Julia language is designed, support for complex measurements, arbitrary precision calculations and array operations came with practically no effort during the development of the package. As explained by Steven G. Johnson, since in Julia a lot of nonlinear functions are internally implemented in terms of elementary operations on the real and imaginary parts it was natural to make the type subtype of Real in order to easily work with complex measurements. In particular, it was then chosen to select the AbstractFloat type because some functions of complex arguments (like sqrt and log) take Complex{AbstractFloat} arguments instead of generic Complex{Real}, and any operation on a Measurement{R} object, with R subtype of Real different from AbstractFloat, would turn it into Measurement{F}, with F subtype of AbstractFloat, anyway."
+    "text": "Measurement is a composite parametric type, whose parameter is the AbstractFloat subtype of the nominal value and the uncertainty of the measurement. Measurement type itself is subtype of AbstractFloat, thus Measurement objects can be used in any function taking AbstractFloat arguments without redefining it, and calculation of uncertainty will be exact.In detail, this is the definition of the type:struct Measurement{T<:AbstractFloat} <: AbstractFloat\n    val::T\n    err::T\n    tag::UInt64\n    der::Derivatives{T}\nendThe fields represent:val: the nominal value of the measurement.\nerr: the uncertainty, assumed to be standard deviation.\ntag: a unique identifier, it is used to identify a specific measurement in the list of derivatives. This is a thread-specific counter. The result of mathematical operation will have this field set to 0 because it is not relevant for non independent measurements.\nder: the list of derivates with respect to the independent variables from which this object comes. Derivatives is a lightweight dictionary type. The keys are the tuples (val, err, tag) of all independent variables from which the object has been derived, while the corresponding value is the partial derivative of the object with respect to that independent variable. An independent measurement has this dictionary empty.As already explained in the Usage section, every time you use one of the constructorsmeasurement(value, uncertainty)\nvalue ± uncertaintyyou define a new independent measurement. This happens because these contructors generate a new unique tag field, that is used to distinguish between really equal objects and measurements that only by chance share the same nominal value and uncertainty. For these reasons,julia> x = 24.3 ± 2.7\n24.3 ± 2.7\n\njulia> y = 24.3 ± 2.7\n24.3 ± 2.7will produce two independent measurements and they will be treated as such when performing mathematical operations. In particular, you can also notice that they are not egaljulia> x === y\nfalseIf you instead intend to make a variable really the same thing as an independent measurement you have to use assignment:julia> a = b = 24.3 ± 2.7\n24.3 ± 2.7\n\njulia> a === b\ntrueThanks to how the Julia language is designed, support for complex measurements, arbitrary precision calculations and array operations came with practically no effort during the development of the package. As explained by Steven G. Johnson, since in Julia a lot of nonlinear functions are internally implemented in terms of elementary operations on the real and imaginary parts it was natural to make the type subtype of Real in order to easily work with complex measurements. In particular, it was then chosen to select the AbstractFloat type because some functions of complex arguments (like sqrt and log) take Complex{AbstractFloat} arguments instead of generic Complex{Real}, and any operation on a Measurement{R} object, with R subtype of Real different from AbstractFloat, would turn it into Measurement{F}, with F subtype of AbstractFloat, anyway."
 },
 
 {
-    "location": "appendix.html#Correlation-1",
+    "location": "appendix/#Correlation-1",
     "page": "Appendix",
     "title": "Correlation",
     "category": "section",
-    "text": "One must carefully take care of correlation between two measurements when propagating the uncertainty for an operation. Actually, the term \"correlation\" may refer to different kind of dependences between two or more quantities, what we mean by this term in Measurements.jl is explained in the Usage section of this manual.Dealing with functional correlation between Measurement objects, when using functions with arity larger than one, is an important feature of this package. This is accomplished by keeping inside each Measurement object the list of its derivatives with respect to the independent variables from which the quantity comes.  This role is played by the der field. This dictionary is useful in order to trace the contribution of each measurement and propagate the uncertainty in the case of functions with more than one argument.The use of the list of derivatives has been inspired by Python package uncertainties, but the rest of the implementation of Measurements.jl is completely independent from that of uncertainties package, even though it may happen to be similar."
+    "text": "One must carefully take care of correlation between two measurements when propagating the uncertainty for an operation. Actually, the term \"correlation\" may refer to different kind of dependences between two or more quantities, what we mean by this term in Measurements.jl is explained in the Usage section of this manual.Dealing with functional correlation between Measurement objects, when using functions with arity larger than one, is an important feature of this package. This is accomplished by keeping inside each Measurement object the list of its derivatives with respect to the independent variables from which the quantity comes.  This role is played by the der field. This dictionary is useful in order to trace the contribution of each measurement and propagate the uncertainty in the case of functions with more than one argument.The use of the list of derivatives has been inspired by Python package uncertainties, but the rest of the implementation of Measurements.jl is completely independent from that of uncertainties package."
 },
 
 {
-    "location": "appendix.html#Uncertainty-Propagation-1",
+    "location": "appendix/#Uncertainty-Propagation-1",
     "page": "Appendix",
     "title": "Uncertainty Propagation",
     "category": "section",
@@ -425,11 +425,11 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "appendix.html#Defining-Methods-for-Mathematical-Operations-1",
+    "location": "appendix/#Defining-Methods-for-Mathematical-Operations-1",
     "page": "Appendix",
     "title": "Defining Methods for Mathematical Operations",
     "category": "section",
-    "text": "Measurements.jl defines new methods for mathematical operations in order to make them accept Measurement arguments. The single most important thing to know about how to define new methods in the package is the Measurements.result. This function, not exported because it is intended to be used only within the package, takes care of propagating the uncertainty as described in the section above. It has two methods: one for functions with arity equal to one, and the other for any other case. This is its syntax:result(val::Real, der::Real, a::Measurement)for functions of one argument, andresult(val, der, a)for functions of two or more arguments, in which der and a are the collections (tuples, arrays, etc...) of the same length. The arguments are:val: the nominal result of the operation G(a dots);\nder: the partial derivative partial Gpartial a of a function G = G(a) with respect to the argument a for one-argument functions or the tuple of partial derivatives with respect to each argument in other cases;\na: the argument(s) of G, in the same order as the corresponding derivatives in der argument.In the case of functions with arity larger than one, der and a tuples must have the same length.For example, for a one-argument function like cos we havecos(a::Measurement) = result(cos(a.val), -sin(a.val), a)Instead, the method for subtraction operation is defined as follows:-(a::Measurement, b::Measurement) =\n    result(a.val - b.val, (1, -1), (a, b))Thus, in order to support Measurement argument(s) for a new mathematical operation you have to calculate the result of the operation, the partial derivatives of the functon with respect to all arguments and then pass this information to Measurements.result function."
+    "text": "Measurements.jl defines new methods for mathematical operations in order to make them accept Measurement arguments. The single most important thing to know about how to define new methods in the package is the Measurements.result. This function, not exported because it is intended to be used only within the package, takes care of propagating the uncertainty as described in the section above. It has two methods: one for functions with arity equal to one, and the other for any other case. This is its syntax:result(val::Real, der::Real, a::Measurement)for functions of one argument, andresult(val, der, a)for functions of two or more arguments.  The arguments are:val: the nominal result of the operation G(a dots);\nder: the partial derivative partial Gpartial a of a function G = G(a) with respect to the argument a for one-argument functions or the tuple of partial derivatives with respect to each argument in other cases;\na: the argument(s) of G, in the same order as the corresponding derivatives in der argument.In the case of functions with arity larger than one, der and a tuples must have the same length.For example, for a one-argument function like cos we havecos(a::Measurement) = result(cos(a.val), -sin(a.val), a)Instead, the method for subtraction operation is defined as follows:-(a::Measurement, b::Measurement) =\n    result(a.val - b.val, (1, -1), (a, b))Thus, in order to support Measurement argument(s) for a new mathematical operation you have to calculate the result of the operation, the partial derivatives of the functon with respect to all arguments and then pass this information to Measurements.result function."
 },
 
 ]}
