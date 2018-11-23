@@ -495,12 +495,27 @@ end
         @test @inferred(mod(-5.8, a)) ≈ @inferred(-5.8 - fld(-5.8, a) * a)
         @test @inferred(rem(a, -3.7)) ≈ @inferred(a + div(a, -3.7) * 3.7)
         @test @inferred(rem(-4.9, a)) ≈ @inferred(-4.9 - div(-4.9, a) * a)
+        @test @inferred(rem(a, 4.27, RoundNearest)) ≈
+            a - 4.27 * round(a / 4.27, RoundNearest)
+        @test @inferred(rem(-5.1, a, RoundNearest)) ≈
+            -5.1 - a * round(-5.1 / a, RoundNearest)
+        @test @inferred(rem(a, -1.2, RoundToZero)) ≈ rem(a, -1.2)
+        @test @inferred(rem(3.45, a, RoundToZero)) ≈ rem(3.45, a)
+        @test @inferred(rem(a, 6.7, RoundDown)) ≈ mod(a, 6.7)
+        @test @inferred(rem(-8.9, a, RoundDown)) ≈ mod(-8.9, a)
+        @test @inferred(rem(a, -3.14, RoundUp)) ≈ mod(a, 3.14)
+        @test @inferred(rem(2.718, a, RoundUp)) ≈ mod(2.718, -a)
         for b in (10w, x, y)
             @test @inferred(mod(a, b)) ≈ a - fld(a, b)*b
             @test @inferred(rem(a, b)) ≈ a - div(a, b)*b
+            @test @inferred(rem(a, b, RoundNearest)) ≈ a - b * round(a / b, RoundNearest)
         end
     end
     @test @inferred(mod2pi(pi*x)) ≈ measurement(pi, 0.1*pi)
+    for r in (RoundNearest, RoundToZero, RoundUp, RoundDown), a in (3x, 5y, 10w)
+        @test @inferred(rem2pi(a, r)) ≈ rem(a, 2pi, r)
+        @test rem2pi(a, r) ≈ a - 2pi * round(a / (2pi), r)
+    end
 end
 
 @testset "Machine precisionx" begin

@@ -902,13 +902,18 @@ Base.mod(a::Measurement, b::Measurement) = a - fld(a, b)*b
 Base.mod(a::Measurement, b::Real) = result(mod(a.val, b), 1, a)
 Base.mod(a::Real, b::Measurement) = result(mod(a, b.val), -fld(a, b.val), b)
 
-Base.# Use definition of "rem" function:
-Base.# http://docs.julialang.org/en/stable/manual/mathematical-operations/#division-functions
+# Use definition of "rem" function:
+# https://docs.julialang.org/en/latest/manual/mathematical-operations/#Division-functions-1
 Base.rem(a::Measurement, b::Measurement) = a - div(a, b)*b
 Base.rem(a::Measurement, b::Real) = result(rem(a.val, b), 1, a)
 Base.rem(a::Real, b::Measurement) = result(rem(a, b.val), -div(a, b.val), b)
+Base.rem(a::Measurement, b::Union{Measurement,Float64}, ::RoundingMode{:Nearest}) =
+    a - b * round(a / b, RoundNearest)
+Base.rem(a::Float64, b::Measurement, ::RoundingMode{:Nearest}) =
+    a - b * round(a / b, RoundNearest)
 
 Base.mod2pi(a::Measurement) = result(mod2pi(a.val), 1, a)
+Base.rem2pi(a::Measurement, r::RoundingMode) = result(rem2pi(a.val, r), 1, a)
 
 ### Machine precision
 
@@ -924,9 +929,10 @@ Base.typemax(::Type{Measurement{T}}) where {T<:AbstractFloat} = typemax(T)
 
 ### Rounding
 
-Base.round(a::Measurement; kwargs...) =
-    measurement(round(value(a); kwargs...), round(uncertainty(a); kwargs...))
-Base.round(::Type{T}, a::Measurement) where {T<:Integer} = round(T, a.val)
+Base.round(a::Measurement, r::RoundingMode=RoundNearest; kwargs...) =
+    measurement(round(value(a), r; kwargs...), round(uncertainty(a); kwargs...))
+Base.round(::Type{T}, a::Measurement, r::RoundingMode=RoundNearest) where {T<:Integer} =
+    round(T, a.val, r)
 Base.floor(a::Measurement) = measurement(floor(a.val))
 Base.floor(::Type{T}, a::Measurement) where {T<:Integer} = floor(T, a.val)
 Base.ceil(a::Measurement) = measurement(ceil(a.val))

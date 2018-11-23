@@ -1,6 +1,14 @@
 History of Measurements.jl
 ==========================
 
+v1.1.0 (2018-1?-??)
+-------------------
+
+### New Features
+
+* New method for `rem2pi`
+  ([#29](https://github.com/JuliaPhysics/Measurements.jl/issues/29)).
+
 v1.0.2 (2018-09-26)
 -------------------
 
