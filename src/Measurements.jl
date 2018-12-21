@@ -133,6 +133,22 @@ function Base.show(io::IO, measure::Complex{<:Measurement})
     end
     print(io, "(", i, ")im")
 end
+function Base.show(io::IO, mtype::MIME"text/plain", measure::Complex{<:Measurement})
+    r, i = reim(measure)
+    compact = get(io, :compact, false)
+    print(io, "(")
+    show(io, mtype, r)
+    print(io, ")")
+    if signbit(i) && !isnan(i)
+        i = -i
+        print(io, compact ? "-" : " - ")
+    else
+        print(io, compact ? "+" : " + ")
+    end
+    print(io, "(")
+    show(io, mtype, i)
+    print(io, ")im")
+end
 # This is adapted from base/show.jl for Complex type.
 function Base.alignment(io::IO, measure::Measurement)
     m = match(r"^(.*[\±])(.*)$", sprint(show, measure, context=io, sizehint=0))
