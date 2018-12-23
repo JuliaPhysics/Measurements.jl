@@ -101,6 +101,16 @@ measurement
 # Type representation
 Base.show(io::IO, measure::Measurement) =
     print(io, measure.val, get(io, :compact, false) ? "±" : " ± ", measure.err)
+function Base.show(io::IO, ::MIME"text/plain", m::Measurement )
+    if get( io, :limit, false )
+       print(io, round( m.val, digits = -Base.hidigit(m.err, 10) + 2),
+             get(io, :compact, false) ? "±" : " ± ",
+             round(m.err, sigdigits=2))
+    else
+       print(io, m)
+    end # if
+end
+
 Base.show(io::IO, ::MIME"text/latex", measure::Measurement) =
     print(io, "\$", measure.val, " \\pm ", measure.err, "\$")
 for mime in (MIME"text/x-tex", MIME"text/x-latex")
@@ -121,6 +131,22 @@ function Base.show(io::IO, measure::Complex{<:Measurement})
         print(io, compact ? "+" : " + ")
     end
     print(io, "(", i, ")im")
+end
+function Base.show(io::IO, mtype::MIME"text/plain", measure::Complex{<:Measurement})
+    r, i = reim(measure)
+    compact = get(io, :compact, false)
+    print(io, "(")
+    show(io, mtype, r)
+    print(io, ")")
+    if signbit(i) && !isnan(i)
+        i = -i
+        print(io, compact ? "-" : " - ")
+    else
+        print(io, compact ? "+" : " + ")
+    end
+    print(io, "(")
+    show(io, mtype, i)
+    print(io, ")im")
 end
 # This is adapted from base/show.jl for Complex type.
 function Base.alignment(io::IO, measure::Measurement)
