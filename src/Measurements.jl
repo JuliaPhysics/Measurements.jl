@@ -101,14 +101,13 @@ measurement
 # Type representation
 Base.show(io::IO, measure::Measurement) =
     print(io, measure.val, get(io, :compact, false) ? "±" : " ± ", measure.err)
-function Base.show( io::IO, ::MIME"text/plain", m::Measurement )
+function Base.show(io::IO, ::MIME"text/plain", m::Measurement )
     if get( io, :limit, false )
-       print( io, round( m.val, digits = -Base.hidigit( m.err, 10 ) + 2 ),
-            get(io, :compact, false) ? "±" : " ± ",
-            round( m.err, sigdigits=2)
-        )
+       print(io, round( m.val, digits = -Base.hidigit(m.err, 10) + 2),
+             get(io, :compact, false) ? "±" : " ± ",
+             round(m.err, sigdigits=2))
     else
-       print( io, m )
+       print(io, m)
     end # if
 end
 
