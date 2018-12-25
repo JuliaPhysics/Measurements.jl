@@ -98,88 +98,11 @@ The binary operator `±` is equivalent to `measurement`, so you can construct a
 """
 measurement
 
-# Type representation
-Base.show(io::IO, measure::Measurement) =
-    print(io, measure.val, get(io, :compact, false) ? "±" : " ± ", measure.err)
-function Base.show(io::IO, ::MIME"text/plain", m::Measurement )
-    if get( io, :limit, false )
-       print(io, round( m.val, digits = -Base.hidigit(m.err, 10) + 2),
-             get(io, :compact, false) ? "±" : " ± ",
-             round(m.err, sigdigits=2))
-    else
-       print(io, m)
-    end # if
-end
-
-Base.show(io::IO, ::MIME"text/latex", measure::Measurement) =
-    print(io, "\$", measure.val, " \\pm ", measure.err, "\$")
-for mime in (MIME"text/x-tex", MIME"text/x-latex")
-    @eval Base.show(io::IO, ::$mime, measure::Measurement) =
-        print(io, measure.val, " \\pm ", measure.err)
-end
-# Representation of complex measurements.  Print something that is easy to
-# understand and that can be meaningfully copy-pasted into the REPL, at least
-# for standard numeric types.
-function Base.show(io::IO, measure::Complex{<:Measurement})
-    r, i = reim(measure)
-    compact = get(io, :compact, false)
-    print(io, "(", r, ")")
-    if signbit(i) && !isnan(i)
-        i = -i
-        print(io, compact ? "-" : " - ")
-    else
-        print(io, compact ? "+" : " + ")
-    end
-    print(io, "(", i, ")im")
-end
-function Base.show(io::IO, mtype::MIME"text/plain", measure::Complex{<:Measurement})
-    r, i = reim(measure)
-    compact = get(io, :compact, false)
-    print(io, "(")
-    show(io, mtype, r)
-    print(io, ")")
-    if signbit(i) && !isnan(i)
-        i = -i
-        print(io, compact ? "-" : " - ")
-    else
-        print(io, compact ? "+" : " + ")
-    end
-    print(io, "(")
-    show(io, mtype, i)
-    print(io, ")im")
-end
-# This is adapted from base/show.jl for Complex type.
-function Base.alignment(io::IO, measure::Measurement)
-    m = match(r"^(.*[\±])(.*)$", sprint(show, measure, context=io, sizehint=0))
-    m === nothing ? (length(sprint(show, measure, context=io, sizehint=0)), 0) :
-        (length(m.captures[1]), length(m.captures[2]))
-end
-
-### Juno pretty printing
-using Requires
-@require Juno="e5e0dc1b-0480-54bc-9374-aad01c23163d" begin
-    Juno.render(i::Juno.Inline, measure::Measurement) =
-    Juno.render(i, Juno.Row(measure.val, Text(" ± "), measure.err))
-
-    Juno.Row(measure.val, Text(" ± "), measure.err)
-
-    function Juno.render(ji::Juno.Inline, cm::Complex{<:Measurement})
-        r, i = reim(cm)
-        if signbit(i) && !isnan(i)
-            i = -i
-            sss = " - "
-        else
-            sss = " + "
-        end
-        Juno.render(ji, Juno.Row("(", Juno.render(ji, r), ")", sss,
-        "(", Juno.render(ji, i), ")im"))
-    end
-end
-
 include("conversions.jl")
 include("comparisons-tests.jl")
 include("utils.jl")
 include("math.jl")
+include("show.jl")
 include("parsing.jl")
 include("plot-recipes.jl")
 
