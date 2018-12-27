@@ -88,7 +88,10 @@ end
 @testset "Representation" begin
     # Make sure the printed representation of a Measurement object is correctly parsed as
     # the same object (well, the tag will be different, but that's not important here).
-    for a in (u, v, z); @test eval(Meta.parse(repr(a))) == a; end
+    for a in (u, v, z)
+        @test eval(Meta.parse(repr("text/plain", a,
+                                   context=IOContext(stdout, :limit=>false)))) == a
+    end
 end
 
 @testset "Other" begin

@@ -8,6 +8,10 @@ v1.1.0 (2018-1?-??)
 
 * New method for `rem2pi`
   ([#29](https://github.com/JuliaPhysics/Measurements.jl/issues/29)).
+* Uncertainties of `Measurement` objects are now shown in the REPL with two
+  significant digits.  The value of the `Measurement` is shown with the same
+  level of rounding.  Note: this is only about representation of the
+  `Measurement` in the REPL, its value and uncertainty are not actually rounded.
 
 v1.0.2 (2018-09-26)
 -------------------

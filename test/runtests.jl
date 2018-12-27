@@ -553,6 +553,7 @@ end
     @test repr("text/plain", ww, context=:limit=>true) == "-0.534 ± 0.031"
     @test repr("text/plain", zz, context=IOContext(stdout,:limit=>true,:compact=>true)) == "(-0.534±0.031)-(0.534±0.031)im"
     @test repr("text/plain", zz, context=:limit=>true) == "(-0.534 ± 0.031) - (0.534 ± 0.031)im"
+    @test repr("text/plain", 1e-6±0, context=:limit=>true) == "1.0e-6 ± 0.0"
     @test repr("text/plain", [w 10x; 100y 1000w]) ==
         "2×2 Array{Measurement{Float64},2}:\n  -0.5±0.03    30.0±1.0 \n 400.0±20.0  -500.0±30.0"
     @test repr("text/plain", complex(x, w)) == "(3.0 ± 0.1) - (0.5 ± 0.03)im"

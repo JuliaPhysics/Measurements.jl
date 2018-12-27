@@ -19,17 +19,17 @@ julia> b = 3.8 ± 0.4
 3.8 ± 0.4
 
 julia> 2a + b
-12.8 ± 0.447213595499958
+12.8 ± 0.45
 
 julia> a - 1.2b
--0.05999999999999961 ± 0.4903060268852505
+-0.06 ± 0.49
 
 julia> l = measurement(0.936, 1e-3);
 
 julia> T = 1.942 ± 4e-3;
 
 julia> g = 4pi^2*l/T^2
-9.797993213510697 ± 0.041697817535336676
+9.798 ± 0.042
 
 julia> c = measurement(4)
 4.0 ± 0.0
@@ -38,17 +38,17 @@ julia> a*c
 18.0 ± 0.4
 
 julia> sind(94 ± 1.2)
-0.9975640502598242 ± 0.0014609761696991557
+0.9976 ± 0.0015
 
 julia> x = 5.48 ± 0.67;
 
 julia> y = 9.36 ± 1.02;
 
 julia> log(2x^2 - 3.4y)
-3.3406260917568824 ± 0.5344198747546611
+3.34 ± 0.53
 
 julia> atan(y, x)
-1.0411291003154137 ± 0.07141014208254456
+1.041 ± 0.071
 ```
 
 Measurements from Strings
@@ -120,7 +120,7 @@ julia> sin(x)/cos(x) - tan(x) # They are equal within numerical accuracy
 julia> y = -5.9 ± 0.2;
 
 julia> beta(x, y) - gamma(x)*gamma(y)/gamma(x + y)
-2.842170943040401e-14 ± 3.979039320256561e-14
+2.8e-14 ± 4.0e-14
 ```
 
 You will get similar results for a variable that is a function of an already
@@ -153,15 +153,16 @@ julia> x = 8.4 ± 0.7;
 julia> v = 16.8 ± 1.4;
 
 julia> (x + x) - v
-0.0 ± 1.979898987322333
+0.0 ± 2.0
 
 julia> v / 2x
-1.0 ± 0.11785113019775792
+1.0 ± 0.12
+
 julia> v^3 - 8x^3
-0.0 ± 1676.4200705455657
+0.0 ± 1700.0
 
 julia> cos(x)^2 - (1 + cos(v))/2
-0.0 ± 0.8786465354843539
+0.0 ± 0.88
 ```
 
 `@uncertain` Macro
@@ -173,19 +174,19 @@ supported by this package.
 
 ```jldoctest
 julia> @uncertain (x -> complex(zeta(x), exp(eta(x)^2)))(2 ± 0.13)
-(1.6449340668482273 ± 0.12188127308075564) + (1.9668868646839253 ± 0.042613944993428333)im
+(1.64 ± 0.12) + (1.967 ± 0.043)im
 
 julia> @uncertain log(9.4 ± 1.3, 58.8 ± 3.7)
-1.8182372640255153 ± 0.11568300475873611
+1.82 ± 0.12
 
 julia> log(9.4 ± 1.3, 58.8 ± 3.7) # Exact result
-1.8182372640255153 ± 0.11568300475593848
+1.82 ± 0.12
 
 julia> @uncertain atan(10, 13.5 ± 0.8)
-0.6375487981386927 ± 0.028343666962347438
+0.638 ± 0.028
 
 julia> atan(10, 13.5 ± 0.8) # Exact result
-0.6375487981386927 ± 0.028343666961913202
+0.638 ± 0.028
 ```
 
 You usually do not need to define a wrapping function before using it.  In the
@@ -210,10 +211,10 @@ julia> cubaerf(x::Real) =
 cubaerf (generic function with 1 method)
 
 julia> @uncertain cubaerf(0.5 ± 0.01)
-0.5204998778130466 ± 0.008787825789336267
+0.5205 ± 0.0088
 
 julia> erf(0.5 ± 0.01) # Exact result
-0.5204998778130465 ± 0.008787825789354449
+0.5205 ± 0.0088
 ```
 
 Also here you can use an anonymous function instead of defining the `cubaerf`
@@ -237,7 +238,7 @@ package, which is written purely in Julia and in addition allows you to set
 
     ```jldoctest
     julia> @uncertain(zeta(13.4 ± 0.8)) +  @uncertain(eta(8.51 ± 0.67))
-    1.9974303172187315 ± 0.0012169293212062773
+    1.9974 ± 0.0012
     ```
 
     In addition, the function must be differentiable in all its arguments.
@@ -249,10 +250,10 @@ package, which is written purely in Julia and in addition allows you to set
 
     ```jldoctest
     julia> @uncertain (x -> polygamma(0, x))(4.8 ± 0.2)
-    1.4608477407291167 ± 0.046305812845734776
+    1.461 ± 0.046
 
     julia> digamma(4.8 ± 0.2)   # Exact result
-    1.4608477407291167 ± 0.04630581284451362
+    1.461 ± 0.046
     ```
 Complex Measurements
 --------------------
@@ -267,10 +268,10 @@ julia> u = complex(32.7 ± 1.1, -3.1 ± 0.2);
 julia> v = complex(7.6 ± 0.9, 53.2 ± 3.4);
 
 julia> 2u + v
-(73.0 ± 2.3769728648009427) + (47.0 ± 3.4234485537247377)im
+(73.0 ± 2.4) + (47.0 ± 3.4)im
 
 julia> sqrt(u * v)
-(33.004702573592 ± 1.0831254428098636) + (25.997507418428984 ± 1.1082833691607152)im
+(33.0 ± 1.1) + (26.0 ± 1.1)im
 ```
 
 You can also verify the [Euler's
@@ -280,10 +281,10 @@ formula](https://en.wikipedia.org/wiki/Euler%27s_formula)
 julia> u = complex(32.7 ± 1.1, -3.1 ± 0.2);
 
 julia> cis(u)
-(6.27781144696534 ± 23.454542573739754) + (21.291738410228678 ± 8.112997844397572)im
+(6.0 ± 23.0) + (21.3 ± 8.1)im
 
 julia> cos(u) + sin(u)*im
-(6.277811446965339 ± 23.454542573739754) + (21.291738410228678 ± 8.112997844397572)im
+(6.0 ± 23.0) + (21.3 ± 8.1)im
 ```
 
 Arbitrary Precision Calculations
@@ -345,10 +346,10 @@ julia> a = big"3.00000001" ± big"1e-17";
 julia> b = big"4.0000000100000001" ± big"1e-17";
 
 julia> hypot(a, b)
-5.000000014000000080399999974880000423919999216953595312794907845334503498479533 ± 1.000000000000000000000000000000000000000000000000000000000000000000000000000009e-17
+5.000000014000000080000000000000000000000000000000000000000000000000000000000013 ± 9.999999999999999999999999999999999999999999999999999999999999999999999999999967e-18
 
 julia> log(2a) ^ b
-1.030668110995484998145373137400169442058573718746529435800255440973153647087416e+01 ± 9.744450581349822034766870718391736028419817951565653507621645979913795265663606e-17
+1.030668110995484998100000000000000000000000000000000000000000000000000000000005e+01 ± 9.699999999999999999999999999999999999999999999999999999999999999999999999999966e-17
 ```
 
 Operations with Arrays and Linear Algebra
@@ -399,7 +400,7 @@ julia> C = measurement.([174.9, 253.8, 626.3], [12.2, 19.4, 38.5])
  626.3 ± 38.5
 
 julia> sum(C)
-1055.0 ± 44.80457565918909
+1055.0 ± 45.0
 
 julia> D = [549.4, 672.3, 528.5] .± [7.4, 9.6, 5.2]
 3-element Array{Measurement{Float64},1}:
@@ -408,7 +409,7 @@ julia> D = [549.4, 672.3, 528.5] .± [7.4, 9.6, 5.2]
  528.5 ± 5.2
 
 julia> mean(D)
-583.4 ± 4.396463225012679
+583.4 ± 4.4
 ```
 
 !!! tip
@@ -449,13 +450,13 @@ julia> A * x ≈ b
 true
 
 julia> dot(x, b)
-7.423202614379084 ± 0.5981875954418515
+7.42 ± 0.6
 
 julia> det(A)
-611.9999999999999 ± 9.512623192369178
+612.0 ± 9.5
 
 julia> tr(A)
-38.0 ± 0.4123105625617661
+38.0 ± 0.41
 
 julia> A * inv(A) ≈ Matrix{eltype(A)}(I, size(A))
 true
@@ -496,13 +497,13 @@ independent measurements.
 
 ```jldoctest
 julia> x = 98.1 ± 12.7
-98.1 ± 12.7
+98.0 ± 13.0
 
 julia> y = 105.4 ± 25.6
-105.4 ± 25.6
+105.0 ± 26.0
 
 julia> z = 78.3 ± 14.1
-78.3 ± 14.1
+78.0 ± 14.0
 
 julia> Measurements.derivative(2x - 4y, x)
 2.0
@@ -594,12 +595,12 @@ Calculate the weighted and arithmetic means of your set of measurements with
 
 ```jldoctest
 julia> weightedmean((3.1±0.32, 3.2±0.38, 3.5±0.61, 3.8±0.25))
-3.4665384454054498 ± 0.16812474090663868
+3.47 ± 0.17
 
 julia> using Statistics
 
 julia> mean((3.1±0.32, 3.2±0.38, 3.5±0.61, 3.8±0.25))
-3.4000000000000004 ± 0.20636739083488942
+3.4 ± 0.21
 ```
 
 `Measurements.value` and `Measurements.uncertainty` Functions
@@ -651,22 +652,22 @@ arbitrary types, including `Measurement`:
 julia> a = 4.71 ± 0.01;
 
 julia> quadgk(x -> exp(x / a), 1, 7)[1]
-14.995360291133252 ± 0.031231329202914222
+14.995 ± 0.031
 ```
 
 `Measurements.jl` pushes the capabilities of `quadgk` further by
 supporting also `Measurement` objects as endpoints:
 
 ```jldoctest
-julia> quadgk(cos, 1.19 ± 0.02, 8.37 ± 0.05)
-(-0.05857827689796702 ± 0.02576650561689427, 2.547162480937004e-11)
+julia> quadgk(cos, 1.19 ± 0.02, 8.37 ± 0.05)[1]
+-0.059 ± 0.026
 ```
 
 Compare this with the expected result:
 
 ```jldoctest
 julia> sin(8.37 ± 0.05) - sin(1.19 ± 0.02)
--0.058578276897966686 ± 0.02576650561689427
+-0.059 ± 0.026
 ```
 
 Also with `quadgk` correlation is properly taken into account:

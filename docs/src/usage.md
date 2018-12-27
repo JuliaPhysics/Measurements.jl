@@ -230,16 +230,43 @@ functions](https://en.wikipedia.org/wiki/Transcendental_function) operate on
 quantities](https://en.wikipedia.org/wiki/Dimensionless_quantity). In the
 Examples section you will find how this feature works with a couple of packages.
 
-Printing to TeX and LaTeX MIMEs
--------------------------------
+Representation of `Measurement`s
+--------------------------------
+
+### `Measurement`s in the REPL
+
+When working in the [Julia
+REPL](https://docs.julialang.org/en/latest/stdlib/REPL/), `Measurement` objects
+are shown truncated in order to present two significant digits for the
+uncertainty:
+
+```jldoctest
+julia> -84.32 ± 5.6
+-84.3 ± 5.6
+
+julia> 7.9 ± 18.6
+8.0 ± 19.0
+```
+
+Note that truncation only affects the numbers shown in the REPL:
+
+```jldoctest
+julia> Measurements.value(7.9 ± 18.6)
+7.9
+
+julia> Measurements.uncertainty(7.9 ± 18.6)
+18.6
+```
+
+### Printing to TeX and LaTeX MIMEs
 
 You can print `Measurement` objects to TeX and LaTeX MIMES (`"text/x-tex"` and
 `"text/x-latex"`), the `±` sign will be rendered with `\pm` command:
 
-```julia
-julia> display("text/x-tex", 5±1)
-5.0 \pm 1.0
+```jldoctest
+julia> repr("text/x-tex", 5±1)
+"5.0 \\pm 1.0"
 
-julia> display("text/x-latex", pi ± 1e-3)
-3.141592653589793 \pm 0.001
+julia> repr("text/x-latex", pi ± 1e-3)
+"3.1416 \\pm 0.001"
 ```

@@ -16,7 +16,8 @@
 ### Code:
 
 truncated_print(io::IO, m::Measurement; atbeg = "", atend = "", pm = "±") =
-    print(io, atbeg, round(m.val, digits = -Base.hidigit(m.err, 10) + 2),
+    print(io, atbeg,
+          iszero(m.err) ? m.val : round(m.val, digits = -Base.hidigit(m.err, 10) + 2),
           get(io, :compact, false) ? pm : " $pm ",
           round(m.err, sigdigits=2), atend)
 
@@ -46,14 +47,18 @@ for mime in (MIME"text/plain", MIME"text/x-tex", MIME"text/x-latex")
     @eval function Base.show(io::IO, mtype::$mime, measure::Complex{<:Measurement})
         r, i = reim(measure)
         compact = get(io, :compact, false)
-        print(io, "(", repr(mtype, r), ")")
+        print(io, "(")
+        show(io, mtype, r)
+        print(io, ")")
         if signbit(i) && !isnan(i)
             i = -i
             print(io, compact ? "-" : " - ")
         else
             print(io, compact ? "+" : " + ")
         end
-        print(io, "(", repr(mtype, i), ")im")
+        print(io, "(")
+        show(io, mtype, i)
+        print(io, ")im")
     end
 end
 
