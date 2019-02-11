@@ -9,8 +9,8 @@ The `Measurement` Type
 ----------------------
 
 `Measurement` is a
-[composite](http://docs.julialang.org/en/stable/manual/types/#composite-types)
-[parametric](http://docs.julialang.org/en/stable/manual/types/#man-parametric-types)
+[composite](https://docs.julialang.org/en/v1/manual/types/#Composite-Types-1)
+[parametric](https://docs.julialang.org/en/v1/manual/types/#Parametric-Types-1)
 type, whose parameter is the `AbstractFloat` subtype of the nominal value and
 the uncertainty of the measurement. `Measurement` type itself is subtype of
 `AbstractFloat`, thus `Measurement` objects can be used in any function taking
@@ -66,7 +66,7 @@ julia> y = 24.3 ± 2.7
 
 will produce two independent measurements and they will be treated as such when
 performing mathematical operations. In particular, you can also notice that they
-are not [egal](https://docs.julialang.org/en/stable/base/base/#Core.:===)
+are not [egal](https://docs.julialang.org/en/v1/base/base/#Core.:===)
 
 ```julia
 julia> x === y

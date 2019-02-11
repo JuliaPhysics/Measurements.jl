@@ -137,7 +137,7 @@ further extends the power of `Measurements.jl`.
 
 This macro allows you to propagate uncertainty in arbitrary functions, including
 those based on [C/Fortran
-calls](http://docs.julialang.org/en/stable/manual/calling-c-and-fortran-code/),
+calls](https://docs.julialang.org/en/v1/manual/calling-c-and-fortran-code/),
 that accept any number of real arguments. The macro exploits `derivative` and
 `gradient` functions from
 [Calculus](https://github.com/JuliaMath/Calculus.jl) package in order to
@@ -217,7 +217,7 @@ Error Propagation of Numbers with Units
 measurements](https://en.wikipedia.org/wiki/Units_of_measurement), but can be
 easily employed in combination with other Julia packages providing this
 feature. Thanks to the [type
-system](http://docs.julialang.org/en/stable/manual/types/) of Julia programming
+system](https://docs.julialang.org/en/v1/manual/types/) of Julia programming
 language this integration is seamless and comes for free, no specific work has
 been done by the developer of the present package nor by the developers of the
 above mentioned packages in order to support their interplay. They all work
@@ -236,7 +236,7 @@ Representation of `Measurement`s
 ### `Measurement`s in the REPL
 
 When working in the [Julia
-REPL](https://docs.julialang.org/en/latest/stdlib/REPL/), `Measurement` objects
+REPL](https://docs.julialang.org/en/v1/stdlib/REPL/), `Measurement` objects
 are shown truncated in order to present two significant digits for the
 uncertainty:
 

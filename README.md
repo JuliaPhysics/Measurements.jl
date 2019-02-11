@@ -1,24 +1,34 @@
 # Measurements.jl
 
-| **Documentation**                       | [**Package Evaluator**][pkgeval-link] | **Build Status**                          | **Code Coverage**               |
-|:---------------------------------------:|:-------------------------------------:|:-----------------------------------------:|:-------------------------------:|
-| [![][docs-stable-img]][docs-stable-url] | [![][pkg-0.5-img]][pkg-0.5-url]       | [![Build Status][travis-img]][travis-url] | [![][coveral-img]][coveral-url] |
-| [![][docs-latest-img]][docs-latest-url] | [![][pkg-0.6-img]][pkg-0.6-url]       | [![Build Status][appvey-img]][appvey-url] | [![][codecov-img]][codecov-url] |
+| **Documentation**                       | **Build Status**                          | **Code Coverage**               |
+|:---------------------------------------:|:-----------------------------------------:|:-------------------------------:|
+| [![][docs-stable-img]][docs-stable-url] | [![Build Status][travis-img]][travis-url] | [![][coveral-img]][coveral-url] |
+| [![][docs-latest-img]][docs-latest-url] | [![Build Status][appvey-img]][appvey-url] | [![][codecov-img]][codecov-url] |
 
 Introduction
 ------------
 
-`Measurements.jl` is a package that allows you to define numbers with
-[uncertainties](https://en.wikipedia.org/wiki/Measurement_uncertainty), perform
-calculations involving them, and easily get the uncertainty of the result
-according to
-[linear error propagation theory](https://en.wikipedia.org/wiki/Propagation_of_uncertainty).
+### What Is This Package Useful For?
+
+![image](docs/src/error_bars_2x.png)
+
+*Image credit: "[xkcd: Error Bars](https://xkcd.com/2110/)" ([CC-BY-NC
+2.5](https://creativecommons.org/licenses/by-nc/2.5/))*
+
+[Measurements.jl](https://github.com/JuliaPhysics/Measurements.jl) relieves you
+from the hassle of propagating
+[uncertainties](https://en.wikipedia.org/wiki/Measurement_uncertainty) coming
+from physical measurements, when performing mathematical operations involving
+them.  The [linear error propagation
+theory](https://en.wikipedia.org/wiki/Propagation_of_uncertainty) is employed to
+propagate the errors.
+
 This library is written in [Julia](http://julialang.org/), a modern high-level,
 high-performance dynamic programming language designed for technical computing.
 
-When used in the
-[Julia interactive session](http://docs.julialang.org/en/stable/manual/getting-started/),
-it can serve also as an easy-to-use calculator.
+When used in the [Julia interactive
+session](https://docs.julialang.org/en/v1/stdlib/REPL/), it can serve also as an
+easy-to-use calculator.
 
 ### Features List ###
 
@@ -34,16 +44,16 @@ it can serve also as an easy-to-use calculator.
   zero(x)`, `x/x ≈ one(x)`, `tan(x) ≈ sin(x)/cos(x)`, `cis(x) ≈ exp(im*x)`,
   etc...
 * Support for
-  [arbitrary precision](http://docs.julialang.org/en/stable/manual/integers-and-floating-point-numbers/#arbitrary-precision-arithmetic)
+  [arbitrary precision](https://docs.julialang.org/en/v1/manual/integers-and-floating-point-numbers/#Arbitrary-Precision-Arithmetic-1)
   (also called multiple precision) numbers with uncertainties.  This is useful
   for measurements with very low relative error
 * Define arrays of measurements and perform calculations with them.  Some linear
   algebra functions work out-of-the-box
 * Propagate uncertainty for any function of real arguments (including functions
   based on
-  [C/Fortran calls](http://docs.julialang.org/en/stable/manual/calling-c-and-fortran-code/)),
+  [C/Fortran calls](https://docs.julialang.org/en/v1/manual/calling-c-and-fortran-code/)),
   using `@uncertain`
-  [macro](http://docs.julialang.org/en/stable/manual/metaprogramming/)
+  [macro](https://docs.julialang.org/en/v1/manual/metaprogramming/)
 * Function to get the derivative and the gradient of an expression with respect
   to one or more independent measurements
 * Functions to calculate
@@ -199,13 +209,6 @@ employ this package in your research work.
 
 [docs-stable-img]: https://img.shields.io/badge/docs-stable-blue.svg
 [docs-stable-url]: https://juliaphysics.github.io/Measurements.jl/stable/
-
-[pkgeval-link]: http://pkg.julialang.org/?pkg=Measurements
-
-[pkg-0.5-img]: http://pkg.julialang.org/badges/Measurements_0.5.svg
-[pkg-0.5-url]: http://pkg.julialang.org/detail/Measurements.html
-[pkg-0.6-img]: http://pkg.julialang.org/badges/Measurements_0.6.svg
-[pkg-0.6-url]: http://pkg.julialang.org/detail/Measurements.html
 
 [travis-img]: https://travis-ci.org/JuliaPhysics/Measurements.jl.svg?branch=master
 [travis-url]: https://travis-ci.org/JuliaPhysics/Measurements.jl

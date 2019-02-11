@@ -15,13 +15,6 @@ instruct more mathematical functions to accept `Measurement` type
 arguments. Please, read the technical appendix in order to understand the design
 of this package. Bug reports and wishlists are welcome as well.
 
-TODO
-----
-
-- Add pretty printing: optionally print only the relevant significant digits
-  ([issue \#5](https://github.com/JuliaPhysics/Measurements.jl/issues/5))
-- Other suggestions welcome `:-)`
-
 History
 -------
 

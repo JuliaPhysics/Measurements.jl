@@ -1,18 +1,29 @@
 Measurements.jl
 ===============
 
-[Measurements.jl](https://github.com/JuliaPhysics/Measurements.jl) is a package
-that allows you to define numbers with
-[uncertainties](https://en.wikipedia.org/wiki/Measurement_uncertainty), perform
-calculations involving them, and easily get the uncertainty of the result
-according to [linear error propagation
-theory](https://en.wikipedia.org/wiki/Propagation_of_uncertainty). This library
-is written in [Julia](http://julialang.org/), a modern high-level,
+## What Is This Package Useful For?
+
+![image](error_bars_2x.png)
+
+*Image credit: "[xkcd](https://xkcd.com/2110/)" ([CC-BY-NC
+2.5](https://creativecommons.org/licenses/by-nc/2.5/))*
+
+[Measurements.jl](https://github.com/JuliaPhysics/Measurements.jl) relieves you
+from the hassle of propagating
+[uncertainties](https://en.wikipedia.org/wiki/Measurement_uncertainty) coming
+from physical measurements, when performing mathematical operations involving
+them.  The [linear error propagation
+theory](https://en.wikipedia.org/wiki/Propagation_of_uncertainty) is employed to
+propagate the errors.
+
+This library is written in [Julia](http://julialang.org/), a modern high-level,
 high-performance dynamic programming language designed for technical computing.
 
 When used in the [Julia interactive
-session](http://docs.julialang.org/en/stable/manual/getting-started/), it can
-serve also as an easy-to-use calculator.
+session](https://docs.julialang.org/en/v1/stdlib/REPL/), it can serve also as an
+easy-to-use calculator.
+
+## Features List
 
 The main features of the package are:
 
@@ -28,16 +39,16 @@ The main features of the package are:
   \approx 0 \pm 0``, ``x/x \approx 1 \pm 0``, ``\tan(x) \approx
   \sin(x)/\cos(x)``, ``\mathrm{cis}(x) \approx \exp(ix)``, etc\...
 - Support for [arbitrary
-  precision](http://docs.julialang.org/en/stable/manual/integers-and-floating-point-numbers/#arbitrary-precision-arithmetic)
+  precision](https://docs.julialang.org/en/v1/manual/integers-and-floating-point-numbers/#Arbitrary-Precision-Arithmetic-1)
   (also called multiple precision) numbers with uncertainties. This is useful
   for measurements with very low relative error
 - Define arrays of measurements and perform calculations with them.  Some linear
   algebra functions work out-of-the-box
 - Propagate uncertainty for any function of real arguments (including functions
   based on [C/Fortran
-  calls](http://docs.julialang.org/en/stable/manual/calling-c-and-fortran-code/)),
+  calls](https://docs.julialang.org/en/v1/manual/calling-c-and-fortran-code/)),
   using `@uncertain`
-  [macro](http://docs.julialang.org/en/stable/manual/metaprogramming/)
+  [macro](https://docs.julialang.org/en/v1/manual/metaprogramming/)
 - Function to get the derivative and the gradient of an expression with respect
   to one or more independent measurements
 - Functions to calculate [standard
@@ -56,6 +67,8 @@ The main features of the package are:
   differentiation, and much more.
 - Integration with [Plots.jl](https://github.com/JuliaPlots/Plots.jl).
 
+## Citation and license
+
 The method used to handle functional correlation is described in this paper:
 
 * M. Giordano, 2016, "Uncertainty propagation with functionally correlated
@@ -65,7 +78,7 @@ The method used to handle functional correlation is described in this paper:
 If you use use this package for your research, please cite it.
 
 Other features are expected to come in the future, see the [How Can I
-Help?](@ref) section and the [TODO](@ref) list.
+Help?](@ref) section.
 
 The `Measurements.jl` package is licensed under the MIT "Expat" License. The
 original author is Mosè Giordano.

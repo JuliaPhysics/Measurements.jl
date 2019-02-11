@@ -192,7 +192,7 @@ julia> atan(10, 13.5 ± 0.8) # Exact result
 You usually do not need to define a wrapping function before using it.  In the
 case where you have to define a function, like in the first line of previous
 examples, [anonymous
-functions](http://docs.julialang.org/en/stable/manual/functions/#anonymous-functions)
+functions](https://docs.julialang.org/en/v1/manual/functions/#man-anonymous-functions-1)
 allow you to do it in a very concise way.
 
 The macro works with functions calling C/Fortran functions as well. For example,
@@ -293,7 +293,7 @@ Arbitrary Precision Calculations
 If you performed an exceptionally good experiment that gave you
 extremely precise results (that is, with very low relative error), you
 may want to use [arbitrary
-precision](http://docs.julialang.org/en/stable/manual/integers-and-floating-point-numbers/#arbitrary-precision-arithmetic)
+precision](https://docs.julialang.org/en/v1/manual/integers-and-floating-point-numbers/#Arbitrary-Precision-Arithmetic-1)
 (or multiple precision) calculations, in order not to loose significance
 of the experimental results. Luckily, Julia natively supports this type
 of arithmetic and so `Measurements.jl` does. You only have to create
@@ -303,10 +303,8 @@ of arithmetic and so `Measurements.jl` does. You only have to create
 !!! tip
 
     As explained in the [Julia
-    documentation](http://docs.julialang.org/en/stable/stdlib/numbers/#Base.BigFloat),
-    it is better to use the `big` string literal to initialize an arbitrary
-    precision floating point constant, instead of the `BigFloat` and `big`
-    functions. See examples below.
+    documentation](https://docs.julialang.org/en/v1/base/numbers/#BigFloats-and-BigInts-1),
+    it is better to use `BigFloat("12.34")`, rather than `BigFloat(12.34)`. See examples below.
 
 For example, you want to measure a quantity that is the product of two
 observables $a$ and $b$, and the expected value of the product is
@@ -316,11 +314,11 @@ score of the product with [`stdscore`](@ref). Using the ability of
 `Measurements.jl` to perform arbitrary precision calculations you discover that
 
 ```jldoctest
-julia> a = big"3.00000001" ± big"1e-17";
+julia> a = BigFloat("3.00000001") ± BigFloat("1e-17");
 
-julia> b = big"4.0000000100000001" ± big"1e-17";
+julia> b = BigFloat("4.0000000100000001") ± BigFloat("1e-17");
 
-julia> stdscore(a * b, big"12.00000007")
+julia> stdscore(a * b, BigFloat("12.00000007"))
 7.999999997599999878080000420160000093695993825308195353920411656927305928530607
 ```
 
@@ -341,9 +339,9 @@ Of course, you can perform any mathematical operation supported in
 `Measurements.jl` using arbitrary precision arithmetic:
 
 ```jldoctest
-julia> a = big"3.00000001" ± big"1e-17";
+julia> a = BigFloat("3.00000001") ± BigFloat("1e-17");
 
-julia> b = big"4.0000000100000001" ± big"1e-17";
+julia> b = BigFloat("4.0000000100000001") ± BigFloat("1e-17");
 
 julia> hypot(a, b)
 5.000000014000000080000000000000000000000000000000000000000000000000000000000013 ± 9.999999999999999999999999999999999999999999999999999999999999999999999999999967e-18
@@ -387,7 +385,7 @@ julia> @. cos(A) ^ 2 + sin(A) ^ 2
 If you originally have separate arrays of values and uncertainties, you
 can create an array of `Measurement` objects using `measurement` or `±`
 with the [dot
-syntax](http://docs.julialang.org/en/stable/manual/functions/#man-dot-vectorizing)
+syntax](https://docs.julialang.org/en/v1/manual/functions/#man-vectorized-1)
 for vectorizing functions:
 
 ```jldoctest
@@ -421,12 +419,11 @@ julia> mean(D)
     the number of elements), so you should use an array if performance is
     crucial for you, in particular for large collections of measurements.
 
-Some [linear
-algebra](http://docs.julialang.org/en/stable/stdlib/linalg/) functions
-work out-of-the-box, without defining specific methods for them. For
-example, you can solve linear systems, do matrix multiplication and dot
-product between vectors, find inverse, determinant, and trace of a
-matrix, do LU and QR factorization, etc.
+Some [linear algebra](https://docs.julialang.org/en/v1/stdlib/LinearAlgebra/)
+functions work out-of-the-box, without defining specific methods for them. For
+example, you can solve linear systems, do matrix multiplication and dot product
+between vectors, find inverse, determinant, and trace of a matrix, do LU and QR
+factorization, etc.
 
 ```jldoctest
 julia> using LinearAlgebra
