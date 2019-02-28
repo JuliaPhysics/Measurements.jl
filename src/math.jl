@@ -166,8 +166,8 @@ macro uncertain(expr::Expr)
         argsval =:([])  # Build up the array of values of arguments
         [push!(argsval.args, :($(args.args[i]).val)) for i=1:n] # Fill the array
         return :( result($f($argsval...),
-                         (Calculus.gradient(x -> $f(x...), $argsval)...,),
-                         ($args...,)) )
+                         Calculus.gradient(x -> $f(x...), $argsval),
+                         $args) )
     end
 end
 
