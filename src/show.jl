@@ -36,7 +36,7 @@ Base.show(io::IO, ::MIME"text/latex", measure::Measurement) =
     truncated_print(io, measure, atbeg = "\$", atend = "\$", pm = "\\pm")
 
 for mime in (MIME"text/x-tex", MIME"text/x-latex")
-    @eval Base.show(io::IO, ::$mime, measure::Measurement) =
+    Base.show(io::IO, ::mime, measure::Measurement) =
         truncated_print(io, measure, pm = "\\pm")
 end
 
@@ -44,7 +44,7 @@ end
 # understand and that can be meaningfully copy-pasted into the REPL, at least
 # for standard numeric types.
 for mime in (MIME"text/plain", MIME"text/x-tex", MIME"text/x-latex")
-    @eval function Base.show(io::IO, mtype::$mime, measure::Complex{<:Measurement})
+    function Base.show(io::IO, mtype::mime, measure::Complex{<:Measurement})
         r, i = reim(measure)
         compact = get(io, :compact, false)
         print(io, "(")
