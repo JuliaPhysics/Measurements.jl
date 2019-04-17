@@ -1,6 +1,18 @@
 History of Measurements.jl
 ==========================
 
+v2.1.0 (2019-0?-??)
+-------------------
+
+### New Features
+
+* Performance of `@uncertain` has been slightly improved in certain cases
+  ([#32](https://github.com/JuliaPhysics/Measurements.jl/pull/32)).
+* New method `measurement(::Quantity, ::Quantity)`, for easier creation of
+  numbers with units (from the `Unitful.jl` package) and uncertainties
+  ([#35](https://github.com/JuliaPhysics/Measurements.jl/issues/35),
+  [#36](https://github.com/JuliaPhysics/Measurements.jl/pull/36)).
+
 v2.0.0 (2019-02-10)
 -------------------
 

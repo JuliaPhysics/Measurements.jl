@@ -70,7 +70,6 @@ function Base.alignment(io::IO, measure::Measurement)
 end
 
 ### Juno pretty printing
-using Requires
 @require Juno="e5e0dc1b-0480-54bc-9374-aad01c23163d" begin
     Juno.render(i::Juno.Inline, measure::Measurement) =
         Juno.render(i, Juno.Row(measure.val, Text(" ± "), measure.err))
