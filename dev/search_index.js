@@ -53,7 +53,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Installation",
     "title": "Installation",
     "category": "section",
-    "text": "The latest version of Measurements.jl is available for Julia v1.0 and later releases, and can be installed with Julia built-in package manager.  In a Julia session run the commandspkg> update\npkg> add MeasurementsOlder versions of this package are also available for Julia 0.4-0.7."
+    "text": "The latest version of Measurements.jl is available for Julia v1.0 and later releases, and can be installed with Julia built-in package manager.  In a Julia session, after entering the package manager mode with ], run the commandpkg> update\npkg> add MeasurementsOlder versions of this package are also available for Julia 0.4-0.7."
 },
 
 {
