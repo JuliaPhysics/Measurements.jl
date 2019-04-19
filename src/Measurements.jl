@@ -24,6 +24,8 @@ module Measurements
 # Calculus is used to calculate numerical derivatives in "@uncertain" macro.
 using Calculus
 
+using Requires
+
 # Functions provided by this package and exposed to users
 export Measurement, measurement, ±
 
@@ -69,6 +71,18 @@ const tag_counters = UInt64[1]
 function __init__()
     nthr = Base.Threads.nthreads()
     resize!(tag_counters, nthr)[:] = range(UInt64(1), step=typemax(UInt64)÷nthr, length=nthr)
+
+    # Methods for compatibility with Unitful.jl
+    @require Unitful="1986cc42-f94f-5a68-af5c-568840ba703d" begin
+        import .Unitful: AbstractQuantity, unit, ustrip
+        function Measurements.measurement(a::T, b::T) where {T<:AbstractQuantity}
+            u = unit(a)
+            return measurement(ustrip(u, a), ustrip(u, b)) * u
+        end
+        Measurements.measurement(a::AbstractQuantity{T1,D,U1},
+                                 b::AbstractQuantity{T2,D,U2}) where {T1,T2,D,U1,U2} =
+                                     measurement(promote(a, b)...)
+    end
 end
 
 measurement(x::Measurement) = x

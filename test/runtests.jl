@@ -1,5 +1,5 @@
 using Measurements, SpecialFunctions, QuadGK, Calculus
-using Test, LinearAlgebra, Statistics
+using Test, LinearAlgebra, Statistics, Unitful
 
 import Base: isapprox
 import Measurements: value, uncertainty
@@ -745,6 +745,12 @@ end
 @testset "Fixed bugs" begin
     @test 1 * (big(3) ± 0) ≈ 3 ± 0
     @test Measurement{Float64}(2//1) === Measurement{Float64}(2.0)
+end
+
+@testset "Unitful" begin
+    @test @inferred(1.0u"s" ± 0.1 * u"s") == measurement(1.0, 0.1) * u"s"
+    @test @inferred(1.3 * u"km" ± 2.01 * u"μm") == measurement(1300, 2.01e-6) * u"m"
+    @test_throws MethodError 1.0u"s" ± 0.1u"m"
 end
 
 @testset "Complex measurements" begin
