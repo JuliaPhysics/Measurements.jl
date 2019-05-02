@@ -82,6 +82,16 @@ function __init__()
         Measurements.measurement(a::AbstractQuantity{T1,D,U1},
                                  b::AbstractQuantity{T2,D,U2}) where {T1,T2,D,U1,U2} =
                                      measurement(promote(a, b)...)
+
+        function Measurements.value(x::AbstractQuantity{<:Measurement})
+            u = unit(x)
+            return value(ustrip(u, x)) * u
+        end
+        
+        function Measurements.uncertainty(x::AbstractQuantity{<:Measurement})
+            u = unit(x)
+            return uncertainty(ustrip(u, x)) * u
+        end
     end
 end
 
