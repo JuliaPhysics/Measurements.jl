@@ -137,6 +137,8 @@ function __init__()
             return (quadgk_result(integral[1], (-f(aval), f(bval)), (a, b)), integral[2])
         end
     end
+
+    @require SpecialFunctions="276daf66-3868-5448-9aa4-cd146d93841b" include("special-functions.jl")
 end
 
 measurement(x::Measurement) = x

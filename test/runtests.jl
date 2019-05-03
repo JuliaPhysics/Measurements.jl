@@ -437,12 +437,12 @@ end
 end
 
 @testset "Factorial and gamma" begin
-    @test @inferred(SpecialFunctions.factorial(x)) ≈ measurement(6, 0.7536706010590813)
+    @test @inferred(factorial(x)) ≈ measurement(6, 0.7536706010590813)
     @test @inferred(digamma(y)) ≈ 1.256117668431802 ± 0.056764591147422994
     @test @inferred(polygamma(3, w)) ≈ 193.40909103400242 ± 0.10422749480000776
     for a in (w, x, y)
-        @test @inferred(gamma(a)) ≈ SpecialFunctions.factorial(a - one(a))
-        @test @inferred(gamma(a + one(a))) ≈ SpecialFunctions.factorial(a)
+        @test @inferred(gamma(a)) ≈ factorial(a - one(a))
+        @test @inferred(gamma(a + one(a))) ≈ factorial(a)
         @test @inferred(lgamma(abs(a))) ≈ log(gamma(abs(a)))
         @test @inferred(digamma(a)) ≈ polygamma(0, a)
         @test @inferred(digamma(invdigamma(a))) ≈ a + zero(a)
