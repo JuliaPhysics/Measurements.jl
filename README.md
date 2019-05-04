@@ -201,7 +201,8 @@ The `Measurements.jl` package is licensed under the MIT "Expat" License.  The
 original author is Mosè Giordano.
 
 Please, cite the paper Giordano 2016 (http://arxiv.org/abs/1610.08716) if you
-employ this package in your research work.
+employ this package in your research work.  For your convience, a BibTeX entry
+is provided in the [`CITATION.bib`](CITATION.bib) file.
 
 
 [docs-latest-img]: https://img.shields.io/badge/docs-latest-blue.svg
