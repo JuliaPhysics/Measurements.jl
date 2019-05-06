@@ -72,72 +72,8 @@ function __init__()
     nthr = Base.Threads.nthreads()
     resize!(tag_counters, nthr)[:] = range(UInt64(1), step=typemax(UInt64)÷nthr, length=nthr)
 
-    # Methods for compatibility with Unitful.jl
-    @require Unitful="1986cc42-f94f-5a68-af5c-568840ba703d" begin
-        import .Unitful: AbstractQuantity, unit, ustrip
-        function Measurements.measurement(a::T, b::T) where {T<:AbstractQuantity}
-            u = unit(a)
-            return measurement(ustrip(u, a), ustrip(u, b)) * u
-        end
-        Measurements.measurement(a::AbstractQuantity{T1,D,U1},
-                                 b::AbstractQuantity{T2,D,U2}) where {T1,T2,D,U1,U2} =
-                                     measurement(promote(a, b)...)
-
-        function Measurements.value(x::AbstractQuantity{<:Measurement})
-            u = unit(x)
-            return value(ustrip(u, x)) * u
-        end
-
-        function Measurements.uncertainty(x::AbstractQuantity{<:Measurement})
-            u = unit(x)
-            return uncertainty(ustrip(u, x)) * u
-        end
-    end
-
-    @require QuadGK="1fd47b50-473d-5c70-9696-f719f8f3bcdc" begin
-        ### Integration with QuadGK
-
-        # Helper functions to handle result of integration with QuadGK when endpoints are
-        # Measurement objects.
-
-        # The integral itself is a Measurement object, propagate its uncertainty.
-        quadgk_result(integral::Measurement, derivative::Real, a::Measurement) =
-            result(integral.val, (1, derivative.val), (integral, a))
-        quadgk_result(integral::Measurement, derivatives::Tuple, a::Tuple) =
-            result(integral.val, (1, value.(derivatives)...), (integral, a...))
-        # Only endpoints are are Measurement objects.
-        quadgk_result(integral::Real, derivative::Real, a::Measurement) =
-            result(integral, derivative, a)
-        quadgk_result(integral::Real, derivatives::Tuple, a::Tuple) =
-            result(integral, derivatives, a)
-
-        # Upper bound is a Measurement.  The derivative is f(b).
-        function QuadGK.quadgk(f, a::S, b::Measurement{T}; kws...) where {S,T<:AbstractFloat}
-            F = promote_type(S, T)
-            bval = b.val
-            integral = QuadGK.quadgk(f, convert(F, a), convert(F, bval); kws...)
-            return (quadgk_result(integral[1], f(bval), b), integral[2])
-        end
-
-        # Lower bound is a Measurement.  The derivative is -f(a).
-        function QuadGK.quadgk(f, a::Measurement{T}, b::S; kws...) where {S,T<:AbstractFloat}
-            F = promote_type(S, T)
-            aval = a.val
-            integral = QuadGK.quadgk(f, convert(F, aval), convert(F, b); kws...)
-            return (quadgk_result(integral[1], -f(aval), a), integral[2])
-        end
-
-        # Both bounds are Measurement's.  Derivatives are -f(a) and f(b).
-        function QuadGK.quadgk(f, a::Measurement{T}, b::Measurement{S};
-                               kws...) where {T<:AbstractFloat,S<:AbstractFloat}
-            F = promote_type(T, S)
-            aval = a.val
-            bval = b.val
-            integral = QuadGK.quadgk(f, convert(F, aval), convert(F, bval); kws...)
-            return (quadgk_result(integral[1], (-f(aval), f(bval)), (a, b)), integral[2])
-        end
-    end
-
+    @require Unitful="1986cc42-f94f-5a68-af5c-568840ba703d" include("unitful.jl")
+    @require QuadGK="1fd47b50-473d-5c70-9696-f719f8f3bcdc" include("quadgk.jl")
     @require SpecialFunctions="276daf66-3868-5448-9aa4-cd146d93841b" include("special-functions.jl")
 end
 

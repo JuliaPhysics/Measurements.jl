@@ -14,15 +14,6 @@
 # This file contains definition of special functions that support
 # Measurement objects.
 #
-# Note: some functions defined here (like all degree-related and reciprocal
-# trigonometric functions, fld, cld, hypot, cbrt, abs, mod) are redundant in the
-# sense that you would get the correct result also without their definitions,
-# but having them defined here avoids some calculations and slightly improves
-# performance.  Likewise, multiple methods are provided for functions taking two
-# (or more) arguments because when only one argument is of Measurement type we
-# can use the simple `result' function for one derivative that is faster than
-# the generic method.
-#
 ### Code:
 
 ### Special functions
