@@ -204,7 +204,7 @@ pass it to `@uncertain` macro. Compare the result with that of the `erf`
 function, natively supported in `Measurements.jl` package
 
 ```jldoctest
-julia> using Cuba
+julia> using Cuba, SpecialFunctions
 
 julia> cubaerf(x::Real) =
            2x/sqrt(pi)*cuhre((t, f) -> f[1] = exp(-abs2(t[1]*x)))[1][1]
