@@ -25,7 +25,7 @@ Base.show(io::IO, measure::Measurement) =
     print(io, measure.val, get(io, :compact, false) ? "±" : " ± ", measure.err)
 
 function Base.show(io::IO, ::MIME"text/plain", m::Measurement)
-    if get(io, :limit, false) || !iszero(m.err)
+    if get(io, :limit, false) && !iszero(m.err) && !isnan(m.err)
         truncated_print(io, m)
     else
        print(io, m)

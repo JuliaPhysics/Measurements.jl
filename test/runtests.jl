@@ -551,6 +551,10 @@ end
     # test pretty printing at the REPL
     @test repr("text/plain", ww, context=IOContext(stdout,:limit=>true,:compact=>true)) == "-0.534±0.031"
     @test repr("text/plain", ww, context=:limit=>true) == "-0.534 ± 0.031"
+    @test repr("text/plain", -12.34567±0) == "-12.34567 ± 0.0"
+    @test repr("text/plain", -12.34567±NaN) == "-12.34567 ± NaN"
+    @test repr("text/plain", -12.34567±0, context=:limit=>true) == "-12.34567 ± 0.0"
+    @test repr("text/plain", -12.34567±NaN, context=:limit=>true) == "-12.34567 ± NaN"
     @test repr("text/plain", zz, context=IOContext(stdout,:limit=>true,:compact=>true)) == "(-0.534±0.031)-(0.534±0.031)im"
     @test repr("text/plain", zz, context=:limit=>true) == "(-0.534 ± 0.031) - (0.534 ± 0.031)im"
     @test repr("text/plain", 1e-6±0, context=:limit=>true) == "1.0e-6 ± 0.0"
