@@ -29,7 +29,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Introduction",
     "title": "Features List",
     "category": "section",
-    "text": "The main features of the package are:Support for most mathematical operations available in Julia standard library and special functions from SpecialFunctions.jl package, involving real and complex numbers. All existing functions that accept AbstractFloat (and Complex{AbstractFloat} as well) arguments and internally use already supported functions can in turn perform calculations involving numbers with uncertainties without being redefined. This greatly enhances the power of Measurements.jl without effort for the users\nFunctional correlation between variables is correctly handled, so x - x approx 0 pm 0, xx approx 1 pm 0, tan(x) approx sin(x)cos(x), mathrmcis(x) approx exp(ix), etc...\nSupport for arbitrary precision (also called multiple precision) numbers with uncertainties. This is useful for measurements with very low relative error\nDefine arrays of measurements and perform calculations with them.  Some linear algebra functions work out-of-the-box\nPropagate uncertainty for any function of real arguments (including functions based on C/Fortran calls), using @uncertain macro\nFunction to get the derivative and the gradient of an expression with respect to one or more independent measurements\nFunctions to calculate standard score and weighted mean\nParse strings to create measurement objects\nEasy way to attach the uncertainty to a number using the ± sign as infix operator. This syntactic sugar makes the code more readable and visually appealing\nCombined with external packages allows for error propagation of measurements with their physical units\nExtensible in combination with external packages: you can propagate errors of measurements with their physical units, perform numerical integration with QuadGK.jl, numerical and automatic differentiation, and much more.\nIntegration with Plots.jl."
+    "text": "The main features of the package are:Support for most mathematical operations available in Julia standard library and special functions from SpecialFunctions.jl package, involving real and complex numbers. All existing functions that accept AbstractFloat (and Complex{AbstractFloat} as well) arguments and internally use already supported functions can in turn perform calculations involving numbers with uncertainties without being redefined. This greatly enhances the power of Measurements.jl without effort for the users\nFunctional correlation between variables is correctly handled, so x - x approx 0 pm 0, xx approx 1 pm 0, tan(x) approx sin(x)cos(x), mathrmcis(x) approx exp(ix), etc...\nSupport for arbitrary precision (also called multiple precision) numbers with uncertainties. This is useful for measurements with very low relative error\nDefine arrays of measurements and perform calculations with them.  Some linear algebra functions work out-of-the-box\nPropagate uncertainty for any function of real arguments (including functions based on C/Fortran calls), using @uncertain macro\nFunction to get the derivative and the gradient of an expression with respect to one or more independent measurements\nFunctions to calculate standard score and weighted mean\nParse strings to create measurement objects\nEasy way to attach the uncertainty to a number using the ± sign as infix operator. This syntactic sugar makes the code more readable and visually appealing\nCombined with external packages allows for error propagation of measurements with their physical units\nExtensible in combination with external packages: you can propagate errors of measurements with their physical units, perform numerical integration with QuadGK.jl, numerical and automatic differentiation, and much more.\nIntegration with Plots.jl.A current limitation of the package is that it is not yet possible to define quantities related by a correlation matrix."
 },
 
 {
@@ -37,7 +37,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Introduction",
     "title": "Citation and license",
     "category": "section",
-    "text": "The method used to handle functional correlation is described in this paper:M. Giordano, 2016, \"Uncertainty propagation with functionally correlated quantities\", arXiv:1610.08716 (Bibcode: 2016arXiv161008716G)If you use use this package for your research, please cite it.  For your convience, a BibTeX entry is provided in the CITATION.bib file.Other features are expected to come in the future, see the How Can I Help? section.The Measurements.jl package is licensed under the MIT \"Expat\" License. The original author is Mosè Giordano."
+    "text": "The method used to handle functional correlation is described in this paper:M. Giordano, 2016, \"Uncertainty propagation with functionally correlated quantities\", arXiv:1610.08716 (Bibcode: 2016arXiv161008716G)If you use use this package for your research, please cite it.  For your convience, a BibTeX entry is provided in the CITATION.bib file.Other features are expected to come in the future, see the How Can I Help? section and the TODO list.The Measurements.jl package is licensed under the MIT \"Expat\" License. The original author is Mosè Giordano."
 },
 
 {
@@ -398,6 +398,14 @@ var documenterSearchIndex = {"docs": [
     "title": "Development",
     "category": "section",
     "text": "The package is developed at https://github.com/JuliaPhysics/Measurements.jl. There you can submit bug reports, make suggestions, and propose pull requests."
+},
+
+{
+    "location": "todo/#TODO-1",
+    "page": "Development",
+    "title": "TODO",
+    "category": "section",
+    "text": "Allow defining quantities related by a correlation matrix and correctly propagate uncertainty in this case"
 },
 
 {
