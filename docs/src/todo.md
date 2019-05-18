@@ -5,6 +5,12 @@ The package is developed at
 https://github.com/JuliaPhysics/Measurements.jl. There you can submit bug
 reports, make suggestions, and propose pull requests.
 
+TODO
+----
+
+* Allow defining quantities related by a correlation matrix and correctly
+  propagate uncertainty in this case
+
 How Can I Help?
 ---------------
 

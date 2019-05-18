@@ -67,6 +67,9 @@ The main features of the package are:
   differentiation, and much more.
 - Integration with [Plots.jl](https://github.com/JuliaPlots/Plots.jl).
 
+A current limitation of the package is that it is not yet possible to define
+quantities related by a correlation matrix.
+
 ## Citation and license
 
 The method used to handle functional correlation is described in this paper:
@@ -81,7 +84,7 @@ convience, a BibTeX entry is provided in the
 file.
 
 Other features are expected to come in the future, see the [How Can I
-Help?](@ref) section.
+Help?](@ref) section and the [TODO](@ref) list.
 
 The `Measurements.jl` package is licensed under the MIT "Expat" License. The
 original author is Mosè Giordano.

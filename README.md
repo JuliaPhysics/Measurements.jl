@@ -69,15 +69,15 @@ easy-to-use calculator.
   automatic differentiation, and much more.
 * Integration with [`Plots.jl`](https://github.com/JuliaPlots/Plots.jl).
 
-Further features are expected to come in the future, see the section "How Can I
-Help?" and the TODO list below.
-
 The method used to handle functional correlation is described in this paper:
 
 * M. Giordano, 2016, "Uncertainty propagation with functionally correlated
   quantities", [arXiv:1610.08716](http://arxiv.org/abs/1610.08716)
   (Bibcode:
   [`2016arXiv161008716G`](http://adsabs.harvard.edu/abs/2016arXiv161008716G))
+
+A current limitation of the package is that it is not yet possible to define
+quantities related by a correlation matrix.
 
 If you use use this package for your research, please cite it.
 
