@@ -15,29 +15,39 @@
 #
 ### Code:
 
-truncated_print(io::IO, m::Measurement; atbeg = "", atend = "", pm = "±") =
+function truncated_print(io::IO, m::Measurement, error_digits::Int;
+                         atbeg = "", atend = "", pm = "±")
     print(io, atbeg,
-          iszero(m.err) ? m.val : round(m.val, digits = -Base.hidigit(m.err, 10) + 2),
+          (iszero(m.err) || isnan(m.err)) ? m.val : round(m.val, digits =
+                                                          -Base.hidigit(m.err, 10) + error_digits),
           get(io, :compact, false) ? pm : " $pm ",
-          round(m.err, sigdigits=2), atend)
+          round(m.err, sigdigits=error_digits), atend)
+end
 
-Base.show(io::IO, measure::Measurement) =
+full_print(io::IO, measure::Measurement) =
     print(io, measure.val, get(io, :compact, false) ? "±" : " ± ", measure.err)
 
-function Base.show(io::IO, ::MIME"text/plain", m::Measurement)
-    if get(io, :limit, false) && !isnan(m.err)
-        truncated_print(io, m)
+function Base.show(io::IO, m::Measurement)
+    error_digits = get(io, :error_digits, 2)
+    if error_digits > 0
+            truncated_print(io, m, error_digits)
+    elseif error_digits == 0
+        full_print(io, m)
     else
-       print(io, m)
+        error("`error_digits` must be non-negative")
     end # if
 end
 
-Base.show(io::IO, ::MIME"text/latex", measure::Measurement) =
-    truncated_print(io, measure, atbeg = "\$", atend = "\$", pm = "\\pm")
+function Base.show(io::IO, ::MIME"text/latex", measure::Measurement)
+    error_digits = get(io, :error_digits, 2)
+    truncated_print(io, measure, error_digits, atbeg = "\$", atend = "\$", pm = "\\pm")
+end
 
 for mime in (MIME"text/x-tex", MIME"text/x-latex")
-    Base.show(io::IO, ::mime, measure::Measurement) =
-        truncated_print(io, measure, pm = "\\pm")
+    function Base.show(io::IO, ::mime, measure::Measurement)
+        error_digits = get(io, :error_digits, 2)
+        truncated_print(io, measure, error_digits, pm = "\\pm")
+    end
 end
 
 # Representation of complex measurements.  Print something that is easy to
