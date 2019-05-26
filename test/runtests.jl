@@ -1,5 +1,6 @@
-using Measurements, SpecialFunctions, QuadGK, Calculus
-using Test, LinearAlgebra, Statistics, Unitful
+using Measurements
+using Test, LinearAlgebra, Random, Statistics
+using AbstractFFTs, Calculus, FastTransforms, QuadGK, SpecialFunctions, Unitful
 
 import Base: isapprox
 import Measurements: value, uncertainty
@@ -759,6 +760,12 @@ end
     x = 1u"m" ± .2u"m"
     @test value(x) == 1u"m"
     @test uncertainty(x) == .2u"m"
+end
+
+@testset "FastTransform" begin
+    Random.seed!(42)
+    v = randn(50) .± (rand(50) ./ 10)
+    @test ifft(fft(v)) ≈ v
 end
 
 @testset "Complex measurements" begin
