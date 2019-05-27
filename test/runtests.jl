@@ -546,20 +546,31 @@ end
 end
 
 @testset "Type representation" begin
+    pp = pi ± (ℯ / 100)
     ww = -0.5345 ± 0.03123
     zz = ww * (1 + im)
     # test pretty printing at the REPL
-    @test repr("text/plain", ww, context=IOContext(stdout,:limit=>true,:compact=>true)) == "-0.534±0.031"
-    @test repr("text/plain", ww, context=:limit=>true) == "-0.534 ± 0.031"
-    @test repr("text/plain", -12.34567±0) == "-12.34567 ± 0.0"
-    @test repr("text/plain", -12.34567±NaN) == "-12.34567 ± NaN"
-    @test repr("text/plain", -12.34567±0, context=:limit=>true) == "-12.34567 ± 0.0"
-    @test repr("text/plain", -12.34567±NaN, context=:limit=>true) == "-12.34567 ± NaN"
-    @test repr("text/plain", zz, context=IOContext(stdout,:limit=>true,:compact=>true)) == "(-0.534±0.031)-(0.534±0.031)im"
-    @test repr("text/plain", zz, context=:limit=>true) == "(-0.534 ± 0.031) - (0.534 ± 0.031)im"
-    @test repr("text/plain", 1e-6±0, context=:limit=>true) == "1.0e-6 ± 0.0"
+    @test repr(pp) == "3.142 ± 0.027"
+    @test_throws ErrorException repr(pp, context=:error_digits=>-4)
+    @test repr(pp, context=:error_digits=>0) ==
+        "3.141592653589793 ± 0.02718281828459045"
+    @test repr(pp, context=:error_digits=>7) ==
+        "3.14159265 ± 0.02718282"
+    @test repr(ww, context=:compact=>true) == "-0.534±0.031"
+    @test repr(ww) == "-0.534 ± 0.031"
+    @test repr(ww, context=:error_digits=>0) == "-0.5345 ± 0.03123"
+    @test repr(ww, context=IOContext(stdout, :error_digits=>1, :compact=>true)) == "-0.53±0.03"
+    @test repr(ww, context=:error_digits=>3) == "-0.5345 ± 0.0312"
+    @test repr(ww, context=IOContext(stdout, :error_digits=>4, :compact=>true)) == "-0.5345±0.03123"
+    @test repr(-12.34567±0) == "-12.34567 ± 0.0"
+    @test repr(-12.34567±NaN) == "-12.34567 ± NaN"
+    @test repr(-12.34567±0) == "-12.34567 ± 0.0"
+    @test repr(-12.34567±NaN) == "-12.34567 ± NaN"
+    @test repr(1e-6±0) == "1.0e-6 ± 0.0"
     @test repr("text/plain", [w 10x; 100y 1000w]) ==
         "2×2 Array{Measurement{Float64},2}:\n  -0.5±0.03    30.0±1.0 \n 400.0±20.0  -500.0±30.0"
+    @test repr("text/plain", zz, context=:compact=>true) == "(-0.534±0.031)-(0.534±0.031)im"
+    @test repr("text/plain", zz) == "(-0.534 ± 0.031) - (0.534 ± 0.031)im"
     @test repr("text/plain", complex(x, w)) == "(3.0 ± 0.1) - (0.5 ± 0.03)im"
     @test repr("text/plain", complex(w, y)) == "(-0.5 ± 0.03) + (4.0 ± 0.2)im"
     @test repr("text/latex", x) == "\$3.0 \\pm 0.1\$"
