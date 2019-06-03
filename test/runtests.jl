@@ -750,6 +750,10 @@ end
     @test @inferred(parse(Measurement{BigFloat}, "(3±0.1)e2")) == (big"3" ± big"0.1") * big"100.0"
     @test @inferred(parse(Measurement{Float16}, "+9.5 ± 2.8")) == Float16(+9.5) ± Float16(2.8)
     for a in (w, x, y); @test @inferred(parse(Measurement{Float64}, repr(a))) == a; end
+    @test @inferred(measurement("11659208.0(6.3)e-10")) ≈ @inferred(measurement("11659208.0(6.3)e-10"))
+    @test @inferred(measurement("12345.67(0.12)")) ≈ measurement(12345.67, 0.12)
+    @test @inferred(measurement("12345.67(1.2)")) ≈ measurement(12345.67, 1.2)
+    @test @inferred(measurement("12345.67(12.0)")) ≈ measurement(12345.67, 12)
     @test_throws ArgumentError measurement("abc")
     @test_throws ArgumentError measurement("(2±1")
     @test_throws ArgumentError measurement("2±1)e2")
