@@ -1,7 +1,7 @@
 History of Measurements.jl
 ==========================
 
-v2.1.0 (2019-0?-??)
+v2.1.0 (2019-08-03)
 -------------------
 
 ### New Features
@@ -12,6 +12,27 @@ v2.1.0 (2019-0?-??)
   numbers with units (from the `Unitful.jl` package) and uncertainties
   ([#35](https://github.com/JuliaPhysics/Measurements.jl/issues/35),
   [#36](https://github.com/JuliaPhysics/Measurements.jl/pull/36)).
+* `measurement(s::String)` method now understands decimal uncertainty
+  ([#44](https://github.com/JuliaPhysics/Measurements.jl/issues/44),
+  [#45](https://github.com/JuliaPhysics/Measurements.jl/pull/45))
+* Truncated printing is now always used.  `IOContext` can be used to control the
+  behaviour ([#40](https://github.com/JuliaPhysics/Measurements.jl/issues/40),
+  [#43](https://github.com/JuliaPhysics/Measurements.jl/pull/43)):
+  ```julia
+  julia> using Measurements
+
+  julia> x = pi ± (ℯ/100)
+  3.142 ± 0.027
+
+  julia> println(IOContext(stdout, :error_digits=>0), x)
+  3.141592653589793 ± 0.02718281828459045
+
+  julia> println(IOContext(stdout, :error_digits=>1), x)
+  3.14 ± 0.03
+
+  julia> println(IOContext(stdout, :error_digits=>5), x)
+  3.141593 ± 0.027183
+  ```
 
 v2.0.0 (2019-02-10)
 -------------------
