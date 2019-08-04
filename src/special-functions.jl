@@ -17,7 +17,7 @@
 ### Code:
 
 ### Special functions
-using SpecialFunctions
+using .SpecialFunctions
 
 # Error function: erf, erfinv, erfc, erfcinv, erfcx, erfi, dawson
 

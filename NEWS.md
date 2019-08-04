@@ -1,6 +1,15 @@
 History of Measurements.jl
 ==========================
 
+v2.1.1 (2018-??-??)
+-------------------
+
+### Bug Fixes
+
+* Fix loading of `SpecialFunctions.jl`
+  ([#49](https://github.com/JuliaPhysics/Measurements.jl/issues/49),
+  [#50](https://github.com/JuliaPhysics/Measurements.jl/pull/50)).
+
 v2.1.0 (2019-08-03)
 -------------------
 
