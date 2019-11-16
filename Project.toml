@@ -10,12 +10,10 @@ RecipesBase = "3cdcf5f2-1ef4-517c-9805-6587b60abb01"
 Requires = "ae029012-a4dd-5104-9daa-d747884805df"
 
 [compat]
-Calculus = "≥ 0.4.1"
-QuadGK = "≥ 2.0.1"
-RecipesBase = "≥ 0.6.0"
-Requires = "≥ 0.5.0"
-SpecialFunctions = "≥ 0.7.0"
-julia = "≥ 1.0.0"
+Calculus = "0.4.1, 0.5"
+RecipesBase = "0.6.0, 0.7"
+Requires = "0.5.0"
+julia = "1"
 
 [extras]
 QuadGK = "1fd47b50-473d-5c70-9696-f719f8f3bcdc"
