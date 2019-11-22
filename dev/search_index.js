@@ -133,7 +133,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Usage",
     "title": "Measurements.uncertainty_components",
     "category": "function",
-    "text": "Measurements.uncertainty_components(x::Measurement)\n\nReturn the components to the uncertainty of the dependent quantity x in the form of a Dict.\n\n\n\n\n\n"
+    "text": "Measurements.uncertainty_components(x::Measurement)\n\nReturn the components to the uncertainty of the dependent quantity x in the form of a Dict for all the independent Measurements from which x is derived.\n\nThe key of each entry of the dictionary is the triplet (value, uncertainty, tag) of an independent Measurement, and the value is the absolute value of the product between its uncertainty and the partial derivative of x with respect to this Measurement.\n\n\n\n\n\n"
 },
 
 {
