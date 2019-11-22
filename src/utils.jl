@@ -1,20 +1,3 @@
-### utils.jl
-#
-# Copyright (C) 2016, 2017 Mosè Giordano.
-#
-# Maintainer: Mosè Giordano <mose AT gnu DOT org>
-# Keywords: uncertainty, error propagation, physics
-#
-# This file is a part of Measurements.jl.
-#
-# License is MIT "Expat".
-#
-### Commentary:
-#
-# This file defines some utility functions.
-#
-### Code:
-
 export stdscore, weightedmean
 using LinearAlgebra
 
@@ -102,7 +85,13 @@ uncertainty
     Measurements.uncertainty_components(x::Measurement)
 
 Return the components to the uncertainty of the dependent quantity `x` in the
-form of a `Dict`.
+form of a `Dict` for all the independent `Measurement`s from which `x` is
+derived.
+
+The key of each entry of the dictionary is the triplet (value, uncertainty, tag)
+of an independent `Measurement`, and the value is the absolute value of the
+product between its uncertainty and the partial derivative of `x` with respect
+to this `Measurement`.
 """
 function uncertainty_components(x::Measurement{T}) where {T<:AbstractFloat}
     out = Dict{Tuple{T, T, UInt64}, T}()
