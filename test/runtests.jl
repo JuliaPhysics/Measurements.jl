@@ -783,3 +783,11 @@ end
 @testset "Plot recipes" begin
     include("plots.jl")
 end
+
+@testset begin "Broadcasting with ranges"
+    m = 2 ± 1
+    @test m .+ (1:6) isa Vector{<:Measurement}
+    @test m .* (1:2:6) isa Vector{<:Measurement}
+    @test (1:.1:6) .- m isa Vector{<:Measurement}
+    @test m ./ (1:6.0) isa Vector{<:Measurement}
+end

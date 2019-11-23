@@ -111,5 +111,6 @@ include("math.jl")
 include("show.jl")
 include("parsing.jl")
 include("plot-recipes.jl")
+include("misc.jl")
 
 end # module
