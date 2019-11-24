@@ -48,3 +48,9 @@ Base.promote_rule(::Type{Measurement{T}}, ::Type{S}) where {T<:AbstractFloat, S<
 Base.promote_rule(::Type{Measurement{T}},
                   ::Type{Measurement{S}}) where {T<:AbstractFloat, S<:AbstractFloat} =
     Measurement{promote_type(T, S)}
+
+# adaptation of JuliaLang/julia#30952
+@static if VERSION < v"1.3"
+    Base._range(a::T, step::T, ::Nothing, len::Integer) where {T<:Measurement} =
+        Base._rangestyle(Base.OrderStyle(T), Base.ArithmeticStyle(T), a, step, len)
+end

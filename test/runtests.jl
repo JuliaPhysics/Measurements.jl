@@ -783,3 +783,7 @@ end
 @testset "Plot recipes" begin
     include("plots.jl")
 end
+
+@testset "JuliaLang/julia#30944" begin
+    @test range(0±0, step=1±.1, length=10) isa StepRangeLen
+end
