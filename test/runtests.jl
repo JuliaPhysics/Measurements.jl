@@ -578,7 +578,11 @@ end
     @test Base.alignment(devnull, x) == (5,4)
     # Make sure the printed representation of a Measurement object is correctly parsed as
     # the same number (note that the tag will be different, but that's not important here).
-    for a in (w, x, y); @test eval(Meta.parse(repr(a))) == a; end
+    for a in (w, x, y, range(w, 10w, length=10))
+        @test eval(Meta.parse(repr(a))) == a
+    end
+    # correct quoting in expressions
+    @test eval(eval(Meta.parse(repr(:(2 * $w))))) == 2 * w
 end
 
 @testset "sum" begin
