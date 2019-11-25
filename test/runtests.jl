@@ -784,6 +784,13 @@ end
     include("plots.jl")
 end
 
-@testset "JuliaLang/julia#30944" begin
+@testset "Ranges" begin
+    m = 2 ± 1
+    @test m .+ (1:6) isa StepRangeLen
+    @test m .* (1:2:6) isa StepRangeLen
+    @test (1:.1:6) .- m isa StepRangeLen
+    @test m ./ (1:6.0) isa Vector{<:Measurement}
+    
+    # JuliaLang/julia#30944
     @test range(0±0, step=1±.1, length=10) isa StepRangeLen
 end
