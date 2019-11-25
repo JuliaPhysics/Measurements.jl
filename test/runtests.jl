@@ -583,6 +583,7 @@ end
     end
     # correct quoting in expressions
     @test eval(eval(Meta.parse(repr(:(2 * $w))))) == 2 * w
+    @test eval(eval(Meta.parse(repr(:(2 < $w))))) == 2 < w
 end
 
 @testset "sum" begin
