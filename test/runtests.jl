@@ -578,7 +578,7 @@ end
     @test Base.alignment(devnull, x) == (5,4)
     # Make sure the printed representation of a Measurement object is correctly parsed as
     # the same number (note that the tag will be different, but that's not important here).
-    for a in (w, x, y, range(w, 10w, length=10))
+    for a in (w, x, y, range(w, stop=10w, length=10))
         @test eval(Meta.parse(repr(a))) == a
     end
     # correct quoting in expressions
