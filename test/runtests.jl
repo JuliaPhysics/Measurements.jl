@@ -567,8 +567,8 @@ end
     @test repr(-12.34567±0) == "-12.34567 ± 0.0"
     @test repr(-12.34567±NaN) == "-12.34567 ± NaN"
     @test repr(1e-6±0) == "1.0e-6 ± 0.0"
-    @test repr("text/plain", [w 10x; 100y 1000w]) ==
-        "2×2 Array{Measurement{Float64},2}:\n  -0.5±0.03    30.0±1.0 \n 400.0±20.0  -500.0±30.0"
+    @test occursin(r"2×2 Array{Measurement{Float64},2}:\n  -0.5±0.03    30.0±1.0 *\n 400.0±20.0  -500.0±30.0",
+                   repr("text/plain", [w 10x; 100y 1000w]))
     @test repr("text/plain", zz, context=:compact=>true) == "(-0.534±0.031)-(0.534±0.031)im"
     @test repr("text/plain", zz) == "(-0.534 ± 0.031) - (0.534 ± 0.031)im"
     @test repr("text/plain", complex(x, w)) == "(3.0 ± 0.1) - (0.5 ± 0.03)im"

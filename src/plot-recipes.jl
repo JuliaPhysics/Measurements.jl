@@ -1,4 +1,4 @@
-### parsing.jl
+### plot-recipes.jl
 #
 # Copyright (C) 2017 Mosè Giordano.
 #
