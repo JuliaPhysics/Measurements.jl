@@ -1,4 +1,4 @@
-### math.jl
+### quadgk.jl
 #
 # Copyright (C) 2019 Mosè Giordano.
 #

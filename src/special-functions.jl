@@ -1,4 +1,4 @@
-### math.jl
+### special-functions.jl
 #
 # Copyright (C) 2019 Mosè Giordano.
 #
