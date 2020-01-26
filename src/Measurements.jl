@@ -90,6 +90,7 @@ function measurement(val::T, err::T) where {T<:AbstractFloat}
     end
 end
 measurement(val::Real, err::Real) = measurement(promote(float(val), float(err))...)
+measurement(::Missing, ::Union{Real,Missing} = missing) = missing
 const ± = measurement
 
 """

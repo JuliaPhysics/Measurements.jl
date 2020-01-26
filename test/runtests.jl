@@ -44,6 +44,10 @@ end
     @test typeof(@inferred(Measurement{Float64}(big"3.14"))) == Measurement{Float64}
     @test typeof(@inferred(Measurement{BigFloat}(-5.43f2))) == Measurement{BigFloat}
     @test x != pi != y
+    @test measurement(missing) === missing
+    @test measurement(missing, .1) === missing
+    @test measurement(missing, missing) === missing
+    @test_throws MethodError measurement(1, missing)
 end
 
 @testset "Weighted Average" begin
