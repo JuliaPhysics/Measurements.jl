@@ -46,6 +46,20 @@ end
     @test x != pi != y
 end
 
+@testset "missing values" begin
+    @test measurement(missing) === missing
+    @test measurement(missing, .1) === missing
+    @test measurement(missing, missing) === missing
+    @test_throws MethodError measurement(1, missing)
+
+    @test promote_type(Measurement{Float64}, Missing) == Union{Measurement{Float64},Missing}
+    @test [w, x, missing, y] isa Vector{Union{Measurement{Float64},Missing}}
+
+    for op in (+, -, *, /, ^)
+        @test op(w, missing) === op(missing, w) === missing
+    end
+end
+
 @testset "Weighted Average" begin
     @test weightedmean((w, x, y)) ≈ measurement(-0.12584269662921355, 0.028442727788398632)
 end
