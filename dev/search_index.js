@@ -69,7 +69,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Usage",
     "title": "Measurements.measurement",
     "category": "function",
-    "text": "measurement(val::Real, [err::Real]) -> Measurement\nval ± err -> Measurement\n\nReturn a Measurement object with val as nominal value and err as uncertainty.  err defaults to 0 if omitted.\n\nThe binary operator ± is equivalent to measurement, so you can construct a Measurement object by explicitely writing 123 ± 4.\n\n\n\n\n\n"
+    "text": "measurement(val::Real, [err::Real]) -> Measurement\nmeasurement(::Missing, [err::Union{Real,Missing}]) -> Missing\nval ± err -> Measurement\n\nReturn a Measurement object with val as nominal value and err as uncertainty.  err defaults to 0 if omitted.\n\nThe binary operator ± is equivalent to measurement, so you can construct a Measurement object by explicitely writing 123 ± 4.\n\nIf val is missing, missing is returned.\n\n\n\n\n\n"
 },
 
 {
