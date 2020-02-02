@@ -536,8 +536,10 @@ end
 @testset "Machine precisionx" begin
     @test eps(Measurement{Float64}) ≈ eps(Float64)
     @test eps(x) ≈ eps(x.val)
-    @test nextfloat(x) ≈ nextfloat(x.val)
-    @test nextfloat(x, 3) ≈ nextfloat(x.val, 3)
+    @test nextfloat(x) ≈ nextfloat(x.val) ± x.err
+    @test nextfloat(x, 3) ≈ nextfloat(x.val, 3) ± x.err
+    @test prevfloat(w) ≈ prevfloat(w.val) ± w.err
+    @test prevfloat(y, 3) ≈ prevfloat(y.val, 3) ± y.err
     @test maxintfloat(Measurement{Float64}) ≈ maxintfloat(Float64)
 end
 

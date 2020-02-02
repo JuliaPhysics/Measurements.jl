@@ -1,15 +1,6 @@
 History of Measurements.jl
 ==========================
 
-v2.1.1 (2019-08-05)
--------------------
-
-### Bug Fixes
-
-* Fix loading of `SpecialFunctions.jl`
-  ([#49](https://github.com/JuliaPhysics/Measurements.jl/issues/49),
-  [#50](https://github.com/JuliaPhysics/Measurements.jl/pull/50)).
-
 v2.2.0 (2020-xx-xx)
 -------------------
 
@@ -19,6 +10,23 @@ v2.2.0 (2020-xx-xx)
   `measurement(missing, missing)` will now return `missing`
   ([#59](https://github.com/JuliaPhysics/Measurements.jl/issues/59),
   [#62](https://github.com/JuliaPhysics/Measurements.jl/pull/62))
+
+### Bug Fixes
+
+* `nextfloat(x::Measurement{T})` and `prevfloat(x::Measurement{T})` now return
+  an object of type `Measurement{T}` with the same uncertainty as `x`, instead
+  of returning an object of type
+  `T`. ([#64](https://github.com/JuliaPhysics/Measurements.jl/issues/64),
+  [#65](https://github.com/JuliaPhysics/Measurements.jl/pull/65))
+
+v2.1.1 (2019-08-05)
+-------------------
+
+### Bug Fixes
+
+* Fix loading of `SpecialFunctions.jl`
+  ([#49](https://github.com/JuliaPhysics/Measurements.jl/issues/49),
+  [#50](https://github.com/JuliaPhysics/Measurements.jl/pull/50)).
 
 v2.1.0 (2019-08-03)
 -------------------
