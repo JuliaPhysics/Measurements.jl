@@ -2,9 +2,8 @@ using Documenter, Measurements
 
 makedocs(
     modules = [Measurements],
-    format = :html,
     sitename = "Measurements",
-    pages    = Any[
+    pages    = [
         "Introduction" => "index.md",
         "Installation" => "installation.md",
         "Usage"        => "usage.md",

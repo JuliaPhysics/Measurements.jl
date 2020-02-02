@@ -1,15 +1,9 @@
 Usage
 =====
 
-```@meta
-DocTestSetup = quote
-    using Measurements
-end
-```
-
 After installing the package, you can start using it with
 
-```julia
+```@repl
 using Measurements
 ```
 
@@ -87,6 +81,8 @@ Measurements.measurement(::AbstractString)
     avoid confusion. See for example the following cases:
 
     ```jldoctest
+    julia> using Measurements
+
     julia> 7.5±1.2 + 3.9±0.9 # This is wrong!
     11.4 ± 1.2 ± 0.9 ± 0.0
 
@@ -240,22 +236,18 @@ REPL](https://docs.julialang.org/en/v1/stdlib/REPL/), `Measurement` objects
 are shown truncated in order to present two significant digits for the
 uncertainty:
 
-```jldoctest
-julia> -84.32 ± 5.6
--84.3 ± 5.6
-
-julia> 7.9 ± 18.6
-8.0 ± 19.0
+```@repl
+using Measurements
+-84.32 ± 5.6
+7.9 ± 18.6
 ```
 
 Note that truncation only affects the numbers shown in the REPL:
 
-```jldoctest
-julia> Measurements.value(7.9 ± 18.6)
-7.9
-
-julia> Measurements.uncertainty(7.9 ± 18.6)
-18.6
+```@repl
+using Measurements
+Measurements.value(7.9 ± 18.6)
+Measurements.uncertainty(7.9 ± 18.6)
 ```
 
 ### Printing to TeX and LaTeX MIMEs
@@ -263,10 +255,8 @@ julia> Measurements.uncertainty(7.9 ± 18.6)
 You can print `Measurement` objects to TeX and LaTeX MIMES (`"text/x-tex"` and
 `"text/x-latex"`), the `±` sign will be rendered with `\pm` command:
 
-```jldoctest
-julia> repr("text/x-tex", 5±1)
-"5.0 \\pm 1.0"
-
-julia> repr("text/x-latex", pi ± 1e-3)
-"3.1416 \\pm 0.001"
+```@repl
+using Measurements
+repr("text/x-tex", 5±1)
+repr("text/x-latex", pi ± 1e-3)
 ```
