@@ -313,7 +313,9 @@ Some [linear algebra](https://docs.julialang.org/en/v1/stdlib/LinearAlgebra/)
 functions work out-of-the-box, without defining specific methods for them. For
 example, you can solve linear systems, do matrix multiplication and dot product
 between vectors, find inverse, determinant, and trace of a matrix, do LU and QR
-factorization, etc.
+factorization, etc. Additional linear algebra methods (`eigvals`, `cholesky`, 
+etc.) are provided by
+[GenericLinearAglebra.jl](https://github.com/JuliaLinearAlgebra/GenericLinearAlgebra.jl).
 
 ```@repl
 using Measurements, LinearAlgebra
@@ -350,7 +352,7 @@ Measurements.derivative(2x - 4y, y)
 Measurements.derivative.(log1p(x) + y^2 - cos(x/y), [x, y, z])
 ```
 
-The last resul shows that the expression does not depend on `z`.
+The last result shows that the expression does not depend on `z`.
 
 !!! tip
     The vectorized version of `Measurements.derivative` is
