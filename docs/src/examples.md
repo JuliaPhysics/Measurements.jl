@@ -315,7 +315,7 @@ example, you can solve linear systems, do matrix multiplication and dot product
 between vectors, find inverse, determinant, and trace of a matrix, do LU and QR
 factorization, etc. Additional linear algebra methods (`eigvals`, `cholesky`, 
 etc.) are provided by
-[GenericLinearAglebra.jl](https://github.com/JuliaLinearAlgebra/GenericLinearAlgebra.jl).
+[GenericLinearAlgebra.jl](https://github.com/JuliaLinearAlgebra/GenericLinearAlgebra.jl).
 
 ```@repl
 using Measurements, LinearAlgebra
