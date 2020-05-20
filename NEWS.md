@@ -1,6 +1,13 @@
 History of Measurements.jl
 ==========================
 
+v2.2.1 (2020-05-21)
+-------------------
+
+### Minor Changes
+
+* Allow installation of new versions of `RecipesBase.jl`
+
 v2.2.0 (2020-02-02)
 -------------------
 
