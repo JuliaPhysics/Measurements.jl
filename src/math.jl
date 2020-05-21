@@ -715,8 +715,8 @@ Base.nextfloat(a::Measurement, n::Integer) = result(nextfloat(a.val, n), 1, a)
 
 Base.maxintfloat(::Type{Measurement{T}}) where {T<:AbstractFloat} = maxintfloat(T)
 
-Base.floatmin(::Type{Measurement{T}}) where {T<:AbstractFloat} = floatmin(T)
-Base.floatmax(::Type{Measurement{T}}) where {T<:AbstractFloat} = floatmax(T)
+Base.floatmin(::Type{Measurement{T}}) where {T<:AbstractFloat} = floatmin(T) ± zero(T)
+Base.floatmax(::Type{Measurement{T}}) where {T<:AbstractFloat} = floatmax(T) ± zero(T)
 
 Base.typemax(::Type{Measurement{T}}) where {T<:AbstractFloat} = typemax(T)
 
