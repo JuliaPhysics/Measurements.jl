@@ -279,7 +279,18 @@ end
         if isdefined(Base, :sincos)
             # Check we got the sign of derivatives in `sincos` right.
             s, c = @inferred(sincos(a))
+            @test s ≈ sin(a)
+            @test c ≈ cos(a)
             @test s + c ≈ sin(a) + cos(a)
+            @test s - c ≈ sin(a) - cos(a)
+            @test s ^ 2 + c ^ 2 ≈ one(a)
+        end
+        if isdefined(Base, :sincospi)
+            s, c = @inferred(sincospi(a))
+            @test s ≈ sinpi(a)
+            @test c ≈ cospi(a)
+            @test s + c ≈ sinpi(a) + cospi(a)
+            @test s - c ≈ sinpi(a) - cospi(a)
             @test s ^ 2 + c ^ 2 ≈ one(a)
         end
     end
