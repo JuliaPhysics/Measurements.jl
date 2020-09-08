@@ -206,7 +206,7 @@ is provided in the [`CITATION.bib`](CITATION.bib) file.
 
 
 [docs-latest-img]: https://img.shields.io/badge/docs-latest-blue.svg
-[docs-latest-url]: https://juliaphysics.github.io/Measurements.jl/latest/
+[docs-latest-url]: https://juliaphysics.github.io/Measurements.jl/dev/
 
 [docs-stable-img]: https://img.shields.io/badge/docs-stable-blue.svg
 [docs-stable-url]: https://juliaphysics.github.io/Measurements.jl/stable/

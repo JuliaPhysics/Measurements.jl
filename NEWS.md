@@ -1,6 +1,14 @@
 History of Measurements.jl
 ==========================
 
+v2.3.0 (2020-09-08)
+-------------------
+
+### New features
+
+* New methods for `floatmin(::Type{Measurement})` and
+  `floatmax(::Type{Measurement})`.
+
 v2.2.1 (2020-05-21)
 -------------------
 
