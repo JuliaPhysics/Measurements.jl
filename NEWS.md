@@ -1,6 +1,13 @@
 History of Measurements.jl
 ==========================
 
+v2.4.0 (2020-??-??)
+-------------------
+
+### New features
+
+* New method for `sincospi(::Measurement)`, when `sincospi` is defined.
+
 v2.3.0 (2020-09-08)
 -------------------
 

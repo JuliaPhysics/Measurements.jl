@@ -357,6 +357,13 @@ function Base.sincos(a::Measurement)
     return (result(s, c, a), result(c, -s, a))
 end
 
+if isdefined(Base, :sincospi)
+    function Base.sincospi(a::Measurement)
+        s, c = sincospi(a.val)
+        return (result(s, c * pi, a), result(c, -s * pi, a))
+    end
+end
+
 # Tangent: tan, tand, tanh
 
 function Base.tan(a::Measurement)
