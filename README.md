@@ -1,9 +1,9 @@
 # Measurements.jl
 
-| **Documentation**                       | **Build Status**                          | **Code Coverage**               |
-|:---------------------------------------:|:-----------------------------------------:|:-------------------------------:|
-| [![][docs-stable-img]][docs-stable-url] | [![Build Status][travis-img]][travis-url] | [![][coveral-img]][coveral-url] |
-| [![][docs-latest-img]][docs-latest-url] | [![Build Status][appvey-img]][appvey-url] | [![][codecov-img]][codecov-url] |
+| **Documentation**                       | **Build Status**                    | **Code Coverage**               |
+|:---------------------------------------:|:-----------------------------------:|:-------------------------------:|
+| [![][docs-stable-img]][docs-stable-url] | [![Build Status][gha-img]][gha-url] | [![][coveral-img]][coveral-url] |
+| [![][docs-latest-img]][docs-latest-url] |                                     | [![][codecov-img]][codecov-url] |
 
 Introduction
 ------------
@@ -211,11 +211,8 @@ is provided in the [`CITATION.bib`](CITATION.bib) file.
 [docs-stable-img]: https://img.shields.io/badge/docs-stable-blue.svg
 [docs-stable-url]: https://juliaphysics.github.io/Measurements.jl/stable/
 
-[travis-img]: https://travis-ci.org/JuliaPhysics/Measurements.jl.svg?branch=master
-[travis-url]: https://travis-ci.org/JuliaPhysics/Measurements.jl
-
-[appvey-img]: https://ci.appveyor.com/api/projects/status/u8mg5dlhyb1vjcpe?svg=true
-[appvey-url]: https://ci.appveyor.com/project/giordano/measurements-jl
+[gha-img]: https://github.com/JuliaPhysics/Measurements.jl/workflows/CI/badge.svg
+[gha-url]: https://github.com/JuliaPhysics/Measurements.jl/actions?query=workflow%3ACI
 
 [coveral-img]: https://coveralls.io/repos/github/JuliaPhysics/Measurements.jl/badge.svg?branch=master
 [coveral-url]: https://coveralls.io/github/JuliaPhysics/Measurements.jl?branch=master
