@@ -594,7 +594,9 @@ end
     @test repr(-12.34567±0) == "-12.34567 ± 0.0"
     @test repr(-12.34567±NaN) == "-12.34567 ± NaN"
     @test repr(-12.34567±0) == "-12.34567 ± 0.0"
-    @test repr(-12.34567±NaN) == "-12.34567 ± NaN"
+    @test repr(-12.34567±Inf) == "-12.34567 ± Inf"
+    @test repr(Inf±0.0123) == "Inf ± 0.012"
+    @test repr((-NaN)±0.0123) == "NaN ± 0.012"
     @test repr(1e-6±0) == "1.0e-6 ± 0.0"
     @test occursin(r"2×2 (Array|Matrix){Measurement{Float64}(,2|)}:\n  -0.5±0.03    30.0±1.0 *\n 400.0±20.0  -500.0±30.0",
                    repr("text/plain", [w 10x; 100y 1000w]))
