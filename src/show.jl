@@ -18,8 +18,8 @@
 function truncated_print(io::IO, m::Measurement, error_digits::Int;
                          atbeg = "", atend = "", pm = "±")
     print(io, atbeg,
-          (iszero(m.err) || isnan(m.err)) ? m.val : round(m.val, digits =
-                                                          -Base.hidigit(m.err, 10) + error_digits),
+          (iszero(m.err) || !isfinite(m.err)) ? m.val : round(m.val, digits =
+                                                              -Base.hidigit(m.err, 10) + error_digits),
           get(io, :compact, false) ? pm : " $pm ",
           round(m.err, sigdigits=error_digits), atend)
 end

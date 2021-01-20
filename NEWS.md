@@ -1,12 +1,14 @@
-History of Measurements.jl
-==========================
+# History of Measurements.jl
 
-v2.4.0 (2020-??-??)
--------------------
+## v2.4.0 (2021-01-20)
 
 ### New features
 
 * New method for `sincospi(::Measurement)`, when `sincospi` is defined.
+
+### Bug Fixes
+
+* Numbers with infinite error are shown correctly.
 
 v2.3.0 (2020-09-08)
 -------------------
