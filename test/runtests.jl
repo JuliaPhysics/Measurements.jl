@@ -805,6 +805,11 @@ end
     x = 1u"m" ± .2u"m"
     @test value(x) == 1u"m"
     @test uncertainty(x) == .2u"m"
+
+    # `value` and `uncertainty` should work on any AbstractQuantity
+    x = 2.71u"m/s"
+    @test value(x) == x
+    @test uncertainty(x) == zero(x)
 end
 
 @testset "Complex measurements" begin

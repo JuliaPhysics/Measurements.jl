@@ -1,14 +1,27 @@
 # History of Measurements.jl
 
+## v2.5.0 (2021-01-28)
+
+### New features
+
+* When the package `Unitful.jl` is loaded, now `Measurements.value` and
+  `Measurements.uncertainty` accept any `AbstractQuantity`, instead of only
+  `AbstractQuantity{<:Measurement}`
+  ([#87](https://github.com/JuliaPhysics/Measurements.jl/issues/87),
+  [#88](https://github.com/JuliaPhysics/Measurements.jl/issues/88)).
+
 ## v2.4.0 (2021-01-20)
 
 ### New features
 
-* New method for `sincospi(::Measurement)`, when `sincospi` is defined.
+* New method for `sincospi(::Measurement)`, when `sincospi` is defined
+  ([#76](https://github.com/JuliaPhysics/Measurements.jl/pull/76)).
 
 ### Bug Fixes
 
-* Numbers with infinite error are shown correctly.
+* Numbers with infinite error are shown correctly
+  ([#83](https://github.com/JuliaPhysics/Measurements.jl/pull/83),
+  [#84](https://github.com/JuliaPhysics/Measurements.jl/pull/84)).
 
 v2.3.0 (2020-09-08)
 -------------------
@@ -16,7 +29,8 @@ v2.3.0 (2020-09-08)
 ### New features
 
 * New methods for `floatmin(::Type{Measurement})` and
-  `floatmax(::Type{Measurement})`.
+  `floatmax(::Type{Measurement})`
+  ([#72](https://github.com/JuliaPhysics/Measurements.jl/pull/72)).
 
 v2.2.1 (2020-05-21)
 -------------------
@@ -24,6 +38,7 @@ v2.2.1 (2020-05-21)
 ### Minor Changes
 
 * Allow installation of new versions of `RecipesBase.jl`
+  ([#70](https://github.com/JuliaPhysics/Measurements.jl/pull/70)).
 
 v2.2.0 (2020-02-02)
 -------------------
