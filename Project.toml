@@ -1,7 +1,7 @@
 name = "Measurements"
 uuid = "eff96d63-e80a-5855-80a2-b1b0885c5ab7"
 authors = ["Mosè Giordano <mose@gnu.org>"]
-version = "2.4.0"
+version = "2.5.0"
 
 [deps]
 Calculus = "49dc2e85-a5d0-5ad3-a950-438e2897f1b9"
