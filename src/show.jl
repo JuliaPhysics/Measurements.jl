@@ -79,6 +79,17 @@ function Base.alignment(io::IO, measure::Measurement)
         (length(m.captures[1]), length(m.captures[2]))
 end
 
+# correct quoting
+function Base.show_unquoted(io::IO, z::Measurement, ::Int, prec::Int)
+    if Base.operator_precedence(:±) <= prec
+        print(io, "(")
+        show(io, z)
+        print(io, ")")
+    else
+        show(io, z)
+    end
+end
+
 ### Juno pretty printing
 @require Juno="e5e0dc1b-0480-54bc-9374-aad01c23163d" begin
     Juno.render(i::Juno.Inline, measure::Measurement) =
