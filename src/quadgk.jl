@@ -54,3 +54,10 @@ function QuadGK.quadgk(f, a::Measurement{T}, b::Measurement{S};
     integral = QuadGK.quadgk(f, convert(F, aval), convert(F, bval); kws...)
     return (quadgk_result(integral[1], (-f(aval), f(bval)), (a, b)), integral[2])
 end
+
+# This shouldn't be needed in most cases, but when the extrema of an integral
+# are numbers with uncertainty _and_ physical units (from Unitful.jl), the
+# unitful property of the numbers is lost, leading to an inconsistency:
+# <https://github.com/JuliaPhysics/Measurements.jl/issues/75>.
+QuadGK.cachedrule(::Type{Measurement{T}}, n::Integer) where {T<:AbstractFloat} =
+    QuadGK.cachedrule(T, n)
