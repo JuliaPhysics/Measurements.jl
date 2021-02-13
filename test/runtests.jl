@@ -810,6 +810,13 @@ end
     x = 2.71u"m/s"
     @test value(x) == x
     @test uncertainty(x) == zero(x)
+
+    # Issue https://github.com/JuliaPhysics/Measurements.jl/issues/75
+    f(x) = x^2
+    F(x) = x^3 / 3
+    a = (5 ± 0.1)u"m"
+    b = (10 ± 1)u"m"
+    @test (QuadGK.quadgk(f, a, b)[1]).val ≈ (F(b) - F(a)).val
 end
 
 @testset "Complex measurements" begin

@@ -1,5 +1,14 @@
 # History of Measurements.jl
 
+## v2.5.1 (2021-??-??)
+
+### Bug Fixes
+
+* Work around issue when the extrema of an integral with `QuadGK.jl` are numbers
+  with uncertainties and units from `Unitful.jl`
+  ([#75](https://github.com/JuliaPhysics/Measurements.jl/issues/75),
+  [#89](https://github.com/JuliaPhysics/Measurements.jl/issues/89)).
+
 ## v2.5.0 (2021-01-28)
 
 ### New features
