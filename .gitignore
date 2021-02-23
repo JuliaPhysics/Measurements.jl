@@ -2,6 +2,7 @@
 *.jl.cov
 *.jl.*.cov
 *.jl.mem
+/.benchmarkci
 /docs/build/
 /docs/site/
 Manifest.toml

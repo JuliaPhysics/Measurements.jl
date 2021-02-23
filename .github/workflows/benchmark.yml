@@ -1,0 +1,51 @@
+name: Run benchmarks
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: julia-actions/setup-julia@v1
+        with:
+          version: '^1.6.0-0'
+      - name: Cache artifacts
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.julia/artifacts
+            ~/.julia/registries
+          key: ${{ runner.os }}-benchmarks-artifacts-${{ hashFiles('**/Project.toml') }}
+          restore-keys: ${{ runner.os }}-benchmarks-artifacts
+      - name: Install dependencies
+        shell: julia --color=yes {0}
+        run: |
+          using Pkg
+          Pkg.instantiate()
+          pkg"add PkgBenchmark BenchmarkCI@0.1"
+      - name: Run benchmarks
+        shell: julia --color=yes {0}
+        run: |
+          using PkgBenchmark, BenchmarkCI
+
+          BenchmarkCI.judge()
+      - name: Print judgement
+        shell: julia --color=yes {0}
+        run: |
+          using BenchmarkCI
+
+          BenchmarkCI.displayjudgement()
+      - name: Push results
+        shell: julia --color=yes {0}
+        run: |
+          using BenchmarkCI
+
+          BenchmarkCI.pushresult(;
+              url = "git@github.com:JuliaPhysics/Measurements.jl.git",
+          )
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SSH_KEY: ${{ secrets.DOCUMENTER_KEY }}
