@@ -1,0 +1,6 @@
+[deps]
+BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
+Measurements = "eff96d63-e80a-5855-80a2-b1b0885c5ab7"
+PkgBenchmark = "32113eaa-f34f-5b0d-bd6c-c81e245fc73d"
+QuadGK = "1fd47b50-473d-5c70-9696-f719f8f3bcdc"
+SpecialFunctions = "276daf66-3868-5448-9aa4-cd146d93841b"
