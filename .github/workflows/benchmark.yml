@@ -20,26 +20,23 @@ jobs:
             ~/.julia/registries
           key: ${{ runner.os }}-benchmarks-artifacts-${{ hashFiles('**/Project.toml') }}
           restore-keys: ${{ runner.os }}-benchmarks-artifacts
-      - name: Install dependencies
-        shell: julia --color=yes {0}
+      - name: Run benchmarks
+        shell: julia --color=yes --project=benchmark {0}
         run: |
           using Pkg
           Pkg.instantiate()
-          pkg"add PkgBenchmark BenchmarkCI@0.1"
-      - name: Run benchmarks
-        shell: julia --color=yes {0}
-        run: |
+
           using PkgBenchmark, BenchmarkCI
 
           BenchmarkCI.judge()
       - name: Print judgement
-        shell: julia --color=yes {0}
+        shell: julia --color=yes --project=benchmark {0}
         run: |
           using BenchmarkCI
 
           BenchmarkCI.displayjudgement()
       - name: Push results
-        shell: julia --color=yes {0}
+        shell: julia --color=yes --project=benchmark {0}
         run: |
           using BenchmarkCI
 
