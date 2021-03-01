@@ -1,4 +1,5 @@
 [deps]
+BenchmarkCI = "20533458-34a3-403d-a444-e18f38190b5b"
 BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
 Measurements = "eff96d63-e80a-5855-80a2-b1b0885c5ab7"
 PkgBenchmark = "32113eaa-f34f-5b0d-bd6c-c81e245fc73d"

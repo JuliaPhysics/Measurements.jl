@@ -31,6 +31,12 @@ SUITE["vector"]["sqrt"] = @benchmarkable sqrt.($(vector))
 SUITE["vector"]["sin"] = @benchmarkable sin.($(vector))
 SUITE["vector"]["gamma"] = @benchmarkable gamma.($(vector))
 SUITE["vector"]["sin²+cos²"] = @benchmarkable cos.($(vector)) .^ 2 .+ sin.($(vector)) .^ 2
+SUITE["vector"]["sum - all different"] = @benchmarkable sum($(vector))
+SUITE["vector"]["mean - all different"] = @benchmarkable mean($(vector))
+SUITE["vector"]["prod - all different"] = @benchmarkable prod($(vector))
+SUITE["vector"]["sum - all equal"] = @benchmarkable sum(v) setup = (x = 1 ± 0.1; v = [x for _ in eachindex(vector)])
+SUITE["vector"]["mean - all equal"] = @benchmarkable mean(v) setup = (x = 1 ± 0.1; v = [x for _ in eachindex(vector)])
+SUITE["vector"]["prod - all equal"] = @benchmarkable prod(v) setup = (x = 1 ± 0.1; v = [x for _ in eachindex(vector)])
 
 SUITE["specfun"]["gamma"] = @benchmarkable gamma($(a))
 
