@@ -591,25 +591,43 @@ end
     @test repr(ww, context=IOContext(stdout, :error_digits=>1, :compact=>true)) == "-0.53±0.03"
     @test repr(ww, context=:error_digits=>3) == "-0.5345 ± 0.0312"
     @test repr(ww, context=IOContext(stdout, :error_digits=>4, :compact=>true)) == "-0.5345±0.03123"
-    @test repr(-12.34567±0) == "-12.34567 ± 0.0"
-    @test repr(-12.34567±NaN) == "-12.34567 ± NaN"
-    @test repr(-12.34567±0) == "-12.34567 ± 0.0"
-    @test repr(-12.34567±Inf) == "-12.34567 ± Inf"
-    @test repr(Inf±0.0123) == "Inf ± 0.012"
-    @test repr((-NaN)±0.0123) == "NaN ± 0.012"
-    @test repr(1e-6±0) == "1.0e-6 ± 0.0"
-    @test occursin(r"2×2 (Array|Matrix){Measurement{Float64}(,2|)}:\n  -0.5±0.03    30.0±1.0 *\n 400.0±20.0  -500.0±30.0",
-                   repr("text/plain", [w 10x; 100y 1000w]))
-    @test repr("text/plain", zz, context=:compact=>true) == "(-0.534±0.031)-(0.534±0.031)im"
-    @test repr("text/plain", zz) == "(-0.534 ± 0.031) - (0.534 ± 0.031)im"
-    @test repr("text/plain", complex(x, w)) == "(3.0 ± 0.1) - (0.5 ± 0.03)im"
-    @test repr("text/plain", complex(w, y)) == "(-0.5 ± 0.03) + (4.0 ± 0.2)im"
-    @test repr("text/latex", x) == "\$3.0 \\pm 0.1\$"
-    @test repr("text/x-tex", y) == repr("text/x-latex", y) == "4.0 \\pm 0.2"
-    @test Base.alignment(devnull, x) == (5,4)
-    # Make sure the printed representation of a Measurement object is correctly parsed as
-    # the same number (note that the tag will be different, but that's not important here).
-    for a in (w, x, y); @test eval(Meta.parse(repr(a))) == a; end
+    @testset "Inf, NaN and zero" begin
+        @test repr(-12.34567±0) == "-12.34567 ± 0.0"
+        @test repr(-12.34567±NaN) == "-12.34567 ± NaN"
+        @test repr(-12.34567±0) == "-12.34567 ± 0.0"
+        @test repr(-12.34567±Inf) == "-12.34567 ± Inf"
+        @test repr(Inf±0.0123) == "Inf ± 0.012"
+        @test repr((-NaN)±0.0123) == "NaN ± 0.012"
+        @test repr(1e-6±0) == "1.0e-6 ± 0.0"
+    end
+    @testset "Value smaller than error" begin
+        @test repr(1.234±1000) == "1.2 ± 1000.0"
+        @test repr(1.234e-4±1) == "0.00012 ± 1.0"
+        @test repr(1.234e-4±1e-2) == "0.00012 ± 0.01"
+        @test repr(1.234e-4±2e-4) == "0.00012 ± 0.0002"
+    end
+    @testset "Array" begin
+        @test occursin(r"2×2 (Array|Matrix){Measurement{Float64}(,2|)}:\n  -0.5±0.03    30.0±1.0 *\n 400.0±20.0  -500.0±30.0",
+                       repr("text/plain", [w 10x; 100y 1000w]))
+    end
+    @testset "Complex numbers" begin
+        @test repr("text/plain", zz, context=:compact=>true) == "(-0.534±0.031)-(0.534±0.031)im"
+        @test repr("text/plain", zz) == "(-0.534 ± 0.031) - (0.534 ± 0.031)im"
+        @test repr("text/plain", complex(x, w)) == "(3.0 ± 0.1) - (0.5 ± 0.03)im"
+        @test repr("text/plain", complex(w, y)) == "(-0.5 ± 0.03) + (4.0 ± 0.2)im"
+    end
+    @testset "TeX and LaTeX" begin
+        @test repr("text/latex", x) == "\$3.0 \\pm 0.1\$"
+        @test repr("text/x-tex", y) == repr("text/x-latex", y) == "4.0 \\pm 0.2"
+    end
+    @testset "Alignment" begin
+        @test Base.alignment(devnull, x) == (5,4)
+    end
+    @testset "Round-trip" begin
+        # Make sure the printed representation of a Measurement object is correctly parsed as
+        # the same number (note that the tag will be different, but that's not important here).
+        for a in (w, x, y); @test eval(Meta.parse(repr(a))) == a; end
+    end
 end
 
 @testset "sum" begin
