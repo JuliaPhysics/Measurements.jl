@@ -60,6 +60,8 @@ Parse the string and return a `Measurement{Float64}` object.
 Examples of valid strings and the resulting `Measurement{Float64}` are:
 
 ```jldoctest
+julia> using Measurements
+
 julia> measurement("-123.4(56)")
 -123.4 ± 5.6
 
