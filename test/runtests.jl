@@ -468,7 +468,7 @@ end
     for a in (w, x, y)
         @test @inferred(gamma(a)) ≈ factorial(a - one(a))
         @test @inferred(gamma(a + one(a))) ≈ factorial(a)
-        @test @inferred(lgamma(abs(a))) ≈ log(gamma(abs(a)))
+        @test @inferred(logabsgamma(abs(a)))[1] ≈ log(gamma(abs(a)))
         @test @inferred(digamma(a)) ≈ polygamma(0, a)
         @test @inferred(digamma(invdigamma(a))) ≈ a + zero(a)
         @test @inferred(trigamma(a)) ≈ polygamma(1, a)
@@ -480,9 +480,9 @@ end
         @test beta(a, x) ≈ gamma(a)*gamma(x)/gamma(a + x)
         @test beta(a, pi) ≈ gamma(a)*gamma(pi)/gamma(a + pi)
         @test beta(ℯ, a) ≈ gamma(ℯ)*gamma(a)/gamma(ℯ + a)
-        @test lbeta(abs(a), x) ≈ log(beta(abs(a), x))
-        @test lbeta(abs(a), pi) ≈ log(beta(abs(a), pi))
-        @test lbeta(ℯ, abs(a)) ≈ log(beta(ℯ, abs(a)))
+        @test logabsbeta(abs(a), x)[1] ≈ log(beta(abs(a), x))
+        @test logabsbeta(abs(a), pi)[1] ≈ log(beta(abs(a), pi))
+        @test logabsbeta(ℯ, abs(a))[1] ≈ log(beta(ℯ, abs(a)))
     end
 end
 
