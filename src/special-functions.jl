@@ -74,9 +74,10 @@ function SpecialFunctions.gamma(a::Measurement)
     return result(Γ, Γ*digamma(aval), a)
 end
 
-function SpecialFunctions.lgamma(a::Measurement)
+function SpecialFunctions.logabsgamma(a::Measurement)
     aval = a.val
-    return result(lgamma(aval), digamma(aval), a)
+    logabs, s = logabsgamma(a.val)
+    return (result(logabs, digamma(aval), a), result(s, 0, a))
 end
 
 function SpecialFunctions.digamma(a::Measurement)
@@ -120,13 +121,15 @@ end
 
 SpecialFunctions.beta(a::Real, b::Measurement) = beta(b, a)
 
-function SpecialFunctions.lbeta(a::Measurement, b::Measurement)
+function SpecialFunctions.logabsbeta(a::Measurement, b::Measurement)
     aval = a.val
     bval = b.val
-    return result(lbeta(aval, bval),
-                  (digamma(aval) - digamma(aval + bval),
-                   digamma(bval) - digamma(aval + bval)),
-                  (a, b))
+    logabs, s = logabsbeta(a.val, b.val)
+    return (result(logabs,
+                   (digamma(aval) - digamma(aval + bval),
+                    digamma(bval) - digamma(aval + bval)),
+                   (a, b)),
+            result(s, (0, 0), (a, b)))
 end
 
 function SpecialFunctions.lbeta(a::Measurement, b::Real)
