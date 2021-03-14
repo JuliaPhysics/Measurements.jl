@@ -153,8 +153,9 @@ macro uncertain(expr::Expr)
     if n == 1
         a = esc(expr.args[2]) # Argument, of Measurement type
         return quote
-            x = measurement($a)
-            result($f(x.val), Calculus.derivative($f, x.val), x)
+            let x = measurement($a)
+                result($f(x.val), Calculus.derivative($f, x.val), x)
+            end
         end
     else
         a = expr.args[2:end] # Arguments, as an array of expressions
