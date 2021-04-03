@@ -616,7 +616,7 @@ end
 
 Base.log(::Irrational{:ℯ}, a::Measurement) = log(a)
 
-function Base.log(a::Real, b::Measurement{T}) where {T<:AbstractFloat}
+function Base.log(a::Real, b::Measurement)
     bval = b.val
     return result(log(a, bval), inv(log(a) * bval), b)
 end
