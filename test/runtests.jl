@@ -1,5 +1,5 @@
 using Measurements, SpecialFunctions, QuadGK, Calculus
-using Test, LinearAlgebra, Statistics, Unitful
+using Test, LinearAlgebra, Statistics, Unitful, Printf
 
 import Base: isapprox
 import Measurements: value, uncertainty
@@ -628,6 +628,15 @@ end
         # the same number (note that the tag will be different, but that's not important here).
         for a in (w, x, y); @test eval(Meta.parse(repr(a))) == a; end
     end
+    if VERSION >= v"1.6.0-rc1"
+        @testset "@printf" begin
+            for T in (Float16, Float32, Float64, BigFloat)
+                m1 = measurement(one(T))
+                @test_nowarn @printf("Testing @printf: %.2e\n", m1)
+                @test @sprintf("Testing @sprintf: %.2e\n", m1) == "Testing @sprintf: 1.00e+00\n"
+            end
+        end
+    end
 end
 
 @testset "sum" begin
@@ -851,7 +860,7 @@ end
     @test m .* (1:2:6) isa StepRangeLen
     @test (1:.1:6) .- m isa StepRangeLen
     @test m ./ (1:6.0) isa Vector{<:Measurement}
-    
+
     # JuliaLang/julia#30944
     @test range(0±0, step=1±.1, length=10) isa StepRangeLen
 end

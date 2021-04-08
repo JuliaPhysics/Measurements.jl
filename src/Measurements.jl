@@ -24,6 +24,8 @@ module Measurements
 # Calculus is used to calculate numerical derivatives in "@uncertain" macro.
 using Calculus
 
+import Printf
+
 using Requires
 
 # Functions provided by this package and exposed to users

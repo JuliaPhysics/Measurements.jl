@@ -88,6 +88,10 @@ function Base.alignment(io::IO, measure::Measurement)
         (length(m.captures[1]), length(m.captures[2]))
 end
 
+if VERSION >= v"1.6.0-rc1"
+    Printf.tofloat(measure::Measurement) = Printf.tofloat(measure.val)
+end
+
 ### Juno pretty printing
 @require Juno="e5e0dc1b-0480-54bc-9374-aad01c23163d" begin
     Juno.render(i::Juno.Inline, measure::Measurement) =
