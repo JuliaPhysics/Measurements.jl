@@ -15,6 +15,8 @@
 #
 ### Code:
 
+import Printf
+
 function truncated_print(io::IO, m::Measurement, error_digits::Int;
                          atbeg = "", atend = "", pm = "±")
     val = if iszero(m.err) || !isfinite(m.err)
@@ -86,6 +88,10 @@ function Base.alignment(io::IO, measure::Measurement)
     m = match(r"^(.*[\±])(.*)$", sprint(show, measure, context=io, sizehint=0))
     m === nothing ? (length(sprint(show, measure, context=io, sizehint=0)), 0) :
         (length(m.captures[1]), length(m.captures[2]))
+end
+
+if VERSION >= v"1.6.0-rc1"
+    Printf.tofloat(measure::Measurement) = Printf.tofloat(measure.val)
 end
 
 ### Juno pretty printing
