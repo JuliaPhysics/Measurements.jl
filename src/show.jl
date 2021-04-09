@@ -15,6 +15,8 @@
 #
 ### Code:
 
+import Printf
+
 function truncated_print(io::IO, m::Measurement, error_digits::Int;
                          atbeg = "", atend = "", pm = "±")
     val = if iszero(m.err) || !isfinite(m.err)
