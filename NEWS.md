@@ -1,6 +1,12 @@
 # History of Measurements.jl
 
-## v2.5.1 (2021-??-??)
+## v2.6.0 (2021-04-20)
+
+### New features
+
+* Make `Measurement` work with `Printf.@printf` macro
+  ([#101](https://github.com/JuliaPhysics/Measurements.jl/issues/101),
+  [#102](https://github.com/JuliaPhysics/Measurements.jl/pull/102)).
 
 ### Bug Fixes
 
