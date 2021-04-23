@@ -138,6 +138,26 @@ end
     @test !isone(0 ± 0)
 end
 
+@testset "Hashing and dictionaries" begin
+    @testset "a = $a" for a in (x, y, w, z)
+        @test hash(a) == hash(a)
+        @test hash(2 * a) == hash(a + a)
+        @test hash(a - a) == hash(zero(a))
+        @test hash(a / a) == hash(one(a))
+        d = Dict(a => 42)
+        @test d[a] == 42
+        # `hash` must be consistent with `==`.  Skip following tests for
+        # Complex{Measurement}.
+        if !(a isa Complex)
+            other = value(a) ± uncertainty(a)
+            @test hash(a) == hash(other)
+            @test d[other] == 42
+            d[other] = 14
+            @test d[a] == 14
+        end
+    end
+end
+
 ##### Mathematical Operations
 @testset "Addition" begin
     @test @inferred(x + y) ≈ measurement(7, 0.22360679774997896)
