@@ -29,6 +29,10 @@ Base.:(==)(a::Irrational, b::Measurement) = false
 Base.:(==)(a::Rational, b::Measurement) = (a==b.val && iszero(b.err))
 Base.:(==)(a::Real, b::Measurement) = (a==b.val && iszero(b.err))
 
+# Create a hashing function that matches the same behaviour as `==`: only the
+# `val` and `err` fields matter.
+Base.hash(m::Measurement, h::UInt) = hash(m.val, hash(m.err, hash(:Measurement, h)))
+
 # Order relation is based on the value of measurements, uncertainties are ignored
 for cmp in (:<, :<=)
     @eval begin
