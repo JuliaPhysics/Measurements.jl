@@ -734,11 +734,19 @@ end
     @testset "2-arg functions: $f" for f in (log, hypot, atan)
         @test @uncertain(f(x, y)) ≈ f(x, y)
     end
-    @testset "ccall" begin
-        f(x) = x * x
-        ptr = @cfunction($f, Cdouble, (Cdouble,))
-        g(x) = ccall(Base.unsafe_convert(Ptr{Cvoid}, ptr), Cdouble, (Cdouble,), x)*x
-        @test GC.@preserve(ptr, @uncertain(g(x))) ≈ x^3
+    @static if VERSION < v"1.6.0-" || Base.BinaryPlatforms.arch(Base.BinaryPlatforms.HostPlatform()) ∉ ("aarch64", "armv6l", "armv7l", "powerpc64le")
+        # Don't run this test if the platform doesn't allow it, see
+        # https://github.com/JuliaLang/julia/blob/58ffe7e3ed3a93a9d816097548e785284f57fbd4/src/codegen.cpp#L5531-L5536
+        # However I don't know how to check the architecture of the current
+        # system before Julia v1.6 in a sane way: I should copy
+        # `Base.BinaryPlatforms.CPUID.normalize_arch`, but that's really too
+        # much work for this simple test, so let's ignore the problem.
+        @testset "ccall" begin
+            f(x) = x * x
+            ptr = @cfunction($f, Cdouble, (Cdouble,))
+            g(x) = ccall(Base.unsafe_convert(Ptr{Cvoid}, ptr), Cdouble, (Cdouble,), x)*x
+            @test GC.@preserve(ptr, @uncertain(g(x))) ≈ x^3
+        end
     end
 end
 
