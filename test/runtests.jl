@@ -652,7 +652,9 @@ end
         @testset "@printf" begin
             for T in (Float16, Float32, Float64, BigFloat)
                 m1 = measurement(one(T))
-                @test_nowarn @printf("Testing @printf: %.2e\n", m1)
+                io = IOBuffer()
+                @test_nowarn @printf(io, "Testing @printf: %.2e\n", m1)
+                @test String(take!(io)) == "Testing @printf: 1.00e+00\n"
                 @test @sprintf("Testing @sprintf: %.2e\n", m1) == "Testing @sprintf: 1.00e+00\n"
             end
         end
