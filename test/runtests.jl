@@ -753,6 +753,9 @@ end
     @testset "2-arg functions: $f" for f in (log, hypot, atan)
         @test @uncertain(f(x, y)) ≈ f(x, y)
     end
+    @testset "Complex expression: $(a)" for a in (x, y, w)
+        @test @uncertain(sin(eta(a * a)) + a ^ 2 - a * a) ≈ sin(@uncertain(eta(a * a)))
+    end
     @static if VERSION < v"1.6.0-" || Base.BinaryPlatforms.arch(Base.BinaryPlatforms.HostPlatform()) ∉ ("aarch64", "armv6l", "armv7l", "powerpc64le")
         # Don't run this test if the platform doesn't allow it, see
         # https://github.com/JuliaLang/julia/blob/58ffe7e3ed3a93a9d816097548e785284f57fbd4/src/codegen.cpp#L5531-L5536

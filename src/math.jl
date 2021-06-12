@@ -139,6 +139,41 @@ result(val::Complex, der, a::Complex{<:Measurement}) =
             result(imag(val), der[3:4], reim(a)))
 
 ### @uncertain macro.
+function _uncertain_do(expr::Expr, p::Int)
+    _to_measurement(a::Expr, p::Int) = _uncertain_do(a, p)
+    _to_measurement(a, p) = :( measurement($a) )
+
+    f = esc(expr.args[1]) # Function name
+    n = length(expr.args) - 1
+    if n == 1
+        a = esc(expr.args[2]) # Argument, of Measurement type
+        x = esc(_to_measurement(expr.args[2], p))
+        return quote
+            $result($f($x.val), Calculus.derivative($f, $x.val), $x)
+        end
+    else
+        a = expr.args[2:end] # Arguments, as an array of expressions
+        args = :([])  # Build up array of arguments
+        [push!(args.args, esc(_to_measurement(expr.args[i+1], p))) for i=1:n] # Fill the array
+        argsval =:([])  # Build up the array of values of arguments
+        [push!(argsval.args, :($(args.args[i]).val)) for i=1:n] # Fill the array
+        return :( $result($f($argsval...),
+                         Calculus.gradient(x -> $f(x...), $argsval),
+                         $args) )
+    end
+end
+
+_uncertain(x) = x
+function _uncertain(expr::Expr, p::Int=4)
+    if Meta.isexpr(expr, :call)
+        # If this is a function call, apply the transformation
+        return _uncertain_do(expr, p)
+    else
+        # Otherwise go into the next expressions
+        return Expr(expr.head, _uncertain.(expr.args)...)
+    end
+end
+
 """
     @uncertain f(value ± stddev, ...)
 
@@ -147,26 +182,8 @@ according to rules of linear error propagation theory.
 
 Function `f` can accept any number of real arguments.
 """
-macro uncertain(expr::Expr)
-    f = esc(expr.args[1]) # Function name
-    n = length(expr.args) - 1
-    if n == 1
-        a = esc(expr.args[2]) # Argument, of Measurement type
-        return quote
-            let x = measurement($a)
-                result($f(x.val), Calculus.derivative($f, x.val), x)
-            end
-        end
-    else
-        a = expr.args[2:end] # Arguments, as an array of expressions
-        args = :([])  # Build up array of arguments
-        [push!(args.args, :(measurement($(esc(a[i]))))) for i=1:n] # Fill the array
-        argsval =:([])  # Build up the array of values of arguments
-        [push!(argsval.args, :($(args.args[i]).val)) for i=1:n] # Fill the array
-        return :( result($f($argsval...),
-                         Calculus.gradient(x -> $f(x...), $argsval),
-                         $args) )
-    end
+macro uncertain(expr::Expr, p::Int=4)
+    return (_uncertain(expr))
 end
 
 ### Elementary arithmetic operations:

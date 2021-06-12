@@ -1,5 +1,12 @@
 # History of Measurements.jl
 
+## ???
+
+### New features
+
+* `@uncertain` macro can now manipulate more complex expressions involving
+  multiple function calls.
+
 ## v2.7.1 (2022-03-03)
 
 ### Bug Fixes
