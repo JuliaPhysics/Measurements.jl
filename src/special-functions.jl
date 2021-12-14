@@ -60,13 +60,7 @@ function SpecialFunctions.dawson(a::Measurement{T}) where {T<:AbstractFloat}
     return result(res, one(T) - 2 * aval * res, a)
 end
 
-# Factorial and gamma
-
-function SpecialFunctions.factorial(a::Measurement)
-    aval = a.val
-    fact = SpecialFunctions.factorial(aval)
-    return result(fact, fact*digamma(aval + one(aval)), a)
-end
+# Gamma
 
 function SpecialFunctions.gamma(a::Measurement)
     aval = a.val
@@ -225,4 +219,14 @@ function SpecialFunctions.besselkx(nu::Real, a::Measurement)
                   -(besselk(nu - 1, x) + besselk(nu + 1, x)) * exp(x) / 2 +
                   besselk(nu, x)*exp(x),
                   a)
+end
+
+# Deprecations
+function Base.factorial(a::Measurement)
+    Base.depwarn("""
+                 factorial(($(a))::Measurement) is deprecated, instead use
+                     SpecialFunctions.gamma($(a + one(a)))
+                 """,
+                 :factorial)
+    SpecialFunctions.gamma(a + one(a))
 end

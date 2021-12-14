@@ -8,6 +8,14 @@
   ([#103](https://github.com/JuliaPhysics/Measurements.jl/issues/103),
   [#104](https://github.com/JuliaPhysics/Measurements.jl/pull/104)).
 
+### Deprecations
+
+* `factorial(a::Measurement)` is deprecated in favour of
+  `SpecialFunctions.gamma(a + 1)`, as a result of
+  `SpecialFunctions.factorial(a::AbstractFloat)` being removed in
+  `SpecialFunctions.jl` v2.0
+  ([#111](https://github.com/JuliaPhysics/Measurements.jl/pull/111)).
+
 ## v2.6.0 (2021-04-20)
 
 ### New features
