@@ -1,12 +1,15 @@
 # History of Measurements.jl
 
-## v2.7.0 (2021-??-??)
+## v2.7.0 (2021-12-28)
 
 ### New features
 
 * Support hashing of `Measurement` objects
   ([#103](https://github.com/JuliaPhysics/Measurements.jl/issues/103),
   [#104](https://github.com/JuliaPhysics/Measurements.jl/pull/104)).
+* New method `Base.tryparse(::Type{Measurement}, ::AbstractString)`
+  ([#110](https://github.com/JuliaPhysics/Measurements.jl/issues/110),
+  [#112](https://github.com/JuliaPhysics/Measurements.jl/pull/112)).
 
 ### Deprecations
 

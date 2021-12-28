@@ -83,7 +83,7 @@ julia> measurement("-1234e-1")
 """
 measurement(str::AbstractString) = parse(Measurement{Float64}, str)
 
-function Base.parse(::Type{Measurement{T}}, str::S) where {T<:AbstractFloat, S<:AbstractString}
+function Base.tryparse(::Type{Measurement{T}}, str::S) where {T<:AbstractFloat, S<:AbstractString}
     m = match(rxp_error_with_parentheses, str)
     if m !== nothing # "123(45)e6"
         val_str::S, val_dec, err_str::S, err_dec_str, expn = m.captures
@@ -105,7 +105,7 @@ function Base.parse(::Type{Measurement{T}}, str::S) where {T<:AbstractFloat, S<:
                 val_str, err_str, val_dec, expn =
                     m.captures[1], "0", nothing, nothing
             else
-                throw(ArgumentError("cannot parse $(repr(str)) as Measurement{$T}"))
+                return nothing
             end
         end
     end
@@ -126,4 +126,10 @@ function Base.parse(::Type{Measurement{T}}, str::S) where {T<:AbstractFloat, S<:
         err *= fact
     end
     return measurement(val, err)
+end
+
+function Base.parse(::Type{Measurement{T}}, str::S) where {T<:AbstractFloat, S<:AbstractString}
+    out = tryparse(Measurement{T}, str)
+    out === nothing && throw(ArgumentError("cannot parse $(repr(str)) as Measurement{$T}"))
+    return out
 end
