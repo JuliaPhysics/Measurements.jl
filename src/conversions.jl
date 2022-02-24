@@ -22,6 +22,12 @@ Base.convert(::Type{Measurement{T}}, a::Rational{<:Integer}) where {T<:AbstractF
     measurement(T(a))::Measurement{T}
 Base.convert(::Type{Measurement{T}}, a::Real) where {T<:AbstractFloat} =
     measurement(T(a))::Measurement{T}
+Base.convert(::Type{Measurement{T}}, a::Base.TwicePrecision) where {T<:AbstractFloat} =
+    measurement(T(a))::Measurement{T}
+
+function Base.convert(::Type{Measurement{T}}, a::Complex) where {T}
+    throw(ArgumentError("cannot convert a `Complex` to `Measurement`, use `Complex{<:Measurement}` instead"))
+end
 
 Base.convert(::Type{Measurement{T}}, a::Measurement{T}) where {T<:AbstractFloat} = a
 function Base.convert(::Type{Measurement{T}},

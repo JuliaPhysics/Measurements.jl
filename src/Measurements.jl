@@ -61,7 +61,19 @@ function Measurement(val::V, err::E, tag::UInt64,
 end
 Measurement{T}(x::Measurement{S}) where {T,S} = convert(Measurement{T}, x)
 Measurement{T}(x::S) where {T,S} = convert(Measurement{T}, x)
-Measurement{T}(x::S) where {T,S<:Rational} = convert(Measurement{T}, x)
+
+# disambiguities
+Measurement{T}(x::S) where {T, S<:Rational} = convert(Measurement{T}, x)
+Measurement{T}(x::S) where {T, S<:Complex} = convert(Measurement{T}, x)
+Measurement{T}(x::S) where {T, S<:Base.TwicePrecision} = convert(Measurement{T}, x)
+Measurement{T}(x::S) where {P, T, S<:Rational{P}} = convert(Measurement{T}, x)
+
+
+function Measurement{T}(::S) where {T, S<:AbstractChar}
+    throw(ArgumentError("cannot convert `$S` to `Measurement{$T}`"))
+end
+
+
 
 # Functions to quickly create an empty Derivatives object.
 @generated empty_der1(x::Measurement{T}) where {T<:AbstractFloat} = Derivatives{T}()

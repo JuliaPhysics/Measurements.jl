@@ -56,7 +56,7 @@ end
 # Get the common type parameter of a collection of Measurement objects.  The first two
 # methods are for the trivial cases of homogeneous tuples and arrays, the last, inefficient,
 # method is for inhomogeneous collections (probably the least common case).
-gettype(::Tuple{Vararg{Measurement{T}}}) where {T<:AbstractFloat} = T
+gettype(::Tuple{Measurement{T}, Vararg{Measurement{T}}}) where {T<:AbstractFloat} = T
 gettype(::AbstractArray{Measurement{T}}) where {T<:AbstractFloat} = T
 _eltype(::Measurement{T}) where {T<:AbstractFloat} = T
 gettype(collection) = promote_type(_eltype.(collection)...)
@@ -174,6 +174,7 @@ end
 # Addition: +
 Base.:+(a::Measurement, b::Measurement) = result(a.val + b.val, (1, 1), (a, b))
 Base.:+(a::Real, b::Measurement) = result(a + b.val, 1, b)
+Base.:+(a::Bool, b::Measurement) = result(a + b.val, 1, b)
 Base.:+(a::Measurement, b::Bool) = result(a.val + b, 1, a)
 Base.:+(a::Measurement, b::Real) = result(a.val + b, 1, a)
 
@@ -734,6 +735,10 @@ Base.round(a::Measurement, r::RoundingMode=RoundNearest; kwargs...) =
     measurement(round(value(a), r; kwargs...), round(uncertainty(a); kwargs...))
 Base.round(::Type{T}, a::Measurement, r::RoundingMode=RoundNearest) where {T<:Integer} =
     round(T, a.val, r)
+Base.round(a::Measurement, r::RoundingMode{:NearestTiesAway}; kwargs...) =
+    measurement(round(value(a), r; kwargs...))
+Base.round(a::Measurement, r::RoundingMode{:NearestTiesUp}; kwargs...) =
+    measurement(round(value(a), r; kwargs...))
 Base.floor(a::Measurement) = measurement(floor(a.val))
 Base.floor(::Type{T}, a::Measurement) where {T<:Integer} = floor(T, a.val)
 Base.ceil(a::Measurement) = measurement(ceil(a.val))

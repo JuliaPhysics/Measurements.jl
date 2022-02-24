@@ -25,9 +25,11 @@ Base.:(==)(a::Measurement, b::Measurement) = (a.val==b.val && a.err==b.err)
 Base.:(==)(a::Measurement, b::Irrational) = false
 Base.:(==)(a::Measurement, b::Rational) = (a.val==b && iszero(a.err))
 Base.:(==)(a::Measurement, b::Real) = (a.val==b && iszero(a.err))
+Base.:(==)(a::Measurement, b::AbstractIrrational) = (a.val==b && iszero(b.err))
 Base.:(==)(a::Irrational, b::Measurement) = false
 Base.:(==)(a::Rational, b::Measurement) = (a==b.val && iszero(b.err))
 Base.:(==)(a::Real, b::Measurement) = (a==b.val && iszero(b.err))
+Base.:(==)(a::AbstractIrrational, b::Measurement) = (a==b.val && iszero(b.err))
 
 # Create a hashing function that matches the same behaviour as `==`: only the
 # `val` and `err` fields matter.
@@ -39,8 +41,10 @@ for cmp in (:<, :<=)
         Base.$cmp(a::Measurement, b::Measurement) = ($cmp)(a.val, b.val)
         Base.$cmp(a::Measurement, b::Rational) = ($cmp)(a.val, b)
         Base.$cmp(a::Measurement, b::Real) = ($cmp)(a.val, b)
+        Base.$cmp(a::Measurement, b::AbstractIrrational) = ($cmp)(a.val, b)
         Base.$cmp(a::Rational, b::Measurement) = ($cmp)(a, b.val)
         Base.$cmp(a::Real, b::Measurement) = ($cmp)(a, b.val)
+        Base.$cmp(a::AbstractIrrational, b::Measurement) = ($cmp)(a, b.val)
     end
 end
 

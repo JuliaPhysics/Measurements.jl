@@ -1,5 +1,6 @@
 using Measurements, SpecialFunctions, QuadGK, Calculus
-using Test, LinearAlgebra, Statistics, Unitful, Printf
+using Test, LinearAlgebra, Statistics, Unitful, Printf, Aqua
+Aqua.test_all(Measurements)
 
 import Base: isapprox
 import Measurements: value, uncertainty
