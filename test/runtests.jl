@@ -105,6 +105,10 @@ end
         Measurement{Float64}
     @test promote_type(Measurement{BigFloat}, Measurement{Float64}) ==
         Measurement{BigFloat}
+
+    @test convert(Measurement{Float64}, 1+0im) ≈ 1.0±0.0
+    @test_throws InexactError convert(Measurement{Float64}, 1+1im)
+    @test convert(Measurement{Float64}, Base.TwicePrecision(1.0, 0.0)) ≈ 1.0±0.0
 end
 
 @testset "Comparisons and Tests" begin
