@@ -1,8 +1,8 @@
 # Measurements.jl
 
-| **Documentation**                       | **Build Status**                    | **Code Coverage**               |
-|:---------------------------------------:|:-----------------------------------:|:-------------------------------:|
-| [![][docs-stable-img]][docs-stable-url] | [![Build Status][gha-img]][gha-url] | [![][coveral-img]][coveral-url] |
+| **Documentation**                       | **Build Status**                    | **Code Coverage**               | **Quality** |
+|:---------------------------------------:|:-----------------------------------:|:-------------------------------:|:-----------:|
+| [![][docs-stable-img]][docs-stable-url] | [![Build Status][gha-img]][gha-url] | [![][coveral-img]][coveral-url] |[![Aqua QA][aqua-img]](aqua-url)|
 | [![][docs-latest-img]][docs-latest-url] |                                     | [![][codecov-img]][codecov-url] |
 
 Introduction
@@ -219,3 +219,6 @@ is provided in the [`CITATION.bib`](CITATION.bib) file.
 
 [codecov-img]: https://codecov.io/gh/JuliaPhysics/Measurements.jl/branch/master/graph/badge.svg
 [codecov-url]: https://codecov.io/gh/JuliaPhysics/Measurements.jl
+
+[aqua-img]: https://raw.githubusercontent.com/JuliaTesting/Aqua.jl/master/badge.svg
+[aqua-url]: https://github.com/JuliaTesting/Aqua.jl
