@@ -109,6 +109,7 @@ end
     @test convert(Measurement{Float64}, 1+0im) ≈ 1.0±0.0
     @test_throws InexactError convert(Measurement{Float64}, 1+1im)
     @test convert(Measurement{Float64}, Base.TwicePrecision(1.0, 0.0)) ≈ 1.0±0.0
+    @test convert(Measurement{Float64}, 'a') ≈ Float64('a') ± 0.0
 end
 
 @testset "Comparisons and Tests" begin

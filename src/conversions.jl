@@ -24,6 +24,8 @@ Base.convert(::Type{Measurement{T}}, a::Real) where {T<:AbstractFloat} =
     measurement(T(a))::Measurement{T}
 Base.convert(::Type{Measurement{T}}, a::Base.TwicePrecision) where {T<:AbstractFloat} =
     measurement(T(a))::Measurement{T}
+Base.convert(::Type{Measurement{T}}, a::AbstractChar) where {T<:AbstractFloat} =
+    measurement(T(a))::Measurement{T}
 
 function Base.convert(::Type{Measurement{T}}, a::Complex) where {T}
     if isreal(a)
