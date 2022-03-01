@@ -47,6 +47,14 @@ end
     @test x != pi != y
 end
 
+@testset "constructors" begin
+    @test Measurement{Float64}(1.0 + 0im) ≈ 1.0 ± 0.0
+    @test Measurement{Float64}(1//2) ≈ 0.5 ± 0.0
+    @test Measurement{Float64}((1:1e-2:2).step) ≈ 1e-2±0.0
+    @test Measurement{Float64}('a') ≈ Float64('a') ± 0.0
+    @test_throws Measurement{Float64}("aaa")
+end
+
 @testset "missing values" begin
     @test measurement(missing) === missing
     @test measurement(missing, .1) === missing
