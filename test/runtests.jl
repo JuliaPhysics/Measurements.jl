@@ -150,6 +150,8 @@ end
     @test isone(one(Measurement))
     @test !isone(1 ± 1)
     @test !isone(0 ± 0)
+    @test 1//2 ± 0.0 == 1//2
+    @test 1//2 == 1//2 ± 0.0
 end
 
 @testset "Hashing and dictionaries" begin
@@ -576,6 +578,9 @@ end
         @test @inferred(rem2pi(a, r)) ≈ rem(a, 2pi, r)
         @test rem2pi(a, r) ≈ a - 2pi * round(a / (2pi), r)
     end
+
+    @test round(3.141234±0.1, RoundNearestTiesAway) ≈ 3.0±0.0
+    @test round(3.141234±0.1, RoundNearestTiesUp) ≈ 3.0±0.0
 end
 
 @testset "Machine precision" begin

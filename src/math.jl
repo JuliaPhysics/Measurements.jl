@@ -741,11 +741,11 @@ Base.round(::Type{T}, a::Measurement, r::RoundingMode=RoundNearest) where {T<:In
 
 # disambiguities
 Base.round(a::Measurement, r::RoundingMode{:NearestTiesAway}; kwargs...) =
-    measurement(round(value(a), r; kwargs...))
+    measurement(round(value(a), r; kwargs...), round(uncertainty(a), r; kwargs...))
 Base.round(a::Measurement, r::RoundingMode{:NearestTiesUp}; kwargs...) =
-    measurement(round(value(a), r; kwargs...))
+    measurement(round(value(a), r; kwargs...), round(uncertainty(a), r; kwargs...))
 Base.round(::Type{T}, a::Measurement, r::RoundingMode{:ToZero}) where {T<:Integer} =
-    measurement(round(T, value(a), r))
+    measurement(round(T, value(a), r), round(uncertainty(a), r))
 
 Base.floor(a::Measurement) = measurement(floor(a.val))
 Base.floor(::Type{T}, a::Measurement) where {T<:Integer} = floor(T, a.val)
