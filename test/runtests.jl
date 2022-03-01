@@ -1,5 +1,6 @@
 using Measurements, SpecialFunctions, QuadGK, Calculus
-using Test, LinearAlgebra, Statistics, Unitful, Printf
+using Test, LinearAlgebra, Statistics, Unitful, Printf, Aqua
+Aqua.test_all(Measurements)
 
 import Base: isapprox
 import Measurements: value, uncertainty
@@ -44,6 +45,14 @@ end
     @test typeof(@inferred(Measurement{Float64}(big"3.14"))) == Measurement{Float64}
     @test typeof(@inferred(Measurement{BigFloat}(-5.43f2))) == Measurement{BigFloat}
     @test x != pi != y
+end
+
+@testset "constructors" begin
+    @test Measurement{Float64}(1.0 + 0im) ≈ 1.0 ± 0.0
+    @test Measurement{Float64}(1//2) ≈ 0.5 ± 0.0
+    @test Measurement{Float64}((1:1e-2:2).step) ≈ 1e-2±0.0
+    @test Measurement{Float64}('a') ≈ Float64('a') ± 0.0
+    @test_throws ArgumentError Measurement{Float64}("aaa")
 end
 
 @testset "missing values" begin
@@ -104,6 +113,11 @@ end
         Measurement{Float64}
     @test promote_type(Measurement{BigFloat}, Measurement{Float64}) ==
         Measurement{BigFloat}
+
+    @test convert(Measurement{Float64}, 1+0im) ≈ 1.0±0.0
+    @test_throws InexactError convert(Measurement{Float64}, 1+1im)
+    @test convert(Measurement{Float64}, Base.TwicePrecision(1.0, 0.0)) ≈ 1.0±0.0
+    @test convert(Measurement{Float64}, 'a') ≈ Float64('a') ± 0.0
 end
 
 @testset "Comparisons and Tests" begin
@@ -136,6 +150,8 @@ end
     @test isone(one(Measurement))
     @test !isone(1 ± 1)
     @test !isone(0 ± 0)
+    @test 1//2 ± 0.0 == 1//2
+    @test 1//2 == 1//2 ± 0.0
 end
 
 @testset "Hashing and dictionaries" begin
@@ -562,6 +578,9 @@ end
         @test @inferred(rem2pi(a, r)) ≈ rem(a, 2pi, r)
         @test rem2pi(a, r) ≈ a - 2pi * round(a / (2pi), r)
     end
+
+    @test round(3.141234±0.1, RoundNearestTiesAway) ≈ 3.0±0.0
+    @test round(3.141234±0.1, RoundNearestTiesUp) ≈ 3.0±0.0
 end
 
 @testset "Machine precision" begin

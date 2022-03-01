@@ -22,6 +22,18 @@ Base.convert(::Type{Measurement{T}}, a::Rational{<:Integer}) where {T<:AbstractF
     measurement(T(a))::Measurement{T}
 Base.convert(::Type{Measurement{T}}, a::Real) where {T<:AbstractFloat} =
     measurement(T(a))::Measurement{T}
+Base.convert(::Type{Measurement{T}}, a::Base.TwicePrecision) where {T<:AbstractFloat} =
+    measurement(T(a))::Measurement{T}
+Base.convert(::Type{Measurement{T}}, a::AbstractChar) where {T<:AbstractFloat} =
+    measurement(T(a))::Measurement{T}
+
+function Base.convert(::Type{Measurement{T}}, a::Complex) where {T}
+    if isreal(a)
+        measurement(T(real(a)))
+    else
+        throw(InexactError(:convert, Measurement{T}, a))
+    end
+end
 
 Base.convert(::Type{Measurement{T}}, a::Measurement{T}) where {T<:AbstractFloat} = a
 function Base.convert(::Type{Measurement{T}},

@@ -56,7 +56,7 @@ end
 # Get the common type parameter of a collection of Measurement objects.  The first two
 # methods are for the trivial cases of homogeneous tuples and arrays, the last, inefficient,
 # method is for inhomogeneous collections (probably the least common case).
-gettype(::Tuple{Vararg{Measurement{T}}}) where {T<:AbstractFloat} = T
+gettype(::Tuple{Measurement{T}, Vararg{Measurement{T}}}) where {T<:AbstractFloat} = T
 gettype(::AbstractArray{Measurement{T}}) where {T<:AbstractFloat} = T
 _eltype(::Measurement{T}) where {T<:AbstractFloat} = T
 gettype(collection) = promote_type(_eltype.(collection)...)
@@ -174,6 +174,7 @@ end
 # Addition: +
 Base.:+(a::Measurement, b::Measurement) = result(a.val + b.val, (1, 1), (a, b))
 Base.:+(a::Real, b::Measurement) = result(a + b.val, 1, b)
+Base.:+(a::Bool, b::Measurement) = result(a + b.val, 1, b)
 Base.:+(a::Measurement, b::Bool) = result(a.val + b, 1, a)
 Base.:+(a::Measurement, b::Real) = result(a.val + b, 1, a)
 
@@ -685,9 +686,12 @@ Base.sign(a::Measurement) = result(sign(a.val), 0, a)
 
 Base.copysign(a::Measurement, b::Measurement) = ifelse(signbit(a)!=signbit(b), -a, a)
 Base.copysign(a::Measurement, b::Real)        = ifelse(signbit(a)!=signbit(b), -a, a)
+Base.copysign(a::Measurement, b::Unsigned)    = ifelse(signbit(a)!=signbit(b), -a, a)
+
 Base.flipsign(a::Measurement, b::Measurement) = ifelse(signbit(b), -a, a)
 Base.flipsign(a::Measurement, b::Real)        = ifelse(signbit(b), -a, a)
-for T in (Signed, Rational, Float32, Float64, Real)
+Base.flipsign(a::Measurement, b::Unsigned)    = ifelse(signbit(b), -a, a)
+for T in (Signed, Unsigned, Rational, Float32, Float64, Real)
     @eval Base.copysign(a::$T, b::Measurement) = copysign(a, b.val)
     @eval Base.flipsign(a::$T, b::Measurement) = flipsign(a, b.val)
 end
@@ -734,6 +738,15 @@ Base.round(a::Measurement, r::RoundingMode=RoundNearest; kwargs...) =
     measurement(round(value(a), r; kwargs...), round(uncertainty(a); kwargs...))
 Base.round(::Type{T}, a::Measurement, r::RoundingMode=RoundNearest) where {T<:Integer} =
     round(T, a.val, r)
+
+# disambiguities
+Base.round(a::Measurement, r::RoundingMode{:NearestTiesAway}; kwargs...) =
+    measurement(round(value(a), r; kwargs...), round(uncertainty(a), r; kwargs...))
+Base.round(a::Measurement, r::RoundingMode{:NearestTiesUp}; kwargs...) =
+    measurement(round(value(a), r; kwargs...), round(uncertainty(a), r; kwargs...))
+Base.round(::Type{T}, a::Measurement, r::RoundingMode{:ToZero}) where {T<:Integer} =
+    measurement(round(T, value(a), r), round(uncertainty(a), r))
+
 Base.floor(a::Measurement) = measurement(floor(a.val))
 Base.floor(::Type{T}, a::Measurement) where {T<:Integer} = floor(T, a.val)
 Base.ceil(a::Measurement) = measurement(ceil(a.val))
