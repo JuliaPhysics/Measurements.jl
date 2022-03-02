@@ -126,4 +126,8 @@ include("show.jl")
 include("parsing.jl")
 include("plot-recipes.jl")
 
+@static if VERSION > v"1.8-"
+    include("compat.1.8.jl")
+end
+
 end # module
