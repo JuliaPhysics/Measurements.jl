@@ -746,13 +746,17 @@ Base.round(a::Measurement, r::RoundingMode{:NearestTiesUp}; kwargs...) =
     measurement(round(value(a), r; kwargs...), round(uncertainty(a), r; kwargs...))
 Base.round(::Type{T}, a::Measurement, r::RoundingMode{:ToZero}) where {T<:Integer} =
     measurement(round(T, value(a), r), round(uncertainty(a), r))
+Base.round(::Type{Bool}, x::Measurement) = measurement(round(Bool, value(x)))
 
 Base.floor(a::Measurement) = measurement(floor(a.val))
 Base.floor(::Type{T}, a::Measurement) where {T<:Integer} = floor(T, a.val)
+Base.floor(::Type{Bool}, x::Measurement) = measurement(floor(Bool, value(x)))
 Base.ceil(a::Measurement) = measurement(ceil(a.val))
 Base.ceil(::Type{T}, a::Measurement) where {T<:Integer} = ceil(Integer, a.val)
+Base.ceil(::Type{Bool}, x::Measurement) = measurement(ceil(Bool, value(x)))
 Base.trunc(a::Measurement) = measurement(trunc(a.val))
 Base.trunc(::Type{T}, a::Measurement) where {T<:Integer} = trunc(T, a.val)
+Base.trunc(::Type{Bool}, x::Measurement) = measurement(trunc(Bool, value(x)))
 
 # Widening
 
