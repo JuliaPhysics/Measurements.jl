@@ -2,7 +2,7 @@
 
 | **Documentation**                       | **Build Status**                    | **Code Coverage**               | **Quality** |
 |:---------------------------------------:|:-----------------------------------:|:-------------------------------:|:-----------:|
-| [![][docs-stable-img]][docs-stable-url] | [![Build Status][gha-img]][gha-url] | [![][coveral-img]][coveral-url] |[![Aqua QA][aqua-img]](aqua-url)|
+| [![][docs-stable-img]][docs-stable-url] | [![Build Status][gha-img]][gha-url] | [![][coveral-img]][coveral-url] |[![Aqua QA][aqua-img]][aqua-url]|
 | [![][docs-latest-img]][docs-latest-url] |                                     | [![][codecov-img]][codecov-url] |
 
 Introduction
