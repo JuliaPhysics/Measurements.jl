@@ -77,10 +77,8 @@ end
 @generated empty_der1(x::Measurement{T}) where {T<:AbstractFloat} = Derivatives{T}()
 @generated empty_der2(x::T) where {T<:AbstractFloat} = Derivatives{x}()
 
-const tag_counters = UInt64[1]
 function __init__()
-    nthr = Base.Threads.nthreads()
-    resize!(tag_counters, nthr)[:] = range(UInt64(1), step=typemax(UInt64)÷nthr, length=nthr)
+    task_local_storage("measurementsjl-tag", 1)
 
     @require Unitful="1986cc42-f94f-5a68-af5c-568840ba703d" include("unitful.jl")
     @require QuadGK="1fd47b50-473d-5c70-9696-f719f8f3bcdc" include("quadgk.jl")
@@ -95,7 +93,7 @@ function measurement(val::T, err::T) where {T<:AbstractFloat}
     if iszero(err)
         Measurement{T}(val, err, UInt64(0), newder)
     else
-        @inbounds tag = tag_counters[Base.Threads.threadid()] += 1
+        @inbounds tag = task_local_storage("measurementsjl-tag", task_local_storage("measurementsjl-tag") + 1)
         return Measurement{T}(val, err, tag, Derivatives(newder, (val, err, tag)=>one(T)))
     end
 end
