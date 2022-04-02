@@ -77,9 +77,10 @@ end
 @generated empty_der1(x::Measurement{T}) where {T<:AbstractFloat} = Derivatives{T}()
 @generated empty_der2(x::T) where {T<:AbstractFloat} = Derivatives{x}()
 
-function __init__()
-    task_local_storage("measurementsjl-tag", 1)
+# Start from 1, 0 is reserved to derived quantities
+const tag_counter = Threads.Atomic{UInt64}(1)
 
+function __init__()
     @require Unitful="1986cc42-f94f-5a68-af5c-568840ba703d" include("unitful.jl")
     @require QuadGK="1fd47b50-473d-5c70-9696-f719f8f3bcdc" include("quadgk.jl")
     @require SpecialFunctions="276daf66-3868-5448-9aa4-cd146d93841b" include("special-functions.jl")
@@ -93,7 +94,7 @@ function measurement(val::T, err::T) where {T<:AbstractFloat}
     if iszero(err)
         Measurement{T}(val, err, UInt64(0), newder)
     else
-        @inbounds tag = task_local_storage("measurementsjl-tag", task_local_storage("measurementsjl-tag") + 1)
+        tag = Threads.atomic_add!(tag_counter, UInt64(1))
         return Measurement{T}(val, err, tag, Derivatives(newder, (val, err, tag)=>one(T)))
     end
 end
