@@ -19,6 +19,11 @@ isapprox(x::Complex{Measurement{<:AbstractFloat}},
          y::Complex{Measurement{<:AbstractFloat}}; rest...) =
              isapprox(real(x), real(y); nans = true, rest...) &&
              isapprox(imag(x), imag(y); nans = true, rest...)
+# This is bit strict, but the idea is that in the tests we want `Measurement`s to be
+# comparable only to other `Measurement`s.  For example, a `Measurement` would be always
+# different from a `Float64`, because we'd have lost the uncertainty component.
+isapprox(x::Measurement, y::Real; rest...) = false
+isapprox(x::Real, y::Measurement; rest...) = false
 
 w = -0.5 ± 0.03
 x = 3 ± 0.1
@@ -551,7 +556,7 @@ end
 @testset "Modulo" begin
     frac, int = @inferred(modf(x + w))
     @test frac ≈ x + w - int
-    @test int ≈ @inferred(floor((x + w).val))
+    @test int ≈ @inferred(floor((x + w).val)) ± 0
     for a in (w, x/2, y)
         @test @inferred(mod(a, -2.1)) ≈ @inferred(a + fld(a, -2.1) * 2.1)
         @test @inferred(mod(-5.8, a)) ≈ @inferred(-5.8 - fld(-5.8, a) * a)
@@ -584,12 +589,17 @@ end
 end
 
 @testset "Machine precision" begin
+    # In many of the tests of this set we want to use a very strict tolerance.
     @test eps(Measurement{Float64}) ≈ eps(Float64)
     @test eps(x) ≈ eps(x.val)
-    @test nextfloat(x) ≈ nextfloat(x.val) ± x.err
-    @test nextfloat(x, 3) ≈ nextfloat(x.val, 3) ± x.err
-    @test prevfloat(w) ≈ prevfloat(w.val) ± w.err
-    @test prevfloat(y, 3) ≈ prevfloat(y.val, 3) ± y.err
+    @test nextfloat(x) ≈ nextfloat(x.val) ± x.err rtol=2e-16
+    @test nextfloat(x, 3) ≈ nextfloat(x.val, 3) ± x.err rtol=2e-16
+    @test prevfloat(w) ≈ prevfloat(w.val) ± w.err rtol=2e-16
+    @test prevfloat(y, 3) ≈ prevfloat(y.val, 3) ± y.err rtol=2e-16
+    for a in (w, x, y)
+        @test prevfloat(a) ≈ a - eps(a) rtol=2e-16
+        @test nextfloat(a) ≈ a + eps(a) rtol=2e-16
+    end
     @test floatmin(Measurement{Float64}) ≈ floatmin(Float64) ± zero(Float64)
     @test floatmax(Measurement{Float64}) ≈ floatmax(Float64) ± zero(Float64)
     @test maxintfloat(Measurement{Float64}) ≈ maxintfloat(Float64)
