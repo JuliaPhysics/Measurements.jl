@@ -747,6 +747,12 @@ Base.round(a::Measurement, r::RoundingMode{:NearestTiesUp}; kwargs...) =
 Base.round(::Type{T}, a::Measurement, r::RoundingMode{:ToZero}) where {T<:Integer} =
     measurement(round(T, value(a), r), round(uncertainty(a), r))
 Base.round(::Type{Bool}, x::Measurement) = measurement(round(Bool, value(x)))
+# https://github.com/JuliaLang/julia/pull/41246 introduced new rounding mode for
+# all `AbstractFloat`
+if VERSION ≥ v"1.9.0-DEV.369"
+    Base.round(a::Measurement, r::RoundingMode{:FromZero}; kwargs...) =
+        measurement(round(value(a), r; kwargs...), round(uncertainty(a), r; kwargs...))
+end
 
 Base.floor(a::Measurement) = measurement(floor(a.val))
 Base.floor(::Type{T}, a::Measurement) where {T<:Integer} = floor(T, a.val)
