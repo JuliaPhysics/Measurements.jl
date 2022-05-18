@@ -616,6 +616,10 @@ end
     @test @inferred(ceil(Int, w)) ≈ ceil(Int, w.val)
     @test @inferred(trunc(w)) ≈ measurement(trunc(w.val))
     @test @inferred(trunc(Int, w)) ≈ trunc(Int, w.val)
+    if VERSION ≥ v"1.9.0-DEV.369"
+        @test @inferred(round(w, RoundFromZero)) ≈ measurement(round(w.val, RoundFromZero),
+                                                               round(w.err, RoundFromZero))
+    end
 end
 
 @testset "widening" begin
@@ -712,12 +716,12 @@ end
 end
 
 @testset "Linear algebra" begin
-    A = [(14 ± 0.1) (23 ± 0.2); (-12 ± 0.3) (24 ± 0.4)]
+    A = [(14 ± 0.1) (23 ± 0.2); (-12 ± 0.3) (29 ± 0.4)]
     c = [(7 ± 0.5), (-13 ± 0.6)]
     b = @inferred(A \ c)
     @test @inferred(A * b) ≈ c
-    @test @inferred(b ⋅ c) ≈ 7.423202614379084 ± 0.5981875954418516
-    @test @inferred(det(A)) ≈ 612 ± 9.51262319236918
+    @test @inferred(b ⋅ c) ≈ 7.020527859237536 ± 0.5707235338984873
+    @test @inferred(det(A)) ≈ 682 ± 9.650906693155829
     @test @inferred(A * inv(A)) ≈ I
 end
 
