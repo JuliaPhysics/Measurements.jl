@@ -728,6 +728,19 @@ end
     @test @inferred(b ⋅ c) ≈ 7.020527859237536 ± 0.5707235338984873
     @test @inferred(det(A)) ≈ 682 ± 9.650906693155829
     @test @inferred(A * inv(A)) ≈ I
+    # This matrix `A` has the property that the Inf-norm of `A * inv(A) - I` has
+    # zero value but non-zero uncertainty in Julia v1.9, which would make the
+    # check `A * inv(A) ≈ I` fail.
+    A = [(14 ± 0.1) (23 ± 0.2); (-12 ± 0.3) (24 ± 0.4)]
+    @test @inferred(norm(A * inv(A) - I)) ≈ zero(Measurement{Float64}) atol=3e-16
+    @test @inferred(A * inv(A)) ≈ I
+
+    Z = [(0 ± 1) (0 ± 2); (0 ± 3) (0 ± 4)]
+    @test norm(Z, 0) == 4 ± 0 # Note: all elements of `Z` are `!iszero`
+    @test norm(Z, 1) == 0 ± sqrt(sum(abs2, uncertainty.(Z)))
+    @test norm(Z, 2) == zero(Measurement{Float64})
+    @test norm(Z, 5) == zero(Measurement{Float64})
+    @test norm(Z, Inf) == zero(Measurement{Float64})
 end
 
 @testset "NaNs" begin
