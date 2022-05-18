@@ -160,7 +160,8 @@ end
     # Make sure `iszero` is consistent with `==(0)`.  These are two different
     # methods, but if implemented inconsistently we'd run into troubles.
     @test iszero(0 ± 0) == (0 ± 0 == 0)
-    @test iszero(0 ± 0.5) == (0 ± 0 == 0.5)
+    @test iszero(0 ± 0.5) == (0 ± 0.5 == 0) == (0 == 0 ± 0.5) ==
+        (0 ± 0.5 == 0//1) == (0//1 == 0 ± 0.5)
 end
 
 @testset "Hashing and dictionaries" begin
