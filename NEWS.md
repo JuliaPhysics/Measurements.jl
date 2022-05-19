@@ -1,5 +1,12 @@
 # History of Measurements.jl
 
+## v2.7.2 (2022-0?-??)
+
+### Bug Fixes
+
+* Fixed norm of `AbstractArray{<:Measurement}`
+  ([#120](https://github.com/JuliaPhysics/Measurements.jl/pull/120)).
+
 ## v2.7.1 (2022-03-03)
 
 ### Bug Fixes
