@@ -1,6 +1,6 @@
 # History of Measurements.jl
 
-## v2.7.2 (2022-0?-??)
+## v2.7.2 (2022-05-21)
 
 ### Bug Fixes
 
