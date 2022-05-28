@@ -161,7 +161,7 @@ Measurements.uncertainty_components
 
 You may want to inspect which measurement contributes most to the total
 uncertainty of a derived quantity, in order to minimize it, if possible.  The
-function `Measurements.uncertainty_components` gives you a dictonary whose
+function `Measurements.uncertainty_components` gives you a dictionary whose
 values are the components of the uncertainty of `x`.
 
 Standard Score
@@ -200,7 +200,7 @@ Measurements.uncertainty
 
 As explained in the technical appendix, the nominal value and the uncertainty of
 `Measurement` objects are stored in `val` and `err` fields respectively, but you
-do not need to use those field directly to access this information. Functions
+do not need to use those fields directly to access this information. Functions
 `Measurements.value` and `Measurements.uncertainty` allow you to get the nominal
 value and the uncertainty of `x`, be it a single measurement or an array of
 measurements. They are particularly useful in the case of complex measurements
