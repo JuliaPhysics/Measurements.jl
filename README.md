@@ -86,7 +86,7 @@ If you use use this package for your research, please cite it.
 The complete manual of `Measurements.jl` is available at
 https://juliaphysics.github.io/Measurements.jl/stable/.  There, people
 interested in the details of the package, in order integrate the package in
-their workflow, can can find a technical appendix explaining how the package
+their workflow, can find a technical appendix explaining how the package
 internally works.
 
 Installation
