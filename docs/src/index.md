@@ -79,7 +79,7 @@ The method used to handle functional correlation is described in this paper:
   [2016arXiv161008716G](http://adsabs.harvard.edu/abs/2016arXiv161008716G))
 
 If you use use this package for your research, please cite it.  For your
-convience, a BibTeX entry is provided in the
+convenience, a BibTeX entry is provided in the
 [`CITATION.bib`](https://github.com/JuliaPhysics/Measurements.jl/blob/master/CITATION.bib)
 file.
 

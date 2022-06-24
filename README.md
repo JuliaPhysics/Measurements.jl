@@ -143,7 +143,7 @@ depends on really independent measurements.
 
 Most mathematical operations are instructed, by
 [operator overloading](https://en.wikipedia.org/wiki/Operator_overloading), to
-accept `Measurement` type, and uncertainty is calculated exactly using analityc
+accept `Measurement` type, and uncertainty is calculated exactly using analytic
 expressions of functions’ derivatives.
 
 In addition, it is possible to create a `Complex` measurement with
@@ -201,7 +201,7 @@ The `Measurements.jl` package is licensed under the MIT "Expat" License.  The
 original author is Mosè Giordano.
 
 Please, cite the paper Giordano 2016 (http://arxiv.org/abs/1610.08716) if you
-employ this package in your research work.  For your convience, a BibTeX entry
+employ this package in your research work.  For your convenience, a BibTeX entry
 is provided in the [`CITATION.bib`](CITATION.bib) file.
 
 
