@@ -38,7 +38,7 @@ mathematical constants. See below for further examples.
 
 Most mathematical operations are instructed, by [operator
 overloading](https://en.wikipedia.org/wiki/Operator_overloading), to accept
-`Measurement` type, and uncertainty is calculated exactly using analityc
+`Measurement` type, and uncertainty is calculated exactly using analytic
 expressions of functions' derivatives.
 
 It is also possible to create a `Complex` measurement with
@@ -77,7 +77,7 @@ Measurements.measurement(::AbstractString)
 !!! warning "Caveat about the ± sign"
     The `±` infix operator is a convenient symbol to define quantities with
     uncertainty, but can lead to unexpected results if used in elaborate
-    expressions involving many `±`s. Use parantheses where appropriate to
+    expressions involving many `±`s. Use parentheses where appropriate to
     avoid confusion. See for example the following cases:
 
     ```jldoctest
@@ -94,7 +94,7 @@ Correlation Between Variables
 -----------------------------
 
 The fact that two or more measurements are correlated means that there is some
-sort of relationship beetween them. In the context of measurements and error
+sort of relationship between them. In the context of measurements and error
 propagation theory, the term
 "[correlation](https://en.wikipedia.org/wiki/Correlation_and_dependence)" is
 very broad and can indicate different things. Among others, there may be some

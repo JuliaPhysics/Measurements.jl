@@ -187,7 +187,7 @@
 ### Breaking Changes
 
 * Julia 0.7 is required, support for previous versions was dropped.
-* Documentation has been movedo to
+* Documentation has been moved to
   https://juliaphysics.github.io/Measurements.jl/stable/.
 
 ## v0.5.1 (2018-07-11)

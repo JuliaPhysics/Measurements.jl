@@ -221,7 +221,7 @@ y}\right)_{y = \bar{y}} \sigma_y \right)^2 + \left(
 z}\right)_{z = \bar{z}} \sigma_z \right)^2
 ```
 
-What `Measurements.jl` really does is to calulate the derivatives like
+What `Measurements.jl` really does is to calculate the derivatives like
 ``\partial a/\partial x`` and ``\partial G/\partial x = (\partial G/\partial
 a)(\partial a/\partial x) + (\partial G/\partial b)(\partial b/\partial x)``,
 and store them in the `der` field of ``a`` and ``G`` respectively in order to be
@@ -277,5 +277,5 @@ Instead, the method for subtraction operation is defined as follows:
 
 Thus, in order to support `Measurement` argument(s) for a new mathematical
 operation you have to calculate the result of the operation, the partial
-derivatives of the functon with respect to all arguments and then pass this
+derivatives of the function with respect to all arguments and then pass this
 information to `Measurements.result` function.
