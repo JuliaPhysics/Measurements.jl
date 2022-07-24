@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: "master"
+    branches: "**"
     tags: ["*"]
   pull_request:
   release:
@@ -32,7 +32,17 @@ jobs:
           arch: ${{ matrix.julia-arch }}
       - uses: julia-actions/cache@v1
       - uses: julia-actions/julia-buildpkg@latest
-      - uses: julia-actions/julia-runtest@latest
+      - shell: julia --color=yes --project=. {0}
+        run: |
+          using Pkg
+          Pkg.add("TestReports")
+          using TestReports
+          TestReports.test("Measurements")
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v1
+        if: always()
+        with:
+          files: "testlog.xml"
       - uses: julia-actions/julia-uploadcodecov@v0.1
         continue-on-error: true
       - uses: julia-actions/julia-uploadcoveralls@v0.1
