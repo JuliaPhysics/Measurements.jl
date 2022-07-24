@@ -32,12 +32,14 @@ jobs:
           arch: ${{ matrix.julia-arch }}
       - uses: julia-actions/cache@v1
       - uses: julia-actions/julia-buildpkg@latest
-      - shell: julia --color=yes --project=. {0}
+      - name: Run tests with reports
+        shell: julia --color=yes {0}
         run: |
           using Pkg
           Pkg.add("TestReports")
           using TestReports
-          TestReports.test("Measurements")
+          Pkg.activate(".")
+          TestReports.test()
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action@v1
         if: always()
