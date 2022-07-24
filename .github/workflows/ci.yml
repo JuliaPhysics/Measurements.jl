@@ -42,7 +42,7 @@ jobs:
           TestReports.test()
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action@v1
-        if: always()
+        if: always() && matrix.os == 'ubuntu-latest' && matrix.julia-version == '1'
         with:
           files: "testlog.xml"
       - uses: julia-actions/julia-uploadcodecov@v0.1
