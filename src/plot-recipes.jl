@@ -16,31 +16,58 @@
 ### Code:
 
 using RecipesBase
+using Makie
 
-@recipe function f(y::AbstractArray{<:Measurement})
+### Plots.jl
+
+RecipesBase.@recipe function f(y::AbstractArray{<:Measurement})
     yerror := uncertainty.(y)
     value.(y)
 end
 
-@recipe function f(func::Function, x::AbstractArray{<:Measurement})
+RecipesBase.@recipe function f(func::Function, x::AbstractArray{<:Measurement})
     y = func.(x)
     xerror := uncertainty.(x)
     yerror := uncertainty.(y)
     value.(x), value.(y)
 end
 
-@recipe function f(x::AbstractArray{<:Measurement}, y::AbstractArray{<:Measurement})
+RecipesBase.@recipe function f(x::AbstractArray{<:Measurement}, y::AbstractArray{<:Measurement})
     xerror := uncertainty.(x)
     yerror := uncertainty.(y)
     value.(x), value.(y)
 end
 
-@recipe function f(x::AbstractArray{<:Measurement}, y::AbstractArray)
+RecipesBase.@recipe function f(x::AbstractArray{<:Measurement}, y::AbstractArray)
     xerror := uncertainty.(x)
     value.(x), y
 end
 
-@recipe function f(x::AbstractArray, y::AbstractArray{<:Measurement})
+RecipesBase.@recipe function f(x::AbstractArray, y::AbstractArray{<:Measurement})
     yerror := uncertainty.(y)
     x, value.(y)
 end
+
+### Makie.jl
+
+# PointBased plots
+Makie.convert_arguments(P::Makie.PointBased, x::AbstractVector{<:Measurement}, y::AbstractVector{<:Measurement}) =
+    Makie.convert_arguments(P, value.(x), value.(y))
+Makie.convert_arguments(P::Makie.PointBased, x::AbstractVector{<:Real}, y::AbstractVector{<:Measurement}) =
+    Makie.convert_arguments(P, x, value.(y))
+Makie.convert_arguments(P::Makie.PointBased, x::AbstractVector{<:Measurement}, y::AbstractVector{<:Real}) =
+    Makie.convert_arguments(P, value.(x), y)
+
+# errorbars
+Makie.convert_arguments(P::Type{<:Errorbars}, x::AbstractVector{<:Measurement}, y::AbstractVector{<:Measurement}, e::AbstractVector{<:Measurement}) =
+    Makie.convert_arguments(P, value.(x), value.(y), uncertainty.(e))
+Makie.convert_arguments(P::Type{<:Errorbars}, x::AbstractVector{<:Measurement}, y::AbstractVector{<:Real}) =
+    Makie.convert_arguments(P, value.(x), y, uncertainty.(x))
+Makie.convert_arguments(P::Type{<:Errorbars}, x::AbstractVector{<:Real}, y::AbstractVector{<:Measurement}) =
+    Makie.convert_arguments(P, x, value.(y), uncertainty.(y))
+
+# band
+Makie.convert_arguments(P::Type{<:Band}, x::AbstractVector{<:Measurement}, y::AbstractVector{<:Measurement}) =
+    Makie.convert_arguments(P, value.(x), value.(y) - uncertainty.(y), value.(y) + uncertainty.(y))
+Makie.convert_arguments(P::Type{<:Band}, x::AbstractVector{<:Real}, y::AbstractVector{<:Measurement}) =
+    Makie.convert_arguments(P, x, value.(y) - uncertainty.(y), value.(y) + uncertainty.(y))

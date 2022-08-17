@@ -67,7 +67,8 @@ easy-to-use calculator.
   measurements with their physical units, perform numerical integration
   with [`QuadGK.jl`](https://github.com/JuliaMath/QuadGK.jl), numerical and
   automatic differentiation, and much more.
-* Integration with [`Plots.jl`](https://github.com/JuliaPlots/Plots.jl).
+* Integration with [`Plots.jl`](https://github.com/JuliaPlots/Plots.jl) and
+  [`Makie.jl`](https://github.com/JuliaPlots/Makie.jl).
 
 The method used to handle functional correlation is described in this paper:
 
