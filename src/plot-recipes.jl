@@ -16,7 +16,7 @@
 ### Code:
 
 using RecipesBase
-using Makie
+using MakieCore
 
 ### Plots.jl
 
@@ -51,13 +51,14 @@ end
 ### Makie.jl
 
 # PointBased plots
-Makie.convert_arguments(P::Makie.PointBased, x::AbstractVector{<:Measurement}, y::AbstractVector{<:Measurement}) =
-    Makie.convert_arguments(P, value.(x), value.(y))
-Makie.convert_arguments(P::Makie.PointBased, x::AbstractVector{<:Real}, y::AbstractVector{<:Measurement}) =
-    Makie.convert_arguments(P, x, value.(y))
-Makie.convert_arguments(P::Makie.PointBased, x::AbstractVector{<:Measurement}, y::AbstractVector{<:Real}) =
-    Makie.convert_arguments(P, value.(x), y)
+MakieCore.convert_arguments(P::MakieCore.PointBased, x::AbstractVector{<:Measurement}, y::AbstractVector{<:Measurement}) =
+    MakieCore.convert_arguments(P, value.(x), value.(y))
+MakieCore.convert_arguments(P::MakieCore.PointBased, x::AbstractVector{<:Real}, y::AbstractVector{<:Measurement}) =
+    MakieCore.convert_arguments(P, x, value.(y))
+MakieCore.convert_arguments(P::MakieCore.PointBased, x::AbstractVector{<:Measurement}, y::AbstractVector{<:Real}) =
+    MakieCore.convert_arguments(P, value.(x), y)
 
+#=
 # errorbars
 Makie.convert_arguments(P::Type{<:Errorbars}, x::AbstractVector{<:Measurement}, y::AbstractVector{<:Measurement}, e::AbstractVector{<:Measurement}) =
     Makie.convert_arguments(P, value.(x), value.(y), uncertainty.(e))
@@ -71,3 +72,4 @@ Makie.convert_arguments(P::Type{<:Band}, x::AbstractVector{<:Measurement}, y::Ab
     Makie.convert_arguments(P, value.(x), value.(y) - uncertainty.(y), value.(y) + uncertainty.(y))
 Makie.convert_arguments(P::Type{<:Band}, x::AbstractVector{<:Real}, y::AbstractVector{<:Measurement}) =
     Makie.convert_arguments(P, x, value.(y) - uncertainty.(y), value.(y) + uncertainty.(y))
+=#
