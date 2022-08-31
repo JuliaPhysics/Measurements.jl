@@ -1,5 +1,12 @@
 # History of Measurements.jl
 
+## v2.8.0 (2022-09-01)
+
+### New features
+
+* The counter of the tags of `Measurement` objects is now atomic
+  ([#118](https://github.com/JuliaPhysics/Measurements.jl/pull/118)).
+
 ## v2.7.2 (2022-05-21)
 
 ### Bug Fixes
