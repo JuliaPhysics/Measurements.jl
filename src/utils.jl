@@ -64,6 +64,9 @@ for (f, field) in ((:value, :val), (:uncertainty, :err))
 end
 value(a::Real) = a
 uncertainty(a::Real) = zero(a)
+value(a::Missing) = missing
+uncertainty(a::Missing) = missing
+
 
 """
     Measurements.value(x::Measurement)
