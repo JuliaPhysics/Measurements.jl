@@ -1,6 +1,7 @@
 [deps]
 BenchmarkCI = "20533458-34a3-403d-a444-e18f38190b5b"
 BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
+Calculus = "49dc2e85-a5d0-5ad3-a950-438e2897f1b9"
 Measurements = "eff96d63-e80a-5855-80a2-b1b0885c5ab7"
 PkgBenchmark = "32113eaa-f34f-5b0d-bd6c-c81e245fc73d"
 QuadGK = "1fd47b50-473d-5c70-9696-f719f8f3bcdc"
