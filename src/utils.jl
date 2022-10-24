@@ -64,10 +64,14 @@ for (f, field) in ((:value, :val), (:uncertainty, :err))
 end
 value(a::Real) = a
 uncertainty(a::Real) = zero(a)
+value(a::Missing) = missing
+uncertainty(a::Missing) = missing
+
 
 """
     Measurements.value(x::Measurement)
     Measurements.value(x::Complex{Measurement})
+    Measurements.value(x::Missing)
 
 Return the nominal value of measurement `x`.
 """
@@ -76,6 +80,7 @@ value
 """
     Measurements.uncertainty(x::Measurement)
     Measurements.uncertainty(x::Complex{Measurement})
+    Measurements.uncertainty(x::Missing)
 
 Return the uncertainty of measurement `x`.
 """

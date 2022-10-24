@@ -72,6 +72,9 @@ end
     for op in (+, -, *, /, ^)
         @test op(w, missing) === op(missing, w) === missing
     end
+
+    @test Measurements.value(missing) === missing
+    @test Measurements.uncertainty(missing) === missing
 end
 
 @testset "Weighted Average" begin
