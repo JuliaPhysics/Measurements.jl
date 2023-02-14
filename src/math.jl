@@ -794,3 +794,6 @@ function Base.prod(a::AbstractArray{<:Measurement})
                   [prod(deleteat!(copy(x), i)) for i in eachindex(x)],
                   a)
 end
+
+Base.one(::Type{Measurement{T}}) where T = one(T)
+Base.one(::Type{Complex{Measurement{T}}}) where T = one(Complex{T})

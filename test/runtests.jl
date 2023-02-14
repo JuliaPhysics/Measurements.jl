@@ -172,7 +172,7 @@ end
         @test hash(a) == hash(a)
         @test hash(2 * a) == hash(a + a)
         @test hash(a - a) == hash(zero(a))
-        @test hash(a / a) == hash(one(a))
+        @test hash(a / a) == hash(oneunit(a))
         d = Dict(a => 42)
         @test d[a] == 42
         # `hash` must be consistent with `==`.  Skip following tests for
@@ -233,11 +233,11 @@ end
     end
     for f in (muladd, fma)
         @test @inferred(f(w, x, y)) ≈ w*x + y
-        @test @inferred(f(w, x, 1)) ≈ w*x + one(y)
+        @test @inferred(f(w, x, 1)) ≈ w*x + oneunit(y)
         @test @inferred(f(w, 2, y)) ≈ w*2 + y
-        @test @inferred(f(w, 2, 1)) ≈ w*2 + one(x)
+        @test @inferred(f(w, 2, 1)) ≈ w*2 + oneunit(x)
         @test @inferred(f(3, x, y)) ≈ 3*x + y
-        @test @inferred(f(3, x, 1)) ≈ 3*x + one(w)
+        @test @inferred(f(3, x, 1)) ≈ 3*x + oneunit(w)
         @test @inferred(f(3, 2, y)) ≈ 3*2 + y
     end
 end
@@ -259,7 +259,7 @@ end
         @test @inferred(0 / a) ≈ measurement(0)
         @test @inferred((0 ± 1) / a) ≈ measurement(0, 1/abs(a.val))
         # Test correlation
-        @test @inferred(a / a) ≈ one(a) ≈ measurement(1)
+        @test @inferred(a / a) ≈ oneunit(a) ≈ measurement(1)
         # Test derivatives of "div", "fld", and "cld".  They're defined to be exactly 0.
         # Should you discover this is not correct, update the test accordingly.
         for f in (div, fld, cld), b in (w, x, y)
@@ -317,7 +317,7 @@ end
     @test @inferred(sind(y)) ≈ measurement(0.0697564737441253, 0.0034821554353128255)
     @test @inferred(sinh(y)) ≈ measurement(27.28991719712775, 5.461646567203298)
     for a in (w, x, y)
-        @test @inferred(cos(a) ^ 2 + sin(a) ^ 2) ≈ one(a)
+        @test @inferred(cos(a) ^ 2 + sin(a) ^ 2) ≈ oneunit(a)
         @test @inferred(tan(a))  ≈ sin(a)  / cos(a)
         @test @inferred(tand(a)) ≈ sind(a) / cosd(a)
         @test @inferred(tanh(a)) ≈ sinh(a) / cosh(a)
@@ -332,7 +332,7 @@ end
             @test c ≈ cos(a)
             @test s + c ≈ sin(a) + cos(a)
             @test s - c ≈ sin(a) - cos(a)
-            @test s ^ 2 + c ^ 2 ≈ one(a)
+            @test s ^ 2 + c ^ 2 ≈ oneunit(a)
         end
         if isdefined(Base, :sincospi)
             s, c = @inferred(sincospi(a))
@@ -340,7 +340,7 @@ end
             @test c ≈ cospi(a)
             @test s + c ≈ sinpi(a) + cospi(a)
             @test s - c ≈ sinpi(a) - cospi(a)
-            @test s ^ 2 + c ^ 2 ≈ one(a)
+            @test s ^ 2 + c ^ 2 ≈ oneunit(a)
         end
     end
     for c in (-1 ± 1, 0 ± 1, 1 ± 1)
@@ -408,7 +408,7 @@ end
 @testset "Exponentials" begin
     @test @inferred(exp(x)) ≈ measurement(20.085536923187668, 2.008553692318767)
     for a in (w, 3//5*w, x/10, x, y/50, y)
-        @test @inferred(expm1(a)) ≈ exp(a) - one(a)
+        @test @inferred(expm1(a)) ≈ exp(a) - oneunit(a)
         @test @inferred(exp10(a)) ≈ 10^a
         @test @inferred(ldexp(frexp(a)...)) ≈ a
         @test @inferred(log2(exp2(a))) ≈ a
@@ -490,7 +490,8 @@ end
 end
 
 @testset "One and zero" begin
-    @test @inferred(one(y)) ≈ measurement(1)
+    @test @inferred(one(y)) === 1.0
+    @test @inferred(oneunit(y)) ≈ measurement(1)
     @test @inferred(zero(x)) ≈ measurement(0)
 end
 
@@ -515,8 +516,8 @@ end
     @test @inferred(digamma(y)) ≈ 1.256117668431802 ± 0.056764591147422994
     @test @inferred(polygamma(3, w)) ≈ 193.40909103400242 ± 0.10422749480000776
     for a in (w, x, y)
-        @test_logs (:warn, r"factorial.*is deprecated") @test @inferred(gamma(a)) ≈ factorial(a - one(a))
-        @test @inferred(gamma(a + one(a))) ≈ @test_logs (:warn, r"factorial.*is deprecated") factorial(a)
+        @test_logs (:warn, r"factorial.*is deprecated") @test @inferred(gamma(a)) ≈ factorial(a - oneunit(a))
+        @test @inferred(gamma(a + oneunit(a))) ≈ @test_logs (:warn, r"factorial.*is deprecated") factorial(a)
         @test @inferred(logabsgamma(abs(a)))[1] ≈ log(gamma(abs(a)))
         @test @inferred(digamma(a)) ≈ polygamma(0, a)
         @test @inferred(digamma(invdigamma(a))) ≈ a + zero(a)

@@ -82,7 +82,6 @@ const tag_counter = Threads.Atomic{UInt64}(1)
 
 function __init__()
     @require Unitful="1986cc42-f94f-5a68-af5c-568840ba703d" include("unitful.jl")
-    @require QuadGK="1fd47b50-473d-5c70-9696-f719f8f3bcdc" include("quadgk.jl")
     @require SpecialFunctions="276daf66-3868-5448-9aa4-cd146d93841b" include("special-functions.jl")
 end
 
