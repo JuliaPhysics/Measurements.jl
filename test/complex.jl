@@ -104,9 +104,3 @@ end
         @test a ⊗ 5 == a * 5
     end
 end
-
-# TODO: Define a method for lgamma with complex argument.
-# # Factorial and gamma
-# for a in (u, v); test_approx_eq(gamma(a), factorial(a - 1)); end
-# for a in (u, v); test_approx_eq(gamma(a + 1), factorial(a)); end
-# for a in (u, v); test_approx_eq(lgamma(a), log(gamma(a))); end
