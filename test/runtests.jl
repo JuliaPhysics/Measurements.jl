@@ -930,9 +930,7 @@ end
     F(x) = x^3 / 3
     a = (5 ± 0.1)u"m"
     b = (10 ± 1)u"m"
-    # This has been broken by QuadGK v2.6.0:
-    # <https://github.com/JuliaPhysics/Measurements.jl/issues/134#issuecomment-1431367697>.
-    @test_skip (QuadGK.quadgk(f, a, b)[1]).val ≈ (F(b) - F(a)).val
+    @test (QuadGK.quadgk(f, a, b)[1]).val ≈ (F(b) - F(a)).val
 end
 
 @testset "Complex measurements" begin
