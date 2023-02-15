@@ -31,10 +31,10 @@ y = 4 ± 0.2
 z = complex(x)
 
 @testset "Standard Score" begin
-    @test stdscore(w, x.val) ≈ -350/3
-    @test stdscore(x, y) ≈ -4.472135954999579
-    @test stdscore(w, y) ≈ stdscore(w - y, 0)
-    @test stdscore(y, 4.1) ≈ stdscore(y, 4.1 ± 0)
+    @test @inferred(stdscore(w, x.val)) ≈ -350/3
+    @test @inferred(stdscore(x, y)) ≈ -4.472135954999579
+    @test @inferred(stdscore(w, y)) ≈ @inferred(stdscore(w - y, 0))
+    @test @inferred(stdscore(y, 4.1)) ≈ @inferred(stdscore(y, 4.1 ± 0))
 end
 
 @testset "measurement" begin
@@ -78,20 +78,20 @@ end
 end
 
 @testset "Weighted Average" begin
-    @test weightedmean((w, x, y)) ≈ measurement(-0.12584269662921355, 0.028442727788398632)
+    @test @inferred(weightedmean((w, x, y))) ≈ measurement(-0.12584269662921355, 0.028442727788398632)
 end
 
 @testset "Derivative" begin
     c = 1 ± 0
-    @test Measurements.derivative(3*x^2, (x.val, x.err, x.tag)) ≈ 18
-    @test Measurements.derivative(3*x^2, x) ≈ 18
+    @test @inferred(Measurements.derivative(3*x^2, (x.val, x.err, x.tag))) ≈ 18
+    @test @inferred(Measurements.derivative(3*x^2, x)) ≈ 18
     @test Measurements.derivative.(2x + y - w, [x, y, w]) ≈ [2, 1, -1]
     @test Measurements.derivative.(x - x + y - y + w - w + c, [x, y, w, c]) ≈ [0, 0, 0, 0]
     @test length((x - x + y - y + w - w + c).der) == 0
 end
 
 @testset "Contributions to uncertainty" begin
-    @test sort(collect(values(Measurements.uncertainty_components(w * x * y)))) ≈
+    @test sort(collect(values(@inferred(Measurements.uncertainty_components(w * x * y))))) ≈
         [0.2, 0.3, 0.36]
 end
 
@@ -526,39 +526,39 @@ end
 
 @testset "Beta" begin
     for a in (w, x, y)
-        @test beta(a, x) ≈ gamma(a)*gamma(x)/gamma(a + x)
-        @test beta(a, pi) ≈ gamma(a)*gamma(pi)/gamma(a + pi)
-        @test beta(ℯ, a) ≈ gamma(ℯ)*gamma(a)/gamma(ℯ + a)
-        @test logabsbeta(abs(a), x)[1] ≈ log(beta(abs(a), x))
-        @test logabsbeta(abs(a), pi)[1] ≈ log(beta(abs(a), pi))
-        @test logabsbeta(ℯ, abs(a))[1] ≈ log(beta(ℯ, abs(a)))
+        @test @inferred(beta(a, x)) ≈ @inferred(gamma(a)) * @inferred(gamma(x)) / @inferred(gamma(a + x))
+        @test @inferred(beta(a, pi)) ≈ @inferred(gamma(a)) * @inferred(gamma(pi)) / @inferred(gamma(a + pi))
+        @test @inferred(beta(ℯ, a)) ≈ @inferred(gamma(ℯ)) * @inferred(gamma(a)) / @inferred(gamma(ℯ + a))
+        @test @inferred(logabsbeta(abs(a), x))[1] ≈ @inferred(log(@inferred(beta(abs(a), x))))
+        @test @inferred(logabsbeta(abs(a), pi))[1] ≈ @inferred(log(@inferred(beta(abs(a), pi))))
+        @test @inferred(logabsbeta(ℯ, abs(a)))[1] ≈ @inferred(log(@inferred(beta(ℯ, abs(a)))))
     end
 end
 
 @testset "Airy" begin
-    @test airyai(x) ≈ 0.006591139357460721 ± 0.0011912976705951322
-    @test airyaiprime(x) ≈ -0.01191297670595132 ± 0.0019773418072382165
-    @test airybi(x) ≈ 14.037328963730136 ± 2.2922214966382017
-    @test airybiprime(x) ≈ 22.922214966382015 ± 4.211198689119041
+    @test @inferred(airyai(x)) ≈ 0.006591139357460721 ± 0.0011912976705951322
+    @test @inferred(airyaiprime(x)) ≈ -0.01191297670595132 ± 0.0019773418072382165
+    @test @inferred(airybi(x)) ≈ 14.037328963730136 ± 2.2922214966382017
+    @test @inferred(airybiprime(x)) ≈ 22.922214966382015 ± 4.211198689119041
 end
 
 @testset "Bessel" begin
-    for a in (x, y); @test 2*besselj1(a)/a ≈ besselj0(a) + besselj(2, a); end
-    for a in (x, y); @test besselj(-1/2, a) ≈ sqrt(2/(pi*a))*cos(a); end
-    for a in (x, y); @test besselj(1/2, a) ≈ sqrt(2/(pi*a))*sin(a); end
-    @test bessely0(x) ≈ 0.3768500100127904 ± 0.03246744247917999
-    for a in (x, y); @test bessely1(a) ≈ -bessely(-1, a); end
-    for a in (x, y); @test bessely(5/2, a) ≈
-        (besselj(5/2, a)*cos(2.5pi) - besselj(-5/2, a))/sin(2.5pi); end
+    for a in (x, y); @test 2 * @inferred(besselj1(a)) / a ≈ @inferred(besselj0(a)) + @inferred(besselj(2, a)); end
+    for a in (x, y); @test @inferred(besselj(-1/2, a)) ≈ @inferred(sqrt(2/(pi*a))) * @inferred(cos(a)); end
+    for a in (x, y); @test @inferred(besselj(1/2, a)) ≈ @inferred(sqrt(2/(pi*a))) * @inferred(sin(a)); end
+    @test @inferred(bessely0(x)) ≈ 0.3768500100127904 ± 0.03246744247917999
+    for a in (x, y); @test @inferred(bessely1(a)) ≈ -@inferred(bessely(-1, a)); end
+    for a in (x, y); @test @inferred(bessely(5/2, a)) ≈
+        (@inferred(besselj(5/2, a)) * @inferred(cos(2.5pi)) - @inferred(besselj(-5/2, a))) / @inferred(sin(2.5pi)); end
     for a in (x, y), k in (1, 2), nu in -1:1
         sgn = k == 1 ? +1 : -1
-        @test besselh(nu, k, a) ≈
-            besselj(nu, a) + sgn*im*bessely(nu, a)
+        @test @inferred(besselh(nu, k, a)) ≈
+            complex(@inferred(besselj(nu, a)), sgn * @inferred(bessely(nu, a)))
     end
-    @test besseli(5//2, y) ≈ 4.757626874823528 ± 1.0398232869843944
-    for a in (x, y); @test besselix(3, a) ≈ besseli(3, a)*exp(-abs(a)); end
-    @test besselk(7//3, x) ≈ 0.07521953258226349 ± 0.010340691203742959
-    for a in (x, y); @test besselkx(3//4, a) ≈ besselk(3//4, a)*exp(a); end
+    @test @inferred(besseli(5//2, y)) ≈ 4.757626874823528 ± 1.0398232869843944
+    for a in (x, y); @test @inferred(besselix(3, a)) ≈ @inferred(besseli(3, a)) * @inferred(exp(-abs(a))); end
+    @test @inferred(besselk(7//3, x)) ≈ 0.07521953258226349 ± 0.010340691203742959
+    for a in (x, y); @test @inferred(besselkx(3//4, a)) ≈ @inferred(besselk(3//4, a)) * @inferred(exp(a)); end
 end
 
 @testset "Modulo" begin
@@ -715,12 +715,12 @@ end
 end
 
 @testset "Miscellanea" begin
-    @test mean((x, w, x, y, -w)) ≈ (2x + y)/5
-    @test mean([x, w, x, y, -w]) ≈ (2x + y)/5
-    @test min(w, x, y) === w
-    @test max(w, x, y) === y
-    @test extrema([w, x, y]) == (w, y)
-    @test sort([y, w, x]) == [w, x, y]
+    @test @inferred(mean((x, w, x, y, -w))) ≈ (2x + y)/5
+    @test @inferred(mean([x, w, x, y, -w])) ≈ (2x + y)/5
+    @test @inferred(min(w, x, y)) === w
+    @test @inferred(max(w, x, y)) === y
+    @test @inferred(extrema([w, x, y])) == (w, y)
+    @test @inferred(sort([y, w, x])) == [w, x, y]
 end
 
 @testset "Linear algebra" begin
@@ -809,12 +809,12 @@ end
     @test Measurements.value.([complex(w, x)]) == [complex(-0.5, 3.0)]
     @test Measurements.uncertainty.([w, x, y]) == [0.03, 0.1, 0.2]
     @test Measurements.uncertainty.([complex(w, x)]) == [complex(0.03, 0.1)]
-    @test Measurements.uncertainty(5) === 0
-    @test Measurements.uncertainty(7.4) === 0.0
-    @test Measurements.uncertainty(-3.6 + 7.4im) === complex(0.0)
-    @test Measurements.value(5) === 5
-    @test Measurements.value(7.4) === 7.4
-    @test Measurements.value(-3.6 + 7.4im) === complex(-3.6 + 7.4im)
+    @test @inferred(Measurements.uncertainty(5)) === 0
+    @test @inferred(Measurements.uncertainty(7.4)) === 0.0
+    @test @inferred(Measurements.uncertainty(-3.6 + 7.4im)) === complex(0.0)
+    @test @inferred(Measurements.value(5)) === 5
+    @test @inferred(Measurements.value(7.4)) === 7.4
+    @test @inferred(Measurements.value(-3.6 + 7.4im)) === complex(-3.6 + 7.4im)
 end
 
 @testset "Derivatives type" begin
@@ -825,8 +825,8 @@ end
 @testset "BigFloat's" begin
     @test big(Measurement) == Measurement{BigFloat}
     @test typeof(big(x)) == big(typeof(x))
-    for a in (w, x, y); @test big(x) ^ 2 - x * x ≈ zero(x); end
-    @test Measurements.derivative(big(x) / 3 + x, x) ≈ inv(big(3)) + 1
+    for a in (w, x, y); @test @inferred(@inferred(big(x) ^ 2) - @inferred(x * x)) ≈ zero(x); end
+    @test Measurements.derivative(@inferred(@inferred(big(x) / 3) + x), x) ≈ inv(big(3)) + 1
     @test Measurements.derivative(big(x) + y, y) ≈ 1
     @test typeof(big(z)) == big(typeof(z))
     a = big"3.00000001" ± big"1e-17"
@@ -834,7 +834,7 @@ end
     c = big"5.00000001" ± big"1e-15"
     d = big"4.0000000100000001" ± big"1e-17"
     for X in (a, b, c, d)
-        @test @inferred(sin(X*X + X*X)/cos(X*X + X*X)) ≈ @inferred(tan(2X^2))
+        @test @inferred(@inferred(sin(X*X + X*X)) / @inferred(cos(X*X + X*X))) ≈ @inferred(tan(2X^2))
     end
     @test @inferred(a * b) ≈
         big"12.0000000700000001" ±
