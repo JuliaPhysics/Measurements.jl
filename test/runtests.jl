@@ -323,7 +323,7 @@ end
         @test @inferred(tanh(a)) ≈ sinh(a) / cosh(a)
         @test @inferred(sinpi(a))≈ sin(pi * a) atol = 1e-15
         @test @inferred(cospi(a))≈ cos(pi * a) atol = 1e-15
-        @test @inferred(sinc(a)) ≈ (sin(pi * a) / (pi * a)) atol = 1e-16
+        @test @inferred(sinc(a)) ≈ (sin(pi * a) / (pi * a)) atol = eps(Float64)
         @test @inferred(cosc(a)) ≈ ((cos(pi * a) - sin(pi * a) / (pi * a)) / a) atol = 1e-15
         if isdefined(Base, :sincos)
             # Check we got the sign of derivatives in `sincos` right.
@@ -854,7 +854,7 @@ end
     @test QuadGK.quadgk(sin, -y, y)[1] ≈ cos(-y) - cos(y) atol = 2 * eps(Float64)
     @test QuadGK.quadgk(exp, 0.4, x)[1] ≈ exp(x) - exp(0.4)
     @test QuadGK.quadgk(sin, w, 2.7)[1] ≈ cos(w) - cos(2.7)
-    @test QuadGK.quadgk(t -> cos(x - t), 0, 2pi)[1] ≈ measurement(0) atol = 2e-13
+    @test QuadGK.quadgk(t -> cos(x - t), 0, 2pi; atol=eps(Float64))[1] ≈ measurement(0) atol = 5e-16
     @test QuadGK.quadgk(t -> exp(t / w), 0, 1)[1] ≈ w * (exp(1 / w) - one(x))
     for a in (w, x, y)
         @test QuadGK.quadgk(t -> 1 / abs2(t / a), 1, Inf)[1] ≈ a ^ 2
@@ -868,8 +868,8 @@ end
     # Compare some of the above integrals with results with "@uncertain" macro.
     @test QuadGK.quadgk(cos, x, y)[1] ≈
         @uncertain(((x,y) -> QuadGK.quadgk(cos, x, y)[1])(x, y))
-    @test QuadGK.quadgk(sin, -y, y)[1] ≈
-        @uncertain((x -> QuadGK.quadgk(sin, -x, x)[1])(y)) atol = 5e-10
+    @test QuadGK.quadgk(sin, -y, y; atol=eps(Float64))[1] ≈
+        @uncertain((x -> QuadGK.quadgk(sin, -x, x; atol=eps(Float64))[1])(y)) atol = 5e-13
     @test QuadGK.quadgk(exp, 0.4, x)[1] ≈
         @uncertain((x -> QuadGK.quadgk(exp, 0.4, x)[1])(x))
 end
