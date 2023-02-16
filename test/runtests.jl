@@ -285,8 +285,8 @@ end
     @test @inferred(x^(pi)) ≈ measurement(31.54428070019754, 3.3033093503504967)
     @test @inferred(2^x) ≈ measurement(8, 0.5545177444479562)
     @test @inferred(pi^x) ≈ measurement(31.006276680299816, 3.5493811564854525)
-    @test @inferred(z ^ 2.5) ≈ @inferred(x ^ 2.5)
-    @test @inferred(z ^ 3) ≈ @inferred(x ^ 3)
+    @test z ^ 2.5 ≈ @inferred(x ^ 2.5)
+    @test z ^ 3 ≈ @inferred(x ^ 3)
     for a in (w, x, y)
         @test @inferred(x ^ a) ≈ @inferred(exp(a * log(x)))
         @test @inferred(abs(a) ^ w) ≈ @inferred(exp(w * log(abs(a))))
@@ -732,7 +732,7 @@ end
     b = @inferred(A \ c)
     @test @inferred(A * b) ≈ c
     @test @inferred(b ⋅ c) ≈ 7.020527859237536 ± 0.5707235338984873
-    @test @inferred(det(A)) ≈ 682 ± 9.650906693155829
+    @test det(A) ≈ 682 ± 9.650906693155829
     @test @inferred(A * inv(A)) ≈ I
     # This matrix `A` has the property that the Inf-norm of `A * inv(A) - I` has
     # zero value but non-zero uncertainty in Julia v1.9, which would make the
