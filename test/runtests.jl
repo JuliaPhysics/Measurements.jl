@@ -172,7 +172,7 @@ end
         @test hash(a) == hash(a)
         @test hash(2 * a) == hash(a + a)
         @test hash(a - a) == hash(zero(a))
-        @test hash(a / a) == hash(one(a))
+        @test hash(a / a) == hash(oneunit(a))
         d = Dict(a => 42)
         @test d[a] == 42
         # `hash` must be consistent with `==`.  Skip following tests for
@@ -233,11 +233,11 @@ end
     end
     for f in (muladd, fma)
         @test @inferred(f(w, x, y)) ≈ w*x + y
-        @test @inferred(f(w, x, 1)) ≈ w*x + one(y)
+        @test @inferred(f(w, x, 1)) ≈ w*x + oneunit(y)
         @test @inferred(f(w, 2, y)) ≈ w*2 + y
-        @test @inferred(f(w, 2, 1)) ≈ w*2 + one(x)
+        @test @inferred(f(w, 2, 1)) ≈ w*2 + oneunit(x)
         @test @inferred(f(3, x, y)) ≈ 3*x + y
-        @test @inferred(f(3, x, 1)) ≈ 3*x + one(w)
+        @test @inferred(f(3, x, 1)) ≈ 3*x + oneunit(w)
         @test @inferred(f(3, 2, y)) ≈ 3*2 + y
     end
 end
@@ -259,7 +259,7 @@ end
         @test @inferred(0 / a) ≈ measurement(0)
         @test @inferred((0 ± 1) / a) ≈ measurement(0, 1/abs(a.val))
         # Test correlation
-        @test @inferred(a / a) ≈ one(a) ≈ measurement(1)
+        @test @inferred(a / a) ≈ oneunit(a) ≈ measurement(1)
         # Test derivatives of "div", "fld", and "cld".  They're defined to be exactly 0.
         # Should you discover this is not correct, update the test accordingly.
         for f in (div, fld, cld), b in (w, x, y)
@@ -285,8 +285,8 @@ end
     @test @inferred(x^(pi)) ≈ measurement(31.54428070019754, 3.3033093503504967)
     @test @inferred(2^x) ≈ measurement(8, 0.5545177444479562)
     @test @inferred(pi^x) ≈ measurement(31.006276680299816, 3.5493811564854525)
-    @test @inferred(z ^ 2.5) ≈ @inferred(x ^ 2.5)
-    @test @inferred(z ^ 3) ≈ @inferred(x ^ 3)
+    @test z ^ 2.5 ≈ @inferred(x ^ 2.5)
+    @test z ^ 3 ≈ @inferred(x ^ 3)
     for a in (w, x, y)
         @test @inferred(x ^ a) ≈ @inferred(exp(a * log(x)))
         @test @inferred(abs(a) ^ w) ≈ @inferred(exp(w * log(abs(a))))
@@ -317,13 +317,13 @@ end
     @test @inferred(sind(y)) ≈ measurement(0.0697564737441253, 0.0034821554353128255)
     @test @inferred(sinh(y)) ≈ measurement(27.28991719712775, 5.461646567203298)
     for a in (w, x, y)
-        @test @inferred(cos(a) ^ 2 + sin(a) ^ 2) ≈ one(a)
+        @test @inferred(cos(a) ^ 2 + sin(a) ^ 2) ≈ oneunit(a)
         @test @inferred(tan(a))  ≈ sin(a)  / cos(a)
         @test @inferred(tand(a)) ≈ sind(a) / cosd(a)
         @test @inferred(tanh(a)) ≈ sinh(a) / cosh(a)
         @test @inferred(sinpi(a))≈ sin(pi * a) atol = 1e-15
         @test @inferred(cospi(a))≈ cos(pi * a) atol = 1e-15
-        @test @inferred(sinc(a)) ≈ (sin(pi * a) / (pi * a)) atol = 1e-16
+        @test @inferred(sinc(a)) ≈ (sin(pi * a) / (pi * a)) atol = eps(Float64)
         @test @inferred(cosc(a)) ≈ ((cos(pi * a) - sin(pi * a) / (pi * a)) / a) atol = 1e-15
         if isdefined(Base, :sincos)
             # Check we got the sign of derivatives in `sincos` right.
@@ -332,7 +332,7 @@ end
             @test c ≈ cos(a)
             @test s + c ≈ sin(a) + cos(a)
             @test s - c ≈ sin(a) - cos(a)
-            @test s ^ 2 + c ^ 2 ≈ one(a)
+            @test s ^ 2 + c ^ 2 ≈ oneunit(a)
         end
         if isdefined(Base, :sincospi)
             s, c = @inferred(sincospi(a))
@@ -340,7 +340,7 @@ end
             @test c ≈ cospi(a)
             @test s + c ≈ sinpi(a) + cospi(a)
             @test s - c ≈ sinpi(a) - cospi(a)
-            @test s ^ 2 + c ^ 2 ≈ one(a)
+            @test s ^ 2 + c ^ 2 ≈ oneunit(a)
         end
     end
     for c in (-1 ± 1, 0 ± 1, 1 ± 1)
@@ -408,7 +408,7 @@ end
 @testset "Exponentials" begin
     @test @inferred(exp(x)) ≈ measurement(20.085536923187668, 2.008553692318767)
     for a in (w, 3//5*w, x/10, x, y/50, y)
-        @test @inferred(expm1(a)) ≈ exp(a) - one(a)
+        @test @inferred(expm1(a)) ≈ exp(a) - oneunit(a)
         @test @inferred(exp10(a)) ≈ 10^a
         @test @inferred(ldexp(frexp(a)...)) ≈ a
         @test @inferred(log2(exp2(a))) ≈ a
@@ -490,7 +490,8 @@ end
 end
 
 @testset "One and zero" begin
-    @test @inferred(one(y)) ≈ measurement(1)
+    @test @inferred(one(y)) === 1.0
+    @test @inferred(oneunit(y)) ≈ measurement(1)
     @test @inferred(zero(x)) ≈ measurement(0)
 end
 
@@ -515,8 +516,8 @@ end
     @test @inferred(digamma(y)) ≈ 1.256117668431802 ± 0.056764591147422994
     @test @inferred(polygamma(3, w)) ≈ 193.40909103400242 ± 0.10422749480000776
     for a in (w, x, y)
-        @test_logs (:warn, r"factorial.*is deprecated") @test @inferred(gamma(a)) ≈ factorial(a - one(a))
-        @test @inferred(gamma(a + one(a))) ≈ @test_logs (:warn, r"factorial.*is deprecated") factorial(a)
+        @test_logs (:warn, r"factorial.*is deprecated") @test @inferred(gamma(a)) ≈ factorial(a - oneunit(a))
+        @test @inferred(gamma(a + oneunit(a))) ≈ @test_logs (:warn, r"factorial.*is deprecated") factorial(a)
         @test @inferred(logabsgamma(abs(a)))[1] ≈ log(gamma(abs(a)))
         @test @inferred(digamma(a)) ≈ polygamma(0, a)
         @test @inferred(digamma(invdigamma(a))) ≈ a + zero(a)
@@ -731,7 +732,7 @@ end
     b = @inferred(A \ c)
     @test @inferred(A * b) ≈ c
     @test @inferred(b ⋅ c) ≈ 7.020527859237536 ± 0.5707235338984873
-    @test @inferred(det(A)) ≈ 682 ± 9.650906693155829
+    @test det(A) ≈ 682 ± 9.650906693155829
     @test @inferred(A * inv(A)) ≈ I
     # This matrix `A` has the property that the Inf-norm of `A * inv(A) - I` has
     # zero value but non-zero uncertainty in Julia v1.9, which would make the
@@ -853,7 +854,7 @@ end
     @test QuadGK.quadgk(sin, -y, y)[1] ≈ cos(-y) - cos(y) atol = 2 * eps(Float64)
     @test QuadGK.quadgk(exp, 0.4, x)[1] ≈ exp(x) - exp(0.4)
     @test QuadGK.quadgk(sin, w, 2.7)[1] ≈ cos(w) - cos(2.7)
-    @test QuadGK.quadgk(t -> cos(x - t), 0, 2pi)[1] ≈ measurement(0) atol = 2e-13
+    @test QuadGK.quadgk(t -> cos(x - t), 0, 2pi; atol=eps(Float64))[1] ≈ measurement(0) atol = 5e-16
     @test QuadGK.quadgk(t -> exp(t / w), 0, 1)[1] ≈ w * (exp(1 / w) - one(x))
     for a in (w, x, y)
         @test QuadGK.quadgk(t -> 1 / abs2(t / a), 1, Inf)[1] ≈ a ^ 2
@@ -867,8 +868,8 @@ end
     # Compare some of the above integrals with results with "@uncertain" macro.
     @test QuadGK.quadgk(cos, x, y)[1] ≈
         @uncertain(((x,y) -> QuadGK.quadgk(cos, x, y)[1])(x, y))
-    @test QuadGK.quadgk(sin, -y, y)[1] ≈
-        @uncertain((x -> QuadGK.quadgk(sin, -x, x)[1])(y)) atol = 5e-10
+    @test QuadGK.quadgk(sin, -y, y; atol=eps(Float64))[1] ≈
+        @uncertain((x -> QuadGK.quadgk(sin, -x, x; atol=eps(Float64))[1])(y)) atol = 5e-13
     @test QuadGK.quadgk(exp, 0.4, x)[1] ≈
         @uncertain((x -> QuadGK.quadgk(exp, 0.4, x)[1])(x))
 end
@@ -929,9 +930,7 @@ end
     F(x) = x^3 / 3
     a = (5 ± 0.1)u"m"
     b = (10 ± 1)u"m"
-    # This has been broken by QuadGK v2.6.0:
-    # <https://github.com/JuliaPhysics/Measurements.jl/issues/134#issuecomment-1431367697>.
-    @test_skip (QuadGK.quadgk(f, a, b)[1]).val ≈ (F(b) - F(a)).val
+    @test (QuadGK.quadgk(f, a, b)[1]).val ≈ (F(b) - F(a)).val
 end
 
 @testset "Complex measurements" begin
