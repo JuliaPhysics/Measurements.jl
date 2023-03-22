@@ -135,3 +135,62 @@ function Statistics.cor(x::AbstractVector{<:Measurement})
     standard_deviations = sqrt.(diag(covariance_matrix))
     return covariance_matrix ./ standard_deviations ./ standard_deviations'
 end
+
+"""
+    Measurements.correlated_values(
+        nominal_values::AbstractVector{<:Real},
+        covariance_matrix::AbstractMatrix{<:Real}
+    )
+
+Returns correlated `Measurement`s given their nominal values
+and their covariance matrix.
+"""
+function correlated_values(
+    nominal_values::AbstractVector{<:Real},
+    covariance_matrix::AbstractMatrix{<:Real},
+)
+    standard_deviations = sqrt.(diag(covariance_matrix))
+
+    standard_deviations_nonzero = deepcopy(standard_deviations)
+    standard_deviations_nonzero[findall(iszero, standard_deviations_nonzero)] .= 1
+
+    correlation_matrix = covariance_matrix ./ standard_deviations_nonzero ./ standard_deviations_nonzero'
+
+    return correlated_values(nominal_values, standard_deviations, correlation_matrix)
+end
+
+"""
+    Measurements.correlated_values(
+        nominal_values::AbstractVector{<:Real},
+        standard_deviations::AbstractVector{<:Real},
+        correlation_matrix::AbstractMatrix{<:Real}
+    )
+
+Returns correlated `Measurement`s given their nominal values,
+their standard deviations and their correlation matrix.
+"""
+function correlated_values(
+    nominal_values::AbstractVector{<:Real},
+    standard_deviations::AbstractVector{<:Real},
+    correlation_matrix::AbstractMatrix{<:Real},
+)
+    eig = eigen(correlation_matrix)::Eigen{Float64}
+
+    variances = eig.values
+
+    # Inverse is equal to transpose for unitary matrices
+    transform = eig.vectors'
+
+    # Avoid numerical errors
+    variances[findall(x -> x < eps(1.0), variances)] .= 0
+    variables = map(variances) do variance
+        measurement(0, sqrt(variance))
+    end
+
+    transform .*= standard_deviations'
+    transform_columns = [view(transform,:,i) for i in axes(transform, 2)]
+
+    values_funcs = [Measurements.result(n, t, variables) for (n, t) in zip(nominal_values, transform_columns)]
+
+    return values_funcs
+end

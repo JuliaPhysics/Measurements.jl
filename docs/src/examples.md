@@ -463,6 +463,29 @@ cov([x, y, z])
 cor([x, y, z])
 ```
 
+Creating Correlated Measurements from their Nominal Values and a Covariance Matrix
+----------------------------------------------------------------------------------
+
+Using [`Measurements.correlated_values`](@ref), you can correlate
+the uncertainty of fit parameters given a covariance matrix from
+the fitted results. An example using
+[LsqFit.jl](https://julianlsolvers.github.io/LsqFit.jl/latest/):
+
+```@repl
+using Measurements, LsqFit
+
+@. model(x, p) = p[1] + x * p[2]
+
+xdata = range(0, stop=10, length=20)
+ydata = model(xdata, [1.0 2.0]) .+ 0.01 .* randn.()
+p0 = [0.5, 0.5]
+
+fit = curve_fit(model, xdata, ydata, p0)
+
+coeficients = Measurements.correlated_values(coef(fit), estimate_covar(fit))
+f(x) = model(x, coeficients)
+```
+
 Interplay with Third-Party Packages
 -----------------------------------
 

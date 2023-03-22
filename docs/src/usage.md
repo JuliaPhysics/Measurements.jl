@@ -220,6 +220,18 @@ a vector of `Measurement`s. Likewise, the [correlation
 matrix](https://en.wikipedia.org/wiki/Correlation#Correlation_matrices) can be
 calculated using the `cor` function with the same signature.
 
+Creating Correlated Measurements from their Nominal Values and a Covariance Matrix
+----------------------------------------------------------------------------------
+
+```@docs
+Measurements.correlated_values
+```
+
+Given some nominal values with an associated covariance matrix, you can
+construct measurements with a correlated uncertainty. Providing both an
+`AbstractVector{<:Real}` of nominal values and a covariance matrix of type
+`AbstractMatrix{<:Real}`.
+
 Error Propagation of Numbers with Units
 ---------------------------------------
 
