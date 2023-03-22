@@ -41,7 +41,7 @@ jobs:
       - uses: julia-actions/julia-runtest@latest
       - uses: julia-actions/julia-uploadcodecov@v0.1
         continue-on-error: true
-      - uses: julia-actions/julia-uploadcoveralls@v0.1
+      - uses: julia-actions/julia-uploadcoveralls@v1.0
         continue-on-error: true
 
   Documentation:
