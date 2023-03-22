@@ -11,7 +11,8 @@ makedocs(
         "Performance"  => "performance.md",
         "Development"  => "todo.md",
         "Appendix"     => "appendix.md",
-    ]
+    ],
+    strict = true,
 )
 
 deploydocs(
