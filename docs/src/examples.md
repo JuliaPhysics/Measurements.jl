@@ -446,6 +446,23 @@ Measurements.value.([complex(87.3 ± 2.9, 64.3 ± 3.0), complex(55.1 ± 2.8, -19
 Measurements.uncertainty.([complex(87.3 ± 2.9, 64.3 ± 3.0), complex(55.1 ± 2.8, -19.1 ± 4.6)])
 ```
 
+Calculating the Covariance and Correlation Matrices
+---------------------------------------------------
+
+Calculate the covariance and correlation matrices of multiple `Measurement`s
+with the functions [`cov(::AbstractVector{<:Measurement})`](@ref) and
+[`cor(::AbstractVector{<:Measurement})`](@ref):
+
+```@repl
+using Measurements
+
+x = measurement(1.0, 0.1)
+y = -2x + 10
+z = -3x
+cov([x, y, z])
+cor([x, y, z])
+```
+
 Interplay with Third-Party Packages
 -----------------------------------
 

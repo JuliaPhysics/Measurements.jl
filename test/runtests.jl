@@ -90,6 +90,30 @@ end
     @test length((x - x + y - y + w - w + c).der) == 0
 end
 
+@testset "Covariance matrix" begin
+    x = measurement(1.0, 0.1)
+    y = -2x + 10
+    z = -3x
+    @test @inferred(cov([x, y, z])) ≈ [0.01 -0.02 -0.03; -0.02 0.04 0.06; -0.03 0.06 0.09]
+
+    u = measurement(1, 0.05)
+    v = measurement(10, 0.1)
+    w = u + 2v
+    @test @inferred(cov([u, v, w])) ≈ [0.0025 0.0 0.0025; 0.0 0.01 0.02; 0.0025 0.02 0.0425]
+end
+
+@testset "Correlation matrix" begin
+    x = measurement(1.0, 0.1)
+    y = -2x + 10
+    z = -3x
+    @test @inferred(cor([x, y, z])) ≈ [1.0 -1.0 -1.0; -1.0 1.0 1.0; -1.0 1.0 1.0]
+
+    u = measurement(1, 0.05)
+    v = measurement(10, 0.1)
+    w = u + 2v
+    @test @inferred(cor([u, v, w])) ≈ [1.0 0.0 0.24253562503633297; 0.0 1.0 0.9701425001453319; 0.24253562503633297 0.9701425001453319 1.0] atol=1e-15
+end
+
 @testset "Contributions to uncertainty" begin
     @test sort(collect(values(@inferred(Measurements.uncertainty_components(w * x * y))))) ≈
         [0.2, 0.3, 0.36]

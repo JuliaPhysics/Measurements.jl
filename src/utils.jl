@@ -105,3 +105,33 @@ function uncertainty_components(x::Measurement{T}) where {T<:AbstractFloat}
     end
     return out
 end
+
+"""
+    cov(x::AbstractVector{<:Measurement})
+
+Returns the covariance matrix of a vector of correlated `Measurement`s.
+"""
+function Statistics.cov(x::AbstractVector{Measurement{T}}) where T
+    S = length(x)
+    covariance_matrix = zeros(T, (S, S))
+
+    for (ii, i) = enumerate(eachindex(x)), (jj, j) = Iterators.take(enumerate(eachindex(x)), ii)
+        overlap = keys(x[i].der) ∩ keys(x[j].der)
+        covariance_matrix[ii, jj] = isempty(overlap) ? 0.0 : sum(overlap) do var
+            x[i].der[var] * x[j].der[var] * var[2]^2
+        end
+    end
+
+    return Symmetric(covariance_matrix, :L)
+end
+
+"""
+    cor(x::AbstractVector{<:Measurement})
+
+Returns the correlation matrix of a vector of correlated `Measurement`s.
+"""
+function Statistics.cor(x::AbstractVector{<:Measurement})
+    covariance_matrix = cov(x)
+    standard_deviations = sqrt.(diag(covariance_matrix))
+    return covariance_matrix ./ standard_deviations ./ standard_deviations'
+end

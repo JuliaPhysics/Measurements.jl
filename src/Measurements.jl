@@ -23,11 +23,16 @@ module Measurements
 
 # Calculus is used to calculate numerical derivatives in "@uncertain" macro.
 using Calculus
+using Statistics
+
+import Statistics: cor, cov
 
 using Requires
 
 # Functions provided by this package and exposed to users
 export Measurement, measurement, ±
+# Re-export from Statistics
+export cor, cov
 
 # Define the "Derivatives" type, used inside "Measurement" type.  This should be
 # a lightweight and immutable dictionary.
