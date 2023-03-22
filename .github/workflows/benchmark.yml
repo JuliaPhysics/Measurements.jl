@@ -4,22 +4,21 @@ on:
   pull_request:
   workflow_dispatch:
 
+concurrency:
+  # Skip intermediate builds: always.
+  # Cancel intermediate builds: always.
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   benchmark:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: julia-actions/setup-julia@v1
         with:
           version: '1.8.5'
-      - name: Cache artifacts
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.julia/artifacts
-            ~/.julia/registries
-          key: ${{ runner.os }}-benchmarks-artifacts-${{ hashFiles('**/Project.toml') }}
-          restore-keys: ${{ runner.os }}-benchmarks-artifacts
+      - uses: julia-actions/cache@v1
       - name: Run benchmarks
         shell: julia --color=yes --project=benchmark {0}
         run: |
