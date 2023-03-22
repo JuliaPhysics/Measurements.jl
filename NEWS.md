@@ -1,5 +1,21 @@
 # History of Measurements.jl
 
+## v2.9.0 (2023-03-22)
+
+### New features
+
+* New methods `value(::Missing)` and `uncertainty(::Missing)`
+  ([#127](https://github.com/JuliaPhysics/Measurements.jl/pull/127),
+  [#128](https://github.com/JuliaPhysics/Measurements.jl/pull/128)).
+* `one(::Measurement{T})` now returns `one(T)`, instead of an instance of
+  `Measurement{T}`
+  ([#134](https://github.com/JuliaPhysics/Measurements.jl/issues/134),
+  [#135](https://github.com/JuliaPhysics/Measurements.jl/pull/135)).  This
+  change should not breaking (and hence the major version was not increased),
+  unless you were relying on the previous incorrect return type of
+  `one(::Measurement{T})`, which did not follow the precise semantic of the
+  `one` function.
+
 ## v2.8.0 (2022-09-01)
 
 ### New features
