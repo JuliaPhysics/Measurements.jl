@@ -84,7 +84,7 @@ convenience, a BibTeX entry is provided in the
 file.
 
 Other features are expected to come in the future, see the [How Can I
-Help?](@ref) section and the [TODO](@ref) list.
+Help?](@ref) section.
 
 The `Measurements.jl` package is licensed under the MIT "Expat" License. The
 original author is Mosè Giordano.
