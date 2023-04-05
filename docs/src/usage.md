@@ -206,6 +206,32 @@ value and the uncertainty of `x`, be it a single measurement or an array of
 measurements. They are particularly useful in the case of complex measurements
 or arrays of measurements.
 
+Calculating the Covariance and Correlation Matrices
+---------------------------------------------------
+
+```@docs
+Measurements.Statistics.cov(::AbstractVector{<:Measurement})
+Measurements.Statistics.cor(::AbstractVector{<:Measurement})
+```
+
+The [covariance matrix](https://en.wikipedia.org/wiki/Covariance_matrix) of
+multiple measurements can be calculated using the `cov` function by supplying
+a vector of `Measurement`s. Likewise, the [correlation
+matrix](https://en.wikipedia.org/wiki/Correlation#Correlation_matrices) can be
+calculated using the `cor` function with the same signature.
+
+Creating Correlated Measurements from their Nominal Values and a Covariance Matrix
+----------------------------------------------------------------------------------
+
+```@docs
+Measurements.correlated_values
+```
+
+Given some nominal values with an associated covariance matrix, you can
+construct measurements with a correlated uncertainty. Providing both an
+`AbstractVector{<:Real}` of nominal values and a covariance matrix of type
+`AbstractMatrix{<:Real}`.
+
 Error Propagation of Numbers with Units
 ---------------------------------------
 
