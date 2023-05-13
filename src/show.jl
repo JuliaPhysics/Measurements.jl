@@ -93,23 +93,3 @@ end
 if VERSION >= v"1.6.0-rc1"
     Printf.tofloat(measure::Measurement) = Printf.tofloat(measure.val)
 end
-
-### Juno pretty printing
-@require Juno="e5e0dc1b-0480-54bc-9374-aad01c23163d" begin
-    Juno.render(i::Juno.Inline, measure::Measurement) =
-        Juno.render(i, Juno.Row(measure.val, Text(" ± "), measure.err))
-
-    Juno.Row(measure.val, Text(" ± "), measure.err)
-
-    function Juno.render(ji::Juno.Inline, cm::Complex{<:Measurement})
-        r, i = reim(cm)
-        if signbit(i) && !isnan(i)
-            i = -i
-            sss = " - "
-        else
-            sss = " + "
-        end
-        Juno.render(ji, Juno.Row("(", Juno.render(ji, r), ")", sss,
-                                 "(", Juno.render(ji, i), ")im"))
-    end
-end
