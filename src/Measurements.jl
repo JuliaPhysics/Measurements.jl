@@ -27,8 +27,6 @@ using Statistics
 
 import Statistics: cor, cov
 
-using Requires
-
 # Functions provided by this package and exposed to users
 export Measurement, measurement, ±
 # Re-export from Statistics
@@ -85,9 +83,12 @@ end
 # Start from 1, 0 is reserved to derived quantities
 const tag_counter = Threads.Atomic{UInt64}(1)
 
-function __init__()
-    @require Unitful="1986cc42-f94f-5a68-af5c-568840ba703d" include("unitful.jl")
-    @require SpecialFunctions="276daf66-3868-5448-9aa4-cd146d93841b" include("special-functions.jl")
+@static if !isdefined(Base, :get_extension)
+    using Requires
+    function __init__()
+        @require Unitful="1986cc42-f94f-5a68-af5c-568840ba703d" include("../ext/MeasurementsUnitfulExt.jl")
+        @require SpecialFunctions="276daf66-3868-5448-9aa4-cd146d93841b" include("../ext/MeasurementsSpecialFunctionsExt.jl")
+    end
 end
 
 measurement(x::Measurement) = x
