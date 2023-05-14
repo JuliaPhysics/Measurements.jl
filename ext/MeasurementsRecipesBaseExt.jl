@@ -1,12 +1,12 @@
 module MeasurementsJunoExt
 
 if isdefined(Base, :get_extension)
-    using Measurements: Measurement, value, uncertainty
-    using RecipesBase
+    using Measurements: Measurement, value, uncertainty 
 else
-    using ..Measurements
-    using ..RecipesBase
+    using ..Measurements: Measurement, value, uncertainty 
 end
+
+using RecipesBase
 
 @recipe function f(y::AbstractArray{<:Measurement})
     yerror := uncertainty.(y)
