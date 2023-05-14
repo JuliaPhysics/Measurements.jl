@@ -21,7 +21,7 @@ Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
 MeasurementsJunoExt = "Juno"
 MeasurementsSpecialFunctionsExt = "SpecialFunctions"
 MeasurementsUnitfulExt = "Unitful"
-MeasurementsRecipesBaseExt = "Unitful"
+MeasurementsRecipesBaseExt = "RecipesBase"
 
 [compat]
 Calculus = "0.4.1, 0.5"
