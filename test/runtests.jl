@@ -1,7 +1,12 @@
 using Measurements, SpecialFunctions, QuadGK, Calculus
 using Test, LinearAlgebra, Statistics, Unitful, Printf, Aqua
 
-Aqua.test_all(Measurements)
+if !isdefined(Base,:get_extension)
+    Aqua.test_all(Measurements)
+else
+    Aqua.test_all(Measurements,test_stale_deps = false)
+    Aqua.test_stale_deps(ignore = [:RecipesBase])
+end
 
 import Base: isapprox
 import Measurements: value, uncertainty
