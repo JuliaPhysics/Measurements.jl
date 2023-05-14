@@ -1,3 +1,21 @@
+### special-functions.jl
+#
+# Copyright (C) 2019 Mosè Giordano.
+#
+# Maintainer: Mosè Giordano <mose AT gnu DOT org>
+# Keywords: uncertainty, error propagation, physics
+#
+# This file is a part of Measurements.jl.
+#
+# License is MIT "Expat".
+#
+### Commentary:
+#
+# This file contains methods to print Measurement objects within a Juno enviroment
+#
+### Code:
+
+### Special functions
 module MeasurementsJunoExt
 
 @static if isdefined(Base, :get_extension)

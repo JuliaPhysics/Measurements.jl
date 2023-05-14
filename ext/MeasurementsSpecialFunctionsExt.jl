@@ -1,4 +1,3 @@
-module MeasurementsSpecialFunctionsExt
 ### special-functions.jl
 #
 # Copyright (C) 2019 Mosè Giordano.
@@ -18,7 +17,8 @@ module MeasurementsSpecialFunctionsExt
 ### Code:
 
 ### Special functions
-using .SpecialFunctions
+module MeasurementsSpecialFunctionsExt
+
 @static if isdefined(Base, :get_extension)
     using Measurements
     using SpecialFunctions
