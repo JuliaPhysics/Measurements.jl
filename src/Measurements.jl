@@ -86,7 +86,7 @@ const tag_counter = Threads.Atomic{UInt64}(1)
 
 if !isdefined(Base, :get_extension)
     using Requires
-end 
+end
 
 function __init__()
     @static if !isdefined(Base, :get_extension)
