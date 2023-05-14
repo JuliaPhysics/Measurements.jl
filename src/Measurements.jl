@@ -85,7 +85,7 @@ const tag_counter = Threads.Atomic{UInt64}(1)
 
 if !isdefined(Base, :get_extension)
     using Requires
-    using PlotRecipes #as of Measurements 2.9.0, PlotRecipes is an unconditional dependency.
+    using RecipesBase #as of Measurements 2.9.0, PlotRecipes is an unconditional dependency.
     include("../ext/MeasurementsRecipesBaseExt.jl")
 end
 
