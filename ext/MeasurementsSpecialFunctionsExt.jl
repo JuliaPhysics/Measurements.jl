@@ -19,7 +19,7 @@
 ### Special functions
 module MeasurementsSpecialFunctionsExt
 
-@static if isdefined(Base, :get_extension)
+if isdefined(Base, :get_extension)
     using Measurements
     using Measurements: result
     using SpecialFunctions

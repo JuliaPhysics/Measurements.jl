@@ -83,9 +83,13 @@ end
 # Start from 1, 0 is reserved to derived quantities
 const tag_counter = Threads.Atomic{UInt64}(1)
 
-@static if !isdefined(Base, :get_extension)
+
+if !isdefined(Base, :get_extension)
     using Requires
-    function __init__()
+end 
+
+function __init__()
+    @static if !isdefined(Base, :get_extension)
         @require Unitful="1986cc42-f94f-5a68-af5c-568840ba703d" include("../ext/MeasurementsUnitfulExt.jl")
         @require SpecialFunctions="276daf66-3868-5448-9aa4-cd146d93841b" include("../ext/MeasurementsSpecialFunctionsExt.jl")
         @require Juno="e5e0dc1b-0480-54bc-9374-aad01c23163d" include("../ext/MeasurementsJunoExt.jl")
