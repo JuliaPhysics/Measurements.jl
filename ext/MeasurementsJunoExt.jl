@@ -18,7 +18,7 @@
 ### Special functions
 module MeasurementsJunoExt
 
-@static if isdefined(Base, :get_extension)
+if isdefined(Base, :get_extension)
     using Measurements
     using Juno
 else
