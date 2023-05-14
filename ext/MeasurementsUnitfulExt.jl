@@ -19,9 +19,11 @@ module MeasurementsUnitfulExt
 
 @static if isdefined(Base, :get_extension)
     using Measurements
+    using Measurements: value, uncertainty
     import Unitful: AbstractQuantity, unit, ustrip
 else
     using ..Measurements
+    using ..Measurements: value, uncertainty
     import ..Unitful: AbstractQuantity, unit, ustrip
 end
 
