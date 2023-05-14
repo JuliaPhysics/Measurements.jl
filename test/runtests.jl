@@ -5,7 +5,7 @@ if !isdefined(Base,:get_extension)
     Aqua.test_all(Measurements)
 else
     Aqua.test_all(Measurements,stale_deps = false)
-    Aqua.test_stale_deps(ignore = [:RecipesBase])
+    Aqua.test_stale_deps(Measurements,ignore = [:RecipesBase])
 end
 
 import Base: isapprox
