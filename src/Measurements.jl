@@ -83,13 +83,10 @@ end
 # Start from 1, 0 is reserved to derived quantities
 const tag_counter = Threads.Atomic{UInt64}(1)
 
-if !isdefined(Base, :get_extension)
+@static if !isdefined(Base, :get_extension)
     using Requires
     using RecipesBase #as of Measurements 2.9.0, PlotRecipes is an unconditional dependency.
     include("../ext/MeasurementsRecipesBaseExt.jl")
-end
-
-@static if !isdefined(Base, :get_extension)
     function __init__()
         @require Unitful="1986cc42-f94f-5a68-af5c-568840ba703d" include("../ext/MeasurementsUnitfulExt.jl")
         @require SpecialFunctions="276daf66-3868-5448-9aa4-cd146d93841b" include("../ext/MeasurementsSpecialFunctionsExt.jl")
