@@ -11,7 +11,7 @@ The `Measurement` Type
 `Measurement` is a
 [composite](https://docs.julialang.org/en/v1/manual/types/#Composite-Types-1)
 [parametric](https://docs.julialang.org/en/v1/manual/types/#Parametric-Types-1)
-type, whose parameter is the `AbstractFloat` subtype of the nominal value and
+type, whose parameter is the `Real` subtype of the nominal value and
 the uncertainty of the measurement. `Measurement` type itself is subtype of
 `AbstractFloat`, thus `Measurement` objects can be used in any function taking
 `AbstractFloat` arguments without redefining it, and calculation of uncertainty
@@ -20,7 +20,7 @@ will be exact.
 In detail, this is the definition of the type:
 
 ```julia
-struct Measurement{T<:AbstractFloat} <: AbstractFloat
+struct Measurement{T<:Real} <: AbstractFloat
     val::T
     err::T
     tag::UInt64

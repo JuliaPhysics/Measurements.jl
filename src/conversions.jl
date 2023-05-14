@@ -16,15 +16,15 @@
 #
 ### Code:
 
-Base.convert(::Type{Measurement{T}}, a::Irrational) where {T<:AbstractFloat} =
+Base.convert(::Type{Measurement{T}}, a::Irrational) where {T<:Real} =
     measurement(T(a))::Measurement{T}
-Base.convert(::Type{Measurement{T}}, a::Rational{<:Integer}) where {T<:AbstractFloat} =
+Base.convert(::Type{Measurement{T}}, a::Rational{<:Integer}) where {T<:Real} =
     measurement(T(a))::Measurement{T}
-Base.convert(::Type{Measurement{T}}, a::Real) where {T<:AbstractFloat} =
+Base.convert(::Type{Measurement{T}}, a::Real) where {T<:Real} =
     measurement(T(a))::Measurement{T}
-Base.convert(::Type{Measurement{T}}, a::Base.TwicePrecision) where {T<:AbstractFloat} =
+Base.convert(::Type{Measurement{T}}, a::Base.TwicePrecision) where {T<:Real} =
     measurement(T(a))::Measurement{T}
-Base.convert(::Type{Measurement{T}}, a::AbstractChar) where {T<:AbstractFloat} =
+Base.convert(::Type{Measurement{T}}, a::AbstractChar) where {T<:Real} =
     measurement(T(a))::Measurement{T}
 
 function Base.convert(::Type{Measurement{T}}, a::Complex) where {T}
@@ -35,9 +35,9 @@ function Base.convert(::Type{Measurement{T}}, a::Complex) where {T}
     end
 end
 
-Base.convert(::Type{Measurement{T}}, a::Measurement{T}) where {T<:AbstractFloat} = a
+Base.convert(::Type{Measurement{T}}, a::Measurement{T}) where {T<:Real} = a
 function Base.convert(::Type{Measurement{T}},
-                      a::Measurement{<:AbstractFloat}) where {T<:AbstractFloat}
+                      a::Measurement{<:Real}) where {T<:Real}
     newder = empty_der2(zero(T))
     for tag in keys(a.der)
         newder = Derivatives(newder, (T(tag[1]), T(tag[2]), tag[3])=>T(a.der[tag]))
@@ -55,10 +55,10 @@ function Base.convert(::Type{Int}, a::Measurement)
     return convert(Int, a.val)::Int
 end
 
-Base.promote_rule(::Type{Measurement{T}}, ::Type{S}) where {T<:AbstractFloat, S<:Real} =
+Base.promote_rule(::Type{Measurement{T}}, ::Type{S}) where {T<:Real, S<:Real} =
     Measurement{promote_type(T, S)}
 Base.promote_rule(::Type{Measurement{T}},
-                  ::Type{Measurement{S}}) where {T<:AbstractFloat, S<:AbstractFloat} =
+                  ::Type{Measurement{S}}) where {T<:Real, S<:Real} =
     Measurement{promote_type(T, S)}
 
 # adaptation of JuliaLang/julia#30952

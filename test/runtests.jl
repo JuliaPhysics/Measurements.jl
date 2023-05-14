@@ -24,8 +24,8 @@ end
 isapprox(x::Measurement, y::Measurement; rest...) =
     isapprox(x.val, y.val; nans = true, rest...) &&
     isapprox(x.err, y.err; nans = true, rest...)
-isapprox(x::Complex{Measurement{<:AbstractFloat}},
-         y::Complex{Measurement{<:AbstractFloat}}; rest...) =
+isapprox(x::Complex{Measurement{<:Real}},
+         y::Complex{Measurement{<:Real}}; rest...) =
              isapprox(real(x), real(y); nans = true, rest...) &&
              isapprox(imag(x), imag(y); nans = true, rest...)
 # This is bit strict, but the idea is that in the tests we want `Measurement`s to be

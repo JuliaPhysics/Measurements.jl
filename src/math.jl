@@ -38,7 +38,7 @@ export @uncertain
 #   σ_G = |σ_a·∂G/∂a|
 # The list of derivatives with respect to each measurement is updated with
 #   ∂G/∂a · previous_derivatives
-@inline function result(val::T, der::Real, a::Measurement{<:AbstractFloat}) where {T<:Real}
+@inline function result(val::T, der::Real, a::Measurement{<:Real}) where {T<:Real}
     newder = empty_der1(a)
     @inbounds for tag in keys(a.der)
         if ! iszero(tag[2]) # Skip values with 0 uncertainty
@@ -56,9 +56,9 @@ end
 # Get the common type parameter of a collection of Measurement objects.  The first two
 # methods are for the trivial cases of homogeneous tuples and arrays, the last, inefficient,
 # method is for inhomogeneous collections (probably the least common case).
-gettype(::Tuple{Measurement{T}, Vararg{Measurement{T}}}) where {T<:AbstractFloat} = T
-gettype(::AbstractArray{Measurement{T}}) where {T<:AbstractFloat} = T
-_eltype(::Measurement{T}) where {T<:AbstractFloat} = T
+gettype(::Tuple{Measurement{T}, Vararg{Measurement{T}}}) where {T<:Real} = T
+gettype(::AbstractArray{Measurement{T}}) where {T<:Real} = T
+_eltype(::Measurement{T}) where {T<:Real} = T
 gettype(collection) = promote_type(_eltype.(collection)...)
 
 # This function is similar to the previous one, but applies to mathematical
@@ -249,7 +249,7 @@ function Base.:/(a::Measurement, b::Measurement)
     return result(x / y, (oneovery, -x * abs2(oneovery)), (a, b))
 end
 Base.:/(a::Real, b::Measurement) = result(a/b.val, -a/abs2(b.val), b)
-Base.:/(a::Measurement{T}, b::Real) where {T<:AbstractFloat} = result(a.val/b, 1/T(b), a)
+Base.:/(a::Measurement{T}, b::Real) where {T<:Real} = result(a.val/b, 1/T(b), a)
 
 # 0.0 as partial derivative for both arguments of "div", "fld", "cld" should be
 # correct for most cases.  This has been tested against "@uncertain" macro.
@@ -289,7 +289,7 @@ function Base.:^(a::Measurement, b::Integer)
     return result(x ^ b, b * x ^ (b - 1), a)
 end
 
-function Base.:^(a::Measurement{T},  b::Rational) where {T<:AbstractFloat}
+function Base.:^(a::Measurement{T},  b::Rational) where {T<:Real}
     x = a.val
     return result(x ^ b, b * x ^ (b - one(T)), a)
 end
@@ -306,7 +306,7 @@ function Base.:^(a::Real,  b::Measurement)
     return result(res, res*log(a), b)
 end
 
-function Base.exp2(a::Measurement{T}) where {T<:AbstractFloat}
+function Base.exp2(a::Measurement{T}) where {T<:Real}
     pow = exp2(a.val)
     return result(pow, pow*log(T(2)), a)
 end
@@ -411,47 +411,47 @@ end
 # Inverse trig functions: acos, acosd, acosh, asin, asind, asinh, atan, atand, atanh,
 #                         asec, acsc, acot, asech, acsch, acoth
 
-function Base.acos(a::Measurement{T}) where {T<:AbstractFloat}
+function Base.acos(a::Measurement{T}) where {T<:Real}
     aval = a.val
     return result(acos(aval), -inv(sqrt(one(T) - abs2(aval))), a)
 end
 
-function Base.acosd(a::Measurement{T}) where {T<:AbstractFloat}
+function Base.acosd(a::Measurement{T}) where {T<:Real}
     aval = a.val
     return result(acosd(aval), -rad2deg(inv(sqrt(one(T) - abs2(aval)))), a)
 end
 
-function Base.acosh(a::Measurement{T}) where {T<:AbstractFloat}
+function Base.acosh(a::Measurement{T}) where {T<:Real}
     aval = a.val
     return result(acosh(aval), inv(sqrt(abs2(aval) - one(T))), a)
 end
 
-function Base.asin(a::Measurement{T}) where {T<:AbstractFloat}
+function Base.asin(a::Measurement{T}) where {T<:Real}
     aval = a.val
     return result(asin(aval), inv(sqrt(one(T) - abs2(aval))), a)
 end
 
-function Base.asind(a::Measurement{T}) where {T<:AbstractFloat}
+function Base.asind(a::Measurement{T}) where {T<:Real}
     aval = a.val
     return result(asind(aval), rad2deg(inv(sqrt(one(T) - abs2(aval)))), a)
 end
 
-function Base.asinh(a::Measurement{T}) where {T<:AbstractFloat}
+function Base.asinh(a::Measurement{T}) where {T<:Real}
     aval = a.val
     return result(asinh(aval), inv(hypot(aval, one(T))), a)
 end
 
-function Base.atan(a::Measurement{T}) where {T<:AbstractFloat}
+function Base.atan(a::Measurement{T}) where {T<:Real}
     aval = a.val
     return result(atan(aval), inv(abs2(aval) + one(T)), a)
 end
 
-function Base.atand(a::Measurement{T}) where {T<:AbstractFloat}
+function Base.atand(a::Measurement{T}) where {T<:Real}
     aval = a.val
     return result(atand(aval), rad2deg(inv(abs2(aval) + one(T))), a)
 end
 
-function Base.atanh(a::Measurement{T}) where {T<:AbstractFloat}
+function Base.atanh(a::Measurement{T}) where {T<:Real}
     aval = a.val
     return result(atanh(aval), inv(one(T) - abs2(aval)), a)
 end
@@ -572,7 +572,7 @@ function Base.expm1(a::Measurement)
     return result(expm1(aval), exp(aval), a)
 end
 
-function Base.exp10(a::Measurement{T}) where {T<:AbstractFloat}
+function Base.exp10(a::Measurement{T}) where {T<:Real}
     val = exp10(a.val)
     return result(val, log(T(10))*val, a)
 end
@@ -582,7 +582,7 @@ function Base.frexp(a::Measurement)
     return (result(x, inv(exp2(y)), a), y)
 end
 
-Base.ldexp(a::Measurement{T}, e::Integer) where {T<:AbstractFloat} =
+Base.ldexp(a::Measurement{T}, e::Integer) where {T<:Real} =
     result(ldexp(a.val, e), ldexp(one(T), e), a)
 
 # Logarithms
@@ -600,17 +600,17 @@ function Base.log(a::Measurement) # Special case
     return result(log(aval), inv(aval), a)
 end
 
-function Base.log2(a::Measurement{T}) where {T<:AbstractFloat} # Special case
+function Base.log2(a::Measurement{T}) where {T<:Real} # Special case
     x = a.val
     return result(log2(x), inv(log(T(2)) * x), a)
 end
 
-function Base.log10(a::Measurement{T}) where {T<:AbstractFloat} # Special case
+function Base.log10(a::Measurement{T}) where {T<:Real} # Special case
     aval = a.val
     return result(log10(aval), inv(log(T(10)) * aval), a)
 end
 
-function Base.log1p(a::Measurement{T}) where {T<:AbstractFloat} # Special case
+function Base.log1p(a::Measurement{T}) where {T<:Real} # Special case
     aval = a.val
     return result(log1p(aval), inv(aval + one(T)), a)
 end
@@ -719,18 +719,18 @@ Base.rem2pi(a::Measurement, r::RoundingMode) = result(rem2pi(a.val, r), 1, a)
 
 ### Machine precision
 
-Base.eps(::Type{Measurement{T}}) where {T<:AbstractFloat} = eps(T)
+Base.eps(::Type{Measurement{T}}) where {T<:Real} = eps(T)
 Base.eps(a::Measurement) = eps(a.val)
 
 Base.nextfloat(a::Measurement) = result(nextfloat(a.val), 1, a)
 Base.nextfloat(a::Measurement, n::Integer) = result(nextfloat(a.val, n), 1, a)
 
-Base.maxintfloat(::Type{Measurement{T}}) where {T<:AbstractFloat} = maxintfloat(T)
+Base.maxintfloat(::Type{Measurement{T}}) where {T<:Real} = maxintfloat(T)
 
-Base.floatmin(::Type{Measurement{T}}) where {T<:AbstractFloat} = floatmin(T) ± zero(T)
-Base.floatmax(::Type{Measurement{T}}) where {T<:AbstractFloat} = floatmax(T) ± zero(T)
+Base.floatmin(::Type{Measurement{T}}) where {T<:Real} = floatmin(T) ± zero(T)
+Base.floatmax(::Type{Measurement{T}}) where {T<:Real} = floatmax(T) ± zero(T)
 
-Base.typemax(::Type{Measurement{T}}) where {T<:AbstractFloat} = typemax(T)
+Base.typemax(::Type{Measurement{T}}) where {T<:Real} = typemax(T)
 
 ### Rounding
 
@@ -766,13 +766,13 @@ Base.trunc(::Type{Bool}, x::Measurement) = measurement(trunc(Bool, value(x)))
 
 # Widening
 
-Base.widen(::Type{Measurement{T}}) where {T<:AbstractFloat} = Measurement{widen(T)}
+Base.widen(::Type{Measurement{T}}) where {T<:Real} = Measurement{widen(T)}
 
 # To big float
 
 Base.big(::Type{Measurement}) = Measurement{BigFloat}
-Base.big(::Type{Measurement{T}}) where {T<:AbstractFloat} = Measurement{BigFloat}
-Base.big(x::Measurement{<:AbstractFloat}) = convert(Measurement{BigFloat}, x)
+Base.big(::Type{Measurement{T}}) where {T<:Real} = Measurement{BigFloat}
+Base.big(x::Measurement{<:Real}) = convert(Measurement{BigFloat}, x)
 Base.big(x::Complex{<:Measurement}) = convert(Complex{Measurement{BigFloat}}, x)
 
 # Sum and prod

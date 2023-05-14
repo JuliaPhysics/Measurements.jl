@@ -13,6 +13,8 @@
 #
 # This file defines the methods to represent `Measurement` objects in various places.
 #
+# FIXME: should special-handle non-AbstractFloat T's.
+#
 ### Code:
 
 import Printf
