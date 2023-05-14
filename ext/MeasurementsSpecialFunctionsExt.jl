@@ -21,9 +21,11 @@ module MeasurementsSpecialFunctionsExt
 
 @static if isdefined(Base, :get_extension)
     using Measurements
+    using Measurements: result
     using SpecialFunctions
 else
     using ..Measurements
+    using ..Measurements: result
     using ..SpecialFunctions
 end
 # Error function: erf, erfinv, erfc, erfcinv, erfcx, erfi, dawson
