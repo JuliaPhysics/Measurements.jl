@@ -63,7 +63,6 @@ end
 # Representation of complex measurements.  Print something that is easy to
 # understand and that can be meaningfully copy-pasted into the REPL, at least
 # for standard numeric types.
-# FIXME: does this handle complex symbolic Measurements correctly?
 for mime in (MIME"text/plain", MIME"text/x-tex", MIME"text/x-latex")
     function Base.show(io::IO, mtype::mime, measure::Complex{<:Measurement})
         r, i = reim(measure)
@@ -71,7 +70,7 @@ for mime in (MIME"text/plain", MIME"text/x-tex", MIME"text/x-latex")
         print(io, "(")
         show(io, mtype, r)
         print(io, ")")
-        if signbit(i) && !isnan(i)
+        if !_is_symbolic(i.val) && signbit(i) && !isnan(i)
             i = -i
             print(io, compact ? "-" : " - ")
         else
@@ -81,6 +80,16 @@ for mime in (MIME"text/plain", MIME"text/x-tex", MIME"text/x-latex")
         show(io, mtype, i)
         print(io, ")im")
     end
+end
+
+function Base.show(io::IO, ::MIME"text/latex", measure::Complex{<:Measurement})
+    print(io, "\$")
+    Base.show(io, "text/x-latex", measure)
+    print(io, "\$")
+end
+
+function Base.show(io::IO, measure::Complex{<:Measurement})
+    Base.show(io, "text/plain", measure)
 end
 
 # This is adapted from base/show.jl for Complex type.

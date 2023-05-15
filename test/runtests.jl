@@ -784,6 +784,11 @@ end
                        repr("text/plain", [w 10x; 100y 1000w]))
     end
     @testset "Complex numbers" begin
+        @test repr(zz, context=:compact=>true) == "(-0.534±0.031)-(0.534±0.031)im"
+        @test repr(zz) == "(-0.534 ± 0.031) - (0.534 ± 0.031)im"
+        @test repr(complex(x, w)) == "(3.0 ± 0.1) - (0.5 ± 0.03)im"
+        @test repr(complex(w, y)) == "(-0.5 ± 0.03) + (4.0 ± 0.2)im"
+
         @test repr("text/plain", zz, context=:compact=>true) == "(-0.534±0.031)-(0.534±0.031)im"
         @test repr("text/plain", zz) == "(-0.534 ± 0.031) - (0.534 ± 0.031)im"
         @test repr("text/plain", complex(x, w)) == "(3.0 ± 0.1) - (0.5 ± 0.03)im"

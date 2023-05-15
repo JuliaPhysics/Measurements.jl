@@ -61,6 +61,41 @@ end
           @test repr(mime, x, context=IOContext(stdout, :error_digits=>error_digits, :compact=>true)) == "x_val\\pmx_err"
         end
     end
+
+    @variables y_val, y_err
+    y = measurement(y_val, y_err)
+    c = complex(x, y)
+
+    @test_throws ErrorException repr(c, context=:error_digits=>-4)
+    @test repr(c) == "(x_val ± x_err) + (y_val ± y_err)im"
+    @test repr(c, context=:compact=>true) == "(x_val±x_err)+(y_val±y_err)im"
+    for error_digits in (0, 7)
+        @test repr(c, context=:error_digits=>error_digits) == "(x_val ± x_err) + (y_val ± y_err)im"
+        @test repr(c, context=IOContext(stdout, :error_digits=>error_digits, :compact=>true)) == "(x_val±x_err)+(y_val±y_err)im"
+    end
+
+    @test repr("text/plain", c) == "(x_val ± x_err) + (y_val ± y_err)im"
+    @test repr("text/plain", c, context=:compact=>true) == "(x_val±x_err)+(y_val±y_err)im"
+    for error_digits in (0, 7)
+        @test repr("text/plain", c, context=:error_digits=>error_digits) == "(x_val ± x_err) + (y_val ± y_err)im"
+        @test repr("text/plain", c, context=IOContext(stdout, :error_digits=>error_digits, :compact=>true)) == "(x_val±x_err)+(y_val±y_err)im"
+    end
+
+    @test repr("text/latex", c) == "\$(x_val \\pm x_err) + (y_val \\pm y_err)im\$"
+    @test repr("text/latex", c, context=:compact=>true) == "\$(x_val\\pmx_err)+(y_val\\pmy_err)im\$"
+    for error_digits in (0, 7)
+        @test repr("text/latex", c, context=:error_digits=>error_digits) == "\$(x_val \\pm x_err) + (y_val \\pm y_err)im\$"
+        @test repr("text/latex", c, context=IOContext(stdout, :error_digits=>error_digits, :compact=>true)) == "\$(x_val\\pmx_err)+(y_val\\pmy_err)im\$"
+    end
+
+    for mime in ("text/x-tex", "text/x-latex")
+        @test repr(mime, c) == "(x_val \\pm x_err) + (y_val \\pm y_err)im"
+        @test repr(mime, c, context=:compact=>true) == "(x_val\\pmx_err)+(y_val\\pmy_err)im"
+        for error_digits in (0, 7)
+          @test repr(mime, c, context=:error_digits=>error_digits) == "(x_val \\pm x_err) + (y_val \\pm y_err)im"
+          @test repr(mime, c, context=IOContext(stdout, :error_digits=>error_digits, :compact=>true)) == "(x_val\\pmx_err)+(y_val\\pmy_err)im"
+        end
+    end
 end
 
 ##### Mathematical Operations
