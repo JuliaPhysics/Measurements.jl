@@ -122,13 +122,10 @@ include("linear_algebra.jl")
 include("show.jl")
 include("parsing.jl")
 
-if !isdefined(Base,:get_extension)
+if !isdefined(Base, :get_extension)  
     using Requires
     using RecipesBase
     include("../ext/MeasurementsRecipesBaseExt.jl")
-end 
-
-@static if !isdefined(Base, :get_extension)  
     function __init__()
         @require Unitful="1986cc42-f94f-5a68-af5c-568840ba703d" include("../ext/MeasurementsUnitfulExt.jl")
         @require SpecialFunctions="276daf66-3868-5448-9aa4-cd146d93841b" include("../ext/MeasurementsSpecialFunctionsExt.jl")
