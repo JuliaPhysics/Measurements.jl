@@ -1,3 +1,19 @@
+### plot-recipes.jl
+#
+# Copyright (C) 2017 Mosè Giordano.
+#
+# Maintainer: Mosè Giordano <mose AT gnu DOT org>
+# Keywords: uncertainty, error propagation, physics, plots
+#
+# This file is a part of Measurements.jl.
+#
+# License is MIT "Expat".
+#
+### Commentary:
+#
+# This file defines the recipes to plot Measurements vectors with Plots.jl package in 2D.
+#
+### Code:
 module MeasurementsRecipesBaseExt
 
 if isdefined(Base, :get_extension)
