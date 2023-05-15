@@ -4,8 +4,8 @@ using Test, LinearAlgebra, Statistics, Unitful, Printf, Aqua
 if !isdefined(Base,:get_extension)
     Aqua.test_all(Measurements)
 else
-    Aqua.test_all(Measurements,stale_deps = false)
-    Aqua.test_stale_deps(Measurements,ignore = [:RecipesBase,:Requires])
+    Aqua.test_all(Measurements; stale_deps=false)
+    Aqua.test_stale_deps(Measurements; ignore=[:RecipesBase, :Requires])
 end
 
 import Base: isapprox
