@@ -124,6 +124,7 @@ include("parsing.jl")
 
 if !isdefined(Base,:get_extension)
     using Requires
+    using RecipesBase
     include("../ext/MeasurementsRecipesBaseExt.jl")
 end 
 

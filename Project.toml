@@ -34,7 +34,7 @@ Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
 
 [targets]
-test = ["Aqua", "QuadGK", "SpecialFunctions", "Statistics", "Test", "Unitful"]
+test = ["Aqua", "QuadGK", "RecipesBase", "SpecialFunctions", "Statistics", "Test", "Unitful"]
 
 [weakdeps]
 Juno = "e5e0dc1b-0480-54bc-9374-aad01c23163d"
