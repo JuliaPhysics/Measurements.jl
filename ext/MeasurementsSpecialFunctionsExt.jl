@@ -17,8 +17,17 @@
 ### Code:
 
 ### Special functions
-using .SpecialFunctions
+module MeasurementsSpecialFunctionsExt
 
+if isdefined(Base, :get_extension)
+    using Measurements
+    using Measurements: result
+    using SpecialFunctions
+else
+    using ..Measurements
+    using ..Measurements: result
+    using ..SpecialFunctions
+end
 # Error function: erf, erfinv, erfc, erfcinv, erfcx, erfi, dawson
 
 function SpecialFunctions.erf(a::Measurement{T}) where {T<:AbstractFloat}
@@ -229,4 +238,5 @@ function Base.factorial(a::Measurement)
                  """,
                  :factorial)
     SpecialFunctions.gamma(a + one(a))
+end
 end

@@ -15,7 +15,19 @@
 #
 ### Code:
 
-import .Unitful: AbstractQuantity, unit, ustrip
+module MeasurementsUnitfulExt
+
+if isdefined(Base, :get_extension)
+    using Measurements
+    using Measurements: value, uncertainty
+    import Unitful: AbstractQuantity, unit, ustrip
+else
+    using ..Measurements
+    using ..Measurements: value, uncertainty
+    import ..Unitful: AbstractQuantity, unit, ustrip
+end
+
+
 function Measurements.measurement(a::T, b::T) where {T<:AbstractQuantity}
     u = unit(a)
     return measurement(ustrip(u, a), ustrip(u, b)) * u
@@ -32,4 +44,6 @@ end
 function Measurements.uncertainty(x::AbstractQuantity)
     u = unit(x)
     return uncertainty(ustrip(u, x)) * u
+end
+
 end

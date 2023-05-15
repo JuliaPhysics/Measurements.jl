@@ -27,8 +27,6 @@ using Statistics
 
 import Statistics: cor, cov
 
-using Requires
-
 # Functions provided by this package and exposed to users
 export Measurement, measurement, ±
 # Re-export from Statistics
@@ -85,11 +83,6 @@ end
 # Start from 1, 0 is reserved to derived quantities
 const tag_counter = Threads.Atomic{UInt64}(1)
 
-function __init__()
-    @require Unitful="1986cc42-f94f-5a68-af5c-568840ba703d" include("unitful.jl")
-    @require SpecialFunctions="276daf66-3868-5448-9aa4-cd146d93841b" include("special-functions.jl")
-end
-
 measurement(x::Measurement) = x
 measurement(val::T) where {T<:AbstractFloat} = Measurement(val, zero(T), UInt64(0), empty_der2(val))
 measurement(val::Real) = measurement(float(val))
@@ -128,6 +121,19 @@ include("math.jl")
 include("linear_algebra.jl")
 include("show.jl")
 include("parsing.jl")
-include("plot-recipes.jl")
+
+if !isdefined(Base,:get_extension)
+    using Requires
+    using RecipesBase
+    include("../ext/MeasurementsRecipesBaseExt.jl")
+end
+
+@static if !isdefined(Base, :get_extension)
+    function __init__()
+        @require Unitful="1986cc42-f94f-5a68-af5c-568840ba703d" include("../ext/MeasurementsUnitfulExt.jl")
+        @require SpecialFunctions="276daf66-3868-5448-9aa4-cd146d93841b" include("../ext/MeasurementsSpecialFunctionsExt.jl")
+        @require Juno="e5e0dc1b-0480-54bc-9374-aad01c23163d" include("../ext/MeasurementsJunoExt.jl")
+    end
+end
 
 end # module
