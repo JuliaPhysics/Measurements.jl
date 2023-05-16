@@ -46,3 +46,4 @@ Makie.convert_arguments(P::Type{<:Band}, x::AbstractVector{<:Real}, y::AbstractV
     convert_arguments(P, x, value.(y) - uncertainty.(y), value.(y) + uncertainty.(y)) 
 
 end #module
+
