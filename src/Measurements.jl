@@ -27,6 +27,9 @@ using Calculus
 # Functions provided by this package and exposed to users
 export Measurement, measurement, ±
 
+# Query whether the value is of symbolic type.
+_is_symbolic(::Real) = false
+
 # Define the "Derivatives" type, used inside "Measurement" type.  This should be
 # a lightweight and immutable dictionary.
 include("derivatives-type.jl")
@@ -79,9 +82,12 @@ end
 const tag_counter = Threads.Atomic{UInt64}(1)
 
 measurement(x::Measurement) = x
-measurement(val::T) where {T<:AbstractFloat} = Measurement(val, zero(T), UInt64(0), empty_der2(val)) # FIXME
-measurement(val::Real) = measurement(float(val)) # FIXME
-function measurement(val::T, err::T) where {T<:AbstractFloat} # FIXME
+
+_measurement(val::T) where {T<:Real} =  Measurement(val, zero(T), UInt64(0), empty_der2(val))
+measurement(val::AbstractFloat) = _measurement(val)
+measurement(val::Real) = measurement(float(val))
+
+function _measurement(val::T, err::T) where {T<:Real}
     newder = empty_der2(val)
     if iszero(err)
         Measurement{T}(val, err, UInt64(0), newder)
@@ -90,8 +96,12 @@ function measurement(val::T, err::T) where {T<:AbstractFloat} # FIXME
         return Measurement{T}(val, err, tag, Derivatives(newder, (val, err, tag)=>one(T)))
     end
 end
-measurement(val::Real, err::Real) = measurement(promote(float(val), float(err))...) # FIXME
+measurement(val::T, err::T) where {T<:AbstractFloat} = _measurement(val, err)
+measurement(val::T, err::T) where {T<:Real} = measurement(float(val), float(err))
+measurement(val::V, err::E) where {V<:Real, E<:Real} = measurement(promote(val, err)...)
+
 measurement(::Missing, ::Union{Real,Missing} = missing) = missing
+
 const ± = measurement
 
 """

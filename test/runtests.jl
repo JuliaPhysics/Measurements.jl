@@ -1073,3 +1073,9 @@ end
         @test base_numeric_type(typeof(x)) == T
     end
 end
+
+@static if Base.VERSION >= v"1.9" # We only support Symbolics w/ Julia 1.9+.
+  @testset "Symbolics" begin
+    include("symbolics.jl")
+  end
+end
