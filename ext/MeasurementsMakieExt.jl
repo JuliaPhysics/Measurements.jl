@@ -1,7 +1,5 @@
 ### plot-recipes.jl
 #
-# Copyright (C) 2017 Mosè Giordano.
-#
 # Maintainer: Mosè Giordano <mose AT gnu DOT org>
 # Keywords: uncertainty, error propagation, physics, plots
 #
@@ -46,4 +44,3 @@ Makie.convert_arguments(P::Type{<:Band}, x::AbstractVector{<:Real}, y::AbstractV
     convert_arguments(P, x, value.(y) - uncertainty.(y), value.(y) + uncertainty.(y)) 
 
 end #module
-
