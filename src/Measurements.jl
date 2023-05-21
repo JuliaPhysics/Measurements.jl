@@ -133,7 +133,6 @@ end
         @require Unitful="1986cc42-f94f-5a68-af5c-568840ba703d" include("../ext/MeasurementsUnitfulExt.jl")
         @require SpecialFunctions="276daf66-3868-5448-9aa4-cd146d93841b" include("../ext/MeasurementsSpecialFunctionsExt.jl")
         @require Juno="e5e0dc1b-0480-54bc-9374-aad01c23163d" include("../ext/MeasurementsJunoExt.jl")
-        @require Makie="ee78f7c6-11fb-53f2-987a-cfe4a2b5a57a" include("../ext/MeasurementsMakieExt.jl")
     end
 end
 
