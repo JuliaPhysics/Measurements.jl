@@ -11,11 +11,12 @@ RecipesBase = "3cdcf5f2-1ef4-517c-9805-6587b60abb01"
 Requires = "ae029012-a4dd-5104-9daa-d747884805df"
 Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 
-[compat]
-Calculus = "0.4.1, 0.5"
-RecipesBase = "0.6.0, 0.7, 0.8, 1.0"
-Requires = "0.5.0, 1"
-julia = "1"
+[weakdeps]
+Juno = "e5e0dc1b-0480-54bc-9374-aad01c23163d"
+Makie = "ee78f7c6-11fb-53f2-987a-cfe4a2b5a57a"
+RecipesBase = "3cdcf5f2-1ef4-517c-9805-6587b60abb01"
+SpecialFunctions = "276daf66-3868-5448-9aa4-cd146d93841b"
+Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
 
 [extensions]
 MeasurementsJunoExt = "Juno"
@@ -23,6 +24,12 @@ MeasurementsMakieExt = "Makie"
 MeasurementsRecipesBaseExt = "RecipesBase"
 MeasurementsSpecialFunctionsExt = "SpecialFunctions"
 MeasurementsUnitfulExt = "Unitful"
+
+[compat]
+Calculus = "0.4.1, 0.5"
+RecipesBase = "0.6.0, 0.7, 0.8, 1.0"
+Requires = "0.5.0, 1"
+julia = "1"
 
 [extras]
 Aqua = "4c88cf16-eb10-579e-8560-4a9242c79595"
@@ -37,10 +44,3 @@ Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
 
 [targets]
 test = ["Aqua", "QuadGK", "RecipesBase", "SpecialFunctions", "Statistics", "Test", "Unitful"]
-
-[weakdeps]
-Juno = "e5e0dc1b-0480-54bc-9374-aad01c23163d"
-Makie = "ee78f7c6-11fb-53f2-987a-cfe4a2b5a57a"
-RecipesBase = "3cdcf5f2-1ef4-517c-9805-6587b60abb01"
-SpecialFunctions = "276daf66-3868-5448-9aa4-cd146d93841b"
-Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
