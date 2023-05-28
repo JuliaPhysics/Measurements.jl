@@ -450,8 +450,7 @@ Calculating the Covariance and Correlation Matrices
 ---------------------------------------------------
 
 Calculate the covariance and correlation matrices of multiple `Measurement`s
-with the functions [`cov(::AbstractVector{<:Measurement})`](@ref) and
-[`cor(::AbstractVector{<:Measurement})`](@ref):
+with the functions [`Measurements.cov`](@ref) and [`Measurements.cor`](@ref):
 
 ```@repl
 using Measurements

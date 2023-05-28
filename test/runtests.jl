@@ -103,30 +103,30 @@ end
     x = measurement(1.0, 0.1)
     y = -2x + 10
     z = -3x
-    @test @inferred(cov([x, y, z])) ≈ [0.01 -0.02 -0.03; -0.02 0.04 0.06; -0.03 0.06 0.09]
+    @test @inferred(Measurements.cov([x, y, z])) ≈ [0.01 -0.02 -0.03; -0.02 0.04 0.06; -0.03 0.06 0.09]
 
     u = measurement(1, 0.05)
     v = measurement(10, 0.1)
     w = u + 2v
-    @test @inferred(cov([u, v, w])) ≈ [0.0025 0.0 0.0025; 0.0 0.01 0.02; 0.0025 0.02 0.0425]
+    @test @inferred(Measurements.cov([u, v, w])) ≈ [0.0025 0.0 0.0025; 0.0 0.01 0.02; 0.0025 0.02 0.0425]
 end
 
 @testset "Correlation matrix" begin
     x = measurement(1.0, 0.1)
     y = -2x + 10
     z = -3x
-    @test @inferred(cor([x, y, z])) ≈ [1.0 -1.0 -1.0; -1.0 1.0 1.0; -1.0 1.0 1.0]
+    @test @inferred(Measurements.cor([x, y, z])) ≈ [1.0 -1.0 -1.0; -1.0 1.0 1.0; -1.0 1.0 1.0]
 
     u = measurement(1, 0.05)
     v = measurement(10, 0.1)
     w = u + 2v
-    @test @inferred(cor([u, v, w])) ≈ [1.0 0.0 0.24253562503633297; 0.0 1.0 0.9701425001453319; 0.24253562503633297 0.9701425001453319 1.0] atol=1e-15
+    @test @inferred(Measurements.cor([u, v, w])) ≈ [1.0 0.0 0.24253562503633297; 0.0 1.0 0.9701425001453319; 0.24253562503633297 0.9701425001453319 1.0] atol=1e-15
 end
 
 @testset "Correlated values" begin
     @testset "Simple" begin
         u_in = measurement(1, 0.1)
-        cov_matrix = @inferred cov([u_in])
+        cov_matrix = @inferred Measurements.cov([u_in])
 
         u_out, = @inferred Measurements.correlated_values([1], cov_matrix)
         @test 2u_in ≈ 2u_out
@@ -139,7 +139,7 @@ end
 
         xyz_in = [x_in, y_in, z_in]
 
-        cov_matrix = cov([x_in, y_in, z_in])
+        cov_matrix = Measurements.cov([x_in, y_in, z_in])
 
         @test Measurements.uncertainty.([x_in, y_in, z_in]) .^ 2 ≈ diag(cov_matrix)
 
@@ -155,7 +155,7 @@ end
         v_in = measurement(10, 0.1)
         w_in = u_in + 2v_in
 
-        cov_matrix = cov([u_in, v_in, w_in])
+        cov_matrix = Measurements.cov([u_in, v_in, w_in])
 
         (u_out, v_out, w_out) = Measurements.correlated_values(Measurements.value.([u_in, v_in, w_in]), cov_matrix)
 
@@ -165,7 +165,7 @@ end
         @test w_out ≈ u_out + 2v_out
         @test 0 ± 0 ≈ u_out + 2v_out - w_out atol=2e-8
 
-        corr_matrix = cor([u_out, v_out, w_out])
+        corr_matrix = Measurements.cor([u_out, v_out, w_out])
         @test corr_matrix[1,1] ≈ 1
         @test corr_matrix[2,3] ≈ 2Measurements.uncertainty(v_out)/Measurements.uncertainty(w_out)
     end
@@ -183,7 +183,7 @@ end
         x_in = measurement(1, 0)
         y_in = measurement(2, 0)
         z_in = measurement(3, 5)
-        cov_matrix = cov([x_in, y_in, z_in])
+        cov_matrix = Measurements.cov([x_in, y_in, z_in])
         nom_values = Measurements.value.([x_in, y_in, z_in])
         variables = Measurements.correlated_values(nom_values, cov_matrix)
 
@@ -194,7 +194,7 @@ end
             @test Measurements.uncertainty(variable)^2 ≈ variance
         end
 
-        @test cov_matrix ≈ cov(variables)
+        @test cov_matrix ≈ Measurements.cov(variables)
         @test [x_in, y_in, z_in] ≈ variables
     end
 end
