@@ -512,8 +512,7 @@ a = 4.71 ± 0.01;
 quadgk(x -> exp(x / a), 1, 7)[1]
 ```
 
-`Measurements.jl` pushes the capabilities of `quadgk` further by
-supporting also `Measurement` objects as endpoints:
+You can also use `Measurement` objects as endpoints:
 
 ```@repl
 using Measurements, QuadGK
@@ -523,7 +522,7 @@ quadgk(cos, 1.19 ± 0.02, 8.37 ± 0.05)[1]
 Compare this with the expected result:
 
 ```@repl
-using Measurements, QuadGK
+using Measurements
 sin(8.37 ± 0.05) - sin(1.19 ± 0.02)
 ```
 
@@ -532,15 +531,15 @@ Also with `quadgk` correlation is properly taken into account:
 ```@repl
 using Measurements, QuadGK
 a = 6.42 ± 0.03
-quadgk(sin, -a, a)
+quadgk(sin, -a, a)[1]
 ```
 
-If instead the two endpoints have, by chance, the same nominal value and
-uncertainty but are not correlated:
+The uncertainty of the result is compatible with zero, within the accuracy of double-precision floating point numbers.
+If instead the two endpoints have, by chance, the same nominal value and uncertainty but are not correlated the uncertainty of the result is non-zero:
 
 ```@repl
 using Measurements, QuadGK
-quadgk(sin, -6.42 ± 0.03, 6.42 ± 0.03)
+quadgk(sin, -6.42 ± 0.03, 6.42 ± 0.03)[1]
 ```
 
 ### Numerical and Automatic Differentiation
@@ -557,7 +556,7 @@ a = -45.7 ± 1.6
 b = 36.5 ± 6.0
 Calculus.derivative(exp, a) ≈ exp(a)
 Calculus.derivative(cos, b) ≈ -sin(b)
-Calculus.derivative(t -> log(-t * b)^2, a) ≈ 2log(-a * b)/a
+Calculus.derivative(t -> log(-t * b) ^ 2, a) ≈ 2 * log(-a * b) / a
 ```
 
 Other packages provide [automatic
@@ -572,7 +571,7 @@ a = -45.7 ± 1.6
 b = 36.5 ± 6.0
 grad(exp)(a) ≈ exp(a)
 grad(cos)(b) ≈ -sin(b)
-grad(t -> log(-t * b)^2)(a) ≈ 2log(-a * b)/a
+grad(t -> log(-t * b) ^ 2)(a) ≈ 2 * log(-a * b) / a
 ```
 
 However remember that you can always use [`Measurements.derivative`](@ref) to

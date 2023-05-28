@@ -5,8 +5,7 @@
 | [![][docs-stable-img]][docs-stable-url] | [![Build Status][gha-img]][gha-url] | [![][coveral-img]][coveral-url] |[![Aqua QA][aqua-img]][aqua-url]|
 | [![][docs-latest-img]][docs-latest-url] |                                     | [![][codecov-img]][codecov-url] |
 
-Introduction
-------------
+## Introduction
 
 ### What Is This Package Useful For?
 
@@ -15,13 +14,19 @@ Introduction
 *Image credit: "[xkcd: Error Bars](https://xkcd.com/2110/)" ([CC-BY-NC
 2.5](https://creativecommons.org/licenses/by-nc/2.5/))*
 
+Physical measures are typically reported with an error, a quantification of the
+[uncertainty](https://en.wikipedia.org/wiki/Measurement_uncertainty) of the
+accuracy of the measurement.  Whenever you perform mathematical operations
+involving these quantities you have also to [propagate the
+uncertainty](https://en.wikipedia.org/wiki/Propagation_of_uncertainty), so that
+the resulting number will also have an attached error to quantify the confidence
+about its accuracy.
 [Measurements.jl](https://github.com/JuliaPhysics/Measurements.jl) relieves you
-from the hassle of propagating
-[uncertainties](https://en.wikipedia.org/wiki/Measurement_uncertainty) coming
-from physical measurements, when performing mathematical operations involving
-them.  The [linear error propagation
-theory](https://en.wikipedia.org/wiki/Propagation_of_uncertainty) is employed to
-propagate the errors.
+from the hassle of propagating uncertainties coming from physical measurements,
+when performing mathematical operations involving them.  The [linear error
+propagation
+theory](https://en.wikipedia.org/wiki/Propagation_of_uncertainty#Linear_combinations)
+is employed to propagate the errors.
 
 This library is written in [Julia](http://julialang.org/), a modern high-level,
 high-performance dynamic programming language designed for technical computing.
@@ -30,7 +35,7 @@ When used in the [Julia interactive
 session](https://docs.julialang.org/en/v1/stdlib/REPL/), it can serve also as an
 easy-to-use calculator.
 
-### Features List ###
+### Features List
 
 * Support for most mathematical operations available in Julia standard library
   and special functions
@@ -81,7 +86,7 @@ quantities related by a correlation matrix.
 
 If you use use this package for your research, please cite it.
 
-### Documentation ###
+### Documentation
 
 The complete manual of `Measurements.jl` is available at
 https://juliaphysics.github.io/Measurements.jl/stable/.  There, people
@@ -89,8 +94,7 @@ interested in the details of the package, in order integrate the package in
 their workflow, can find a technical appendix explaining how the package
 internally works.
 
-Installation
-------------
+## Installation
 
 The latest version of `Measurements.jl` is available for Julia v1.0 and later
 releases, and can be installed with [Julia built-in package
@@ -104,8 +108,7 @@ pkg> add Measurements
 
 Older versions of this package are also available for Julia 0.4-0.7.
 
-Usage
------
+## Usage
 
 After installing the package, you can start using it with
 
@@ -127,45 +130,7 @@ where
 * `uncertainty` is its uncertainty, assumed to be a
   [standard deviation](https://en.wikipedia.org/wiki/Standard_deviation).
 
-They are both subtype of `AbstractFloat`.  Some keyboard layouts provide an easy
-way to type the `±` sign, if your does not, remember you can insert it in Julia
-REPL with `\pm` followed by `TAB` key.  You can provide `value` and
-`uncertainty` of any subtype of `Real` that can be converted to `AbstractFloat`.
-Thus, `measurement(42, 33//12)` and `pi ± 0.1` are valid.
-
-`measurement(value)` creates a `Measurement` object with zero uncertainty, like
-mathematical constants.  See below for further examples.
-
-Every time you use one of the constructors above, you define a *new independent*
-measurement.  Instead, when you perform mathematical operations involving
-`Measurement` objects you create a quantity that is not independent, but rather
-depends on really independent measurements.
-
-Most mathematical operations are instructed, by
-[operator overloading](https://en.wikipedia.org/wiki/Operator_overloading), to
-accept `Measurement` type, and uncertainty is calculated exactly using analytic
-expressions of functions’ derivatives.
-
-In addition, it is possible to create a `Complex` measurement with
-`complex(measurement(a, b), measurement(c, d))`.
-
-``` julia
-measurement(string)
-```
-
-`measurement` function has also a method that enables you to create a
-`Measurement` object from a string.
-
-This module extends many methods defined in Julia’s mathematical standard
-library, and some methods from widespread third-party packages as well.  This is
-the case for most special functions
-in [`SpecialFunctions.jl`](https://github.com/JuliaMath/SpecialFunctions.jl)
-package, and the `quadgk` integration routine
-from [`QuadGK.jl`](https://github.com/JuliaMath/QuadGK.jl) package.  See the
-full manual for details.
-
-Examples
---------
+Here is a quick taster of the functionalities of the package:
 
 ``` julia
 julia> using Measurements
@@ -194,8 +159,14 @@ julia> sin(x)/cos(x) - tan(x)
 -2.220446049250313e-16 ± 0.0 # They are equal within numerical accuracy
 ```
 
-License
--------
+For more details about the use of the package read the
+[documentation](https://juliaphysics.github.io/Measurements.jl/stable/), in
+particular the
+[Usage](https://juliaphysics.github.io/Measurements.jl/stable/usage/) and
+[Examples](https://juliaphysics.github.io/Measurements.jl/stable/examples/)
+sections.
+
+## License
 
 The `Measurements.jl` package is licensed under the MIT "Expat" License.  The
 original author is Mosè Giordano.

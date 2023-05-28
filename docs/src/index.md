@@ -8,13 +8,19 @@ Measurements.jl
 *Image credit: "[xkcd](https://xkcd.com/2110/)" ([CC-BY-NC
 2.5](https://creativecommons.org/licenses/by-nc/2.5/))*
 
+Physical measures are typically reported with an error, a quantification of the
+[uncertainty](https://en.wikipedia.org/wiki/Measurement_uncertainty) of the
+accuracy of the measurement.  Whenever you perform mathematical operations
+involving these quantities you have also to [propagate the
+uncertainty](https://en.wikipedia.org/wiki/Propagation_of_uncertainty), so that
+the resulting number will also have an attached error to quantify the confidence
+about its accuracy.
 [Measurements.jl](https://github.com/JuliaPhysics/Measurements.jl) relieves you
-from the hassle of propagating
-[uncertainties](https://en.wikipedia.org/wiki/Measurement_uncertainty) coming
-from physical measurements, when performing mathematical operations involving
-them.  The [linear error propagation
-theory](https://en.wikipedia.org/wiki/Propagation_of_uncertainty) is employed to
-propagate the errors.
+from the hassle of propagating uncertainties coming from physical measurements,
+when performing mathematical operations involving them.  The [linear error
+propagation
+theory](https://en.wikipedia.org/wiki/Propagation_of_uncertainty#Linear_combinations)
+is employed to propagate the errors.
 
 This library is written in [Julia](http://julialang.org/), a modern high-level,
 high-performance dynamic programming language designed for technical computing.
