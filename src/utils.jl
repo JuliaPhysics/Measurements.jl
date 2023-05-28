@@ -107,11 +107,11 @@ function uncertainty_components(x::Measurement{T}) where {T<:AbstractFloat}
 end
 
 """
-    cov(x::AbstractVector{<:Measurement})
+    Measurements.cov(x::AbstractVector{<:Measurement})
 
 Returns the covariance matrix of a vector of correlated `Measurement`s.
 """
-function Statistics.cov(x::AbstractVector{Measurement{T}}) where T
+function cov(x::AbstractVector{Measurement{T}}) where T
     S = length(x)
     covariance_matrix = zeros(T, (S, S))
 
@@ -126,11 +126,11 @@ function Statistics.cov(x::AbstractVector{Measurement{T}}) where T
 end
 
 """
-    cor(x::AbstractVector{<:Measurement})
+    Measurements.cor(x::AbstractVector{<:Measurement})
 
 Returns the correlation matrix of a vector of correlated `Measurement`s.
 """
-function Statistics.cor(x::AbstractVector{<:Measurement})
+function cor(x::AbstractVector{<:Measurement})
     covariance_matrix = cov(x)
     standard_deviations = sqrt.(diag(covariance_matrix))
     return covariance_matrix ./ standard_deviations ./ standard_deviations'

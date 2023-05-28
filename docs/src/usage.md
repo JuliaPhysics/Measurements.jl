@@ -210,8 +210,8 @@ Calculating the Covariance and Correlation Matrices
 ---------------------------------------------------
 
 ```@docs
-Measurements.Statistics.cov(::AbstractVector{<:Measurement})
-Measurements.Statistics.cor(::AbstractVector{<:Measurement})
+Measurements.cov
+Measurements.cor
 ```
 
 The [covariance matrix](https://en.wikipedia.org/wiki/Covariance_matrix) of
