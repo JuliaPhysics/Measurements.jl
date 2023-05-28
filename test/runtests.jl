@@ -7,7 +7,7 @@ else
     Aqua.test_all(Measurements; stale_deps=false)
     Aqua.test_stale_deps(Measurements; ignore=[:RecipesBase, :Requires])
 end
-if VERSION ≥ v"1.6"
+if VERSION ≥ v"1.7"
     Aqua.test_project_toml_formatting(Measurements)
 end
 
