@@ -20,11 +20,12 @@ where
 - `err` is its uncertainty, assumed to be a [standard
   deviation](https://en.wikipedia.org/wiki/Standard_deviation).
 
-They are both subtype of `AbstractFloat`. Some keyboard layouts provide an easy
+They are both subtype of `Real`. Some keyboard layouts provide an easy
 way to type the `±` sign, if your does not, remember you can insert it in Julia
 REPL with `\pm` followed by `TAB` key. You can provide `val` and `err` of any
-subtype of `Real` that can be converted to `AbstractFloat`. Thus,
-`measurement(42, 33//12)` and `pi ± 0.1` are valid.
+subtype of `Real` that can be converted to `AbstractFloat`, or are
+[symbolic variables](https://symbolics.juliasymbolics.org/stable/manual/variables/).
+Thus, `measurement(42, 33//12)` and `pi ± 0.1` are valid.
 
 `measurement(value)` creates a `Measurement` object with zero uncertainty, like
 mathematical constants. See below for further examples.
