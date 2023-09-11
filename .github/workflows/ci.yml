@@ -31,7 +31,7 @@ jobs:
         julia-arch:
           - x64
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: julia-actions/setup-julia@v1
         with:
           version: ${{ matrix.julia-version }}
@@ -47,7 +47,7 @@ jobs:
   Documentation:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: julia-actions/setup-julia@latest
         with:
           version: 1
