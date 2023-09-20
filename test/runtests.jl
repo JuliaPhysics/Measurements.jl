@@ -102,6 +102,14 @@ end
     c = 1 ± 0
     @test @inferred(Measurements.derivative(3*x^2, (x.val, x.err, x.tag))) ≈ 18
     @test @inferred(Measurements.derivative(3*x^2, x)) ≈ 18
+    @test @inferred(Measurements.derivative(3*u"s"*x*u"m", x*u"m")) ≈ 3*u"s"
+    @test uconvert(u"s", @inferred(Measurements.derivative(3*u"s"*x*u"cm", x*u"m"))) ≈ (3/100)*u"s"
+    @test uconvert(u"s", @inferred(Measurements.derivative(3*u"s"*x*u"m", x*u"cm"))) ≈ (3*100)*u"s"
+    @test uconvert(u"m*s", @inferred(Measurements.derivative(3*u"s"*(x*u"cm")^2, x*u"m"))) ≈ (18 / 10000)*u"m*s"
+    @test uconvert(u"m*s", @inferred(Measurements.derivative(3*u"s"*(x*u"m")^2, x*u"cm"))) ≈ (18 * 100)*u"m*s" # FIXME: should be 18/100
+    @test @inferred(Measurements.derivative(3*u"s"/(x*u"m"), x*u"m")) ≈ (-1/3)*u"s"/1u"m^2"
+    @test @inferred(Measurements.derivative(3*u"s"*x*u"V", x*u"m")) ≈ 3*u"s"*u"V"/1u"m"
+    @test Measurements.derivative.(2*u"s"*x*u"m" + 1*u"s"*y*u"m", [x*u"m", y*u"m"]) ≈ [2*u"s", 1*u"s"]
     @test Measurements.derivative.(2x + y - w, [x, y, w]) ≈ [2, 1, -1]
     @test Measurements.derivative.(x - x + y - y + w - w + c, [x, y, w, c]) ≈ [0, 0, 0, 0]
     @test length((x - x + y - y + w - w + c).der) == 0

@@ -51,6 +51,13 @@ function Measurements.stdscore(a::AbstractQuantity{Measurement{T1},D,U1}, b::Abs
     return stdscore(ustrip(u, a), ustrip(u, b)) # unitless quantity.
 end
 
+function Measurements.derivative(a::AbstractQuantity{Measurement{T1},D1,U1}, b::AbstractQuantity{Measurement{T2},D2,U2}) where {T1<:AbstractFloat,T2<:AbstractFloat,D1,D2,U1,U2}
+    u_a = unit(a)
+    u_b = unit(b)
+    u_der = u_a / u_b
+    return Measurements.derivative(ustrip(u_a, a), ustrip(u_b, b)) * u_der
+end
+
 function Measurements.uncertainty_components(a::AbstractQuantity{Measurement{T},D,U}) where {T<:AbstractFloat,D,U}
     u = unit(a)
     return Measurements.uncertainty_components(ustrip(u, a))
