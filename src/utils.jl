@@ -31,8 +31,8 @@ Return the weighted mean of measurements listed in `iterable`, using
 inverse-variance weighting.  NOTA BENE: correlation is not taken into account.
 """
 function weightedmean(iterable)
-    v = [el.val for el in iterable]
-    w = [inv(el.err)^2 for el in iterable]
+    v = [value(el) for el in iterable]
+    w = [inv(uncertainty(el))^2 for el in iterable]
     invsumw = inv(sum(w))
     return measurement(dot(v, w)*invsumw, sqrt(invsumw))
 end

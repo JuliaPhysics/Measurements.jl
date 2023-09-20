@@ -94,6 +94,8 @@ end
 
 @testset "Weighted Average" begin
     @test @inferred(weightedmean((w, x, y))) ≈ measurement(-0.12584269662921355, 0.028442727788398632)
+    @test @inferred(weightedmean((w*u"m", x*u"m", y*u"m"))) ≈ measurement(-0.12584269662921355, 0.028442727788398632) * u"m"
+    @test (weightedmean((w*u"m", 100*x*u"cm", y*u"m"))) ≈ measurement(-0.12584269662921355, 0.028442727788398632) * u"m"
 end
 
 @testset "Derivative" begin
