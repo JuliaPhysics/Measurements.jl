@@ -46,4 +46,9 @@ function Measurements.uncertainty(x::AbstractQuantity)
     return uncertainty(ustrip(u, x)) * u
 end
 
+function Measurements.stdscore(a::AbstractQuantity{Measurement{T1},D,U1}, b::AbstractQuantity{T2,D,U2}) where {T1<:AbstractFloat,T2<:Real,D,U1,U2}
+    u = unit(a)
+    return stdscore(ustrip(u, a), ustrip(u, b)) # unitless quantity.
+end
+
 end

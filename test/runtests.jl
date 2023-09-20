@@ -44,6 +44,12 @@ z = complex(x)
     @test @inferred(stdscore(x, y)) ≈ -4.472135954999579
     @test @inferred(stdscore(w, y)) ≈ @inferred(stdscore(w - y, 0))
     @test @inferred(stdscore(y, 4.1)) ≈ @inferred(stdscore(y, 4.1 ± 0))
+    @test @inferred(stdscore(w*u"m", x.val*u"m")) ≈ -350/3
+    @test @inferred(stdscore(w*u"m", 100*x.val*u"cm")) ≈ -350/3
+    @test_throws MethodError @inferred(stdscore(w*u"m", x.val*u"s"))
+    @test @inferred(stdscore(x*u"m", y*u"m")) ≈ -4.472135954999579
+    @test @inferred(stdscore(x*u"m", 100*y*u"cm")) ≈ -4.472135954999579
+    @test_throws MethodError @inferred(stdscore(x*u"m", y*u"s"))
 end
 
 @testset "measurement" begin
