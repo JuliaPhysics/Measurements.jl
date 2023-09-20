@@ -210,6 +210,12 @@ end
 @testset "Contributions to uncertainty" begin
     @test sort(collect(values(@inferred(Measurements.uncertainty_components(w * x * y))))) ≈
         [0.2, 0.3, 0.36]
+
+    w_d = w * u"W/cm"
+    x_d = x * u"cm"
+    y_d = y * u"s"
+    @test sort(collect(values(@inferred(Measurements.uncertainty_components(w_d * x_d * y_d))))) ≈
+        [0.2, 0.3, 0.36]
 end
 
 @testset "Conversion and Promotion" begin

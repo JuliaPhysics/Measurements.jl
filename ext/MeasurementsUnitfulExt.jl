@@ -51,4 +51,10 @@ function Measurements.stdscore(a::AbstractQuantity{Measurement{T1},D,U1}, b::Abs
     return stdscore(ustrip(u, a), ustrip(u, b)) # unitless quantity.
 end
 
+function Measurements.uncertainty_components(a::AbstractQuantity{Measurement{T},D,U}) where {T<:AbstractFloat,D,U}
+    u = unit(a)
+    return Measurements.uncertainty_components(ustrip(u, a))
+    # We've lost units :(
+end
+
 end
