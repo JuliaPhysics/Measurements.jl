@@ -1,5 +1,16 @@
 # History of Measurements.jl
 
+## v2.10.0 (2023-09-21)
+
+### New features
+
+* Correlated variables can be created from a covariance or a correlation matrix
+  ([#137](https://github.com/JuliaPhysics/Measurements.jl/pull/137)).
+* Integration with third-party packages makes use of [package
+  extensions](https://julialang.org/blog/2023/04/julia-1.9-highlights/#package_extensions)
+  when using Julia v1.9 or later versions
+  ([#143](https://github.com/JuliaPhysics/Measurements.jl/pull/143)).
+
 ## v2.9.0 (2023-03-22)
 
 ### New features
