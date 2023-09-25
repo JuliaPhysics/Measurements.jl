@@ -24,6 +24,9 @@ module Measurements
 # Calculus is used to calculate numerical derivatives in "@uncertain" macro.
 using Calculus
 
+# Declare the base numeric type for interfaces (e.g., QuadGK)
+using BaseType: BaseType, base_numeric_type
+
 # Functions provided by this package and exposed to users
 export Measurement, measurement, ±
 
@@ -108,6 +111,8 @@ The binary operator `±` is equivalent to `measurement`, so you can construct a
 If `val` is `missing`, `missing` is returned.
 """
 measurement
+
+BaseType.base_numeric_type(::Type{<:Measurement{T}}) where {T} = base_numeric_type(T)
 
 include("conversions.jl")
 include("comparisons-tests.jl")

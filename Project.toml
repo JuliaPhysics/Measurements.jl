@@ -4,6 +4,7 @@ authors = ["Mosè Giordano <mose@gnu.org>"]
 version = "2.10.0"
 
 [deps]
+BaseType = "7fbed51b-1ef5-4d67-9085-a4a9b26f478c"
 Calculus = "49dc2e85-a5d0-5ad3-a950-438e2897f1b9"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
@@ -23,6 +24,7 @@ MeasurementsSpecialFunctionsExt = "SpecialFunctions"
 MeasurementsUnitfulExt = "Unitful"
 
 [compat]
+BaseType = "0.2"
 Calculus = "0.4.1, 0.5"
 RecipesBase = "0.6.0, 0.7, 0.8, 1.0"
 Requires = "0.5.0, 1"
@@ -30,6 +32,7 @@ julia = "1"
 
 [extras]
 Aqua = "4c88cf16-eb10-579e-8560-4a9242c79595"
+BaseType = "7fbed51b-1ef5-4d67-9085-a4a9b26f478c"
 Juno = "e5e0dc1b-0480-54bc-9374-aad01c23163d"
 QuadGK = "1fd47b50-473d-5c70-9696-f719f8f3bcdc"
 RecipesBase = "3cdcf5f2-1ef4-517c-9805-6587b60abb01"
@@ -39,4 +42,4 @@ Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
 
 [targets]
-test = ["Aqua", "QuadGK", "RecipesBase", "SpecialFunctions", "Statistics", "Test", "Unitful"]
+test = ["Aqua", "BaseType", "QuadGK", "RecipesBase", "SpecialFunctions", "Statistics", "Test", "Unitful"]
