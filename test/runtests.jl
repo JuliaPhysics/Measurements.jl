@@ -1,4 +1,4 @@
-using Measurements, SpecialFunctions, QuadGK, Calculus
+using Measurements, SpecialFunctions, QuadGK, Calculus, BaseType
 using Test, LinearAlgebra, Statistics, Unitful, Printf, Aqua
 
 if !isdefined(Base,:get_extension)
@@ -1059,4 +1059,17 @@ end
 
     # JuliaLang/julia#30944
     @test range(0±0, step=1±.1, length=10) isa StepRangeLen
+end
+
+@testset "Base type" begin
+    for T in (Float16, Float32, Float64)
+        x = Measurement{T}(1.0)
+        @test base_numeric_type(x) == T
+        @test base_numeric_type(typeof(x)) == T
+
+        # Should still work for nested types:
+        nested_x = x * u"m"
+        @test base_numeric_type(x) == T
+        @test base_numeric_type(typeof(x)) == T
+    end
 end
