@@ -125,6 +125,7 @@ end
 
 @static if !isdefined(Base, :get_extension)
     function __init__()
+        @require BaseType = "7fbed51b-1ef5-4d67-9085-a4a9b26f478c" include("../ext/MeasurementsBaseTypeExt.jl")
         @require Unitful="1986cc42-f94f-5a68-af5c-568840ba703d" include("../ext/MeasurementsUnitfulExt.jl")
         @require SpecialFunctions="276daf66-3868-5448-9aa4-cd146d93841b" include("../ext/MeasurementsSpecialFunctionsExt.jl")
         @require Juno="e5e0dc1b-0480-54bc-9374-aad01c23163d" include("../ext/MeasurementsJunoExt.jl")
