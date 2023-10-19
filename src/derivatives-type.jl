@@ -11,7 +11,7 @@
 #
 ### Commentary:
 #
-# This file containes the definition of Derivatives type.  This is borrowed from
+# This file contains the definition of Derivatives type.  This is borrowed from
 # Base.ImmutableDict type (see base/dict.jl in Julia source code), introduced in
 # Julia 0.5.  `get' and `getindex' have methods different from those of the
 # standard Base.ImmutabileDict, otherwise Derivatives and Base.ImmutableDict
