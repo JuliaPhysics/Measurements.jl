@@ -1,5 +1,13 @@
 # History of Measurements.jl
 
+## v2.11.0 (2023-11-03)
+
+### New features
+
+* New package extension with
+  [`BaseType.jl`](https://github.com/SymbolicML/BaseType.jl)
+  ([#156](https://github.com/JuliaPhysics/Measurements.jl/pull/156)).
+
 ## v2.10.0 (2023-09-21)
 
 ### New features
