@@ -272,6 +272,33 @@ hypot(a, b)
 log(2a) ^ b
 ```
 
+Symbolic Variables
+------------------
+
+You can perform any mathematical operation supported in `Measurements.jl` using
+[symbolic variables](https://symbolics.juliasymbolics.org/stable/manual/variables/),
+as provided by `Symbolics.jl` package:
+
+``` julia
+julia> using Measurements, Symbolics
+
+julia> @variables x_val, x_err, y_val, y_err
+4-element Vector{Num}:
+ x_val x_err y_val y_err
+
+julia> x = x_val ± x_err
+x_val ± x_err
+
+julia> y = y_val ± y_err
+y_val ± y_err
+
+julia> x + y
+x_val + y_val ± sqrt(abs2(x_err) + abs2(y_err))
+
+julia> x - x
+0 ± 0.0
+```
+
 Operations with Arrays and Linear Algebra
 -----------------------------------------
 

@@ -30,40 +30,40 @@ else
 end
 # Error function: erf, erfinv, erfc, erfcinv, erfcx, erfi, dawson
 
-function SpecialFunctions.erf(a::Measurement{T}) where {T<:AbstractFloat}
+function SpecialFunctions.erf(a::Measurement{T}) where {T<:Real}
     aval = a.val
     return result(erf(aval), 2*exp(-abs2(aval))/sqrt(T(pi)), a)
 end
 
-function SpecialFunctions.erfinv(a::Measurement{T}) where {T<:AbstractFloat}
+function SpecialFunctions.erfinv(a::Measurement{T}) where {T<:Real}
     res = erfinv(a.val)
     # For the derivative, see http://mathworld.wolfram.com/InverseErf.html
     return result(res, sqrt(T(pi)) * exp(abs2(res)) / 2, a)
 end
 
-function SpecialFunctions.erfc(a::Measurement{T}) where {T<:AbstractFloat}
+function SpecialFunctions.erfc(a::Measurement{T}) where {T<:Real}
     aval = a.val
     return result(erfc(aval), -2*exp(-abs2(aval))/sqrt(T(pi)), a)
 end
 
-function SpecialFunctions.erfcinv(a::Measurement{T}) where {T<:AbstractFloat}
+function SpecialFunctions.erfcinv(a::Measurement{T}) where {T<:Real}
     res = erfcinv(a.val)
     # For the derivative, see http://mathworld.wolfram.com/InverseErfc.html
     return result(res, -sqrt(T(pi)) * exp(abs2(res)) / 2, a)
 end
 
-function SpecialFunctions.erfcx(a::Measurement{T}) where {T<:AbstractFloat}
+function SpecialFunctions.erfcx(a::Measurement{T}) where {T<:Real}
     aval = a.val
     res = erfcx(aval)
     return result(res, 2 * (aval * res - inv(sqrt(T(pi)))), a)
 end
 
-function SpecialFunctions.erfi(a::Measurement{T}) where {T<:AbstractFloat}
+function SpecialFunctions.erfi(a::Measurement{T}) where {T<:Real}
     aval = a.val
     return result(erfi(aval), 2*exp(abs2(aval))/sqrt(T(pi)), a)
 end
 
-function SpecialFunctions.dawson(a::Measurement{T}) where {T<:AbstractFloat}
+function SpecialFunctions.dawson(a::Measurement{T}) where {T<:Real}
     aval = a.val
     res = dawson(aval)
     return result(res, one(T) - 2 * aval * res, a)

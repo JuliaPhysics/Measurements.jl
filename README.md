@@ -52,6 +52,9 @@ easy-to-use calculator.
   [arbitrary precision](https://docs.julialang.org/en/v1/manual/integers-and-floating-point-numbers/#Arbitrary-Precision-Arithmetic-1)
   (also called multiple precision) numbers with uncertainties.  This is useful
   for measurements with very low relative error
+* Support for numbers with uncertainties of
+  [symbolic variable](https://symbolics.juliasymbolics.org/stable/manual/variables/)
+  type, as provided by `Symbolics.jl` package.
 * Define arrays of measurements and perform calculations with them.  Some linear
   algebra functions work out-of-the-box
 * Propagate uncertainty for any function of real arguments (including functions

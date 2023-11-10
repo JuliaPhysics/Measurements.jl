@@ -27,6 +27,9 @@ using Calculus
 # Functions provided by this package and exposed to users
 export Measurement, measurement, ±
 
+# Query whether the value is of symbolic type.
+_is_symbolic(::Real) = false
+
 # Define the "Derivatives" type, used inside "Measurement" type.  This should be
 # a lightweight and immutable dictionary.
 include("derivatives-type.jl")
@@ -46,7 +49,7 @@ include("derivatives-type.jl")
 #     measurement and propagate the uncertainty in the case of functions with
 #     more than one argument (in order to deal with correlation between
 #     arguments).
-struct Measurement{T<:AbstractFloat} <: AbstractFloat
+struct Measurement{T<:Real} <: AbstractFloat
     val::T
     err::T
     tag::UInt64
@@ -72,16 +75,19 @@ function Measurement{T}(::S) where {T, S}
 end
 
 # Functions to quickly create an empty Derivatives object.
-@generated empty_der1(x::Measurement{T}) where {T<:AbstractFloat} = Derivatives{T}()
-@generated empty_der2(x::T) where {T<:AbstractFloat} = Derivatives{x}()
+@generated empty_der1(x::Measurement{T}) where {T<:Real} = Derivatives{T}()
+@generated empty_der2(x::T) where {T<:Real} = Derivatives{x}()
 
 # Start from 1, 0 is reserved to derived quantities
 const tag_counter = Threads.Atomic{UInt64}(1)
 
 measurement(x::Measurement) = x
-measurement(val::T) where {T<:AbstractFloat} = Measurement(val, zero(T), UInt64(0), empty_der2(val))
+
+_measurement(val::T) where {T<:Real} =  Measurement(val, zero(T), UInt64(0), empty_der2(val))
+measurement(val::AbstractFloat) = _measurement(val)
 measurement(val::Real) = measurement(float(val))
-function measurement(val::T, err::T) where {T<:AbstractFloat}
+
+function _measurement(val::T, err::T) where {T<:Real}
     newder = empty_der2(val)
     if iszero(err)
         Measurement{T}(val, err, UInt64(0), newder)
@@ -90,8 +96,12 @@ function measurement(val::T, err::T) where {T<:AbstractFloat}
         return Measurement{T}(val, err, tag, Derivatives(newder, (val, err, tag)=>one(T)))
     end
 end
-measurement(val::Real, err::Real) = measurement(promote(float(val), float(err))...)
+measurement(val::T, err::T) where {T<:AbstractFloat} = _measurement(val, err)
+measurement(val::T, err::T) where {T<:Real} = measurement(float(val), float(err))
+measurement(val::V, err::E) where {V<:Real, E<:Real} = measurement(promote(val, err)...)
+
 measurement(::Missing, ::Union{Real,Missing} = missing) = missing
+
 const ± = measurement
 
 """

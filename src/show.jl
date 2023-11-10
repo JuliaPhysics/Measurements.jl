@@ -17,47 +17,46 @@
 
 import Printf
 
-function truncated_print(io::IO, m::Measurement, error_digits::Int;
+full_print(io::IO, val, err; atbeg = "", atend = "", pm = "±") =
+    print(io, atbeg, val, get(io, :compact, false) ? pm : " $pm ", err, atend)
+
+function truncated_print(io::IO, m::Measurement;
                          atbeg = "", atend = "", pm = "±")
-    val = if iszero(m.err) || !isfinite(m.err)
-        m.val
-    else
-        err_digits = -Base.hidigit(m.err, 10) + error_digits
-        digits = if isfinite(m.val)
-            max(-Base.hidigit(m.val, 10) + 2, err_digits)
+    error_digits::Int = get(io, :error_digits, 2)
+
+    val = m.val
+    err = m.err
+
+    if error_digits < 0
+        error("`error_digits` must be non-negative")
+    elseif error_digits > 0 && !_is_symbolic(val)
+        val = if iszero(err) || !isfinite(err)
+            val
         else
-            err_digits
+            err_digits = -Base.hidigit(err, 10) + error_digits
+            digits = if isfinite(val)
+                max(-Base.hidigit(val, 10) + 2, err_digits)
+            else
+                err_digits
+            end
+            round(val, digits = digits)
         end
-        round(m.val, digits = digits)
-    end
-    print(io, atbeg, val,
-          get(io, :compact, false) ? pm : " $pm ",
-          round(m.err, sigdigits=error_digits), atend)
+        err = round(err, sigdigits=error_digits)
+    end # if
+    full_print(io, val, err, atbeg = atbeg, atend = atend, pm = pm)
 end
 
-full_print(io::IO, measure::Measurement) =
-    print(io, measure.val, get(io, :compact, false) ? "±" : " ± ", measure.err)
-
 function Base.show(io::IO, m::Measurement)
-    error_digits = get(io, :error_digits, 2)
-    if error_digits > 0
-            truncated_print(io, m, error_digits)
-    elseif error_digits == 0
-        full_print(io, m)
-    else
-        error("`error_digits` must be non-negative")
-    end # if
+    truncated_print(io, m)
 end
 
 function Base.show(io::IO, ::MIME"text/latex", measure::Measurement)
-    error_digits = get(io, :error_digits, 2)
-    truncated_print(io, measure, error_digits, atbeg = "\$", atend = "\$", pm = "\\pm")
+    truncated_print(io, measure, atbeg = "\$", atend = "\$", pm = "\\pm")
 end
 
 for mime in (MIME"text/x-tex", MIME"text/x-latex")
     function Base.show(io::IO, ::mime, measure::Measurement)
-        error_digits = get(io, :error_digits, 2)
-        truncated_print(io, measure, error_digits, pm = "\\pm")
+        truncated_print(io, measure, pm = "\\pm")
     end
 end
 
@@ -71,7 +70,7 @@ for mime in (MIME"text/plain", MIME"text/x-tex", MIME"text/x-latex")
         print(io, "(")
         show(io, mtype, r)
         print(io, ")")
-        if signbit(i) && !isnan(i)
+        if !_is_symbolic(i.val) && signbit(i) && !isnan(i)
             i = -i
             print(io, compact ? "-" : " - ")
         else
@@ -81,6 +80,16 @@ for mime in (MIME"text/plain", MIME"text/x-tex", MIME"text/x-latex")
         show(io, mtype, i)
         print(io, ")im")
     end
+end
+
+function Base.show(io::IO, ::MIME"text/latex", measure::Complex{<:Measurement})
+    print(io, "\$")
+    Base.show(io, "text/x-latex", measure)
+    print(io, "\$")
+end
+
+function Base.show(io::IO, measure::Complex{<:Measurement})
+    Base.show(io, "text/plain", measure)
 end
 
 # This is adapted from base/show.jl for Complex type.

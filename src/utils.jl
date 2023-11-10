@@ -20,7 +20,7 @@ computed as the standard score between their difference and 0:
 
     stdscore(measure_1 - measure_2, 0)
 """
-stdscore(a::Measurement{S}, b::Measurement{T}) where {S<:AbstractFloat,T<:AbstractFloat} =
+stdscore(a::Measurement{S}, b::Measurement{T}) where {S<:Real,T<:Real} =
     stdscore(a - b, zero(promote_type(S, T)))
 
 # Weighted Average with Inverse-Variance Weighting
@@ -39,7 +39,7 @@ end
 
 # Derivative and Gradient
 derivative(a::Measurement{F},
-           tag::Tuple{T, T, UInt64}) where {F<:AbstractFloat, T<:AbstractFloat} =
+           tag::Tuple{T, T, UInt64}) where {F<:Real, T<:Real} =
                get(a.der, tag, zero(F))
 
 """
@@ -98,7 +98,7 @@ of an independent `Measurement`, and the value is the absolute value of the
 product between its uncertainty and the partial derivative of `x` with respect
 to this `Measurement`.
 """
-function uncertainty_components(x::Measurement{T}) where {T<:AbstractFloat}
+function uncertainty_components(x::Measurement{T}) where {T<:Real}
     out = Dict{Tuple{T, T, UInt64}, T}()
     for var in keys(x.der)
         out[var] = abs(var[2] * Measurements.derivative(x, var))

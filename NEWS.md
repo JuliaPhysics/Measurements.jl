@@ -1,5 +1,12 @@
 # History of Measurements.jl
 
+## v2.12.0 (????)
+
+### New features
+
+* Support for [symbolic variables](https://symbolics.juliasymbolics.org/stable/manual/variables/),
+   as provided by `Symbolics.jl` package.
+
 ## v2.11.0 (2023-11-03)
 
 ### New features

@@ -7,7 +7,7 @@ else
     Aqua.test_all(Measurements; stale_deps=false)
     Aqua.test_stale_deps(Measurements; ignore=[:RecipesBase, :Requires])
 end
-if VERSION ≥ v"1.6"
+if VERSION ≥ v"1.7"
     Aqua.test_project_toml_formatting(Measurements)
 end
 
@@ -24,8 +24,8 @@ end
 isapprox(x::Measurement, y::Measurement; rest...) =
     isapprox(x.val, y.val; nans = true, rest...) &&
     isapprox(x.err, y.err; nans = true, rest...)
-isapprox(x::Complex{Measurement{<:AbstractFloat}},
-         y::Complex{Measurement{<:AbstractFloat}}; rest...) =
+isapprox(x::Complex{Measurement{<:Real}},
+         y::Complex{Measurement{<:Real}}; rest...) =
              isapprox(real(x), real(y); nans = true, rest...) &&
              isapprox(imag(x), imag(y); nans = true, rest...)
 # This is bit strict, but the idea is that in the tests we want `Measurement`s to be
@@ -784,6 +784,11 @@ end
                        repr("text/plain", [w 10x; 100y 1000w]))
     end
     @testset "Complex numbers" begin
+        @test repr(zz, context=:compact=>true) == "(-0.534±0.031)-(0.534±0.031)im"
+        @test repr(zz) == "(-0.534 ± 0.031) - (0.534 ± 0.031)im"
+        @test repr(complex(x, w)) == "(3.0 ± 0.1) - (0.5 ± 0.03)im"
+        @test repr(complex(w, y)) == "(-0.5 ± 0.03) + (4.0 ± 0.2)im"
+
         @test repr("text/plain", zz, context=:compact=>true) == "(-0.534±0.031)-(0.534±0.031)im"
         @test repr("text/plain", zz) == "(-0.534 ± 0.031) - (0.534 ± 0.031)im"
         @test repr("text/plain", complex(x, w)) == "(3.0 ± 0.1) - (0.5 ± 0.03)im"
@@ -1072,4 +1077,10 @@ end
         @test base_numeric_type(x) == T
         @test base_numeric_type(typeof(x)) == T
     end
+end
+
+@static if Base.VERSION >= v"1.9" # We only support Symbolics w/ Julia 1.9+.
+  @testset "Symbolics" begin
+    include("symbolics.jl")
+  end
 end
