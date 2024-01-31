@@ -2,13 +2,10 @@ using Measurements, SpecialFunctions, QuadGK, Calculus, BaseType
 using Test, LinearAlgebra, Statistics, Unitful, Printf, Aqua
 
 if !isdefined(Base,:get_extension)
-    Aqua.test_all(Measurements; project_toml_formatting=false)
+    Aqua.test_all(Measurements)
 else
     Aqua.test_all(Measurements; stale_deps=false)
     Aqua.test_stale_deps(Measurements; ignore=[:RecipesBase, :Requires])
-end
-if VERSION ≥ v"1.6"
-    Aqua.test_project_toml_formatting(Measurements)
 end
 
 import Base: isapprox
