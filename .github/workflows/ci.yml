@@ -37,8 +37,8 @@ jobs:
           version: ${{ matrix.julia-version }}
           arch: ${{ matrix.julia-arch }}
       - uses: julia-actions/cache@v1
-      - uses: julia-actions/julia-buildpkg@latest
-      - uses: julia-actions/julia-runtest@latest
+      - uses: julia-actions/julia-buildpkg@v1
+      - uses: julia-actions/julia-runtest@v1
       - uses: julia-actions/julia-uploadcodecov@v0.1
         continue-on-error: true
       - uses: julia-actions/julia-uploadcoveralls@v1.0
@@ -48,7 +48,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: julia-actions/setup-julia@latest
+      - uses: julia-actions/setup-julia@v1
         with:
           version: 1
       - uses: julia-actions/cache@v1
