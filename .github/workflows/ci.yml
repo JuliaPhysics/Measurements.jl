@@ -43,7 +43,7 @@ jobs:
       - uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          file: lcov.info
+          files: lcov.info
         continue-on-error: true
       - uses: julia-actions/julia-uploadcoveralls@v1.0
         continue-on-error: true
