@@ -25,3 +25,11 @@ rec = RecipesBase.apply_recipe(Dict{Symbol, Any}(), x, value.(y))
 rec = RecipesBase.apply_recipe(Dict{Symbol, Any}(), value.(x), y)
 @test getfield(rec[1], 1) == Dict{Symbol, Any}(:yerror => uncertainty.(y))
 @test rec[1].args == (value.(x), value.(y))
+
+rec = RecipesBase.apply_recipe(Dict{Symbol, Any}(), value.(y); uncertainty_plot = :ribbon)
+@test getfield(rec[1], 1) == Dict{Symbol, Any}(:ribbon => uncertainty.(y))
+@test rec[1].args == (value.(x), value.(y))
+
+rec = RecipesBase.apply_recipe(Dict{Symbol, Any}(), x, value.(y); uncertainty_plot = :ribbon)
+@test getfield(rec[1], 1) == Dict{Symbol, Any}(:ribbon => uncertainty.(y))
+@test rec[1].args == (value.(x), value.(y))
