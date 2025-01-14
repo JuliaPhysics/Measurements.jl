@@ -1,4 +1,4 @@
-using Measurements, SpecialFunctions, QuadGK, Calculus, BaseType
+using Measurements, SpecialFunctions, QuadGK, Calculus, BaseType, Makie
 using Test, LinearAlgebra, Statistics, Unitful, Printf, Aqua
 
 if !isdefined(Base,:get_extension)
