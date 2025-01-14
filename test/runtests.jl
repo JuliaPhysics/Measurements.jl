@@ -1047,6 +1047,10 @@ end
     include("plots.jl")
 end
 
+@testset "Makie recipes" begin
+    include("makie.jl")
+end
+
 @testset "Ranges" begin
     m = 2 ± 1
     @test m .+ (1:6) isa StepRangeLen
