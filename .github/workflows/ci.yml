@@ -21,7 +21,6 @@ jobs:
       fail-fast: false
       matrix:
         julia-version:
-          - "1.0"
           - "1"
           - "nightly"
         os:
