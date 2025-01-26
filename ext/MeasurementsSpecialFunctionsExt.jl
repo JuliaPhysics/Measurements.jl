@@ -19,15 +19,10 @@
 ### Special functions
 module MeasurementsSpecialFunctionsExt
 
-if isdefined(Base, :get_extension)
-    using Measurements
-    using Measurements: result
-    using SpecialFunctions
-else
-    using ..Measurements
-    using ..Measurements: result
-    using ..SpecialFunctions
-end
+using Measurements
+using Measurements: result
+using SpecialFunctions
+
 # Error function: erf, erfinv, erfc, erfcinv, erfcx, erfi, dawson
 
 function SpecialFunctions.erf(a::Measurement{T}) where {T<:AbstractFloat}

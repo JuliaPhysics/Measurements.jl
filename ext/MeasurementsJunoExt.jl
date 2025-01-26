@@ -18,13 +18,8 @@
 ### Special functions
 module MeasurementsJunoExt
 
-if isdefined(Base, :get_extension)
-    using Measurements
-    using Juno
-else
-    using ..Measurements
-    using ..Juno
-end
+using Measurements
+using Juno
 
 Juno.render(i::Juno.Inline, measure::Measurement) =
 Juno.render(i, Juno.Row(measure.val, Text(" ± "), measure.err))

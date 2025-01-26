@@ -14,13 +14,9 @@
 ### Code:
 module MeasurementsMakieExt
 
-if isdefined(Base, :get_extension)
-    using Measurements: Measurement, value, uncertainty
-    using Makie: Makie, PointBased, Errorbars, Band
-else
-    using ..Measurements: Measurement, value, uncertainty
-    using ..Makie: Makie, PointBased, Errorbars, Band
-end
+using Measurements: Measurement, value, uncertainty
+using Makie: Makie, PointBased, Errorbars, Band
+
 # PointBased plots
 Makie.convert_arguments(P::PointBased, x::AbstractVector{<:Measurement}, y::AbstractVector{<:Measurement}) =
     Makie.convert_arguments(P, value.(x), value.(y))

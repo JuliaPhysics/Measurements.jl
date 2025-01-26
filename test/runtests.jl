@@ -1,12 +1,7 @@
 using Measurements, SpecialFunctions, QuadGK, Calculus, BaseType, Makie
 using Test, LinearAlgebra, Statistics, Unitful, Printf, Aqua
 
-if !isdefined(Base,:get_extension)
-    Aqua.test_all(Measurements)
-else
-    Aqua.test_all(Measurements; stale_deps=false)
-    Aqua.test_stale_deps(Measurements; ignore=[:RecipesBase, :Requires])
-end
+Aqua.test_all(Measurements)
 
 import Base: isapprox
 import Measurements: value, uncertainty
@@ -431,23 +426,19 @@ end
         @test @inferred(cospi(a))≈ cos(pi * a) atol = 1e-15
         @test @inferred(sinc(a)) ≈ (sin(pi * a) / (pi * a)) atol = eps(Float64)
         @test @inferred(cosc(a)) ≈ ((cos(pi * a) - sin(pi * a) / (pi * a)) / a) atol = 1e-15
-        if isdefined(Base, :sincos)
-            # Check we got the sign of derivatives in `sincos` right.
-            s, c = @inferred(sincos(a))
-            @test s ≈ sin(a)
-            @test c ≈ cos(a)
-            @test s + c ≈ sin(a) + cos(a)
-            @test s - c ≈ sin(a) - cos(a)
-            @test s ^ 2 + c ^ 2 ≈ oneunit(a)
-        end
-        if isdefined(Base, :sincospi)
-            s, c = @inferred(sincospi(a))
-            @test s ≈ sinpi(a)
-            @test c ≈ cospi(a)
-            @test s + c ≈ sinpi(a) + cospi(a)
-            @test s - c ≈ sinpi(a) - cospi(a)
-            @test s ^ 2 + c ^ 2 ≈ oneunit(a)
-        end
+        # Check we got the sign of derivatives in `sincos` right.
+        s, c = @inferred(sincos(a))
+        @test s ≈ sin(a)
+        @test c ≈ cos(a)
+        @test s + c ≈ sin(a) + cos(a)
+        @test s - c ≈ sin(a) - cos(a)
+        @test s ^ 2 + c ^ 2 ≈ oneunit(a)
+        s, c = @inferred(sincospi(a))
+        @test s ≈ sinpi(a)
+        @test c ≈ cospi(a)
+        @test s + c ≈ sinpi(a) + cospi(a)
+        @test s - c ≈ sinpi(a) - cospi(a)
+        @test s ^ 2 + c ^ 2 ≈ oneunit(a)
     end
     for c in (-1 ± 1, 0 ± 1, 1 ± 1)
         @test sinc(c) ≈ @uncertain(sinc(c)) rtol = 1e-7
@@ -733,10 +724,8 @@ end
     @test @inferred(ceil(Int, w)) ≈ ceil(Int, w.val)
     @test @inferred(trunc(w)) ≈ measurement(trunc(w.val))
     @test @inferred(trunc(Int, w)) ≈ trunc(Int, w.val)
-    if VERSION ≥ v"1.9.0-DEV.369"
-        @test @inferred(round(w, RoundFromZero)) ≈ measurement(round(w.val, RoundFromZero),
-                                                               round(w.err, RoundFromZero))
-    end
+    @test @inferred(round(w, RoundFromZero)) ≈ measurement(round(w.val, RoundFromZero),
+                                                           round(w.err, RoundFromZero))
 end
 
 @testset "widening" begin
@@ -798,15 +787,13 @@ end
         # the same number (note that the tag will be different, but that's not important here).
         for a in (w, x, y); @test eval(Meta.parse(repr(a))) == a; end
     end
-    if VERSION >= v"1.6.0-rc1"
-        @testset "@printf" begin
-            for T in (Float16, Float32, Float64, BigFloat)
-                m1 = measurement(one(T))
-                io = IOBuffer()
-                @test_nowarn @printf(io, "Testing @printf: %.2e\n", m1)
-                @test String(take!(io)) == "Testing @printf: 1.00e+00\n"
-                @test @sprintf("Testing @sprintf: %.2e\n", m1) == "Testing @sprintf: 1.00e+00\n"
-            end
+    @testset "@printf" begin
+        for T in (Float16, Float32, Float64, BigFloat)
+            m1 = measurement(one(T))
+            io = IOBuffer()
+            @test_nowarn @printf(io, "Testing @printf: %.2e\n", m1)
+            @test String(take!(io)) == "Testing @printf: 1.00e+00\n"
+            @test @sprintf("Testing @sprintf: %.2e\n", m1) == "Testing @sprintf: 1.00e+00\n"
         end
     end
 end
@@ -897,13 +884,9 @@ end
     @testset "2-arg functions: $f" for f in (log, hypot, atan)
         @test @uncertain(f(x, y)) ≈ f(x, y)
     end
-    @static if VERSION < v"1.6.0-" || Base.BinaryPlatforms.arch(Base.BinaryPlatforms.HostPlatform()) ∉ ("aarch64", "armv6l", "armv7l", "powerpc64le")
+    @static if Base.BinaryPlatforms.arch(Base.BinaryPlatforms.HostPlatform()) ∉ ("aarch64", "armv6l", "armv7l", "powerpc64le")
         # Don't run this test if the platform doesn't allow it, see
         # https://github.com/JuliaLang/julia/blob/58ffe7e3ed3a93a9d816097548e785284f57fbd4/src/codegen.cpp#L5531-L5536
-        # However I don't know how to check the architecture of the current
-        # system before Julia v1.6 in a sane way: I should copy
-        # `Base.BinaryPlatforms.CPUID.normalize_arch`, but that's really too
-        # much work for this simple test, so let's ignore the problem.
         @testset "ccall" begin
             f(x) = x * x
             ptr = @cfunction($f, Cdouble, (Cdouble,))
