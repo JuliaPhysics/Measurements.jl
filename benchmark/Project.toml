@@ -12,3 +12,6 @@ BenchmarkTools = "1"
 PkgBenchmark = "0.2"
 QuadGK = "2"
 SpecialFunctions = "2"
+
+[sources]
+Measurements = {path = ".."}
