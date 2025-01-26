@@ -17,7 +17,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: julia-actions/setup-julia@v2
         with:
-          version: '1.8.5'
+          version: '1.11.3'
       - uses: julia-actions/cache@v2
       - name: Run benchmarks
         shell: julia --color=yes --project=benchmark {0}

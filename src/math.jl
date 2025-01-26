@@ -359,11 +359,9 @@ function Base.sincos(a::Measurement)
     return (result(s, c, a), result(c, -s, a))
 end
 
-if isdefined(Base, :sincospi)
-    function Base.sincospi(a::Measurement)
-        s, c = sincospi(a.val)
-        return (result(s, c * pi, a), result(c, -s * pi, a))
-    end
+function Base.sincospi(a::Measurement)
+    s, c = sincospi(a.val)
+    return (result(s, c * pi, a), result(c, -s * pi, a))
 end
 
 # Tangent: tan, tand, tanh
@@ -747,12 +745,8 @@ Base.round(a::Measurement, r::RoundingMode{:NearestTiesUp}; kwargs...) =
 Base.round(::Type{T}, a::Measurement, r::RoundingMode{:ToZero}) where {T<:Integer} =
     measurement(round(T, value(a), r), round(uncertainty(a), r))
 Base.round(::Type{Bool}, x::Measurement) = measurement(round(Bool, value(x)))
-# https://github.com/JuliaLang/julia/pull/41246 introduced new rounding mode for
-# all `AbstractFloat`
-if VERSION ≥ v"1.9.0-DEV.369"
-    Base.round(a::Measurement, r::RoundingMode{:FromZero}; kwargs...) =
-        measurement(round(value(a), r; kwargs...), round(uncertainty(a), r; kwargs...))
-end
+Base.round(a::Measurement, r::RoundingMode{:FromZero}; kwargs...) =
+    measurement(round(value(a), r; kwargs...), round(uncertainty(a), r; kwargs...))
 
 Base.floor(a::Measurement) = measurement(floor(a.val))
 Base.floor(::Type{T}, a::Measurement) where {T<:Integer} = floor(T, a.val)

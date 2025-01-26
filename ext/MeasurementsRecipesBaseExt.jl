@@ -16,13 +16,8 @@
 ### Code:
 module MeasurementsRecipesBaseExt
 
-if isdefined(Base, :get_extension)
-    using Measurements: Measurement, value, uncertainty
-    using RecipesBase
-else
-    using ..Measurements: Measurement, value, uncertainty
-    using ..RecipesBase
-end
+using Measurements: Measurement, value, uncertainty
+using RecipesBase
 
 @recipe function f(y::AbstractArray{<:Measurement})
     yerror := uncertainty.(y)
