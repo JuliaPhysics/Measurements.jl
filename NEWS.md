@@ -1,5 +1,14 @@
 # History of Measurements.jl
 
+## v2.12.0 (2025-01-26)
+
+### New features
+
+* The package new requires Julia v1.10.
+* New package extension with
+  [`Makie.jl`](https://github.com/MakieOrg/Makie.jl)
+  ([#174](https://github.com/JuliaPhysics/Measurements.jl/pull/174)).
+
 ## v2.11.0 (2023-11-03)
 
 ### New features
