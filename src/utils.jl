@@ -126,6 +126,18 @@ function cov(x::AbstractVector{Measurement{T}}) where T
 end
 
 """
+    Measurements.cov(a::Measurement, b::Measurement)
+
+Returns the (scalar) covariance between `Measurment`s `a` and `b`.
+"""
+function cov(a::Measurement{T}, b::Measurement{T}) where {T}
+    overlap = keys(a.der) ∩ keys(b.der)
+    return isempty(overlap) ? zero(T) : sum(overlap) do var
+        a.der[var] * b.der[var] * var[2]^2
+    end
+end
+
+"""
     Measurements.cor(x::AbstractVector{<:Measurement})
 
 Returns the correlation matrix of a vector of correlated `Measurement`s.
@@ -135,6 +147,13 @@ function cor(x::AbstractVector{<:Measurement})
     standard_deviations = sqrt.(diag(covariance_matrix))
     return covariance_matrix ./ standard_deviations ./ standard_deviations'
 end
+
+"""
+    Measurements.cor(a::Measurement, b::Measurement)
+
+Returns the (scalar) correlation between `Measurment`s `a` and `b`.
+"""
+cor(a::Measurement, b::Measurement) = cov(a,b)/(a.err*b.err)
 
 """
     Measurements.correlated_values(
