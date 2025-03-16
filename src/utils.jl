@@ -116,10 +116,7 @@ function cov(x::AbstractVector{Measurement{T}}) where T
     covariance_matrix = zeros(T, (S, S))
 
     for (ii, i) = enumerate(eachindex(x)), (jj, j) = Iterators.take(enumerate(eachindex(x)), ii)
-        overlap = keys(x[i].der) ∩ keys(x[j].der)
-        covariance_matrix[ii, jj] = isempty(overlap) ? 0.0 : sum(overlap) do var
-            x[i].der[var] * x[j].der[var] * var[2]^2
-        end
+        covariance_matrix[ii, jj] = cov(x[i], x[j])
     end
 
     return Symmetric(covariance_matrix, :L)
