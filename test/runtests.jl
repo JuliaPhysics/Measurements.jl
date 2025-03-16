@@ -96,14 +96,14 @@ end
     y = -2x + 10
     z = -3x
     @test @inferred(Measurements.cov([x, y, z])) ≈ [0.01 -0.02 -0.03; -0.02 0.04 0.06; -0.03 0.06 0.09]
-    @test [@inferred(Measurements.cov(x,x)), @inferred(Measurements.cov(y,y)), @inferred(Measurements.cov(z,z))] ≈ [0.01, 0.04, 0.09]
+    @test [@inferred(Measurements.cov(x,x)), @inferred(Measurements.cov(y,y)), @inferred(Measurements.cov(z,z))] ≈ diag(Measurements.cov([x, y, z])) ≈ [0.01, 0.04, 0.09]
     @test [@inferred(Measurements.cov(x,y)), @inferred(Measurements.cov(y,z)), @inferred(Measurements.cov(x,z))] ≈ [-0.02, 0.06, -0.03]
 
     u = measurement(1, 0.05)
     v = measurement(10, 0.1)
     w = u + 2v
     @test @inferred(Measurements.cov([u, v, w])) ≈ [0.0025 0.0 0.0025; 0.0 0.01 0.02; 0.0025 0.02 0.0425]
-    @test [@inferred(Measurements.cov(u,u)), @inferred(Measurements.cov(v,v)), @inferred(Measurements.cov(w,w))] ≈ [0.0025, 0.01, 0.0425]
+    @test [@inferred(Measurements.cov(u,u)), @inferred(Measurements.cov(v,v)), @inferred(Measurements.cov(w,w))] ≈ diag(Measurements.cov([u, v, w])) ≈ [0.0025, 0.01, 0.0425]
     @test [@inferred(Measurements.cov(u,v)), @inferred(Measurements.cov(v,w)), @inferred(Measurements.cov(u,w))] ≈ [0.0, 0.02, 0.0025]
 end
 
@@ -113,6 +113,7 @@ end
     z = -3x
     @test @inferred(Measurements.cor([x, y, z])) ≈ [1.0 -1.0 -1.0; -1.0 1.0 1.0; -1.0 1.0 1.0]
     @test @inferred(Measurements.cor(x,x)) ≈ @inferred(Measurements.cor(y,y)) ≈ @inferred(Measurements.cor(z,z)) ≈ 1.0
+    @test [@inferred(Measurements.cor(x,x)), @inferred(Measurements.cor(y,y)), @inferred(Measurements.cor(z,z))] ≈ diag(Measurements.cor([x, y, z]))
     @test [@inferred(Measurements.cor(x,y)), @inferred(Measurements.cor(y,z)), @inferred(Measurements.cor(x,z))] ≈ [-1.0, 1.0, -1.0]
 
     u = measurement(1, 0.05)
@@ -120,6 +121,7 @@ end
     w = u + 2v
     @test @inferred(Measurements.cor([u, v, w])) ≈ [1.0 0.0 0.24253562503633297; 0.0 1.0 0.9701425001453319; 0.24253562503633297 0.9701425001453319 1.0] atol=1e-15
     @test @inferred(Measurements.cor(u,u)) ≈ @inferred(Measurements.cor(v,v)) ≈ @inferred(Measurements.cor(w,w)) ≈ 1.0
+    @test [@inferred(Measurements.cor(u,u)), @inferred(Measurements.cor(v,v)), @inferred(Measurements.cor(w,w))] ≈ diag(Measurements.cor([u, v, w]))
     @test [@inferred(Measurements.cor(u,v)), @inferred(Measurements.cor(v,w)), @inferred(Measurements.cor(u,w))] ≈ [0.0, 0.9701425001453319, 0.24253562503633297]
 end
 
