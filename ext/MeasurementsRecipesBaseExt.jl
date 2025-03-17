@@ -19,8 +19,21 @@ module MeasurementsRecipesBaseExt
 using Measurements: Measurement, value, uncertainty
 using RecipesBase
 
-@recipe function f(y::AbstractArray{<:Measurement})
-    yerror := uncertainty.(y)
+unrecognised_uncertainty_plot_message = """
+    Unrecognized value for `uncertainty_plot` keyword.
+    Expecting either of `:bar` (default), `:ribbon`, or `:none`.
+    """
+
+@recipe function f(y::AbstractArray{<:Measurement}; uncertainty_plot = :bar)
+	if uncertainty_plot == :ribbon
+		ribbon := uncertainty.(y)
+	elseif uncertainty_plot == :bar
+		yerror := uncertainty.(y)
+    elseif uncertainty_plot == :none
+
+	else
+		error(unrecognised_uncertainty_plot_message)
+	end
     value.(y)
 end
 
@@ -42,9 +55,17 @@ end
     value.(x), y
 end
 
-@recipe function f(x::AbstractArray, y::AbstractArray{<:Measurement})
-    yerror := uncertainty.(y)
-    x, value.(y)
+@recipe function f(x::AbstractArray, y::AbstractArray{<:Measurement}; uncertainty_plot = :bar)
+	if uncertainty_plot == :ribbon
+		ribbon := uncertainty.(y)
+	elseif uncertainty_plot == :bar
+		yerror := uncertainty.(y)
+    elseif uncertainty_plot == :none
+
+	else
+		error(unrecognised_uncertainty_plot_message)
+	end
+	x, value.(y)
 end
 
 end
