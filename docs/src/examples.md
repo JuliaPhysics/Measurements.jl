@@ -141,7 +141,7 @@ package, which is written purely in Julia and in addition allows you to set
     Note that the argument of `@uncertain` macro must be a function call.
     Thus,
 
-    ```julia
+    ```julia-repl
     julia> using Measurements, SpecialFunctions
 
     julia> @uncertain zeta(13.4 ± 0.8) + eta(8.51 ± 0.67)
@@ -364,7 +364,7 @@ The last result shows that the expression does not depend on `z`.
     variables and the vector of uncertainties of the same variables in the
     same order. For example:
 
-    ```julia
+    ```julia-repl
     julia> w = y^(3//4)*log(y) + 3x - cos(y/x)
     447.0410543780643 ± 52.41813324207829
 
@@ -379,7 +379,7 @@ The last result shows that the expression does not depend on `z`.
     norm](https://en.wikipedia.org/wiki/Euclidean_norm) of the Hadamard
     product above is exactly the total uncertainty of the expression:
 
-    ```julia
+    ```julia-repl
     julia> vecnorm(Measurements.derivative.(w, [x, y]) .* Measurements.uncertainty.([x, y]))
     52.41813324207829
     ```
@@ -388,7 +388,7 @@ The last result shows that the expression does not depend on `z`.
     simplifies calculation of all uncertainty components of a derived
     quantity:
 
-    ```julia
+    ```julia-repl
     julia> Measurements.uncertainty_components(w)
     Dict{Tuple{Float64,Float64,Float64},Float64} with 2 entries:
       (98.1, 12.7, 0.303638)  => 37.9777
