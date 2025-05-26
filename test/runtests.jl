@@ -1,5 +1,6 @@
 using Measurements, SpecialFunctions, QuadGK, Calculus, BaseType, Makie
 using Test, LinearAlgebra, Statistics, Unitful, Printf, Aqua
+using ForwardDiff
 
 Aqua.test_all(Measurements)
 
