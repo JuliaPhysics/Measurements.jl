@@ -1067,3 +1067,21 @@ end
         @test base_numeric_type(typeof(x)) == T
     end
 end
+
+
+fd_f1(x,y) = x+y
+fd_f2(x,y) = x-y
+fd_f3(x,y) = x*y
+fd_f4(x,y) = x/y
+fd_f5(x,y) = muladd(x,y,1)
+
+@testset "ForwardDiff" begin
+    x1 = 1.0 ± 0.1
+    y1 = 2.0 ± 0.001
+    for op in (:fd_f1,:fd_f2,:fd_f3,:fd_f4,:fd_f5)
+        @eval begin
+            @test ForwardDiff.derivative(x->$(op)(x,$y1),$x1) isa Measurement
+            @test ForwardDiff.derivative(y->$(op)($x1,y),$y1) isa Measurement
+        end
+    end
+end
