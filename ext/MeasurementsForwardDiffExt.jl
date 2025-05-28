@@ -1,7 +1,7 @@
 module MeasurementsForwardDiffExt
 
 using ForwardDiff: Dual, DiffRules, NaNMath, LogExpFunctions, SpecialFunctions,≺
-using Measurements: Measurement
+using Measurements: Measurement, Measurements
 import Base: +,-,/,*,promote_rule
 using ForwardDiff: AMBIGUOUS_TYPES, partials, values, Partials, value
 using ForwardDiff: ForwardDiff
@@ -118,6 +118,71 @@ end
     Dual{Tx}(Base.muladd(value(x), y, z), partials(x) * y), # x_body
     Base.muladd(y, x, z),                             # y_body
     Dual{Tz}(Base.muladd(x, y, value(z)), partials(z))      # z_body
+)
+
+#=
+Derivatives of Measurements.value and Measurements.uncertainty
+Apply those functions to the real and partial part.
+=#
+function Measurements.value(x::Dual{T,V,N}) where {T, V <: Measurement, N}
+    x_value = Measurements.value(ForwardDiff.value(x))
+    p = partials(x)
+    p_value = ntuple(i -> Measurements.value(p[i]),Val(N))
+    return ForwardDiff.Dual{T}(x_value,Partials(p_value))
+end
+
+function Measurements.uncertainty(x::Dual{T,V,N}) where {T, V <: Measurement, N}
+    x_err = Measurements.uncertainty(ForwardDiff.value(x))
+    p = partials(x)
+    p_err = ntuple(i -> Measurements.uncertainty(p[i]),Val(N))
+    return ForwardDiff.Dual{T}(x_err,Partials(p_err))
+end
+
+#=
+start of derivatives of Measurements.measurement
+
+Derivative with respect to the value:
+f(x) = measurement(n*x,m*y), derivative(f,x) = n ± 0
+
+Derivative with respect to the uncertainty:
+f(x) = measurement(n*x,m*y), derivative(f,x) = 0 ± m
+=#
+function dmeasurement_val(x::Dual{T,V,N},err::Real) where {T,V,N}
+
+    val = ForwardDiff.value(x)
+    _1,_0 = oneunit(val),zero(val)
+    x_value = Measurements.measurement(val,err)
+    x_der = Measurements.measurement(_1,_0)
+    v = Dual{T}(x_value,x_der * partials(x))
+end
+
+function dmeasurement_err(x::Real,err::Dual{T,V,N}) where {T,V,N}
+    errval = ForwardDiff.value(err)
+    _1,_0 = oneunit(errval),zero(errval)
+    x_value = Measurements.measurement(x,errval)
+    x_der = Measurements.measurement(_0,_1)
+    v = Dual{T}(x_value,x_der * partials(err))
+end
+
+function dmeasurement_val_and_err(x::Dual{T,V1,N},err::Dual{T,V2,N}) where {T,V1,V2,N}
+    xval = ForwardDiff.value(x)
+    errval = ForwardDiff.value(err)
+    xp = partials(x)
+    errp = partials(err)
+    measurement_primal = Measurements.measurement(xval,errval)
+    measurement_partials_tuple = ntuple(i -> Measurements.measurement(xp[i],errp[i]),Val(N))
+    return Dual{T}(measurement_primal,Partials(measurement_partials_tuple))
+end
+
+function Measurements.measurement(x::ForwardDiff.Dual{T,V,N}) where {T,V,N}
+    return dmeasurement_val(x,zero(ForwardDiff.value(x)))
+end
+
+ForwardDiff.@define_binary_dual_op(
+    Measurements.measurement,
+    dmeasurement_val_and_err(x,y),
+    dmeasurement_val(x,y),
+    dmeasurement_err(x,y),
 )
 
 end #module
