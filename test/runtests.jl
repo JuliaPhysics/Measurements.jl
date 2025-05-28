@@ -1070,19 +1070,33 @@ end
 end
 
 
-fd_f1(x,y) = x+y
-fd_f2(x,y) = x-y
-fd_f3(x,y) = x*y
-fd_f4(x,y) = x/y
-fd_f5(x,y) = muladd(x,y,1)
+fd_f1(x,y) = measurement(2x,3y)
+fd_f2(x) = fd_f1(x,x)
+fd_f3(x,y) = muladd(x,y,1)
+fd_f4(x,y) = value(fd_f1(x,y))
+fd_f5(x,y) = uncertainty(fd_f1(x,y))
 
 @testset "ForwardDiff" begin
     x1 = 1.0 ± 0.1
-    y1 = 2.0 ± 0.001
-    for op in (:fd_f1,:fd_f2,:fd_f3,:fd_f4,:fd_f5)
-        @eval begin
-            @test ForwardDiff.derivative(x->$(op)(x,$y1),$x1) isa Measurement
-            @test ForwardDiff.derivative(y->$(op)($x1,y),$y1) isa Measurement
-        end
-    end
+    y1 = 30.0 ± 0.7
+    #some common operations, no special handling in the extension, just wrapping in a dual
+    @test ForwardDiff.derivative(Base.Fix1(+,x1),y1) == 1.0 ± 0.0
+    @test ForwardDiff.derivative(Base.Fix1(+,y1),x1) == 1.0 ± 0.0
+    @test ForwardDiff.derivative(Base.Fix1(*,y1),x1) == y1
+    @test ForwardDiff.derivative(Base.Fix1(*,x1),y1) == x1
+    @test ForwardDiff.derivative(Base.Fix2(/,y1),x1) == 1/y1
+    @test ForwardDiff.derivative(Base.Fix1(/,x1),y1) == -x1/(y1*y1)
+
+    #test ternary op
+    @test ForwardDiff.derivative(Base.Fix1(fd_f3,y1),x1) == y1
+    @test ForwardDiff.derivative(Base.Fix1(fd_f3,x1),y1) == x1
+
+    #derivatives of Measurements.measurement
+    @test ForwardDiff.derivative(Base.Fix1(fd_f1,1.0),1.213) == 0.0 ± 3.0
+    @test ForwardDiff.derivative(Base.Fix2(fd_f1,1.0),1.213) == 2.0 ± 0.0
+    @test ForwardDiff.derivative(fd_f2,1.213) == 2.0 ± 3.0
+
+    #test value/uncertainty getters
+    @test ForwardDiff.derivative(Base.Fix2(fd_f4,1.0),1.213) == 2.0
+    @test ForwardDiff.derivative(Base.Fix1(fd_f5,1.0),1.213) == 3.0
 end
