@@ -6,18 +6,48 @@ import Base: +,-,/,*,promote_rule
 using ForwardDiff: AMBIGUOUS_TYPES, partials, values, Partials, value
 using ForwardDiff: ForwardDiff
 
-#patch this until is fixed in ForwardDiff
+#=
+overload in ForwardDiff.construct_seeds and ForwardDiff.single_seed
 
+A ForwardDiff.Partials is a static vector, containing the derivative component.
+construct_seeds makes a tuple of partials, each partial is full of zeros, except in the position i.
+ForwardDiff.single_seed(::Type{Partials{N},Val{i}) is the function that constructs those partials.
+
+The problem is that ForwardDiff uses one(T) to build such tuples.
+
+In Measurements.jl, one(::Type{Measurement{T}})::T has a different return type compared to zero(::Measurement{T})::Measurement{T}
+
+This causes ForwardDiff to fail, as it expects that typeof(one(T)) == typeof(zero(T)) == T.
+
+The error is in ForwardDiff, as the correct function to use is oneunit(T).
+
+Now, @generated functions don't allow new dispatches for functions inside their body, but add new methods to an existing @generated function. 
+That is why both single_seed and construct_seeds body are rewritten in terms of the function _single_seed.
+=#
 @generated function ForwardDiff.construct_seeds(::Type{Partials{N,V}}) where {N,V<:Measurement}
-    return Expr(:tuple, [:(single_seed(Partials{N,V}, Val{$i}())) for i in 1:N]...)
+    return Expr(:tuple, [:(_single_seed(Partials{N,V}, Val{$i}())) for i in 1:N]...)
 end
 
-#needs redefinition here, because generated functions don't allow extra definitions
-@generated function single_seed(::Type{Partials{N,V}}, ::Val{i}) where {N,V,i}
+@generated function _single_seed(::Type{Partials{N,V}}, ::Val{i}) where {N,V,i}
     ex = Expr(:tuple, [ifelse(i === j, :(oneunit(V)), :(zero(V))) for j in 1:N]...)
     return :(Partials($(ex)))
 end
 
+@generated function ForwardDiff.single_seed(p::Type{Partials{N,V}}, v::Val{i}) where {N,V <: Measurement,i}
+    return :(_single_seed(p,v))
+end
+
+#=
+promote_rule
+
+ForwardDiff.Dual wants to convert every real it encounters into a ForwardDiff.Dual.
+Measurements.Measurement wants to convert every real it encounters into a Measurements.Measurement.
+now, when a Dual and a Measurement encounter, we need to decide to which number type the result is promoted.
+
+There are two options:
+- Measurement{Dual}: not possible, Dual is not an AbstractFloat
+- Dual{Measurement}: possible, and the approach taken by this extension
+=#
 function promote_rule(::Type{Measurement{V}}, ::Type{Dual{T, V, N}}) where {T,V,N}
     Dual{Measurement{T}, V, N}
 end
@@ -27,6 +57,14 @@ function promote_rule(::Type{Measurement{V1}}, ::Type{Dual{T, V2, N}}) where {V1
     return Dual{T , Vx, N}
 end
 
+#=
+overload_ambiguous_binary
+
+ForwardDiff works via overloading.
+It takes a long list from DiffRules.jl and evaluates new methods to allow passing Duals.
+ForwardDiff already takes care of ambiguous types (like rationals and BigFloat), by adding aditional dispatches like the one below.
+what we do in this package is just wrap the measument inside a dual and let the existing ForwardDiff machinery do its work.
+=#
 function overload_ambiguous_binary(M,f)
     Mf = :($M.$f)
     return quote
@@ -42,9 +80,26 @@ function overload_ambiguous_binary(M,f)
     end
 end
 
+#=
+define_ternary_dual_op2
+
+Code modified from https://github.com/JuliaDiff/ForwardDiff.jl/blob/fb93a82bf744d27ee4a3b455bb693f0ce18439b4/src/dual.jl#L156-L200
+
+Ternary ops are overloaded in the following way:
+
+1. ForwardDiff first defines dispatches where all three arguments are duals
+2. Then, it overloads all dispatches with one ambiguous type and two Duals (for each element of AMBIGUOUS_TYPES)
+3. Then, it overloads all dispatches with two different ambiguous types and a Dual (for each combination of two different elements of AMBIGUOUS_TYPES)
+4. finally, it overloads the case of one dual and two arguments of the same ambiguous type (for each element of AMBIGUOUS_TYPES)
+This code does (2), (3) and (4)
+The second step only evaluates the case of two duals and one measurement.
+The third step evaluates the case of one dual, one ambiguous type and one measurement.
+The fourth step evaluates the case of one dual and two measurements.
+=#
 macro define_ternary_dual_op2(f, xyz_body, xy_body, xz_body, yz_body, x_body, y_body, z_body)
     FD = ForwardDiff
     R = Measurement
+    #step two: measurement and two Duals
     defs = quote
         @inline $(f)(x::$FD.Dual{Txy}, y::$FD.Dual{Txy}, z::$R) where {Txy} = $xy_body
         @inline $(f)(x::$FD.Dual{Tx}, y::$FD.Dual{Ty}, z::$R)  where {Tx, Ty} = Ty ≺ Tx ? $x_body : $y_body
@@ -53,6 +108,8 @@ macro define_ternary_dual_op2(f, xyz_body, xy_body, xz_body, yz_body, x_body, y_
         @inline $(f)(x::$R, y::$FD.Dual{Tyz}, z::$FD.Dual{Tyz}) where {Tyz} = $yz_body
         @inline $(f)(x::$R, y::$FD.Dual{Ty}, z::$FD.Dual{Tz}) where {Ty,Tz} = Tz ≺ Ty ? $y_body : $z_body
     end
+
+    #step three: one dual, one ambiguous type and one measurement
     for Q in AMBIGUOUS_TYPES
         expr = quote
             @inline $(f)(x::$FD.Dual{Tx}, y::$R, z::$Q) where {Tx} = $x_body
@@ -61,6 +118,7 @@ macro define_ternary_dual_op2(f, xyz_body, xy_body, xz_body, yz_body, x_body, y_
         end
         append!(defs.args, expr.args)
     end
+    #step four: one dual, two measurements
     expr = quote
         @inline $(f)(x::$FD.Dual{Tx}, y::$R, z::$R) where {Tx} = $x_body
         @inline $(f)(x::$R, y::$FD.Dual{Ty}, z::$R) where {Ty} = $y_body
@@ -69,13 +127,16 @@ macro define_ternary_dual_op2(f, xyz_body, xy_body, xz_body, yz_body, x_body, y_
     append!(defs.args, expr.args)
     return esc(defs)
 end
+#=
+overload loop
 
-#use DiffRules.jl rules
+Modified from https://github.com/JuliaDiff/ForwardDiff.jl/blob/fb93a82bf744d27ee4a3b455bb693f0ce18439b4/src/dual.jl#L482-L496
 
+We don't need to overload unary definitions.
+and only need to evaluate the ambiguous cases for binary definitions.
+=#
 for (M, f, arity) in DiffRules.diffrules(filter_modules = nothing)
-    if (M, f) in ((:Base, :^), (:NaNMath, :pow))
-        continue  # Skip methods which we define elsewhere.
-    elseif !(isdefined(@__MODULE__, M) && isdefined(getfield(@__MODULE__, M), f))
+    if !(isdefined(@__MODULE__, M) && isdefined(getfield(@__MODULE__, M), f))
         continue  # Skip rules for methods not defined in the current scope
     end
     if arity == 2
@@ -86,7 +147,7 @@ for (M, f, arity) in DiffRules.diffrules(filter_modules = nothing)
     end
 end
 
-#ternary overloads
+#ternary overloads, same as ForwardDiff.jl
 @define_ternary_dual_op2(
     Base.hypot,
     ForwardDiff.calc_hypot(x, y, z, Txyz),

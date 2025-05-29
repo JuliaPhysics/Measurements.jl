@@ -1099,4 +1099,23 @@ fd_f5(x,y) = uncertainty(fd_f1(x,y))
     #test value/uncertainty getters
     @test ForwardDiff.derivative(Base.Fix2(fd_f4,1.0),1.213) == 2.0
     @test ForwardDiff.derivative(Base.Fix1(fd_f5,1.0),1.213) == 3.0
+
+    #test ForwardDiff.single_seed/ForwardDiff.construct_seeds overload
+    partials1 = ForwardDiff.single_seed(ForwardDiff.Partials{3,Measurement{Float64}},Val(2))
+    @test partials1[1] == 0.0 ± 0.0
+    @test partials1[2] == 1.0 ± 0.0
+    @test partials1[3] == 0.0 ± 0.0
+
+    tuple_of_partials = ForwardDiff.construct_seeds(ForwardDiff.Partials{3,Measurement{Float64}})
+    
+    for i in 1:3
+        partial_i = tuple_of_partials[i]
+        for j in 1:3
+            if j == i
+                @test partial_i[j] == 1.0 ± 0.0
+            else
+                @test partial_i[j] == 0.0 ± 0.0
+            end
+        end
+    end
 end
