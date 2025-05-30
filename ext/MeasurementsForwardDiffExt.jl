@@ -138,8 +138,11 @@ macro define_ternary_dual_op2(f, xyz_body, xy_body, xz_body, yz_body, x_body, y_
     for Q in AMBIGUOUS_TYPES
         expr = quote
             @inline $(f)(x::$FD.Dual{Tx}, y::$R, z::$Q) where {Tx} = $x_body
+            @inline $(f)(x::$FD.Dual{Tx}, y::$Q, z::$R) where {Tx} = $x_body
             @inline $(f)(x::$R, y::$FD.Dual{Ty}, z::$Q) where {Ty} = $y_body
+            @inline $(f)(x::$Q, y::$FD.Dual{Ty}, z::$R) where {Ty} = $y_body
             @inline $(f)(x::$R, y::$Q, z::$FD.Dual{Tz}) where {Tz} = $z_body
+            @inline $(f)(x::$Q, y::$R, z::$FD.Dual{Tz}) where {Tz} = $z_body
         end
         append!(defs.args, expr.args)
     end

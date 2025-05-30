@@ -1089,6 +1089,7 @@ fd_f5(x,y) = uncertainty(fd_f1(x,y))
     type_p1_big = ForwardDiff.Dual{Nothing,Measurement{BigFloat},1}
     type_in = ForwardDiff.Dual{Nothing,Int64,1}
     type_in_big = ForwardDiff.Dual{Nothing,BigInt,1}
+    a1 = 1//2 #ambiguous type
     for (t1,t2,r) in [(type_d1,type_m1,type_p1),
                 (type_d1_big,type_m1,type_p1_big),
                 (type_m1_big,type_p1,type_p1_big),
@@ -1105,13 +1106,14 @@ fd_f5(x,y) = uncertainty(fd_f1(x,y))
         @test (o1 + o2) isa r
         @test (o2 + o1) isa r
         #test ternary promotion rules
-        @test muladd(o2,o1,o1) isa r
-        @test muladd(o1,o2,o1) isa r
-        @test muladd(o1,o1,o2) isa r
 
-        @test muladd(o2,o2,o1) isa r
-        @test muladd(o1,o2,o2) isa r
-        @test muladd(o2,o1,o2) isa r
+        o123 = (o1,o2,a1)
+        for val123 in Iterators.product(o123,o123,o123)
+            v1,v2,v3 = val123
+            vtype = Base.promote_type(typeof(v1),typeof(v2),typeof(v3))
+            #test for ambiguities in ternary definitions
+            @test muladd(v1,v2,v3) isa vtype
+        end
     end
     #some common operations, no special handling in the extension, just wrapping in a dual
     @test ForwardDiff.derivative(Base.Fix1(+,x1),y1) == 1.0 ± 0.0
