@@ -1101,7 +1101,7 @@ fd_f5(x,y) = uncertainty(fd_f1(x,y))
 
         @test promote_type(t1,t2) == r
         @test promote_type(t2,t1) == r
-        o1,o2 = oneunit(t1) + oneunit(t2)
+        o1,o2 = oneunit(t1),oneunit(t2)
         @test (o1 + o2) isa r
         @test (o2 + o1) isa r
         #test ternary promotion rules
