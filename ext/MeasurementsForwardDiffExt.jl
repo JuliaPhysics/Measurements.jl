@@ -48,10 +48,6 @@ There are two options:
 - Measurement{Dual}: not possible, Dual is not an AbstractFloat
 - Dual{Measurement}: possible, and the approach taken by this extension
 =#
-function promote_rule(::Type{Measurement{V}}, ::Type{Dual{T, V, N}}) where {T,V,N}
-    Dual{T, Measurement{V}, N}
-end
-
 function promote_rule(::Type{Measurement{V1}}, ::Type{Dual{T, V2, N}}) where {V1<:AbstractFloat, T, V2, N}
     Vx = Measurement{promote_type(V1,V2)}
     return Dual{T, Vx, N}
@@ -60,10 +56,6 @@ end
 function promote_rule(::Type{Measurement{V1}}, ::Type{Dual{T, Measurement{V2}, N}}) where {V1<:AbstractFloat, T, V2<:AbstractFloat, N}
     Vx = Measurement{promote_type(V1,V2)}
     return Dual{T, Vx, N}
-end
-
-function promote_rule(::Type{Dual{T, V, N}}, ::Type{Measurement{V}}) where {T,V,N}
-    Dual{T, Measurement{V}, N}
 end
 
 function promote_rule( ::Type{Dual{T, V2, N}}, ::Type{Measurement{V1}}) where {T, V2, N, V1<:AbstractFloat}
