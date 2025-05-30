@@ -156,14 +156,10 @@ We don't need to overload unary definitions.
 and only need to evaluate the ambiguous cases for binary definitions.
 =#
 for (M, f, arity) in DiffRules.diffrules(filter_modules = nothing)
-    if !(isdefined(@__MODULE__, M) && isdefined(getfield(@__MODULE__, M), f))
-        continue  # Skip rules for methods not defined in the current scope
-    end
-    if arity == 2
+    #DiffRules has a list of modules, (NaNMath,SpecialFunctions). Only load existing methods.
+    #those packages are loaded by ForwardDiff anyways
+    if (isdefined(@__MODULE__, M) && isdefined(getfield(@__MODULE__, M), f)) && arity == 2
         eval(overload_ambiguous_binary(M,f))
-    else
-        # error("ForwardDiff currently only knows how to autogenerate Dual definitions for unary and binary functions.")
-        # However, the presence of N-ary rules need not cause any problems here, they can simply be ignored.
     end
 end
 
