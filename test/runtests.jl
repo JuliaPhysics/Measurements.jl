@@ -238,6 +238,7 @@ end
     @test_throws InexactError convert(Measurement{Float64}, 1+1im)
     @test convert(Measurement{Float64}, Base.TwicePrecision(1.0, 0.0)) ≈ 1.0±0.0
     @test convert(Measurement{Float64}, 'a') ≈ Float64('a') ± 0.0
+    @test promote_type(Measurement{Float64},BigFloat) == Measurement{BigFloat}
 end
 
 @testset "Comparisons and Tests" begin
@@ -1086,18 +1087,31 @@ fd_f5(x,y) = uncertainty(fd_f1(x,y))
     type_m1_big = Measurement{BigFloat}
     type_p1 = ForwardDiff.Dual{Nothing,Measurement{Float64},1}
     type_p1_big = ForwardDiff.Dual{Nothing,Measurement{BigFloat},1}
-
+    type_in = ForwardDiff.Dual{Nothing,Int64,1}
+    type_in_big = ForwardDiff.Dual{Nothing,BigInt,1}
     for (t1,t2,r) in [(type_d1,type_m1,type_p1),
                 (type_d1_big,type_m1,type_p1_big),
                 (type_m1_big,type_p1,type_p1_big),
                 (type_p1_big,type_m1,type_p1_big),
                 (type_m1_big,type_p1_big,type_p1_big),
+                (type_in,type_m1,type_p1),
+                (type_in_big,type_m1,type_p1_big),
+                (type_in_big,type_m1_big,type_p1_big),
         ]
 
-        @test promote_rule(t1,t2) == r
-        @test promote_rule(t2,t1) == r
-        @test (oneunit(t1) + oneunit(t2)) isa r
-        @test (oneunit(t2) + oneunit(t1)) isa r 
+        @test promote_type(t1,t2) == r
+        @test promote_type(t2,t1) == r
+        o1,o2 = oneunit(t1) + oneunit(t2)
+        @test (o1 + o2) isa r
+        @test (o2 + o1) isa r
+        #test ternary promotion rules
+        @test muladd(o2,o1,o1) isa r
+        @test muladd(o1,o2,o1) isa r
+        @test muladd(o1,o1,o2) isa r
+
+        @test muladd(o2,o2,o1) isa r
+        @test muladd(o1,o2,o2) isa r
+        @test muladd(o2,o1,o2) isa r
     end
     #some common operations, no special handling in the extension, just wrapping in a dual
     @test ForwardDiff.derivative(Base.Fix1(+,x1),y1) == 1.0 ± 0.0
@@ -1128,7 +1142,7 @@ fd_f5(x,y) = uncertainty(fd_f1(x,y))
     @test partials1[3] == 0.0 ± 0.0
 
     tuple_of_partials = ForwardDiff.construct_seeds(ForwardDiff.Partials{3,Measurement{Float64}})
-    
+
     for i in 1:3
         partial_i = tuple_of_partials[i]
         for j in 1:3
