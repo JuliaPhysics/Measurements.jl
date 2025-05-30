@@ -1076,10 +1076,16 @@ fd_f2(x) = fd_f1(x,x)
 fd_f3(x,y) = muladd(x,y,1)
 fd_f4(x,y) = value(fd_f1(x,y))
 fd_f5(x,y) = uncertainty(fd_f1(x,y))
+function fd_d0(x,y) 
+    sin(muladd(x,y,1.0 ± 0.1) + muladd(1.0 ± 0.1,x,y) + muladd(x,1.0 ± 0.1,y))
+end
+fd_d1(x,y) = ForwardDiff.Derivative(Base.Fix1(fd_d0,y),x)
+fd_d2(x) = ForwardDiff.Derivative(Base.Fix1(fd_d1,1.2),x)
 
 @testset "ForwardDiff" begin
     x1 = 1.0 ± 0.1
     y1 = 30.0 ± 0.7
+    @test fd_f2(0.2) isa Measurement
     #test promotion rules
     type_d1 = ForwardDiff.Dual{Nothing,Float64,1}
     type_d1_big = ForwardDiff.Dual{Nothing,BigFloat,1}
