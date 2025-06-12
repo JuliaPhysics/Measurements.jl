@@ -90,6 +90,4 @@ function Base.alignment(io::IO, measure::Measurement)
         (length(m.captures[1]), length(m.captures[2]))
 end
 
-if VERSION >= v"1.6.0-rc1"
-    Printf.tofloat(measure::Measurement) = Printf.tofloat(measure.val)
-end
+Printf.tofloat(measure::Measurement) = Printf.tofloat(measure.val)

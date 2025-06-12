@@ -16,13 +16,8 @@
 ### Code:
 module MeasurementsRecipesBaseExt
 
-if isdefined(Base, :get_extension)
-    using Measurements: Measurement, value, uncertainty
-    using RecipesBase
-else
-    using ..Measurements: Measurement, value, uncertainty
-    using ..RecipesBase
-end
+using Measurements: Measurement, value, uncertainty
+using RecipesBase
 
 unrecognised_uncertainty_plot_message = """
     Unrecognized value for `uncertainty_plot` keyword.
