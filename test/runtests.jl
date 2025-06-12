@@ -80,6 +80,10 @@ end
 
 @testset "Weighted Average" begin
     @test @inferred(weightedmean((w, x, y))) ≈ measurement(-0.12584269662921355, 0.028442727788398632)
+     m  =  [w x y 
+            w y x]
+    @test @inferred(weightedmean(m, dims=1)) ≈ [weightedmean(m[:,1]) weightedmean(m[:,2]) weightedmean(m[:,2])]
+    @test @inferred(weightedmean(m, dims=2)) ≈ [weightedmean(m[1,:]);weightedmean(m[2,:])]
 end
 
 @testset "Derivative" begin

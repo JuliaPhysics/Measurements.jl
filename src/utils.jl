@@ -24,17 +24,33 @@ stdscore(a::Measurement{S}, b::Measurement{T}) where {S<:AbstractFloat,T<:Abstra
     stdscore(a - b, zero(promote_type(S, T)))
 
 # Weighted Average with Inverse-Variance Weighting
+measurement_eltype(::Measurement{T}) where T = T
 """
-    weightedmean(iterable) -> measurement(weighted_mean, standard_deviation)
+    weightedmean(iterable; dims::Union{Colon,Int}=:)
 
 Return the weighted mean of measurements listed in `iterable`, using
-inverse-variance weighting.  NOTA BENE: correlation is not taken into account.
+inverse-variance weighting.  `dims` is a vector specifying the
+dimensions to reduce over, or `:` to reduce over all dimensions.
+NOTA BENE: correlation is not taken into account.
 """
-function weightedmean(iterable)
-    v = [el.val for el in iterable]
-    w = [inv(el.err)^2 for el in iterable]
-    invsumw = inv(sum(w))
-    return measurement(dot(v, w)*invsumw, sqrt(invsumw))
+function weightedmean(iterable; dims=:)
+    T = measurement_eltype(first(iterable))
+
+    if dims isa Colon
+        out = mapreduce((a, b) -> map(.+, a, b), iterable, init=(zero(T), zero(T))) do el
+            w = inv(el.err)^2
+            el.val * w, w
+        end
+        invsumw = inv(out[2])
+        return measurement(out[1] * invsumw, sqrt(invsumw))
+    end
+
+    out = mapreduce((a, b) -> map(.+, a, b), iterable, dims=dims, init=(zero(T), zero(T))) do el
+        w = inv(el.err)^2
+        el.val * w, w
+    end
+    invsumw = map(x -> inv(x[2]), out)
+    return measurement.(map((x, y) -> y * x[1], out, invsumw), sqrt.(invsumw))
 end
 
 # Derivative and Gradient
