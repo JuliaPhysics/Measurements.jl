@@ -34,8 +34,8 @@ dimensions to reduce over, or `:` to reduce over all dimensions.
 NOTA BENE: correlation is not taken into account.
 """
 function weightedmean(iterable; dims=:)
-    length(iterable) == 0 && return error("weightedmean: iterable must not be empty")
-    first(iterable) isa Measurement || error("weightedmean: iterable must contain Measurements")
+    length(iterable) == 0 && return throw(ArgumentError("weightedmean: iterable must not be empty"))
+    first(iterable) isa Measurement || throw(ArgumentError("weightedmean: iterable must contain Measurements"))
     T = measurement_eltype(first(iterable))
 
     if dims isa Colon
