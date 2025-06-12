@@ -34,10 +34,12 @@ dimensions to reduce over, or `:` to reduce over all dimensions.
 NOTA BENE: correlation is not taken into account.
 """
 function weightedmean(iterable; dims=:)
+    length(iterable) == 0 && return error("weightedmean: iterable must not be empty")
+    first(iterable) isa Measurement || error("weightedmean: iterable must contain Measurements")
     T = measurement_eltype(first(iterable))
 
     if dims isa Colon
-        out = mapreduce((a, b) -> map(.+, a, b), iterable, init=(zero(T), zero(T))) do el
+        out = mapreduce((a, b) -> map(.+, a, b), iterable, init=(zero(T), zero(T))) do el::Measurement
             w = inv(el.err)^2
             el.val * w, w
         end
@@ -45,7 +47,7 @@ function weightedmean(iterable; dims=:)
         return measurement(out[1] * invsumw, sqrt(invsumw))
     end
 
-    out = mapreduce((a, b) -> map(.+, a, b), iterable, dims=dims, init=(zero(T), zero(T))) do el
+    out = mapreduce((a, b) -> map(.+, a, b), iterable, dims=dims, init=(zero(T), zero(T))) do el::Measurement
         w = inv(el.err)^2
         el.val * w, w
     end
