@@ -25,15 +25,15 @@ const unrecognised_uncertainty_plot_message = """
     """
 
 @recipe function f(y::AbstractArray{<:Measurement}; uncertainty_plot = :bar)
-	if uncertainty_plot == :ribbon
-		ribbon := uncertainty.(y)
-	elseif uncertainty_plot == :bar
-		yerror := uncertainty.(y)
+    if uncertainty_plot == :ribbon
+        ribbon := uncertainty.(y)
+    elseif uncertainty_plot == :bar
+        yerror := uncertainty.(y)
     elseif uncertainty_plot == :none
 
-	else
-		error(unrecognised_uncertainty_plot_message)
-	end
+    else
+        error(unrecognised_uncertainty_plot_message)
+    end
     value.(y)
 end
 
@@ -56,16 +56,16 @@ end
 end
 
 @recipe function f(x::AbstractArray, y::AbstractArray{<:Measurement}; uncertainty_plot = :bar)
-	if uncertainty_plot == :ribbon
-		ribbon := uncertainty.(y)
-	elseif uncertainty_plot == :bar
-		yerror := uncertainty.(y)
+    if uncertainty_plot == :ribbon
+        ribbon := uncertainty.(y)
+    elseif uncertainty_plot == :bar
+        yerror := uncertainty.(y)
     elseif uncertainty_plot == :none
 
-	else
-		error(unrecognised_uncertainty_plot_message)
-	end
-	x, value.(y)
+    else
+        error(unrecognised_uncertainty_plot_message)
+    end
+    x, value.(y)
 end
 
 end
