@@ -19,7 +19,7 @@ module MeasurementsRecipesBaseExt
 using Measurements: Measurement, value, uncertainty
 using RecipesBase
 
-unrecognised_uncertainty_plot_message = """
+const unrecognised_uncertainty_plot_message = """
     Unrecognized value for `uncertainty_plot` keyword.
     Expecting either of `:bar` (default), `:ribbon`, or `:none`.
     """
