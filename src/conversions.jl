@@ -60,3 +60,7 @@ Base.promote_rule(::Type{Measurement{T}}, ::Type{S}) where {T<:AbstractFloat, S<
 Base.promote_rule(::Type{Measurement{T}},
                   ::Type{Measurement{S}}) where {T<:AbstractFloat, S<:AbstractFloat} =
     Measurement{promote_type(T, S)}
+
+#this last method is required as there is ambiguity between Real-BigFloat and Real-Measurement
+Base.promote_rule(::Type{BigFloat}, ::Type{Measurement{T}}) where T<:AbstractFloat = 
+    Measurement{promote_type(BigFloat,T)}
