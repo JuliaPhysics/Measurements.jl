@@ -1,15 +1,27 @@
 # History of Measurements.jl
 
-## v2.12.0 (2025-01-26)
+## [v2.13.0](https://github.com/JuliaPhysics/Measurements.jl/releases/tag/v2.13.0) (2025-06-14)
 
 ### New features
 
-* The package new requires Julia v1.10.
+* `Measurements.cov` and `Measurements.cor` have new methods for pairwise
+  covariance and correlation of two scalar measurements
+  ([#176](https://github.com/JuliaPhysics/Measurements.jl/pull/176)).
+* `weightedmean` has a new `dims` keyword argument for selecting the dimensions
+  over which to compute the weighted mean
+  ([#180](https://github.com/JuliaPhysics/Measurements.jl/issues/180),
+  [#182](https://github.com/JuliaPhysics/Measurements.jl/pull/182)).
+
+## [v2.12.0](https://github.com/JuliaPhysics/Measurements.jl/releases/tag/v2.12.0) (2025-01-26)
+
+### New features
+
+* The package now requires Julia v1.10.
 * New package extension with
   [`Makie.jl`](https://github.com/MakieOrg/Makie.jl)
   ([#174](https://github.com/JuliaPhysics/Measurements.jl/pull/174)).
 
-## v2.11.0 (2023-11-03)
+## [v2.11.0](https://github.com/JuliaPhysics/Measurements.jl/releases/tag/v2.11.0) (2023-11-03)
 
 ### New features
 
@@ -17,7 +29,7 @@
   [`BaseType.jl`](https://github.com/SymbolicML/BaseType.jl)
   ([#156](https://github.com/JuliaPhysics/Measurements.jl/pull/156)).
 
-## v2.10.0 (2023-09-21)
+## [v2.10.0](https://github.com/JuliaPhysics/Measurements.jl/releases/tag/v2.10.0) (2023-09-21)
 
 ### New features
 
@@ -28,7 +40,7 @@
   when using Julia v1.9 or later versions
   ([#143](https://github.com/JuliaPhysics/Measurements.jl/pull/143)).
 
-## v2.9.0 (2023-03-22)
+## [v2.9.0](https://github.com/JuliaPhysics/Measurements.jl/releases/tag/v2.9.0) (2023-03-22)
 
 ### New features
 
@@ -44,21 +56,21 @@
   `one(::Measurement{T})`, which did not follow the precise semantic of the
   `one` function.
 
-## v2.8.0 (2022-09-01)
+## [v2.8.0](https://github.com/JuliaPhysics/Measurements.jl/releases/tag/v2.8.0) (2022-09-01)
 
 ### New features
 
 * The counter of the tags of `Measurement` objects is now atomic
   ([#118](https://github.com/JuliaPhysics/Measurements.jl/pull/118)).
 
-## v2.7.2 (2022-05-21)
+## [v2.7.2](https://github.com/JuliaPhysics/Measurements.jl/releases/tag/v2.7.2) (2022-05-21)
 
 ### Bug Fixes
 
 * Fixed norm of `AbstractArray{<:Measurement}`
   ([#120](https://github.com/JuliaPhysics/Measurements.jl/pull/120)).
 
-## v2.7.1 (2022-03-03)
+## [v2.7.1](https://github.com/JuliaPhysics/Measurements.jl/releases/tag/v2.7.1) (2022-03-03)
 
 ### Bug Fixes
 
@@ -66,7 +78,7 @@
   ([#115](https://github.com/JuliaPhysics/Measurements.jl/pull/115) and
   [#116](https://github.com/JuliaPhysics/Measurements.jl/pull/116)).
 
-## v2.7.0 (2021-12-28)
+## [v2.7.0](https://github.com/JuliaPhysics/Measurements.jl/releases/tag/v2.7.0) (2021-12-28)
 
 ### New features
 
@@ -85,7 +97,7 @@
   `SpecialFunctions.jl` v2.0
   ([#111](https://github.com/JuliaPhysics/Measurements.jl/pull/111)).
 
-## v2.6.0 (2021-04-20)
+## [v2.6.0](https://github.com/JuliaPhysics/Measurements.jl/releases/tag/v2.6.0) (2021-04-20)
 
 ### New features
 
@@ -102,7 +114,7 @@
 * Improved printing of value when it is smaller than the uncertainty
   ([#94](https://github.com/JuliaPhysics/Measurements.jl/pull/94)).
 
-## v2.5.0 (2021-01-28)
+## [v2.5.0](https://github.com/JuliaPhysics/Measurements.jl/releases/tag/v2.5.0) (2021-01-28)
 
 ### New features
 
@@ -112,7 +124,7 @@
   ([#87](https://github.com/JuliaPhysics/Measurements.jl/issues/87),
   [#88](https://github.com/JuliaPhysics/Measurements.jl/issues/88)).
 
-## v2.4.0 (2021-01-20)
+## [v2.4.0](https://github.com/JuliaPhysics/Measurements.jl/releases/tag/v2.4.0) (2021-01-20)
 
 ### New features
 
@@ -125,7 +137,7 @@
   ([#83](https://github.com/JuliaPhysics/Measurements.jl/pull/83),
   [#84](https://github.com/JuliaPhysics/Measurements.jl/pull/84)).
 
-## v2.3.0 (2020-09-08)
+## [v2.3.0](https://github.com/JuliaPhysics/Measurements.jl/releases/tag/v2.3.0) (2020-09-08)
 
 ### New features
 
@@ -133,14 +145,14 @@
   `floatmax(::Type{Measurement})`
   ([#72](https://github.com/JuliaPhysics/Measurements.jl/pull/72)).
 
-## v2.2.1 (2020-05-21)
+## [v2.2.1](https://github.com/JuliaPhysics/Measurements.jl/releases/tag/v2.2.1) (2020-05-21)
 
 ### Minor Changes
 
 * Allow installation of new versions of `RecipesBase.jl`
   ([#70](https://github.com/JuliaPhysics/Measurements.jl/pull/70)).
 
-## v2.2.0 (2020-02-02)
+## [v2.2.0](https://github.com/JuliaPhysics/Measurements.jl/releases/tag/v2.2.0) (2020-02-02)
 
 ### New Features
 
@@ -157,7 +169,7 @@
   `T`. ([#64](https://github.com/JuliaPhysics/Measurements.jl/issues/64),
   [#65](https://github.com/JuliaPhysics/Measurements.jl/pull/65))
 
-## v2.1.1 (2019-08-05)
+## [v2.1.1](https://github.com/JuliaPhysics/Measurements.jl/releases/tag/v2.1.1) (2019-08-05)
 
 ### Bug Fixes
 
@@ -165,7 +177,7 @@
   ([#49](https://github.com/JuliaPhysics/Measurements.jl/issues/49),
   [#50](https://github.com/JuliaPhysics/Measurements.jl/pull/50)).
 
-## v2.1.0 (2019-08-03)
+## [v2.1.0](https://github.com/JuliaPhysics/Measurements.jl/releases/tag/v2.1.0) (2019-08-03)
 
 ### New Features
 
@@ -197,7 +209,7 @@
   3.141593 ± 0.027183
   ```
 
-## v2.0.0 (2019-02-10)
+## [v2.0.0](https://github.com/JuliaPhysics/Measurements.jl/releases/tag/v2.0.0) (2019-02-10)
 
 ### Breaking Changes
 
@@ -215,7 +227,7 @@
 * New method for `rem2pi`
   ([#29](https://github.com/JuliaPhysics/Measurements.jl/issues/29)).
 
-## v1.0.2 (2018-09-26)
+## [v1.0.2](https://github.com/JuliaPhysics/Measurements.jl/releases/tag/v1.0.2) (2018-09-26)
 
 ### Bug Fixes
 
@@ -225,7 +237,7 @@
   ([#24](https://github.com/JuliaPhysics/Measurements.jl/pull/24)).  Until Julia
   0.6 this was done automatically, now we have to test this explicitly.
 
-## v1.0.1 (2018-09-07)
+## [v1.0.1](https://github.com/JuliaPhysics/Measurements.jl/releases/tag/v1.0.1) (2018-09-07)
 
 ### Bug Fixes
 
@@ -233,7 +245,7 @@
   ([#20](https://github.com/JuliaPhysics/Measurements.jl/pull/20),
   [#23](https://github.com/JuliaPhysics/Measurements.jl/pull/23)).
 
-## v1.0.0 (2018-08-16)
+## [v1.0.0](https://github.com/JuliaPhysics/Measurements.jl/releases/tag/v1.0.0) (2018-08-16)
 
 ### Breaking Changes
 
@@ -241,7 +253,7 @@
 * Documentation has been moved to
   https://juliaphysics.github.io/Measurements.jl/stable/.
 
-## v0.5.1 (2018-07-11)
+## [v0.5.1](https://github.com/JuliaPhysics/Measurements.jl/releases/tag/v0.5.1) (2018-07-11)
 
 ### New Features
 
@@ -262,7 +274,7 @@
   [#16](https://github.com/JuliaPhysics/Measurements.jl/pull/16)).
 * New `show` method for `text/latex` MIME, used in Jupyter notebooks.
 
-## v0.5.0 (2017-07-08)
+## [v0.5.0](https://github.com/JuliaPhysics/Measurements.jl/releases/tag/v0.5.0) (2017-07-08)
 
 ### Breaking Changes
 
@@ -283,7 +295,7 @@
   method is able to digest the string.  Tested with `T` equal to `Float16`,
   `Float32`, `Float64`, and `BigFloat`.
 
-## v0.4.0 (2017-04-26)
+## [v0.4.0](https://github.com/JuliaPhysics/Measurements.jl/releases/tag/v0.4.0) (2017-04-26)
 
 ### Breaking Changes
 
@@ -313,7 +325,7 @@
   `Measurement{Float64}`.  This is the same as calling `measurement` with a
   string argument.
 
-## v0.3.0 (2016-12-07)
+## [v0.3.0](https://github.com/JuliaPhysics/Measurements.jl/releases/tag/v0.3.0) (2016-12-07)
 
 ### New Features
 
@@ -327,7 +339,7 @@
   consistency.  This is most probably what users will expect.  As a consequence
   of this change, the returned value is never a `Measurement`.
 
-## v0.2.2 (2016-10-17)
+## [v0.2.2](https://github.com/JuliaPhysics/Measurements.jl/releases/tag/v0.2.2) (2016-10-17)
 
 ### New Features
 
@@ -342,14 +354,14 @@
 * Improve printing of complex measurements.  Now each part, real and imaginary,
   is wrapped in parentheses in order to make it easier to distinguish them.
 
-## v0.2.1 (2016-09-11)
+## [v0.2.1](https://github.com/JuliaPhysics/Measurements.jl/releases/tag/v0.2.1) (2016-09-11)
 
 ### New Features
 
 * New mathematical operations supported: `log2`, `abs2`, `fma`, `muladd`,
   `besseli`, `besselix`, `besselk`, `besselkx`, `widen`, `big`.
 
-## v0.2.0 (2016-07-13)
+## [v0.2.0](https://github.com/JuliaPhysics/Measurements.jl/releases/tag/v0.2.0) (2016-07-13)
 
 ### Breaking Changes
 
@@ -369,14 +381,14 @@
 * New functions `value` and `uncertainty` to access the nominal value and the
   uncertainty of measurements.
 
-## v0.1.2 (2016-07-09)
+## [v0.1.2](https://github.com/JuliaPhysics/Measurements.jl/releases/tag/v0.1.2) (2016-07-09)
 
 ### Bug Fixes
 
 * Fix derivatives of `div`, `fld`, `cld`.
 * Fix `frexp` with arguments whose absolute value is less than 0.5.
 
-## v0.1.1 (2016-06-23)
+## [v0.1.1](https://github.com/JuliaPhysics/Measurements.jl/releases/tag/v0.1.1) (2016-06-23)
 
 ### New Features
 
@@ -387,7 +399,7 @@
 * The complete documentation of the package is available at
   http://measurementsjl.readthedocs.io
 
-## v0.1.0 (2016-06-18)
+## [v0.1.0](https://github.com/JuliaPhysics/Measurements.jl/releases/tag/v0.1.0) (2016-06-18)
 
 ### New Features
 
@@ -403,7 +415,7 @@
 * Precompilation enabled.
 * New method supported: `typemax`.
 
-## v0.0.2 (2016-06-13)
+## [v0.0.2](https://github.com/JuliaPhysics/Measurements.jl/releases/tag/v0.0.2) (2016-06-13)
 
 ### New Features
 
@@ -431,7 +443,7 @@
 * Fix multiplication by and division of 0.  Previously, those operations would
   return `NaN` as uncertainty, now they give 0.
 
-## v0.0.1 (2016-05-20)
+## [v0.0.1](https://github.com/JuliaPhysics/Measurements.jl/releases/tag/v0.0.1) (2016-05-20)
 
 Initial release.
 
