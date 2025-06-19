@@ -14,10 +14,10 @@
 # This file defines the recipes to plot Measurements vectors with Plots.jl package in 2D.
 #
 ### Code:
-module MeasurementsRecipesBaseExt
+module MeasurementsPlotsExt
 
 using Measurements: Measurement, value, uncertainty
-using RecipesBase
+using Plots: @recipe
 
 @recipe function f(y::AbstractArray{<:Measurement})
     yerror := uncertainty.(y)
