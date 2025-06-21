@@ -1,37 +1,93 @@
 using RecipesBase
 
-x = [x ± x/10 for x in 0:0.1:10]
-y = sin.(x)
+x = 0 : 0.1 : 10
+y = [x_ ± x_/10 for x_ in x]
+z = sin.(y)
+N = length(x)
 
 RecipesBase.is_key_supported(_) = true
 
-rec = RecipesBase.apply_recipe(Dict{Symbol, Any}(), y)
-@test getfield(rec[1], 1) == Dict{Symbol, Any}(:yerror => uncertainty.(y), :uncertainty_plot => :bar)
-@test rec[1].args == (value.(y),)
+# `(Measurement,)`: default (bar)
+rec = RecipesBase.apply_recipe(Dict{Symbol, Any}(), z)
+@test getfield(rec[1], 1) == Dict{Symbol, Any}(
+    :yerror => uncertainty.(z),
+    :uncertainty_plot => :bar
+)
+@test rec[1].args == (value.(z),)
 
-rec = RecipesBase.apply_recipe(Dict{Symbol, Any}(), sin, x)
-@test getfield(rec[1], 1) == Dict{Symbol, Any}(:xerror => uncertainty.(x), :yerror => uncertainty.(y))
-@test rec[1].args == (value.(x), value.(y))
+# `(Measurement,)`: bar
+rec = RecipesBase.apply_recipe(Dict{Symbol, Any}(:uncertainty_plot => :bar), z)
+@test getfield(rec[1], 1) == Dict{Symbol, Any}(
+    :yerror => uncertainty.(z),
+    :uncertainty_plot => :bar
+)
+@test rec[1].args == (value.(z),)
 
-rec = RecipesBase.apply_recipe(Dict{Symbol, Any}(), x, y)
-@test getfield(rec[1], 1) == Dict{Symbol, Any}(:xerror => uncertainty.(x), :yerror => uncertainty.(y))
-@test rec[1].args == (value.(x), value.(y))
+# `(Measurement,)`: ribbon
+rec = RecipesBase.apply_recipe(Dict{Symbol, Any}(:uncertainty_plot => :ribbon), z)
+@test getfield(rec[1], 1) == Dict{Symbol, Any}(
+    :ribbon => uncertainty.(z),
+    :uncertainty_plot => :ribbon
+)
+@test rec[1].args == (value.(z),)
 
-rec = RecipesBase.apply_recipe(Dict{Symbol, Any}(), x, value.(y))
-@test getfield(rec[1], 1) == Dict{Symbol, Any}(:xerror => uncertainty.(x))
-@test rec[1].args == (value.(x), value.(y))
+# `(Measurement,)`: none
+rec = RecipesBase.apply_recipe(Dict{Symbol, Any}(:uncertainty_plot => :none), z)
+@test getfield(rec[1], 1) == Dict{Symbol, Any}(:uncertainty_plot => :none)
+@test rec[1].args == (value.(z),)
 
-rec = RecipesBase.apply_recipe(Dict{Symbol, Any}(), value.(x), y)
-@test getfield(rec[1], 1) == Dict{Symbol, Any}(:yerror => uncertainty.(y), :uncertainty_plot => :bar)
-@test rec[1].args == (value.(x), value.(y))
+# `(Measurement,)`: unrecognised
+@test_throws ErrorException RecipesBase.apply_recipe(Dict{Symbol, Any}(:uncertainty_plot => :hello), y)
 
-x = range(0, 6, 301)
-y = measurement.(cospi.(x), (5 .+ 2sinpi.(5x))/10)
+# `(Function, Measurement)`
+rec = RecipesBase.apply_recipe(Dict{Symbol, Any}(), sin, y)
+@test getfield(rec[1], 1) == Dict{Symbol, Any}(
+    :xerror => uncertainty.(y),
+    :yerror => uncertainty.(z)
+)
+@test rec[1].args == (value.(y), value.(z))
 
-rec = RecipesBase.apply_recipe(Dict{Symbol, Any}(:uncertainty_plot => :ribbon), y)
-@test getfield(rec[1], 2)[1] == value.(y)
-@test getfield(rec[1], 1) == Dict{Symbol, Any}(:ribbon => uncertainty.(y), :uncertainty_plot => :ribbon)
+# `(Measurement, Measurement)`
+rec = RecipesBase.apply_recipe(Dict{Symbol, Any}(), y, z)
+@test getfield(rec[1], 1) == Dict{Symbol, Any}(
+    :xerror => uncertainty.(y),
+    :yerror => uncertainty.(z)
+)
+@test rec[1].args == (value.(y), value.(z))
 
-rec = RecipesBase.apply_recipe(Dict{Symbol, Any}(:uncertainty_plot => :ribbon), x, y)
-@test rec[1].args == (value.(x), value.(y))
-@test getfield(rec[1], 1) == Dict{Symbol, Any}(:ribbon => uncertainty.(y), :uncertainty_plot => :ribbon)
+# `(Measurement, Real)`
+rec = RecipesBase.apply_recipe(Dict{Symbol, Any}(), y, value.(z))
+@test getfield(rec[1], 1) == Dict{Symbol, Any}(:xerror => uncertainty.(y))
+@test rec[1].args == (value.(y), value.(z))
+
+# `(Real, Measurement)`: default (bar)
+rec = RecipesBase.apply_recipe(Dict{Symbol, Any}(), x, z)
+@test getfield(rec[1], 1) == Dict{Symbol, Any}(
+    :uncertainty_plot => :bar,
+    :yerror => uncertainty.(z)
+)
+@test getfield(rec[1], 2) == (value.(x), value.(z))
+
+# `(Real, Measurement)`: bar
+rec = RecipesBase.apply_recipe(Dict{Symbol, Any}(:uncertainty_plot => :bar), x, z)
+@test getfield(rec[1], 1) == Dict{Symbol, Any}(
+    :uncertainty_plot => :bar,
+    :yerror => uncertainty.(z)
+)
+@test getfield(rec[1], 2) == (value.(x), value.(z))
+
+# `(Real, Measurement)`: ribbon
+rec = RecipesBase.apply_recipe(Dict{Symbol, Any}(:uncertainty_plot => :ribbon), x, z)
+@test getfield(rec[1], 1) == Dict{Symbol, Any}(
+    :uncertainty_plot => :ribbon,
+    :ribbon => uncertainty.(z)
+)
+@test getfield(rec[1], 2) == (value.(x), value.(z))
+
+# `(Real, Measurement)`: none
+rec = RecipesBase.apply_recipe(Dict{Symbol, Any}(:uncertainty_plot => :none), x, z)
+@test getfield(rec[1], 1) == Dict{Symbol, Any}(:uncertainty_plot => :none)
+@test getfield(rec[1], 2) == (value.(x), value.(z))
+
+# `(Real, Measurement)`: unrecognised
+@test_throws ErrorException RecipesBase.apply_recipe(Dict{Symbol, Any}(:uncertainty_plot => :hello), x, z)
