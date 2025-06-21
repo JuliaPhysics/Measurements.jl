@@ -607,3 +607,15 @@ julia> plot(sin, [x ± 0.1 for x in 1:0.2:10], size = (1200, 800))
 ```
 
 ![image](plot-example.png)
+
+Displaying errors as a ribbon plot is also supported, but only for the y-axis uncertainty (a limitation inherited from `Plots.jl` due to how `ribbon` implements a `fillrange`).
+
+```julia
+julia> x = range(0, 6, 301)
+
+julia> y = measurement.(cospi.(x), (5 .+ 2sinpi.(5x))/10)
+
+julia> plot(x, y, uncertainty_plot = :ribbon, color = :red)
+```
+
+![image](plot-example-ribbon.png)
