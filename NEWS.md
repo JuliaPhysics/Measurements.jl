@@ -1,5 +1,15 @@
 # History of Measurements.jl
 
+## [v2.14.0](https://github.com/JuliaPhysics/Measurements.jl/releases/tag/v2.14.0) (2025-06-27)
+
+### New features
+
+* Plotting functions in `Plots.jl` which take `Measurement` argument now support
+  a keyword argument `uncertainty_plot` to choose the error style: possible
+  values are `:bar` (error bars on the x- and y-axis), `:ribbon` (ribbon on the
+  y-axis only), and `:none` (no error bars)
+  ([#164](https://github.com/JuliaPhysics/Measurements.jl/pull/164)).
+
 ## [v2.13.0](https://github.com/JuliaPhysics/Measurements.jl/releases/tag/v2.13.0) (2025-06-14)
 
 ### New features
