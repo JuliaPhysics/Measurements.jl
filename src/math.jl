@@ -720,8 +720,8 @@ Base.rem2pi(a::Measurement, r::RoundingMode) = result(rem2pi(a.val, r), 1, a)
 Base.eps(::Type{Measurement{T}}) where {T<:AbstractFloat} = eps(T)
 Base.eps(a::Measurement) = eps(a.val)
 
-Base.nextfloat(a::Measurement) = result(nextfloat(a.val), 1, a)
 Base.nextfloat(a::Measurement, n::Integer) = result(nextfloat(a.val, n), 1, a)
+Base.prevfloat(a::Measurement, n::Integer) = result(prevfloat(a.val, n), 1, a)
 
 Base.maxintfloat(::Type{Measurement{T}}) where {T<:AbstractFloat} = maxintfloat(T)
 
