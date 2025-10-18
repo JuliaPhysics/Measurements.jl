@@ -1,5 +1,12 @@
 # History of Measurements.jl
 
+## [v2.14.1](https://github.com/JuliaPhysics/Measurements.jl/releases/tag/v2.14.1) (2025-10-18)
+
+### Bug Fixes
+
+* New `prevfloat` method defined for compatibility with Julia v1.13
+  ([#191](https://github.com/JuliaPhysics/Measurements.jl/pull/191)).
+
 ## [v2.14.0](https://github.com/JuliaPhysics/Measurements.jl/releases/tag/v2.14.0) (2025-06-27)
 
 ### New features
