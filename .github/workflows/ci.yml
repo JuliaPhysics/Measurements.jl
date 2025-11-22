@@ -1,11 +1,24 @@
-name: CI
+name: Unit tests
 
 on:
   push:
-    branches: "master"
-    tags: ["*"]
+    branches:
+      - "main"
+    paths:
+      - ".github/workflows/ci.yml"
+      - "ext/**"
+      - "src/**"
+      - "test/**"
+      - "Project.toml"
   pull_request:
+    paths:
+      - ".github/workflows/ci.yml"
+      - "ext/**"
+      - "src/**"
+      - "test/**"
+      - "Project.toml"
   release:
+  workflow_dispatch:
 
 concurrency:
   # Skip intermediate builds: always.
@@ -13,10 +26,16 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull/') }}
 
+# needed to allow julia-actions/cache to delete old caches that it has created
+permissions:
+  actions: write
+  contents: read
+
 jobs:
   test:
     name: Julia ${{ matrix.julia-version }} - ${{ matrix.os }} - ${{ matrix.julia-arch }}
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
@@ -31,12 +50,13 @@ jobs:
         julia-arch:
           - default
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: julia-actions/setup-julia@v2
         with:
           version: ${{ matrix.julia-version }}
           arch: ${{ matrix.julia-arch }}
       - uses: julia-actions/cache@v2
+        id: julia-cache
       - uses: julia-actions/julia-buildpkg@v1
       - uses: julia-actions/julia-runtest@v1
       - uses: julia-actions/julia-processcoverage@v1
@@ -53,17 +73,11 @@ jobs:
           flag-name: run-${{ join(matrix.*, '-') }}
           parallel: true
         continue-on-error: true
-
-  Documentation:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-      - uses: julia-actions/setup-julia@v2
+      - name: Save Julia depot cache on cancel or failure
+        id: julia-cache-save
+        if: cancelled() || failure()
+        uses: actions/cache/save@v4
         with:
-          version: 1
-      - uses: julia-actions/cache@v2
-        with:
-          cache-registries: "true"
-      - uses: julia-actions/julia-docdeploy@v1
-        env:
-          DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }}
+          path: |
+            ${{ steps.julia-cache.outputs.cache-paths }}
+          key: ${{ steps.julia-cache.outputs.cache-key }}

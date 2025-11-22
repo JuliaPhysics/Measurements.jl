@@ -2,6 +2,12 @@ name: Run benchmarks
 
 on:
   pull_request:
+    paths:
+      - ".github/workflows/benchmark.yml"
+      - "benchmark/**"
+      - "ext/**"
+      - "src/**"
+      - "Project.toml"
   workflow_dispatch:
 
 concurrency:
@@ -10,24 +16,38 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  # needed to allow julia-actions/cache to delete old caches that it has created
+  actions: write
+  contents: read
+  # Needed to post a custom job status when pushing the results to a branch
+  statuses: write
+
 jobs:
   benchmark:
+    timeout-minutes: 90
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: julia-actions/setup-julia@v2
         with:
-          version: '1.11.3'
+          version: '1.11.7'
       - uses: julia-actions/cache@v2
-      - name: Run benchmarks
+        id: julia-cache
+      - name: Install dependencies
         shell: julia --color=yes --project=benchmark {0}
         run: |
           using Pkg
           Pkg.instantiate()
-
+      - name: Run benchmarks
+        shell: julia --color=yes --project=benchmark {0}
+        run: |
           using PkgBenchmark, BenchmarkCI
 
-          BenchmarkCI.judge()
+          BenchmarkCI.judge(
+              ;
+              baseline = "origin/main",
+          )
       - name: Print judgement
         shell: julia --color=yes --project=benchmark {0}
         run: |
@@ -45,3 +65,17 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SSH_KEY: ${{ secrets.DOCUMENTER_KEY }}
+      - uses: actions/upload-artifact@v5
+        if: always()
+        with:
+          name: tune-json
+          path: |
+            **/tune.json
+      - name: Save Julia depot cache on cancel or failure
+        id: julia-cache-save
+        if: cancelled() || failure()
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            ${{ steps.julia-cache.outputs.cache-paths }}
+          key: ${{ steps.julia-cache.outputs.cache-key }}

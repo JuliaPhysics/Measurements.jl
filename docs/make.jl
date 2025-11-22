@@ -15,7 +15,9 @@ makedocs(
 )
 
 deploydocs(
+    ;
     repo = "github.com/JuliaPhysics/Measurements.jl.git",
+    devbranch = "main",
     target = "build",
     deps = nothing,
     make = nothing,
