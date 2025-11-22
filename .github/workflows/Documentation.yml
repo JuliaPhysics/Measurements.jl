@@ -1,0 +1,62 @@
+name: Documentation
+
+on:
+  push:
+    branches:
+      - "main"
+    tags: "*"
+    paths:
+      - ".github/workflows/Documentation.yml"
+      - "docs/**"
+      - "src/**"
+      - "Project.toml"
+  pull_request:
+    paths:
+      - ".github/workflows/Documentation.yml"
+      - "docs/**"
+      - "src/**"
+      - "Project.toml"
+  release:
+
+concurrency:
+  # Skip intermediate builds: always.
+  # Cancel intermediate builds: on PRs.
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull/') }}
+
+# needed to allow julia-actions/cache to delete old caches that it has created
+permissions:
+  actions: write
+  contents: write
+  pull-requests: read
+  statuses: write
+
+jobs:
+  Documentation:
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: 1
+      - uses: julia-actions/cache@v2
+        id: julia-cache
+        with:
+          cache-registries: "true"
+      - uses: julia-actions/julia-docdeploy@v1
+        env:
+          DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }}
+      - name: Save Julia depot cache on cancel or failure
+        id: julia-cache-save
+        if: cancelled() || failure()
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            ${{ steps.julia-cache.outputs.cache-paths }}
+          key: ${{ steps.julia-cache.outputs.cache-key }}
+      - uses: actions/upload-artifact@v5
+        with:
+          name: documentation-build
+          path: docs/build
+          retention-days: 10
