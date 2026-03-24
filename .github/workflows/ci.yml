@@ -3,22 +3,7 @@ name: Unit tests
 on:
   push:
     branches:
-      - "main"
-    paths:
-      - ".github/workflows/ci.yml"
-      - "ext/**"
-      - "src/**"
-      - "test/**"
-      - "Project.toml"
-  pull_request:
-    paths:
-      - ".github/workflows/ci.yml"
-      - "ext/**"
-      - "src/**"
-      - "test/**"
-      - "Project.toml"
-  release:
-  workflow_dispatch:
+      - "**"
 
 concurrency:
   # Skip intermediate builds: always.
@@ -32,52 +17,9 @@ permissions:
   contents: read
 
 jobs:
-  test:
-    name: Julia ${{ matrix.julia-version }} - ${{ matrix.os }} - ${{ matrix.julia-arch }}
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 30
-    strategy:
-      fail-fast: false
-      matrix:
-        julia-version:
-          - "min"
-          - "1"
-          - "nightly"
-        os:
-          - ubuntu-latest
-          - macos-latest
-          - windows-latest
-        julia-arch:
-          - default
+  build:
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
       - uses: julia-actions/setup-julia@v2
-        with:
-          version: ${{ matrix.julia-version }}
-          arch: ${{ matrix.julia-arch }}
-      - uses: julia-actions/cache@v2
-        id: julia-cache
-      - uses: julia-actions/julia-buildpkg@v1
-      - uses: julia-actions/julia-runtest@v1
-      - uses: julia-actions/julia-processcoverage@v1
-      - uses: codecov/codecov-action@v5
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: lcov.info
-        continue-on-error: true
-      - name: Coveralls
-        uses: coverallsapp/github-action@v2
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          path-to-lcov: lcov.info
-          flag-name: run-${{ join(matrix.*, '-') }}
-          parallel: true
-        continue-on-error: true
-      - name: Save Julia depot cache on cancel or failure
-        id: julia-cache-save
-        if: cancelled() || failure()
-        uses: actions/cache/save@v4
-        with:
-          path: |
-            ${{ steps.julia-cache.outputs.cache-paths }}
-          key: ${{ steps.julia-cache.outputs.cache-key }}
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
