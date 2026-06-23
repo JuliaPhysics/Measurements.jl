@@ -1,9 +1,9 @@
 # Measurements.jl
 
-| **Documentation**                       | **Build Status**                    | **Code Coverage**               | **Quality** |
-|:---------------------------------------:|:-----------------------------------:|:-------------------------------:|:-----------:|
-| [![][docs-stable-img]][docs-stable-url] | [![Build Status][gha-img]][gha-url] | [![][coveral-img]][coveral-url] |[![Aqua QA][aqua-img]][aqua-url]|
-| [![][docs-latest-img]][docs-latest-url] |                                     | [![][codecov-img]][codecov-url] |
+| **Documentation**                       | **Build Status**                    | **Code Coverage**               | **Quality**                                        |
+|:---------------------------------------:|:-----------------------------------:|:-------------------------------:|:--------------------------------------------------:|
+| [![][docs-stable-img]][docs-stable-url] | [![Build Status][gha-img]][gha-url] | [![][coveral-img]][coveral-url] | [![Aqua QA][aqua-img]][aqua-url]                   |
+| [![][docs-latest-img]][docs-latest-url] |                                     | [![][codecov-img]][codecov-url] | [![Fuzzy Tests][supposition-img]][supposition-url] |
 
 ## Introduction
 
@@ -193,3 +193,6 @@ is provided in the [`CITATION.bib`](CITATION.bib) file.
 
 [aqua-img]: https://raw.githubusercontent.com/JuliaTesting/Aqua.jl/master/badge.svg
 [aqua-url]: https://github.com/JuliaTesting/Aqua.jl
+
+[supposition-img]: https://raw.githubusercontent.com/Seelengrab/Supposition.jl/main/badge.svg
+[supposition-url]: https://github.com/Seelengrab/Supposition.jl
