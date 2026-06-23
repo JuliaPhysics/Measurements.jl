@@ -1062,6 +1062,10 @@ end
     @test range(0±0, step=1±.1, length=10) isa StepRangeLen
 end
 
+@testset "Property-based tests" begin
+    include("supposition.jl")
+end
+
 @testset "Base type" begin
     for T in (Float16, Float32, Float64)
         x = Measurement{T}(1.0)
