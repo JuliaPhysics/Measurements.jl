@@ -728,6 +728,7 @@ end
     @test floatmin(Measurement{Float64}) ≈ floatmin(Float64) ± zero(Float64)
     @test floatmax(Measurement{Float64}) ≈ floatmax(Float64) ± zero(Float64)
     @test maxintfloat(Measurement{Float64}) ≈ maxintfloat(Float64)
+    @test typemin(Measurement{Float64}) ≈ typemin(Float64)
 end
 
 @testset "Rounding" begin
