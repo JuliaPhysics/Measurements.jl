@@ -32,6 +32,7 @@ jobs:
       - uses: julia-actions/setup-julia@v3
         with:
           version: '1.11.7'
+          show-versioninfo: true
       - uses: julia-actions/cache@v3
       - name: Install dependencies
         shell: julia --color=yes --project=benchmark {0}
