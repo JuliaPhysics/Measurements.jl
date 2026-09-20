@@ -41,7 +41,7 @@ SUITE["base"]["create"] = @benchmarkable 4.7 ± 0.3
 SUITE["base"]["sum"] = @benchmarkable $(a) + $(b)
 SUITE["base"]["multiplication"] = @benchmarkable $(a) * $(b)
 SUITE["base"]["sqrt"] = @benchmarkable sqrt($(b))
-SUITE["base"]["sin"] = @benchmarkable sqrt($(a))
+SUITE["base"]["sin"] = @benchmarkable sin($(a))
 
 # Scalar expressions over one or two variables.  These spend most of their time in
 # `result`, so they are the shapes most sensitive to how uncertainty is accumulated,
