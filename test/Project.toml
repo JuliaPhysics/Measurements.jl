@@ -16,7 +16,7 @@ Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
 
 [compat]
-Aqua = "0.8"
+Aqua = "0.8 - 0.8.16"
 BaseType = "0.2"
 Calculus = "0.4.1, 0.5"
 Juno = "0.8"
