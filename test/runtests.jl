@@ -386,6 +386,33 @@ end
     end
 end
 
+@testset "Uncertainty accumulation" begin
+    # The sum of squares is accumulated in scaled form.  Squaring each (σ_x·∂G/∂x)
+    # first would overflow to Inf, or land in the subnormal range where quantisation
+    # inflates the result by up to sqrt(2), or flushes it to zero -- even when the
+    # uncertainty itself is comfortably representable.
+    selfdiv_within_eps(a) =
+        (q = a / a; value(q) == 1 && uncertainty(q) <= eps(value(q))*uncertainty(a)/value(a))
+
+    # `a/a` cancels to within one ulp, so the single term is ~1e-162 while its square
+    # is subnormal.  Found by fuzzing: the uncertainty used to come out as 2^-537,
+    # a factor of sqrt(2) too large, which is enough to break the bound above.
+    subnormal = 1.4466480143452756e149 ± 1448.1547
+    @test selfdiv_within_eps(subnormal)
+    @test uncertainty(@inferred(subnormal / subnormal)) == 1.5717277978676453e-162
+
+    # The same significand scaled by 2^-1000 puts the term at ~1e155, whose square
+    # overflows instead; the uncertainty used to come out as Inf.
+    overflow = ldexp(1.4466480143452756e149, -1000) ± 1e19
+    @test selfdiv_within_eps(overflow)
+    @test uncertainty(@inferred(overflow / overflow)) == 1.162941958872971e155
+
+    # Independent terms whose squares leave the representable range: these used to
+    # give Inf and 0 respectively.
+    @test uncertainty((1e200 ± 1e200) + (1e-200 ± 1e-200)) ≈ 1e200
+    @test uncertainty((1e-200 ± 1e-200) + (0.0 ± 1e-200)) ≈ sqrt(2)*1e-200
+end
+
 @testset "Inverse" begin
     for a in (w, x, y); @test @inferred(inv(a)) ≈ 1/a; end
 end
