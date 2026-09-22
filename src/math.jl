@@ -81,7 +81,14 @@ gettype(collection) = promote_type(_eltype.(collection)...)
     @assert length(der) == length(a)
     T = gettype(a)
     nil::T = zero(T)
-    err = nil
+    # The sum of squares is accumulated in scaled form, σ_G = scale·sqrt(ssq), keeping
+    # the largest term so far at unit magnitude.  Summing (σ_x·∂G/∂x)^2 directly would
+    # square each term first, which can overflow to Inf, or land in the subnormal range
+    # where quantisation inflates the result by up to sqrt(2) (or flushes it to zero),
+    # even when σ_G itself is perfectly representable.  Both happen for `x/x`: the
+    # derivatives cancel to within one ulp, so the terms are tiny while σ_G is not.
+    scale = nil
+    ssq = nil
     newder = empty_der2(nil)
     # Iterate over all independent variables.  We first iterate over all
     # variables listed in `a' in order to get all independent variables upon
@@ -106,16 +113,31 @@ gettype(collection) = promote_type(_eltype.(collection)...)
                         end
                     end
                     if ! iszero(∂G_∂x)
-                        # Add (σ_x·∂G/∂x)^2 to the total uncertainty (squared), but only if
+                        # Fold |σ_x·∂G/∂x| into the scaled sum of squares, but only if
                         # the derivative is not zero.
                         newder = Derivatives(newder, tag=>∂G_∂x)
-                        err = err + abs2(σ_x*∂G_∂x)
+                        t = abs(σ_x*∂G_∂x)
+                        if iszero(scale)
+                            # First contributing term (a term may still underflow to 0).
+                            if ! iszero(t)
+                                scale = t
+                                ssq = one(T)
+                            end
+                        elseif !(t <= scale) # also taken when `t` is NaN, so NaN propagates
+                            # New largest term: rescale what we have and make it the unit.
+                            ssq = ssq * abs2(scale/t) + one(T)
+                            scale = t
+                        else
+                            ssq = ssq + abs2(t/scale)
+                        end
                     end
                 end
             end
         end
     end
-    return Measurement(T(val), sqrt(err), UInt64(0), newder)
+    # A single contributing term gives ssq == 1 exactly, so σ_G == |σ_x·∂G/∂x| with no
+    # rounding at all -- the common case, and the one `x/x` needs.
+    return Measurement(T(val), iszero(scale) ? scale : scale*sqrt(ssq), UInt64(0), newder)
 end
 
 # "result" function for complex-valued functions of one real argument (like "besselh").
