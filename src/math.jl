@@ -729,6 +729,7 @@ Base.floatmin(::Type{Measurement{T}}) where {T<:AbstractFloat} = floatmin(T) ± 
 Base.floatmax(::Type{Measurement{T}}) where {T<:AbstractFloat} = floatmax(T) ± zero(T)
 
 Base.typemax(::Type{Measurement{T}}) where {T<:AbstractFloat} = typemax(T)
+Base.typemin(::Type{Measurement{T}}) where {T<:AbstractFloat} = typemin(T)
 
 ### Rounding
 
