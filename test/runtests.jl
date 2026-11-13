@@ -701,14 +701,14 @@ end
         @test isfinite(value(actual))
         @test isfinite(uncertainty(actual))
         @test uncertainty(real(actual)) ≈
-            hypot(uncertainty(a) * real(dx), uncertainty(b) * real(dy)) rtol=rtol atol=1e-10
+            hypot(uncertainty(a) * real(dx), uncertainty(b) * real(dy)) rtol=rtol
         @test uncertainty(imag(actual)) ≈
-            hypot(uncertainty(a) * imag(dx), uncertainty(b) * imag(dy)) rtol=rtol atol=1e-10
+            hypot(uncertainty(a) * imag(dx), uncertainty(b) * imag(dy)) rtol=rtol
         # Also check the signed partials, so an incorrect sign cannot hide in a norm.
-        @test Measurements.derivative(real(actual), a) ≈ real(dx) rtol=rtol atol=1e-8
-        @test Measurements.derivative(real(actual), b) ≈ real(dy) rtol=rtol atol=1e-8
-        @test Measurements.derivative(imag(actual), a) ≈ imag(dx) rtol=rtol atol=1e-8
-        @test Measurements.derivative(imag(actual), b) ≈ imag(dy) rtol=rtol atol=1e-8
+        @test Measurements.derivative(real(actual), a) ≈ real(dx) rtol=rtol atol=1e-10
+        @test Measurements.derivative(real(actual), b) ≈ real(dy) rtol=rtol atol=1e-10
+        @test Measurements.derivative(imag(actual), a) ≈ imag(dx) rtol=rtol atol=1e-10
+        @test Measurements.derivative(imag(actual), b) ≈ imag(dy) rtol=rtol atol=1e-10
     end
 
     function check_bessel_correlations(f, args)
