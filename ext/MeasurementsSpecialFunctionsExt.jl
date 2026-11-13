@@ -154,7 +154,7 @@ for f in (:airyai, :airybi)
     end
 end
 
-# Bessel functions
+# Bessel functions: DLMF 10.6.2 (averaging the two derivative formulas).
 
 function SpecialFunctions.besselj0(a::Measurement)
     x = a.val
@@ -199,6 +199,7 @@ function SpecialFunctions.besselh(nu::Real, k::Integer, a::Measurement)
                   a)
 end
 
+# Modified Bessel functions: DLMF 10.29.2.
 function SpecialFunctions.besseli(nu::Real, a::Measurement)
     x = a.val
     return result(besseli(nu, x), (besseli(nu - 1, x) + besseli(nu + 1, x)) / 2, a)
@@ -206,9 +207,10 @@ end
 
 function SpecialFunctions.besselix(nu::Real, a::Measurement)
     x = a.val
-    return result(besselix(nu, x),
-                  (besseli(nu - 1, x) + besseli(nu + 1, x)) * exp(-abs(x)) / 2 -
-                  besseli(nu, x)*sign(x)*exp(-abs(x)),
+    val = besselix(nu, x)
+    # sign(0) = 0 gives the mean of the two one-sided derivatives of the scale.
+    return result(val,
+                  (besselix(nu - 1, x) + besselix(nu + 1, x)) / 2 - sign(x) * val,
                   a)
 end
 
@@ -219,10 +221,125 @@ end
 
 function SpecialFunctions.besselkx(nu::Real, a::Measurement)
     x = a.val
-    return result(besselkx(nu, x),
-                  -(besselk(nu - 1, x) + besselk(nu + 1, x)) * exp(x) / 2 +
-                  besselk(nu, x)*exp(x),
+    # SpecialFunctions returns typeof(x) at zero, and the promoted type elsewhere.
+    T = promote_type(typeof(float(nu)), typeof(x))
+    val = T(besselkx(nu, x))
+    return result(val,
+                  val - (besselkx(nu - 1, x) + besselkx(nu + 1, x)) / 2,
                   a)
+end
+
+# Scaled Bessel functions of real arguments: DLMF 10.6.2.
+# The scale exp(-abs(imag(x))) is one on the real axis.
+for f in (:besseljx, :besselyx)
+    @eval function SpecialFunctions.$f(nu::Real, a::Measurement)
+        x = a.val
+        return result($f(nu, x), ($f(nu - 1, x) - $f(nu + 1, x)) / 2, a)
+    end
+end
+
+# Scaled Hankel functions: DLMF 10.6.2 and the scale exp(∓im*x).
+function SpecialFunctions.besselhx(nu::Real, k::Integer, a::Measurement)
+    x = a.val
+    val = besselhx(nu, k, x)
+    der = (besselhx(nu - 1, k, x) - besselhx(nu + 1, k, x)) / 2
+    return result(val, der + (k == 1 ? -im : im) * val, a)
+end
+
+# Resolve the overlap with SpecialFunctions' AbstractFloat Hankel methods.
+for f in (:besselh, :besselhx)
+    @eval SpecialFunctions.$f(nu::AbstractFloat, k::Integer, a::Measurement) =
+        invoke($f, Tuple{Real, Integer, Measurement}, nu, k, a)
+end
+
+# Convert the two complex partial derivatives to the real Jacobian for result.
+function besselresult(val, dx, dy, a::Complex{<:Measurement})
+    # Preserve the nominal precision when SpecialFunctions promotes the argument.
+    a = convert(Complex{Measurement{typeof(real(val))}}, a)
+    return result(val, (real(dx), real(dy), imag(dx), imag(dy)), a)
+end
+
+# Complex Bessel and Hankel functions: DLMF 10.6.2 and Cauchy-Riemann.
+for f in (:besselj, :bessely)
+    @eval function SpecialFunctions.$f(nu::Real, a::Complex{<:Measurement})
+        x = Measurements.value(a)
+        val = $f(nu, x)
+        der = ($f(nu - 1, x) - $f(nu + 1, x)) / 2
+        return besselresult(val, der, im * der, a)
+    end
+end
+
+function SpecialFunctions.besselh(nu::Real, k::Integer, a::Complex{<:Measurement})
+    x = Measurements.value(a)
+    val = besselh(nu, k, x)
+    der = (besselh(nu - 1, k, x) - besselh(nu + 1, k, x)) / 2
+    return besselresult(val, der, im * der, a)
+end
+
+# Complex modified Bessel functions: DLMF 10.29.2 and Cauchy-Riemann.
+function SpecialFunctions.besseli(nu::Real, a::Complex{<:Measurement})
+    x = Measurements.value(a)
+    val = besseli(nu, x)
+    der = (besseli(nu - 1, x) + besseli(nu + 1, x)) / 2
+    return besselresult(val, der, im * der, a)
+end
+
+function SpecialFunctions.besselk(nu::Real, a::Complex{<:Measurement})
+    x = Measurements.value(a)
+    val = besselk(nu, x)
+    der = -(besselk(nu - 1, x) + besselk(nu + 1, x)) / 2
+    return besselresult(val, der, im * der, a)
+end
+
+# Complex scaled Bessel functions: DLMF 10.6.2 and exp(-abs(imag(x))).
+# On the axis, sign(0) = 0 gives the mean of the one-sided scale derivatives.
+for f in (:besseljx, :besselyx)
+    @eval function SpecialFunctions.$f(nu::Real, a::Complex{<:Measurement})
+        x = Measurements.value(a)
+        val = $f(nu, x)
+        dx = ($f(nu - 1, x) - $f(nu + 1, x)) / 2
+        dy = im * dx - sign(imag(x)) * val
+        return besselresult(val, dx, dy, a)
+    end
+end
+
+# Complex scaled modified Bessel functions: DLMF 10.29.2.
+function SpecialFunctions.besselix(nu::Real, a::Complex{<:Measurement})
+    x = Measurements.value(a)
+    val = besselix(nu, x)
+    der = (besselix(nu - 1, x) + besselix(nu + 1, x)) / 2
+    # exp(-abs(real(x))) has the mean scale derivative sign(0) = 0 on the axis.
+    return besselresult(val, der - sign(real(x)) * val, im * der, a)
+end
+
+function SpecialFunctions.besselkx(nu::Real, a::Complex{<:Measurement})
+    x = Measurements.value(a)
+    val = besselkx(nu, x)
+    der = val - (besselkx(nu - 1, x) + besselkx(nu + 1, x)) / 2
+    return besselresult(val, der, im * der, a)
+end
+
+# Complex scaled Hankel functions: DLMF 10.6.2 and exp(∓im*x).
+function SpecialFunctions.besselhx(nu::Real, k::Integer, a::Complex{<:Measurement})
+    x = Measurements.value(a)
+    val = besselhx(nu, k, x)
+    der = (besselhx(nu - 1, k, x) - besselhx(nu + 1, k, x)) / 2
+    der += (k == 1 ? -im : im) * val
+    return besselresult(val, der, im * der, a)
+end
+
+# Fixed orders and Hankel aliases use the same DLMF 10.6.2 derivatives.
+for (f, g, nu) in ((:besselj0, :besselj, 0), (:besselj1, :besselj, 1),
+                   (:bessely0, :bessely, 0), (:bessely1, :bessely, 1))
+    @eval SpecialFunctions.$f(a::Complex{<:Measurement}) = $g($nu, a)
+end
+
+for (f, g, k) in ((:hankelh1, :besselh, 1), (:hankelh2, :besselh, 2),
+                  (:hankelh1x, :besselhx, 1), (:hankelh2x, :besselhx, 2))
+    @eval begin
+        SpecialFunctions.$f(nu::Real, a::Measurement) = $g(nu, $k, a)
+        SpecialFunctions.$f(nu::Real, a::Complex{<:Measurement}) = $g(nu, $k, a)
+    end
 end
 
 # Deprecations

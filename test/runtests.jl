@@ -678,6 +678,200 @@ end
     for a in (x, y); @test @inferred(besselkx(3//4, a)) ≈ @inferred(besselk(3//4, a)) * @inferred(exp(a)); end
 end
 
+@testset "Bessel arguments" begin
+    orders = (0, 1, -2, 1/2, -1/3, 7//3)
+    functions = (besselj, bessely, besseli, besselk, besseljx, besselyx,
+                 besselix, besselkx, hankelh1, hankelh2, hankelh1x, hankelh2x)
+
+    # Central differences of the plain functions give an independent Jacobian.
+    function partials(f, args, z)
+        hx = cbrt(eps(Float64)) * max(1, abs(real(z)))
+        hy = cbrt(eps(Float64)) * max(1, abs(imag(z)))
+        dx = (f(args..., z + hx) - f(args..., z - hx)) / (2hx)
+        dy = (f(args..., z + im * hy) - f(args..., z - im * hy)) / (2hy)
+        return dx, dy
+    end
+
+    function check_complex_bessel(f, args, z; rtol=2e-5)
+        a, b = reim(z)
+        nominal = value(z)
+        actual = @inferred f(args..., z)
+        dx, dy = partials(f, args, nominal)
+        @test value(actual) == f(args..., nominal)
+        @test isfinite(value(actual))
+        @test isfinite(uncertainty(actual))
+        @test uncertainty(real(actual)) ≈
+            hypot(uncertainty(a) * real(dx), uncertainty(b) * real(dy)) rtol=rtol
+        @test uncertainty(imag(actual)) ≈
+            hypot(uncertainty(a) * imag(dx), uncertainty(b) * imag(dy)) rtol=rtol
+        # Also check the signed partials, so an incorrect sign cannot hide in a norm.
+        @test Measurements.derivative(real(actual), a) ≈ real(dx) rtol=rtol atol=1e-10
+        @test Measurements.derivative(real(actual), b) ≈ real(dy) rtol=rtol atol=1e-10
+        @test Measurements.derivative(imag(actual), a) ≈ imag(dx) rtol=rtol atol=1e-10
+        @test Measurements.derivative(imag(actual), b) ≈ imag(dy) rtol=rtol atol=1e-10
+    end
+
+    function check_bessel_correlations(f, args)
+        t = 0.7 ± 0.03
+        z = complex(t, 2t)
+        actual = @inferred f(args..., z)
+        h = cbrt(eps(Float64))
+        dt = (f(args..., (value(t) + h) * (1 + 2im)) -
+              f(args..., (value(t) - h) * (1 + 2im))) / (2h)
+        @test uncertainty(real(actual)) ≈ abs(uncertainty(t) * real(dt)) rtol=2e-5
+        @test uncertainty(imag(actual)) ≈ abs(uncertainty(t) * imag(dt)) rtol=2e-5
+        @test iszero(uncertainty(actual - f(args..., z)))
+        @test iszero(uncertainty(@inferred f(args..., complex(0.7 ± 0, 1.4 ± 0))))
+    end
+
+    @testset "Complex derivatives and correlations" begin
+        # All quadrants, and both sides of each axis without crossing branch cuts.
+        points = (1.2 + 0.7im, -1.2 + 0.7im, -1.2 - 0.7im, 1.2 - 0.7im,
+                  1.2 + 0.001im, 1.2 - 0.001im, 0.001 + 1.2im, -0.001 + 1.2im)
+        for nu in orders
+            calls = ((f, (nu,)) for f in functions)
+            for (f, args) in (calls..., (besselh, (nu, 1)), (besselh, (nu, 2)),
+                              (besselhx, (nu, 1)), (besselhx, (nu, 2)))
+                for p in points
+                    check_complex_bessel(f, args, complex(real(p) ± 0.03, imag(p) ± 0.07))
+                end
+                check_bessel_correlations(f, args)
+            end
+        end
+        for f in (besselj0, besselj1, bessely0, bessely1)
+            for p in points
+                check_complex_bessel(f, (), complex(real(p) ± 0.03, imag(p) ± 0.07))
+            end
+            check_bessel_correlations(f, ())
+        end
+    end
+
+    @testset "Complex scaled identities" begin
+        for nu in orders, p in (1.2 + 0.7im, -1.2 + 0.7im, -1.2 - 0.7im, 1.2 - 0.7im)
+            z = complex(real(p) ± 0.03, imag(p) ± 0.07)
+            @test @inferred(besselix(nu, z)) ≈ besseli(nu, z) * exp(-abs(real(z)))
+            @test @inferred(besselkx(nu, z)) ≈ besselk(nu, z) * exp(z)
+            @test @inferred(besseljx(nu, z)) ≈ besselj(nu, z) * exp(-abs(imag(z)))
+            @test @inferred(besselyx(nu, z)) ≈ bessely(nu, z) * exp(-abs(imag(z)))
+            @test @inferred(besselh(nu, 1, z)) ≈ besselj(nu, z) + im * bessely(nu, z)
+            @test @inferred(besselh(nu, 2, z)) ≈ besselj(nu, z) - im * bessely(nu, z)
+            @test @inferred(hankelh1x(nu, z)) ≈ hankelh1(nu, z) * exp(-im * z)
+            @test @inferred(hankelh2x(nu, z)) ≈ hankelh2(nu, z) * exp(im * z)
+            for k in (1, 2)
+                @test @inferred(besselhx(nu, k, z)) ≈
+                    besselh(nu, k, z) * exp((k == 1 ? -im : im) * z)
+            end
+        end
+    end
+
+    @testset "Scaling axes" begin
+        # Central differences on the axes give the mean of the one-sided derivatives.
+        for nu in orders, f in (besseljx, besselyx)
+            check_complex_bessel(f, (nu,), complex(1.2 ± 0.03, 0.0 ± 0.07))
+        end
+        for nu in orders, y in (-1.2, 1.2)
+            check_complex_bessel(besselix, (nu,), complex(0.0 ± 0.03, y ± 0.07))
+        end
+        for nu in (0, 1, 2)
+            a = 0.0 ± 0.03
+            @test @inferred(besselix(nu, a)) ≈ besseli(nu, a)
+        end
+    end
+
+    @testset "Large scaled arguments" begin
+        for nu in orders, x in (-800.0, 800.0), f in (besselix, besselkx)
+            check_complex_bessel(f, (nu,), complex(x ± 1, 1.2 ± 0.07))
+        end
+        for nu in orders, y in (-800.0, 800.0)
+            z = complex(1.2 ± 0.03, y ± 1)
+            for f in (besseljx, besselyx, hankelh1x, hankelh2x)
+                check_complex_bessel(f, (nu,), z)
+            end
+            for k in (1, 2)
+                check_complex_bessel(besselhx, (nu, k), z)
+            end
+        end
+        for nu in orders, f in (besselix, besselkx)
+            for x in (f === besselix && isinteger(nu) ? (-800.0, 800.0) : (800.0,))
+                a = x ± 1
+                actual = @inferred f(nu, a)
+                h = cbrt(eps(Float64)) * abs(x)
+                der = (f(nu, x + h) - f(nu, x - h)) / (2h)
+                @test value(actual) == f(nu, x)
+                @test isfinite(value(actual))
+                @test isfinite(uncertainty(actual))
+                @test uncertainty(actual) ≈ abs(der) rtol=2e-5
+            end
+        end
+    end
+
+    @testset "Real arguments" begin
+        for nu in orders, a in (1.2 ± 0.03, 3.4 ± 0.07)
+            @test @inferred(besseljx(nu, a)) ≈ besselj(nu, a)
+            @test @inferred(besselyx(nu, a)) ≈ bessely(nu, a)
+            @test @inferred(besselix(nu, a)) ≈ besseli(nu, a) * exp(-abs(a))
+            @test @inferred(besselkx(nu, a)) ≈ besselk(nu, a) * exp(a)
+            @test @inferred(hankelh1(nu, a)) ≈ complex(besselj(nu, a), bessely(nu, a))
+            @test @inferred(hankelh2(nu, a)) ≈ complex(besselj(nu, a), -bessely(nu, a))
+            @test @inferred(hankelh1x(nu, a)) ≈ besselh(nu, 1, a) * exp(-im * a)
+            @test @inferred(hankelh2x(nu, a)) ≈ besselh(nu, 2, a) * exp(im * a)
+            for k in (1, 2)
+                @test @inferred(besselhx(nu, k, a)) ≈
+                    besselh(nu, k, a) * exp((k == 1 ? -im : im) * a)
+            end
+            calls = ((f, (nu,)) for f in (besseljx, besselyx, besselix, besselkx,
+                                          hankelh1, hankelh2, hankelh1x, hankelh2x))
+            for (f, args) in (calls..., (besselhx, (nu, 1)), (besselhx, (nu, 2)))
+                actual = @inferred f(args..., a)
+                h = cbrt(eps(Float64)) * value(a)
+                der = (f(args..., value(a) + h) - f(args..., value(a) - h)) / (2h)
+                @test value(actual) == f(args..., value(a))
+                @test uncertainty(real(actual)) ≈ abs(uncertainty(a) * real(der)) rtol=2e-5 atol=1e-10
+                @test uncertainty(imag(actual)) ≈ abs(uncertainty(a) * imag(der)) rtol=2e-5 atol=1e-10
+                @test iszero(uncertainty(actual - f(args..., a)))
+                @test iszero(uncertainty(@inferred f(args..., value(a) ± 0)))
+            end
+        end
+        for nu in (0, 1, -2), a in (-1.2 ± 0.03, -3.4 ± 0.07)
+            @test @inferred(besseljx(nu, a)) ≈ besselj(nu, a)
+            @test @inferred(besselix(nu, a)) ≈ besseli(nu, a) * exp(-abs(a))
+        end
+    end
+
+    @testset "Float32 and Float64 inference" begin
+        for T in (Float32, Float64), nu in (orders..., T(0), T(0.5), T(-1/3))
+            a = T(1.2) ± T(0.03)
+            z = complex(a, T(0.7) ± T(0.07))
+            for f in functions
+                actual = @inferred f(nu, z)
+                R = typeof(real(f(nu, value(z))))
+                @test actual isa Complex{Measurement{R}}
+                @test value(actual) == f(nu, value(z))
+            end
+            for f in (besseljx, besselyx, besselix, besselkx, hankelh1, hankelh2,
+                      hankelh1x, hankelh2x)
+                actual = @inferred f(nu, a)
+                @test value(actual) == f(nu, value(a))
+            end
+            for f in (besselh, besselhx), k in (1, 2)
+                @test value(@inferred f(nu, k, z)) == f(nu, k, value(z))
+                @test value(@inferred f(nu, k, a)) == f(nu, k, value(a))
+            end
+            for f in (besselj0, besselj1, bessely0, bessely1)
+                @test value(@inferred f(z)) == f(value(z))
+            end
+        end
+    end
+
+    @testset "Bessel ambiguities" begin
+        ext = Base.get_extension(Measurements, :MeasurementsSpecialFunctionsExt)
+        ambiguities = Test.detect_ambiguities(ext, SpecialFunctions)
+        for f in (functions..., besselh, besselhx, besselj0, besselj1, bessely0, bessely1)
+            @test !any(pair -> any(method -> method.name === nameof(f), pair), ambiguities)
+        end
+    end
+end
+
 @testset "Modulo" begin
     frac, int = @inferred(modf(x + w))
     @test frac ≈ x + w - int
